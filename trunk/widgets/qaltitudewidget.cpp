@@ -87,7 +87,7 @@ void QAltitudeWidget::paintEvent(QPaintEvent *)
     painter.translate(x,y);
     painter.drawImage(target, svgAltitude, source);
 
-    painter.setFont(QFont("Courier", h/36));
+    painter.setFont(QFont("Courier", h/TEXTDIVIDER));
     sprintf(buf,"%5.5i",int(min));
     QRect r = painter.boundingRect(w/-4,h/3,w/2,h/12, Qt::AlignCenter, buf);
     painter.setPen(QPen(Qt::black));

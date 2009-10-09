@@ -27,7 +27,7 @@ static void CalculateDistanceAndBearing(
 		double &distance,
 		double &bearing)
 {
-	double earths_radius = (6378137.0 + 6356752.3141) / 2.0;
+    double earths_radius = (6378137.0 + 6356752.3141) / 2.0;
 
     double from_theta = float(fromlat) / 360.0 * 2.0 * PI;
     double from_landa = float(fromlon) / 360.0 * 2.0 * PI;
@@ -57,32 +57,37 @@ QDashWindow::QDashWindow(QWidget *parent)
 	, showmap(false)
 	, distance(0)
 {
-	LoadImages();
-	clock = new QClockWidget(this);
-	clock->setObjectName(QString::fromUtf8("clock"));
-	clock->setGeometry(QRect(5, 5, 170, 170));
-	speed = new QSpeedWidget(this);
-	speed->setObjectName(QString::fromUtf8("speed"));
-	speed->setGeometry(QRect(5, 185, 170, 170));
-	timer = new QClockWidget(this);
-	timer->setObjectName(QString::fromUtf8("timer"));
-	timer->setGeometry(QRect(525, 5, 110, 110));
-	altitude = new QAltitudeWidget(this);
-	altitude->setObjectName(QString::fromUtf8("altitude"));
-	altitude->setGeometry(QRect(525, 125, 110, 110));
-	satview = new QSatViewWidget(this);
-	satview->setObjectName(QString::fromUtf8("satview"));
-	satview->setGeometry(QRect(525, 245, 110, 110));
-	heading = new QHeadingWidget(this);
-	heading->setObjectName(QString::fromUtf8("heading"));
-	heading->setGeometry(QRect(170, 5, 350, 350));
+    LoadImages();
+    clock = new QClockWidget(this);
+    clock->setObjectName(QString::fromUtf8("clock"));
+    clock->setGeometry(QRect(5, 5, 170, 170));
+    speed = new QSpeedWidget(this);
+    speed->setObjectName(QString::fromUtf8("speed"));
+    speed->setGeometry(QRect(5, 185, 170, 170));
+    timer = new QClockWidget(this);
+    timer->setObjectName(QString::fromUtf8("timer"));
+    timer->setGeometry(QRect(525, 5, 110, 110));
+    altitude = new QAltitudeWidget(this);
+    altitude->setObjectName(QString::fromUtf8("altitude"));
+    altitude->setGeometry(QRect(525, 125, 110, 110));
+    satview = new QSatViewWidget(this);
+    satview->setObjectName(QString::fromUtf8("satview"));
+    satview->setGeometry(QRect(525, 245, 110, 110));
+    heading = new QHeadingWidget(this);
+    heading->setObjectName(QString::fromUtf8("heading"));
+    heading->setGeometry(QRect(170, 5, 350, 350));
 
-	//QFile file("!:/private/ea82cef3/style.css");
-	QFile file(UIDIR "style.css");
-	file.open(QFile::ReadOnly);
-	QString styleSheet = QLatin1String(file.readAll());
-	setStyleSheet(styleSheet);
-	showFullScreen();
+    //QFile file("!:/private/ea82cef3/style.css");
+    QFile file(UIDIR "style.css");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    setStyleSheet(styleSheet);
+
+    #ifdef Q_OS_SYMBIAN
+    showFullScreen();
+    #else
+    resize(640,360);
+    #endif
 	
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeChanged()));
@@ -93,46 +98,46 @@ QDashWindow::QDashWindow(QWidget *parent)
     if (location.open() == XQLocation::NoError)
     {
         location.startUpdates();
-		heading->SetDial(0);
-		heading->SetNeedle(0);
+        heading->SetDial(0);
+        heading->SetNeedle(0);
     }
     else
     {
-		heading->SetDial(0);
-		heading->SetNeedle(90);
+        heading->SetDial(0);
+        heading->SetNeedle(90);
     }
 }
 
 void QDashWindow::timeChanged()
 {
-	QTime time = QTime::currentTime();
-	int second = time.second();
-	int minute = time.minute();
-	int hour = time.hour();
-	clock->SetTime(hour,minute,second);
-	
-	if (timevalid)
-	{	
-		hour   -= starttime.hour();
-		minute -= starttime.minute();
-		second -= starttime.second();
-		if (second < 0)
-		{
-		    second += 60;
-		    minute -= 1;
-		}
-		if (minute < 0)
-		{
-			minute += 60;
-			hour -= 1;
-		}
-    	timer->SetTime(hour,minute,second);
-	}
-	else
-	{
-		timevalid = true;
+    QTime time = QTime::currentTime();
+    int second = time.second();
+    int minute = time.minute();
+    int hour = time.hour();
+    clock->SetTime(hour,minute,second);
+
+    if (timevalid)
+    {
+        hour   -= starttime.hour();
+        minute -= starttime.minute();
+        second -= starttime.second();
+        if (second < 0)
+        {
+            second += 60;
+            minute -= 1;
+        }
+        if (minute < 0)
+        {
+            minute += 60;
+            hour -= 1;
+        }
+        timer->SetTime(hour,minute,second);
+    }
+    else
+    {
+        timevalid = true;
         starttime = time;
-	}
+    }
 }
 
 void QDashWindow::updateAltitude(double alt)

@@ -77,7 +77,7 @@ void QSpeedWidget::paintEvent(QPaintEvent *)
 
     char buf[10];
     sprintf(buf,"%06.1f",distance);
-    painter.setFont(QFont("Courier", h/36));
+    painter.setFont(QFont("Courier", h/TEXTDIVIDER));
     QRect r = painter.boundingRect(w/-4,h/3.2,w/2,h/10, Qt::AlignCenter, buf);
     painter.setPen(QPen(Qt::black));
     painter.setBrush(Qt::black);
@@ -86,7 +86,7 @@ void QSpeedWidget::paintEvent(QPaintEvent *)
     painter.drawText(w/-4,h/3.2,w/2,h/10, Qt::AlignCenter, buf);
 
     painter.rotate(360 * curspeed / scale + 180);
-    painter.drawImage(target, svgNeedle2, source);
+    painter.drawImage(target, svgSpeedNeedle, source);
 }
 
 void QSpeedWidget::changeEvent(QEvent *e)

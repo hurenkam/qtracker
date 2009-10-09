@@ -57,7 +57,7 @@ void QHeadingWidget::paintEvent(QPaintEvent *)
     painter.drawImage(target, svgHeading, source);
     painter.rotate(-1 * curdial);
     painter.rotate(curneedle);
-    painter.drawImage(target, svgNeedle,  source);
+    painter.drawImage(target, svgCompassNeedle,  source);
 }
 
 void QHeadingWidget::SetDial(double v)
