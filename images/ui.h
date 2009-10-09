@@ -19,11 +19,16 @@ extern QImage svgSpeed200;
 extern QImage svgLong;
 extern QImage svgShort;
 extern QImage svgSecond;
-extern QImage svgNeedle;
-extern QImage svgNeedle2;
+extern QImage svgCompassNeedle;
+extern QImage svgSpeedNeedle;
 
-//#define UIDIR "c:/data/tracker040/ui/"
+#ifdef Q_OS_SYMBIAN
 #define UIDIR "c:/private/EA82CEF3/ui/"
+#define TEXTDIVIDER 36
+#else
+#define UIDIR "/Users/hurenkam/workspace/qtracker/images/"
+#define TEXTDIVIDER 12
+#endif
 
 void LoadImages();
 #endif /* UI_H_ */

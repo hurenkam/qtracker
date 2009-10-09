@@ -17,8 +17,8 @@ QImage svgSpeed200;
 QImage svgLong;
 QImage svgShort;
 QImage svgSecond;
-QImage svgNeedle;
-QImage svgNeedle2;
+QImage svgCompassNeedle;
+QImage svgSpeedNeedle;
 
 void LoadImages()
 {
@@ -32,6 +32,6 @@ void LoadImages()
     svgLong.load(QString(UIDIR "longhand.svg"));
     svgShort.load(QString(UIDIR "shorthand.svg"));
     svgSecond.load(QString(UIDIR "secondhand.svg"));
-    svgNeedle.load(QString(UIDIR "compassneedle.svg"));
-    svgNeedle2.load(QString(UIDIR "speedneedle.svg"));
+    svgCompassNeedle.load(QString(UIDIR "compassneedle.svg"));
+    svgSpeedNeedle.load(QString(UIDIR "speedneedle.svg"));
 }
