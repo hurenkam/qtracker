@@ -66,6 +66,8 @@ private:
     
     bool timevalid;
     bool posvalid;
+    
+    bool showmap;
 };
 
 #endif /* QDASHWINDOW_H_ */

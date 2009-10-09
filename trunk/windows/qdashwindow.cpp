@@ -54,6 +54,7 @@ QDashWindow::QDashWindow(QWidget *parent)
 	, altvalid(false)
 	, timevalid(false)
 	, posvalid(false)
+	, showmap(false)
 	, distance(0)
 {
 	LoadImages();
@@ -194,22 +195,40 @@ void QDashWindow::locationChanged(
 
 void QDashWindow::Setup640x360()
 {
-	clock->setGeometry(QRect(5, 5, 170, 170));
-	speed->setGeometry(QRect(5, 185, 170, 170));
-	timer->setGeometry(QRect(525, 5, 110, 110));
-	altitude->setGeometry(QRect(525, 125, 110, 110));
-	satview->setGeometry(QRect(525, 245, 110, 110));
-	heading->setGeometry(QRect(170, 5, 350, 350));
+    if (showmap)
+    {
+		heading->setGeometry(QRect(5, 5, 110, 110));
+		clock->setGeometry(QRect(5, 125, 110, 110));
+		speed->setGeometry(QRect(5, 245, 110, 110));
+    }
+    else
+    {
+		clock->setGeometry(QRect(5, 5, 170, 170));
+		speed->setGeometry(QRect(5, 185, 170, 170));
+		heading->setGeometry(QRect(170, 5, 350, 350));
+    }
+	satview->setGeometry(QRect(525, 5, 110, 110));
+	timer->setGeometry(QRect(525, 125, 110, 110));
+	altitude->setGeometry(QRect(525, 245, 110, 110));
 }
 
 void QDashWindow::Setup360x640()
 {
-	clock->setGeometry(QRect(185, 5, 170, 170));
-	speed->setGeometry(QRect(5, 5, 170, 170));
-	timer->setGeometry(QRect(245, 525, 110, 110));
-	altitude->setGeometry(QRect(125, 525, 110, 110));
-	satview->setGeometry(QRect(5, 525, 110, 110));
-	heading->setGeometry(QRect(5, 170, 350, 350));
+	if (showmap)
+	{
+		satview->setGeometry(QRect(245, 5, 110, 110));
+		clock->setGeometry(QRect(125, 5, 110, 110));
+		heading->setGeometry(QRect(5, 5, 110, 110));
+	}
+	else
+	{
+		clock->setGeometry(QRect(185, 5, 170, 170));
+		satview->setGeometry(QRect(5, 5, 170, 170));
+		heading->setGeometry(QRect(5, 170, 350, 350));
+	}
+	altitude->setGeometry(QRect(245, 525, 110, 110));
+	timer->setGeometry(QRect(125, 525, 110, 110));
+	speed->setGeometry(QRect(5, 525, 110, 110));
 }
 
 void QDashWindow::resizeEvent ( QResizeEvent * event )
