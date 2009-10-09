@@ -40,7 +40,7 @@ symbian {
         images/shorthand.svg \
         images/speed10.svg \
         images/speed200.svg \
-        images/styles.css
+        images/style.css
     UiFiles.path = .
     DEPLOYMENT += UiFiles
     VERSION = 1.0.1
