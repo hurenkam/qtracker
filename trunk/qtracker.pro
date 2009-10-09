@@ -2,26 +2,16 @@ TEMPLATE = app
 TARGET = qTracker
 QT += core \
     gui
-HEADERS += location_global.h \
-    xqlocation.h \
-    xqlocation_s60_p.h \
-    qdashwindow.h \
-    ui.h \
-    qaltitudewidget.h \
-    qclockwidget.h \
-    qheadingwidget.h \
-    qsatviewwidget.h \
-    qspeedwidget.h
-SOURCES += xqlocation.cpp \
-    xqlocation_s60_p.cpp \
-    qdashwindow.cpp \
-    main.cpp \
-    ui.cpp \
-    qaltitudewidget.cpp \
-    qclockwidget.cpp \
-    qheadingwidget.cpp \
-    qsatviewwidget.cpp \
-    qspeedwidget.cpp
+HEADERS += images/ui.h \
+    mobility/location_global.h \
+    mobility/xqlocation_s60_p.h \
+    mobility/xqlocation.h \
+    widgets/qaltitudewidget.h \
+    widgets/qclockwidget.h \
+    widgets/qheadingwidget.h \
+    widgets/qsatviewwidget.h \
+    widgets/qspeedwidget.h \
+    windows/qdashwindow.h
 FORMS += 
 RESOURCES += 
 symbian { 
@@ -40,19 +30,19 @@ symbian {
         UserEnvironment \
         WriteDeviceData \
         WriteUserData
-    ICON = icon.svg
-    UiFiles.sources += Ui\LongHand.svg \
-        Ui\ShortHand.svg \
-        Ui\SecondHand.svg \
-        Ui\Clock.svg \
-        Ui\Speed10.svg \
-        Ui\Speed200.svg \
-        Ui\SpeedNeedle.svg \
-        Ui\CompassNeedle.svg \
-        Ui\Compass.svg \
-        Ui\SatView.svg \
-        Ui\style.css
+    ICON = images/icon.svg
+    UiFiles.sources += images/clock.svg
     UiFiles.path = .
     DEPLOYMENT += UiFiles
     VERSION = 1.0.1
 }
+SOURCES += images/ui.cpp \
+    mobility/xqlocation_s60_p.cpp \
+    mobility/xqlocation.cpp \
+    widgets/qaltitudewidget.cpp \
+    widgets/qclockwidget.cpp \
+    widgets/qheadingwidget.cpp \
+    widgets/qsatviewwidget.cpp \
+    widgets/qspeedwidget.cpp \
+    windows/qdashwindow.cpp \
+    main.cpp
