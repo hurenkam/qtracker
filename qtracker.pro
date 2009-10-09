@@ -31,7 +31,16 @@ symbian {
         WriteDeviceData \
         WriteUserData
     ICON = images/icon.svg
-    UiFiles.sources += images/clock.svg
+    UiFiles.sources += images/clock.svg \
+        images/compass.svg \
+        images/compassneedle.svg \
+        images/longhand.svg \
+        images/satview.svg \
+        images/secondhand.svg \
+        images/shorthand.svg \
+        images/speed10.svg \
+        images/speed200.svg \
+        images/styles.css
     UiFiles.path = .
     DEPLOYMENT += UiFiles
     VERSION = 1.0.1
