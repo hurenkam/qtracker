@@ -54,6 +54,7 @@ private:
     QTimer *zoomtimer;
     int zoomstep;
     int zoomgauge;
+    int tozoom;
     bool landscape;
 
     XQLocation location;

@@ -15,6 +15,7 @@
 #include "XQLocation.h"
 #include "ui.h"
 #include "math.h"
+#include <iostream.h>
 
 const float PI = 3.14159265358979323846f;
 
@@ -28,21 +29,57 @@ int positions[7][6][4] = {
     { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 465,  5,170,170 }, { 465,185,170,170 }, { 120,  5,350,350 } },
 };
 
-static QRect GetRect(bool landscape,int zoom,int gauge)
+int intermediate[6][4];
+
+static QRect GetStepRect(QRect from, QRect to, int step)
+{
+    QRect result(0,0,0,0);
+
+    int dx = to.x() - from.x();
+    int dy = to.y() - from.y();
+    int dw = to.width() - from.width();
+    int dh = to.height() - from.height();
+
+    result.setX      ( step / 5.0 * dx + from.x() );
+    result.setY      ( step / 5.0 * dy + from.y() );
+    result.setWidth  ( step / 5.0 * dw + from.width() );
+    result.setHeight ( step / 5.0 * dh + from.height() );
+
+    return result;
+}
+
+static QRect GetIntermediateRect(bool landscape, int gauge, int tozoom, int fromzoom, int step)
+{
+    QRect to = QRect(
+            positions[tozoom][gauge][0],
+            positions[tozoom][gauge][1],
+            positions[tozoom][gauge][2],
+            positions[tozoom][gauge][3]
+        );
+    QRect from = QRect(
+            positions[fromzoom][gauge][0],
+            positions[fromzoom][gauge][1],
+            positions[fromzoom][gauge][2],
+            positions[fromzoom][gauge][3]
+        );
+    return GetStepRect(from,to,step);
+}
+
+static QRect GetRect(bool landscape,int gauge,int zoom)
 {
     if (landscape)
         return QRect(
-                positions[gauge][zoom][0],
-                positions[gauge][zoom][1],
-                positions[gauge][zoom][2],
-                positions[gauge][zoom][3]
+                positions[zoom][gauge][0],
+                positions[zoom][gauge][1],
+                positions[zoom][gauge][2],
+                positions[zoom][gauge][3]
             );
     else
         return QRect(
-                positions[gauge][zoom][1],
-                positions[gauge][zoom][0],
-                positions[gauge][zoom][3],
-                positions[gauge][zoom][2]
+                positions[zoom][gauge][1],
+                positions[zoom][gauge][0],
+                positions[zoom][gauge][3],
+                positions[zoom][gauge][2]
             );
 }
 
@@ -84,6 +121,8 @@ QDashWindow::QDashWindow(QWidget *parent)
         , showmap(true)
 	, distance(0)
         , zoomgauge(0)
+        , tozoom(0)
+        , zoomstep(0)
         , landscape(true)
 {
     LoadImages();
@@ -116,10 +155,13 @@ QDashWindow::QDashWindow(QWidget *parent)
     #ifdef Q_OS_SYMBIAN
     showFullScreen();
     #else
-    resize(360,640);
-    //resize(640,360);
+    //resize(360,640);
+    resize(640,360);
     #endif
 	
+    zoomtimer = new QTimer(this);
+    connect(zoomtimer, SIGNAL(timeout()), this, SLOT(ZoomTimerExpired()));
+
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeChanged()));
     connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
@@ -138,7 +180,6 @@ QDashWindow::QDashWindow(QWidget *parent)
         heading->SetNeedle(90);
     }
 
-    //QFile file("!:/private/ea82cef3/style.css");
     QFile file(UIDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
@@ -237,14 +278,29 @@ void QDashWindow::locationChanged(
 
 void QDashWindow::Setup()
 {
-    for (int i = 0; i<6; i++)
+    if (zoomstep == 0)
     {
-        gauges[i]->setGeometry(GetRect(landscape,i,zoomgauge));
+        for (int i = 0; i<6; i++)
+        {
+            gauges[i]->setGeometry(GetRect(landscape,i,zoomgauge));
+        }
+    }
+    else
+    {
+        QRect r;
+        for (int i = 0; i<6; i++)
+        {
+            r = GetIntermediateRect(landscape,i,zoomgauge,tozoom,zoomstep);
+            gauges[i]->setGeometry(r);
+        }
     }
 }
 
 void QDashWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+    // return if in transition
+    if (zoomstep > 0) return;
+
     int result = 0;
 
     for (int i=0; i<6; i++)
@@ -252,22 +308,31 @@ void QDashWindow::mouseReleaseEvent(QMouseEvent *event)
             result = i + 1;
 
     if (zoomgauge != result)
-        zoomgauge = result;
+        tozoom = result;
     else
-        zoomgauge = 0;
+        tozoom = 0;
 
-    printf("zoomto: %i\n", result);
-
+    zoomstep = 4;
     Setup();
     update();
-}
-
-void QDashWindow::ZoomToGauge(int n)
-{
+    zoomtimer->start(50);
 }
 
 void QDashWindow::ZoomTimerExpired()
 {
+    if (zoomstep > 0)
+    {
+        Setup();
+        update();
+        zoomstep -= 1;
+    }
+    else
+    {
+        zoomgauge = tozoom;
+        zoomtimer->stop();
+        Setup();
+        update();
+    }
 }
 
 void QDashWindow::resizeEvent ( QResizeEvent * event )
