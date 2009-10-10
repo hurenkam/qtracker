@@ -16,8 +16,35 @@
 #include "ui.h"
 #include "math.h"
 
-//#define PI 3.14159265
 const float PI = 3.14159265358979323846f;
+
+int positions[7][6][4] = {
+    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
+    { { 170,  5,350,350 }, {   5,  5,170,170 }, {   5,185,170,170 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
+    { {   5,  5,170,170 }, { 170,  5,350,350 }, {   5,185,170,170 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
+    { {   5,  5,170,170 }, {   5,185,170,170 }, { 170,  5,350,350 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
+    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 120,  5,350,350 }, { 465,  5,170,170 }, { 465,185,170,170 } },
+    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 465,  5,170,170 }, { 120,  5,350,350 }, { 465,185,170,170 } },
+    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 465,  5,170,170 }, { 465,185,170,170 }, { 120,  5,350,350 } },
+};
+
+static QRect GetRect(bool landscape,int zoom,int gauge)
+{
+    if (landscape)
+        return QRect(
+                positions[gauge][zoom][0],
+                positions[gauge][zoom][1],
+                positions[gauge][zoom][2],
+                positions[gauge][zoom][3]
+            );
+    else
+        return QRect(
+                positions[gauge][zoom][1],
+                positions[gauge][zoom][0],
+                positions[gauge][zoom][3],
+                positions[gauge][zoom][2]
+            );
+}
 
 static void CalculateDistanceAndBearing(
 		double fromlat,
@@ -54,8 +81,10 @@ QDashWindow::QDashWindow(QWidget *parent)
 	, altvalid(false)
 	, timevalid(false)
 	, posvalid(false)
-	, showmap(false)
+        , showmap(true)
 	, distance(0)
+        , zoomgauge(0)
+        , landscape(true)
 {
     LoadImages();
     clock = new QClockWidget(this);
@@ -77,16 +106,18 @@ QDashWindow::QDashWindow(QWidget *parent)
     heading->setObjectName(QString::fromUtf8("heading"));
     heading->setGeometry(QRect(170, 5, 350, 350));
 
-    //QFile file("!:/private/ea82cef3/style.css");
-    QFile file(UIDIR "style.css");
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    setStyleSheet(styleSheet);
+    gauges[0] = heading;
+    gauges[1] = clock;
+    gauges[2] = speed;
+    gauges[3] = satview;
+    gauges[4] = timer;
+    gauges[5] = altitude;
 
     #ifdef Q_OS_SYMBIAN
     showFullScreen();
     #else
-    resize(640,360);
+    resize(360,640);
+    //resize(640,360);
     #endif
 	
     QTimer *timer = new QTimer(this);
@@ -106,6 +137,12 @@ QDashWindow::QDashWindow(QWidget *parent)
         heading->SetDial(0);
         heading->SetNeedle(90);
     }
+
+    //QFile file("!:/private/ea82cef3/style.css");
+    QFile file(UIDIR "style.css");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    setStyleSheet(styleSheet);
 }
 
 void QDashWindow::timeChanged()
@@ -147,103 +184,101 @@ void QDashWindow::updateAltitude(double alt)
 
 void QDashWindow::updateDistance(double lat, double lon)
 {
-	if (posvalid)
-	{
-		double d = 0;
-		double b = 0;
-		CalculateDistanceAndBearing(prevlat,prevlon,lat,lon,d,b);
-		if (d > 25)
-		{
-			distance += d/1000.0;
-			prevlat = lat;
-			prevlon = lon;
-			speed->SetDistance(distance);
-		}
-	}
-	else
-	{
-		posvalid = true;
-		prevlat = lat;
-		prevlon = lon;
-	}
+    if (posvalid)
+    {
+        double d = 0;
+        double b = 0;
+        CalculateDistanceAndBearing(prevlat,prevlon,lat,lon,d,b);
+        if (d > 25)
+        {
+            distance += d/1000.0;
+            prevlat = lat;
+            prevlon = lon;
+            speed->SetDistance(distance);
+        }
+    }
+    else
+    {
+        posvalid = true;
+        prevlat = lat;
+        prevlon = lon;
+    }
 }
 
 void QDashWindow::updateHeading(double course)
 {
-	heading->SetDial(360-course);
-	heading->SetNeedle(0);
+    heading->SetDial(360-course);
+    heading->SetNeedle(0);
 }
 
 void QDashWindow::updateSpeed(double s)
 {
-	speed->SetSpeed(s*3.6);
+    speed->SetSpeed(s*3.6);
 }
 
 void QDashWindow::updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse)
 {
-	satview->SetSatInfo(id,strength,azimuth,elevation,inuse);
+    satview->SetSatInfo(id,strength,azimuth,elevation,inuse);
 }
 
 void QDashWindow::locationChanged(
-		double lat, 
-		double lon, 
-		double alt, 
-		float s, 
-		float course)
+    double lat,
+    double lon,
+    double alt,
+    float s,
+    float course)
 {
-	updateDistance(lat,lon);
-	updateHeading(course);
-	updateSpeed(s);
-	updateAltitude(alt);
-	satview->update();
+    updateDistance(lat,lon);
+    updateHeading(course);
+    updateSpeed(s);
+    updateAltitude(alt);
+    satview->update();
 }
 
-void QDashWindow::Setup640x360()
+void QDashWindow::Setup()
 {
-    if (showmap)
+    for (int i = 0; i<6; i++)
     {
-		heading->setGeometry(QRect(5, 5, 110, 110));
-		clock->setGeometry(QRect(5, 125, 110, 110));
-		speed->setGeometry(QRect(5, 245, 110, 110));
+        gauges[i]->setGeometry(GetRect(landscape,i,zoomgauge));
     }
+}
+
+void QDashWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    int result = 0;
+
+    for (int i=0; i<6; i++)
+        if (GetRect(landscape,i,zoomgauge).contains(event->pos()))
+            result = i + 1;
+
+    if (zoomgauge != result)
+        zoomgauge = result;
     else
-    {
-		clock->setGeometry(QRect(5, 5, 170, 170));
-		speed->setGeometry(QRect(5, 185, 170, 170));
-		heading->setGeometry(QRect(170, 5, 350, 350));
-    }
-	satview->setGeometry(QRect(525, 5, 110, 110));
-	timer->setGeometry(QRect(525, 125, 110, 110));
-	altitude->setGeometry(QRect(525, 245, 110, 110));
+        zoomgauge = 0;
+
+    printf("zoomto: %i\n", result);
+
+    Setup();
+    update();
 }
 
-void QDashWindow::Setup360x640()
+void QDashWindow::ZoomToGauge(int n)
 {
-	if (showmap)
-	{
-		satview->setGeometry(QRect(245, 5, 110, 110));
-		clock->setGeometry(QRect(125, 5, 110, 110));
-		heading->setGeometry(QRect(5, 5, 110, 110));
-	}
-	else
-	{
-		clock->setGeometry(QRect(185, 5, 170, 170));
-		satview->setGeometry(QRect(5, 5, 170, 170));
-		heading->setGeometry(QRect(5, 170, 350, 350));
-	}
-	altitude->setGeometry(QRect(245, 525, 110, 110));
-	timer->setGeometry(QRect(125, 525, 110, 110));
-	speed->setGeometry(QRect(5, 525, 110, 110));
+}
+
+void QDashWindow::ZoomTimerExpired()
+{
 }
 
 void QDashWindow::resizeEvent ( QResizeEvent * event )
 {
-	if ((width() == 640) && (height() == 360))
-		Setup640x360();
-	if ((width() == 360) && (height() == 640))
-		Setup360x640();
-	
-	QMainWindow::resizeEvent(event);
+    if ((width() == 640) && (height() == 360))
+        landscape = true;
+    if ((width() == 360) && (height() == 640))
+        landscape = false;
+    Setup();
+
+    QMainWindow::resizeEvent(event);
 }
 
 QDashWindow::~QDashWindow()

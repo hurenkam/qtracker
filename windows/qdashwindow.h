@@ -34,11 +34,14 @@ public slots:
     void updateSpeed(double speed);
     void updateHeading(double course);
     void updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse);
-    
+    void ZoomTimerExpired();
+
 protected:
-	virtual void resizeEvent(QResizeEvent * event);
-	void Setup640x360();
-	void Setup360x640();
+    virtual void resizeEvent(QResizeEvent * event);
+    void Setup();
+    void ZoomToGauge(int n);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+
 private:
     QClockWidget *clock;
     QSpeedWidget *speed;
@@ -46,7 +49,13 @@ private:
     QAltitudeWidget *altitude;
     QSatViewWidget *satview;
     QHeadingWidget *heading;
-    
+
+    QWidget* gauges[6];
+    QTimer *zoomtimer;
+    int zoomstep;
+    int zoomgauge;
+    bool landscape;
+
     XQLocation location;
     int counter;
     QTime starttime;
