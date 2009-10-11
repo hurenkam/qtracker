@@ -1,5 +1,4 @@
 #include <QWidget>
-#include <QSvgRenderer>
 #include "qheadingwidget.h"
 #include "ui.h"
 
