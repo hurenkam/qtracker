@@ -50,17 +50,30 @@ static QRect GetStepRect(QRect from, QRect to, int step)
 
 static QRect GetIntermediateRect(bool landscape, int gauge, int tozoom, int fromzoom, int step)
 {
+    int x = 0;
+    int y = 1;
+    int w = 2;
+    int h = 3;
+
+    if (!landscape)
+    {
+        x = 1;
+        y = 0;
+        w = 3;
+        h = 2;
+    }
+
     QRect to = QRect(
-            positions[tozoom][gauge][0],
-            positions[tozoom][gauge][1],
-            positions[tozoom][gauge][2],
-            positions[tozoom][gauge][3]
+            positions[tozoom][gauge][x],
+            positions[tozoom][gauge][y],
+            positions[tozoom][gauge][w],
+            positions[tozoom][gauge][h]
         );
     QRect from = QRect(
-            positions[fromzoom][gauge][0],
-            positions[fromzoom][gauge][1],
-            positions[fromzoom][gauge][2],
-            positions[fromzoom][gauge][3]
+            positions[fromzoom][gauge][x],
+            positions[fromzoom][gauge][y],
+            positions[fromzoom][gauge][w],
+            positions[fromzoom][gauge][h]
         );
     return GetStepRect(from,to,step);
 }
@@ -84,12 +97,12 @@ static QRect GetRect(bool landscape,int gauge,int zoom)
 }
 
 static void CalculateDistanceAndBearing(
-		double fromlat,
-		double fromlon,
-		double tolat,
-		double tolon,
-		double &distance,
-		double &bearing)
+                double fromlat,
+                double fromlon,
+                double tolat,
+                double tolon,
+                double &distance,
+                double &bearing)
 {
     double earths_radius = (6378137.0 + 6356752.3141) / 2.0;
 
@@ -97,12 +110,12 @@ static void CalculateDistanceAndBearing(
     double from_landa = float(fromlon) / 360.0 * 2.0 * PI;
     double to_theta = float(tolat)     / 360.0 * 2.0 * PI;
     double to_landa = float(tolon)     / 360.0 * 2.0 * PI;
-    
+
     distance = acos(
             sin(from_theta) * sin(to_theta) +
             cos(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
                 ) * earths_radius;
-    
+
     bearing = atan2(
                 sin(to_landa-from_landa) * cos(to_theta),
                 cos(from_theta) * sin(to_theta) -
@@ -112,14 +125,14 @@ static void CalculateDistanceAndBearing(
 }
 
 QDashWindow::QDashWindow(QWidget *parent)
-	: QMainWindow(parent)
-	, starttime(0,0,0)
-	, counter(0)
-	, altvalid(false)
-	, timevalid(false)
-	, posvalid(false)
+        : QMainWindow(parent)
+        , starttime(0,0,0)
+        , counter(0)
+        , altvalid(false)
+        , timevalid(false)
+        , posvalid(false)
         , showmap(true)
-	, distance(0)
+        , distance(0)
         , zoomgauge(0)
         , tozoom(0)
         , zoomstep(0)
@@ -155,10 +168,10 @@ QDashWindow::QDashWindow(QWidget *parent)
     #ifdef Q_OS_SYMBIAN
     showFullScreen();
     #else
-    //resize(360,640);
-    resize(640,360);
+    resize(360,640);
+    //resize(640,360);
     #endif
-	
+
     zoomtimer = new QTimer(this);
     connect(zoomtimer, SIGNAL(timeout()), this, SLOT(ZoomTimerExpired()));
 
@@ -166,7 +179,7 @@ QDashWindow::QDashWindow(QWidget *parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(timeChanged()));
     connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
     connect(&location, SIGNAL(updateSatInfo(int,int,double,double,bool)), this, SLOT(updateSatInfo(int,int,double,double,bool)));
-    
+
     timer->start(1000);
     if (location.open() == XQLocation::NoError)
     {
@@ -220,7 +233,7 @@ void QDashWindow::timeChanged()
 
 void QDashWindow::updateAltitude(double alt)
 {
-	altitude->SetAltitude(alt);
+        altitude->SetAltitude(alt);
 }
 
 void QDashWindow::updateDistance(double lat, double lon)
