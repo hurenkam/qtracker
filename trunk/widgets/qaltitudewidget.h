@@ -10,8 +10,6 @@ public:
     QAltitudeWidget(QWidget *parent);
     ~QAltitudeWidget();
     void SetAltitude(double a);
-    //void SetMin(double m);
-    //void SetMax(double m);
 
 public slots:
 	void timerStep();
@@ -21,6 +19,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
+	QTimer *timer;
     double set;
     double current;
     double delta;

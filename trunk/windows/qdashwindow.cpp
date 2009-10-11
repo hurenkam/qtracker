@@ -40,10 +40,10 @@ static QRect GetStepRect(QRect from, QRect to, int step)
     int dw = to.width() - from.width();
     int dh = to.height() - from.height();
 
-    result.setX      ( step / 5.0 * dx + from.x() );
-    result.setY      ( step / 5.0 * dy + from.y() );
-    result.setWidth  ( step / 5.0 * dw + from.width() );
-    result.setHeight ( step / 5.0 * dh + from.height() );
+    result.setX      ( step / 3.0 * dx + from.x() );
+    result.setY      ( step / 3.0 * dy + from.y() );
+    result.setWidth  ( step / 3.0 * dw + from.width() );
+    result.setHeight ( step / 3.0 * dh + from.height() );
 
     return result;
 }
@@ -201,6 +201,8 @@ QDashWindow::QDashWindow(QWidget *parent)
 
 void QDashWindow::timeChanged()
 {
+    if (zoomstep != 0) return;
+    
     QTime time = QTime::currentTime();
     int second = time.second();
     int minute = time.minute();
@@ -233,11 +235,15 @@ void QDashWindow::timeChanged()
 
 void QDashWindow::updateAltitude(double alt)
 {
-        altitude->SetAltitude(alt);
+    if (zoomstep != 0) return;
+    
+    altitude->SetAltitude(alt);
 }
 
 void QDashWindow::updateDistance(double lat, double lon)
 {
+    if (zoomstep != 0) return;
+    
     if (posvalid)
     {
         double d = 0;
@@ -261,17 +267,23 @@ void QDashWindow::updateDistance(double lat, double lon)
 
 void QDashWindow::updateHeading(double course)
 {
+    if (zoomstep != 0) return;
+    
     heading->SetDial(360-course);
     heading->SetNeedle(0);
 }
 
 void QDashWindow::updateSpeed(double s)
 {
+    if (zoomstep != 0) return;
+    
     speed->SetSpeed(s*3.6);
 }
 
 void QDashWindow::updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse)
 {
+    if (zoomstep != 0) return;
+    
     satview->SetSatInfo(id,strength,azimuth,elevation,inuse);
 }
 
@@ -282,6 +294,8 @@ void QDashWindow::locationChanged(
     float s,
     float course)
 {
+    if (zoomstep != 0) return;
+    
     updateDistance(lat,lon);
     updateHeading(course);
     updateSpeed(s);
@@ -325,10 +339,10 @@ void QDashWindow::mouseReleaseEvent(QMouseEvent *event)
     else
         tozoom = 0;
 
-    zoomstep = 4;
+    zoomstep = 2;
     Setup();
     update();
-    zoomtimer->start(50);
+    zoomtimer->start(100);
 }
 
 void QDashWindow::ZoomTimerExpired()

@@ -12,9 +12,8 @@ QAltitudeWidget::QAltitudeWidget(QWidget *parent)
     , max(0.1)
     , valid(false)
 {
-	QTimer *timer = new QTimer(this);
+	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
-	timer->start(330);
 }
 
 void QAltitudeWidget::timerStep()
@@ -37,6 +36,7 @@ void QAltitudeWidget::timerStep()
 			max = current;
 			update();
 		}
+        timer->stop();
 	}
 	else if (steps > 0)
 	{
@@ -50,24 +50,15 @@ void QAltitudeWidget::timerStep()
 void QAltitudeWidget::SetAltitude(double alt)
 {
 	if (set == alt) return;
+	timer->stop();
 	
     set = alt;
     steps = 6;
     delta = (set-current)/steps;
-}
-/*
-void QAltitudeWidget::SetMin(double m)
-{
-    min = m;
-    update();
+    
+    timer->start(330);
 }
 
-void QAltitudeWidget::SetMax(double m)
-{
-    max = m;
-    update();
-}
-*/
 QAltitudeWidget::~QAltitudeWidget()
 {
 }

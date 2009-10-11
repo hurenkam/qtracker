@@ -21,6 +21,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
+	QTimer *timer;
     double speed;
     int scale;
     int steps;

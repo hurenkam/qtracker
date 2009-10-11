@@ -21,10 +21,8 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    QTimer *timer;
-    QSvgRenderer *svgdial;
-    QSvgRenderer *svgneedle;
-    double setdial;
+	QTimer *timer;
+	double setdial;
     double curdial;
     double deltadial;
     int    stepsdial;

@@ -14,13 +14,8 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
     , deltaneedle(0.0)
     , stepsneedle(0)
 {
-    timer = new QTimer(this);
-    svgdial =   new QSvgRenderer(QString(UIDIR "compass.svg"), this);
-    svgneedle = new QSvgRenderer(QString(UIDIR "compassneedle.svg"), this);
-
-    connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
-    connect(svgdial, SIGNAL(repaintNeeded()), this, SLOT(update()));
-    connect(svgneedle, SIGNAL(repaintNeeded()), this, SLOT(update()));
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
 }
 
 QHeadingWidget::~QHeadingWidget()
@@ -30,23 +25,22 @@ QHeadingWidget::~QHeadingWidget()
 void QHeadingWidget::timerStep()
 {
     if ((stepsdial == 0) && (stepsneedle==0))
-    {
+    { 
         timer->stop();
         return;
     }
-
-    if (stepsdial != 0)
-    {
-        curdial += deltadial;
-        stepsdial -= 1;
-    }
+    
+	if (stepsdial != 0)
+	{
+	    curdial += deltadial;
+	    stepsdial -= 1;
+	}
 
     if (stepsneedle != 0)
     {
         curneedle += deltaneedle;
         stepsneedle -= 1;
     }
-
     update();
 }
 
@@ -86,6 +80,8 @@ void QHeadingWidget::SetDial(double v)
 
 void QHeadingWidget::SetNeedle(double v)
 {
+	timer->stop();
+
     double delta = setneedle - curneedle;
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
@@ -93,6 +89,8 @@ void QHeadingWidget::SetNeedle(double v)
     setneedle = v;
     stepsneedle = 6;
     deltaneedle = delta / stepsneedle;
+    
+    timer->start(330);
 }
 
 void QHeadingWidget::changeEvent(QEvent *e)
