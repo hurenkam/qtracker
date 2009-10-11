@@ -2,7 +2,6 @@
 #define QHEADINGWIDGET_H
 
 #include <QWidget>
-#include <QSvgRenderer>
 
 class QHeadingWidget : public QWidget {
     Q_OBJECT
