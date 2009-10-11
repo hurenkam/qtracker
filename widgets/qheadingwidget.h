@@ -1,7 +1,8 @@
 #ifndef QHEADINGWIDGET_H
 #define QHEADINGWIDGET_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
+#include <QSvgRenderer>
 
 class QHeadingWidget : public QWidget {
     Q_OBJECT
@@ -13,14 +14,17 @@ public:
     void SetNeedle(double v);
 
 public slots:
-	void timerStep();
+        void timerStep();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
     void changeEvent(QEvent *e);
 
 private:
-	double setdial;
+    QTimer *timer;
+    QSvgRenderer *svgdial;
+    QSvgRenderer *svgneedle;
+    double setdial;
     double curdial;
     double deltadial;
     int    stepsdial;

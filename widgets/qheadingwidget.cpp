@@ -1,6 +1,7 @@
+#include <QWidget>
+#include <QSvgRenderer>
 #include "qheadingwidget.h"
 #include "ui.h"
-#include <QtGui>
 
 QHeadingWidget::QHeadingWidget(QWidget *parent)
     : QWidget(parent)
@@ -13,9 +14,13 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
     , deltaneedle(0.0)
     , stepsneedle(0)
 {
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
-    timer->start(330);
+    timer = new QTimer(this);
+    svgdial =   new QSvgRenderer(QString(UIDIR "compass.svg"), this);
+    svgneedle = new QSvgRenderer(QString(UIDIR "compassneedle.svg"), this);
+
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
+    connect(svgdial, SIGNAL(repaintNeeded()), this, SLOT(update()));
+    connect(svgneedle, SIGNAL(repaintNeeded()), this, SLOT(update()));
 }
 
 QHeadingWidget::~QHeadingWidget()
@@ -24,20 +29,24 @@ QHeadingWidget::~QHeadingWidget()
 
 void QHeadingWidget::timerStep()
 {
-    if ((stepsdial == 0) && (stepsneedle==0)) return;
-    
-	if (stepsdial != 0)
-	{
-	    curdial += deltadial;
-	    stepsdial -= 1;
-	}
-	
-	if (stepsdial != 0)
-	{
-	    curdial += deltadial;
-	    stepsdial -= 1;
-	}
-	
+    if ((stepsdial == 0) && (stepsneedle==0))
+    {
+        timer->stop();
+        return;
+    }
+
+    if (stepsdial != 0)
+    {
+        curdial += deltadial;
+        stepsdial -= 1;
+    }
+
+    if (stepsneedle != 0)
+    {
+        curneedle += deltaneedle;
+        stepsneedle -= 1;
+    }
+
     update();
 }
 
@@ -51,24 +60,28 @@ void QHeadingWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     QRectF source(0, 0, 360, 360);
     QRectF target(-1*x, -1*y, w, h);
-
     painter.translate(x,y);
     painter.rotate(curdial);
-    painter.drawImage(target, svgHeading, source);
+
+    svgdial->render(&painter,target);
     painter.rotate(-1 * curdial);
     painter.rotate(curneedle);
-    painter.drawImage(target, svgCompassNeedle,  source);
+    svgneedle->render(&painter,target);
 }
 
 void QHeadingWidget::SetDial(double v)
 {
+    timer->stop();
+
     double delta = setdial - curdial;
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
-    
+
     setdial = v;
     stepsdial = 6;
     deltadial = delta / stepsdial;
+
+    timer->start(330);
 }
 
 void QHeadingWidget::SetNeedle(double v)
@@ -76,7 +89,7 @@ void QHeadingWidget::SetNeedle(double v)
     double delta = setneedle - curneedle;
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
-    
+
     setneedle = v;
     stepsneedle = 6;
     deltaneedle = delta / stepsneedle;
