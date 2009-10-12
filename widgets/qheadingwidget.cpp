@@ -1,9 +1,10 @@
 #include <QWidget>
 #include "qheadingwidget.h"
+#include "qgaugewidget.h"
 #include "ui.h"
 
 QHeadingWidget::QHeadingWidget(QWidget *parent)
-    : QWidget(parent)
+    : QGaugeWidget(parent)
     , setdial(0.0)
     , curdial(0.0)
     , deltadial(0.0)
@@ -15,10 +16,6 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
 {
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
-}
-
-QHeadingWidget::~QHeadingWidget()
-{
 }
 
 void QHeadingWidget::timerStep()
@@ -90,15 +87,4 @@ void QHeadingWidget::SetNeedle(double v)
     deltaneedle = delta / stepsneedle;
 
     timer->start(330);
-}
-
-void QHeadingWidget::changeEvent(QEvent *e)
-{
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        break;
-    default:
-        break;
-    }
 }

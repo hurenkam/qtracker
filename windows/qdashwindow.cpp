@@ -12,12 +12,19 @@
 #include "QAltitudeWidget.h"
 #include "QSatViewWidget.h"
 #include "QHeadingWidget.h"
+#include "QMapWidget.h"
 #include "XQLocation.h"
+#include "QSignalMapper.h"
 #include "ui.h"
 #include "math.h"
 #include <iostream.h>
 
 const float PI = 3.14159265358979323846f;
+
+const int STEPCOUNT = 5;
+const double STEPCOUNTF = STEPCOUNT;
+const int TRANSITTIME = 150;
+const int STEPTIME = TRANSITTIME/STEPCOUNT;
 
 int positions[7][6][4] = {
     { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
@@ -40,10 +47,10 @@ static QRect GetStepRect(QRect from, QRect to, int step)
     int dw = to.width() - from.width();
     int dh = to.height() - from.height();
 
-    result.setX      ( step / 3.0 * dx + from.x() );
-    result.setY      ( step / 3.0 * dy + from.y() );
-    result.setWidth  ( step / 3.0 * dw + from.width() );
-    result.setHeight ( step / 3.0 * dh + from.height() );
+    result.setX      ( step / STEPCOUNTF * dx + from.x() );
+    result.setY      ( step / STEPCOUNTF * dy + from.y() );
+    result.setWidth  ( step / STEPCOUNTF * dw + from.width() );
+    result.setHeight ( step / STEPCOUNTF * dh + from.height() );
 
     return result;
 }
@@ -139,6 +146,44 @@ QDashWindow::QDashWindow(QWidget *parent)
         , landscape(true)
 {
     LoadImages();
+    InitWidgets();
+
+    #ifdef Q_OS_SYMBIAN
+    showFullScreen();
+    #else
+    //resize(360,640);
+    resize(640,360);
+    #endif
+
+    zoomtimer = new QTimer(this);
+    connect(zoomtimer, SIGNAL(timeout()), this, SLOT(ZoomTimerExpired()));
+
+    QTimer *t = new QTimer(this);
+    connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
+    connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
+    connect(&location, SIGNAL(updateSatInfo(int,int,double,double,bool)), this, SLOT(updateSatInfo(int,int,double,double,bool)));
+
+    t->start(1000);
+    if (location.open() == XQLocation::NoError)
+    {
+        location.startUpdates();
+        heading->SetDial(0);
+        heading->SetNeedle(0);
+    }
+    else
+    {
+        heading->SetDial(45);
+        heading->SetNeedle(-45);
+    }
+
+    QFile file(UIDIR "style.css");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    setStyleSheet(styleSheet);
+}
+
+void QDashWindow::InitWidgets()
+{
     clock = new QClockWidget(this);
     clock->setObjectName(QString::fromUtf8("clock"));
     clock->setGeometry(QRect(5, 5, 170, 170));
@@ -158,6 +203,10 @@ QDashWindow::QDashWindow(QWidget *parent)
     heading->setObjectName(QString::fromUtf8("heading"));
     heading->setGeometry(QRect(170, 5, 350, 350));
 
+    map = new QMapWidget(this);
+    map->setObjectName(QString::fromUtf8("heading"));
+    map->setGeometry(QRect(120, 0, 400, 360));
+
     gauges[0] = heading;
     gauges[1] = clock;
     gauges[2] = speed;
@@ -165,44 +214,19 @@ QDashWindow::QDashWindow(QWidget *parent)
     gauges[4] = timer;
     gauges[5] = altitude;
 
-    #ifdef Q_OS_SYMBIAN
-    showFullScreen();
-    #else
-    resize(360,640);
-    //resize(640,360);
-    #endif
-
-    zoomtimer = new QTimer(this);
-    connect(zoomtimer, SIGNAL(timeout()), this, SLOT(ZoomTimerExpired()));
-
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timeChanged()));
-    connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
-    connect(&location, SIGNAL(updateSatInfo(int,int,double,double,bool)), this, SLOT(updateSatInfo(int,int,double,double,bool)));
-
-    timer->start(1000);
-    if (location.open() == XQLocation::NoError)
+    mapper = new QSignalMapper(this);
+    for (int i=0; i<6; i++)
     {
-        location.startUpdates();
-        heading->SetDial(0);
-        heading->SetNeedle(0);
+        connect(gauges[i], SIGNAL(zoom()), mapper, SLOT(map()));
+        mapper->setMapping(gauges[i], i+1);
     }
-    else
-    {
-        heading->SetDial(0);
-        heading->SetNeedle(90);
-    }
-
-    QFile file(UIDIR "style.css");
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    setStyleSheet(styleSheet);
+    connect(mapper,SIGNAL(mapped(const int &)),this,SLOT(ZoomToGauge(const int &)));
 }
 
 void QDashWindow::timeChanged()
 {
     if (zoomstep != 0) return;
-    
+
     QTime time = QTime::currentTime();
     int second = time.second();
     int minute = time.minute();
@@ -236,14 +260,14 @@ void QDashWindow::timeChanged()
 void QDashWindow::updateAltitude(double alt)
 {
     if (zoomstep != 0) return;
-    
+
     altitude->SetAltitude(alt);
 }
 
 void QDashWindow::updateDistance(double lat, double lon)
 {
     if (zoomstep != 0) return;
-    
+
     if (posvalid)
     {
         double d = 0;
@@ -268,7 +292,7 @@ void QDashWindow::updateDistance(double lat, double lon)
 void QDashWindow::updateHeading(double course)
 {
     if (zoomstep != 0) return;
-    
+
     heading->SetDial(360-course);
     heading->SetNeedle(0);
 }
@@ -276,14 +300,14 @@ void QDashWindow::updateHeading(double course)
 void QDashWindow::updateSpeed(double s)
 {
     if (zoomstep != 0) return;
-    
+
     speed->SetSpeed(s*3.6);
 }
 
 void QDashWindow::updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse)
 {
     if (zoomstep != 0) return;
-    
+
     satview->SetSatInfo(id,strength,azimuth,elevation,inuse);
 }
 
@@ -295,7 +319,7 @@ void QDashWindow::locationChanged(
     float course)
 {
     if (zoomstep != 0) return;
-    
+
     updateDistance(lat,lon);
     updateHeading(course);
     updateSpeed(s);
@@ -321,28 +345,64 @@ void QDashWindow::Setup()
             gauges[i]->setGeometry(r);
         }
     }
+
+    if ( zoomstep == 0)             // No transition
+    {
+        if (zoomgauge != 0)         // Gauge zoomed
+            map->setGeometry(0,0,0,0);
+        else                        // Map visibile
+            if (landscape)          // Landscape
+                map->setGeometry(120,0,400,360);
+            else                    // Portrait
+                map->setGeometry(0,120,360,400);
+    }
+    else                            // In Transition
+    {
+        int delta = int(zoomstep/STEPCOUNTF * 360);
+        if (tozoom == 0)
+        {
+            if (landscape)
+                map->setGeometry(120,0+delta,400,360+delta);
+            else
+                map->setGeometry(0+delta,120,360+delta,400);
+        }
+        if (zoomgauge == 0)
+        {
+            if (landscape)
+                map->setGeometry(120,360-delta,400,720-delta);
+            else
+                map->setGeometry(360-delta,120,720-delta,400);
+        }
+    }
 }
 
-void QDashWindow::mouseReleaseEvent(QMouseEvent *event)
+void QDashWindow::StartTransition(int to)
+{
+    if (zoomgauge != to)
+        tozoom = to;
+    else
+        if (zoomgauge == 0)
+            return;
+        else
+            tozoom = 0;
+
+    zoomstep = STEPCOUNT -1;
+    Setup();
+    update();
+    zoomtimer->start(STEPTIME);
+}
+
+void QDashWindow::ZoomToGauge(int i)
 {
     // return if in transition
     if (zoomstep > 0) return;
+    StartTransition(i);
+}
 
-    int result = 0;
-
-    for (int i=0; i<6; i++)
-        if (GetRect(landscape,i,zoomgauge).contains(event->pos()))
-            result = i + 1;
-
-    if (zoomgauge != result)
-        tozoom = result;
-    else
-        tozoom = 0;
-
-    zoomstep = 2;
-    Setup();
-    update();
-    zoomtimer->start(100);
+void QDashWindow::GaugeOptions(int i)
+{
+    // return if in transition
+    if (zoomstep > 0) return;
 }
 
 void QDashWindow::ZoomTimerExpired()
@@ -364,12 +424,8 @@ void QDashWindow::ZoomTimerExpired()
 
 void QDashWindow::resizeEvent ( QResizeEvent * event )
 {
-    if ((width() == 640) && (height() == 360))
-        landscape = true;
-    if ((width() == 360) && (height() == 640))
-        landscape = false;
+    landscape = (width() > height());
     Setup();
-
     QMainWindow::resizeEvent(event);
 }
 
