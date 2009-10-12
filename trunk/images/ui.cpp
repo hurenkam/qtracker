@@ -21,6 +21,7 @@ QImage svgCompassNeedle;
 QImage svgSpeedNeedle;
 
 QImage svgMap;
+QImage jpgMap;
 
 void LoadImages()
 {
@@ -38,4 +39,5 @@ void LoadImages()
     svgSpeedNeedle.load(QString(UIDIR "speedneedle.svg"));
 
     svgMap.load(QString(UIDIR "map.svg"));
+    jpgMap.load(QString(UIDIR "map.jpg"));
 }
