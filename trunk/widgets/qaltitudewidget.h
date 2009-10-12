@@ -2,29 +2,28 @@
 #define QALTITUDEWIDGET_H
 
 #include <QWidget>
+#include "qgaugewidget.h"
 
-class QAltitudeWidget : public QWidget
+class QAltitudeWidget : public QGaugeWidget
 {
     Q_OBJECT
 public:
     QAltitudeWidget(QWidget *parent);
-    ~QAltitudeWidget();
     void SetAltitude(double a);
 
 public slots:
-	void timerStep();
+        void timerStep();
 
 protected:
-    void changeEvent(QEvent *e);
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-	QTimer *timer;
+    QTimer *timer;
     double set;
     double current;
     double delta;
     int    steps;
-    
+
     double min;
     double max;
     bool   valid;

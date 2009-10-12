@@ -1,18 +1,17 @@
 #ifndef QCLOCKWIDGET_H
 #define QCLOCKWIDGET_H
 
+#include "qgaugewidget.h"
 #include <QtGui/QWidget>
 
-class QClockWidget : public QWidget {
+class QClockWidget : public QGaugeWidget
+{
     Q_OBJECT
 public:
     QClockWidget(QWidget *parent = 0);
-    ~QClockWidget();
-
     void SetTime(int h,int m,int s);
 
 protected:
-    void changeEvent(QEvent *e);
     virtual void paintEvent(QPaintEvent *event);
 
 private:

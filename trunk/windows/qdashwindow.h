@@ -15,17 +15,18 @@ class QSpeedWidget;
 class QAltitudeWidget;
 class QSatViewWidget;
 class QHeadingWidget;
+class QMapWidget;
 
 const int historysize = 5;
 
 class QDashWindow: public QMainWindow
 {
-	Q_OBJECT
-	
+        Q_OBJECT
+
 public:
-	QDashWindow(QWidget *parent=0);
-	virtual ~QDashWindow();
-	
+        QDashWindow(QWidget *parent=0);
+        virtual ~QDashWindow();
+
 public slots:
     void timeChanged();
     void locationChanged(double latitude, double longitude, double altitude, float speed, float heading);
@@ -35,12 +36,15 @@ public slots:
     void updateHeading(double course);
     void updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse);
     void ZoomTimerExpired();
+    void ZoomToGauge(int i);
+    void GaugeOptions(int i);
 
 protected:
+    void InitWidgets();
+    void StartTransition(int to);
+
     virtual void resizeEvent(QResizeEvent * event);
     void Setup();
-    void ZoomToGauge(int n);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     QClockWidget *clock;
@@ -49,6 +53,8 @@ private:
     QAltitudeWidget *altitude;
     QSatViewWidget *satview;
     QHeadingWidget *heading;
+    QMapWidget *map;
+    QSignalMapper *mapper;
 
     QWidget* gauges[6];
     QTimer *zoomtimer;
@@ -60,23 +66,23 @@ private:
     XQLocation location;
     int counter;
     QTime starttime;
-    
+
     float altmin;
     float altmax;
     bool  altvalid;
-    
+
     int   count;
     float althist[historysize];
     float speedhist[historysize];
     float headhist[historysize];
-    
+
     double prevlat;
     double prevlon;
     double distance;
-    
+
     bool timevalid;
     bool posvalid;
-    
+
     bool showmap;
 };
 

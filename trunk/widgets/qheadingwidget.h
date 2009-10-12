@@ -2,12 +2,13 @@
 #define QHEADINGWIDGET_H
 
 #include <QWidget>
+#include "qgaugewidget.h"
 
-class QHeadingWidget : public QWidget {
+class QHeadingWidget : public QGaugeWidget
+{
     Q_OBJECT
 public:
     QHeadingWidget(QWidget *parent = 0);
-    ~QHeadingWidget();
 
     void SetDial(double v);
     void SetNeedle(double v);
@@ -17,11 +18,10 @@ public slots:
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
-    void changeEvent(QEvent *e);
 
 private:
-	QTimer *timer;
-	double setdial;
+    QTimer *timer;
+    double setdial;
     double curdial;
     double deltadial;
     int    stepsdial;

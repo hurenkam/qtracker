@@ -20,6 +20,8 @@ QImage svgSecond;
 QImage svgCompassNeedle;
 QImage svgSpeedNeedle;
 
+QImage svgMap;
+
 void LoadImages()
 {
     svgClock.load(QString(UIDIR "clock.svg"));
@@ -28,10 +30,12 @@ void LoadImages()
     svgSatView.load(QString(UIDIR "satview.svg"));
     svgSpeed10.load(QString(UIDIR "speed10.svg"));
     svgSpeed200.load(QString(UIDIR "speed200.svg"));
-    
+
     svgLong.load(QString(UIDIR "longhand.svg"));
     svgShort.load(QString(UIDIR "shorthand.svg"));
     svgSecond.load(QString(UIDIR "secondhand.svg"));
     svgCompassNeedle.load(QString(UIDIR "compassneedle.svg"));
     svgSpeedNeedle.load(QString(UIDIR "speedneedle.svg"));
+
+    svgMap.load(QString(UIDIR "map.svg"));
 }

@@ -1,9 +1,10 @@
+#include <QtGui>
+#include "qgaugewidget.h"
 #include "qaltitudewidget.h"
 #include "ui.h"
-#include <QtGui>
 
 QAltitudeWidget::QAltitudeWidget(QWidget *parent)
-    : QWidget(parent)
+    : QGaugeWidget(parent)
     , current(0)
     , set(0)
     , delta(0)
@@ -12,55 +13,51 @@ QAltitudeWidget::QAltitudeWidget(QWidget *parent)
     , max(0.1)
     , valid(false)
 {
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
 }
 
 void QAltitudeWidget::timerStep()
 {
-	if (steps == 0)
-	{
-		if (min > max)
-		{
-			min = current;
-			max = current;
-			update();
-		}
-		if (current < min)
-		{
-			min = current;
-			update();
-		}
-		if (current > max)
-		{
-			max = current;
-			update();
-		}
+        if (steps == 0)
+        {
+                if (min > max)
+                {
+                        min = current;
+                        max = current;
+                        update();
+                }
+                if (current < min)
+                {
+                        min = current;
+                        update();
+                }
+                if (current > max)
+                {
+                        max = current;
+                        update();
+                }
         timer->stop();
-	}
-	else if (steps > 0)
-	{
-		current += delta;
-		steps -= 1;
-		
-		update();
-	}
+        }
+        else if (steps > 0)
+        {
+                current += delta;
+                steps -= 1;
+
+                update();
+        }
 }
 
 void QAltitudeWidget::SetAltitude(double alt)
 {
-	if (set == alt) return;
-	timer->stop();
-	
+        if (set == alt) return;
+        timer->stop();
+
     set = alt;
     steps = 6;
     delta = (set-current)/steps;
-    
-    timer->start(330);
-}
 
-QAltitudeWidget::~QAltitudeWidget()
-{
+    timer->start(330);
 }
 
 void QAltitudeWidget::paintEvent(QPaintEvent *)
@@ -104,15 +101,4 @@ void QAltitudeWidget::paintEvent(QPaintEvent *)
     painter.restore();
     painter.rotate(l/1000 * 360 + 180);
     painter.drawImage(target, svgLong, source);
-}
-
-void QAltitudeWidget::changeEvent(QEvent *e)
-{
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        break;
-    default:
-        break;
-    }
 }

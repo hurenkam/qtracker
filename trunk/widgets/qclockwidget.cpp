@@ -1,9 +1,10 @@
+#include "qgaugewidget.h"
 #include "qclockwidget.h"
 #include "ui.h"
 #include <QtGui>
 
 QClockWidget::QClockWidget(QWidget *parent)
-    : QWidget(parent)
+    : QGaugeWidget(parent)
     , hours(0)
     , minutes(0)
     , seconds(0)
@@ -16,10 +17,6 @@ void QClockWidget::SetTime(int h,int m,int s)
     minutes = m;
     seconds = s;
     update();
-}
-
-QClockWidget::~QClockWidget()
-{
 }
 
 void QClockWidget::paintEvent(QPaintEvent *)
@@ -43,15 +40,4 @@ void QClockWidget::paintEvent(QPaintEvent *)
     painter.rotate(-1 * minutes*6);
     painter.rotate(seconds*6);
     painter.drawImage(target, svgSecond, source);
-}
-
-void QClockWidget::changeEvent(QEvent *e)
-{
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        break;
-    default:
-        break;
-    }
 }

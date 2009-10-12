@@ -2,30 +2,29 @@
 #define QSATVIEWWIDGET_H
 
 #include <QWidget>
+#include "qgaugewidget.h"
 //#include "xqlocation.h"
 
-class QSatViewWidget : public QWidget
+class QSatViewWidget : public QGaugeWidget
 {
     Q_OBJECT
 public:
     QSatViewWidget(QWidget *parent);
-    ~QSatViewWidget();
-    
+
 public:
-	//void SetSatInfo(XQSatInfo &satinfo);
-	void SetSatInfo(int id, int strength, double azimuth, double elevation, bool inuse);
-	void ClearSatInfo(int id);
-	
+        //void SetSatInfo(XQSatInfo &satinfo);
+        void SetSatInfo(int id, int strength, double azimuth, double elevation, bool inuse);
+        void ClearSatInfo(int id);
+
 public slots:
     void timerExpired();
 
 protected:
-    void changeEvent(QEvent *e);
-	void paintSatInfo(QPainter &painter, int id);
+    void paintSatInfo(QPainter &painter, int id);
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-	bool   inuse[32];
+    bool   inuse[32];
     int    strength[32];
     double azimuth[32];
     double elevation[32];

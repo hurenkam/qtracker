@@ -2,26 +2,25 @@
 #define QSPEEDWIDGET_H
 
 #include <QWidget>
+#include "qgaugewidget.h"
 
-class QSpeedWidget : public QWidget
+class QSpeedWidget : public QGaugeWidget
 {
     Q_OBJECT
 public:
     QSpeedWidget(QWidget *parent);
-    ~QSpeedWidget();
     void SetSpeed(double s);
     void SetDistance(double d);
     void SetScale(int s);
-    
+
 public slots:
     void timerStep();
 
 protected:
-    void changeEvent(QEvent *e);
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-	QTimer *timer;
+        QTimer *timer;
     double speed;
     int scale;
     int steps;

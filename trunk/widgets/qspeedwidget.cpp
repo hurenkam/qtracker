@@ -1,9 +1,10 @@
+#include "qgaugewidget.h"
 #include "qspeedwidget.h"
 #include "ui.h"
 #include <QtGui>
 
 QSpeedWidget::QSpeedWidget(QWidget *parent)
-    : QWidget(parent)
+    : QGaugeWidget(parent)
     , curspeed(0.0)
     , setspeed(0.0)
     , delta(0.0)
@@ -11,35 +12,35 @@ QSpeedWidget::QSpeedWidget(QWidget *parent)
     , scale(10)
     , distance(0.0)
 {
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
 }
 
 void QSpeedWidget::SetSpeed(double s)
 {
-	timer->stop();
-	steps = 6;
-	setspeed = s;
-	delta = (setspeed - curspeed)/steps;
+        timer->stop();
+        steps = 6;
+        setspeed = s;
+        delta = (setspeed - curspeed)/steps;
     timer->start(330);
 }
 
 void QSpeedWidget::timerStep()
 {
-	if (steps == 0) 
-	{
-		timer->stop();
-		return;
-	}
-	
-	curspeed += delta;
-	steps -= 1;
-	
+        if (steps == 0)
+        {
+                timer->stop();
+                return;
+        }
+
+        curspeed += delta;
+        steps -= 1;
+
     if (curspeed > 9)
         scale = 200;
-    
+
     if (curspeed < 7)
-    	scale = 10;
+        scale = 10;
 
     update();
 }
@@ -54,10 +55,6 @@ void QSpeedWidget::SetScale(int s)
 {
     scale = s;
     update();
-}
-
-QSpeedWidget::~QSpeedWidget()
-{
 }
 
 void QSpeedWidget::paintEvent(QPaintEvent *)
@@ -92,15 +89,4 @@ void QSpeedWidget::paintEvent(QPaintEvent *)
 
     painter.rotate(360 * curspeed / scale + 180);
     painter.drawImage(target, svgSpeedNeedle, source);
-}
-
-void QSpeedWidget::changeEvent(QEvent *e)
-{
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        break;
-    default:
-        break;
-    }
 }

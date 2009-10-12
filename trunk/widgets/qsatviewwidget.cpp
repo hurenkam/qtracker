@@ -1,18 +1,15 @@
+#include "qgaugewidget.h"
 #include "qsatviewwidget.h"
 #include "ui.h"
 #include <QtGui>
 
 QSatViewWidget::QSatViewWidget(QWidget *parent)
-    : QWidget(parent)
+    : QGaugeWidget(parent)
 {
     ClearSatInfo(-1);
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timerExpired));
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerExpired()));
     timer->start(5000);
-}
-
-QSatViewWidget::~QSatViewWidget()
-{
 }
 
 void QSatViewWidget::timerExpired()
@@ -83,15 +80,4 @@ void QSatViewWidget::paintEvent(QPaintEvent *)
 
     for (int i=0; i < 31; i++)
         paintSatInfo(painter, i);
-}
-
-void QSatViewWidget::changeEvent(QEvent *e)
-{
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        break;
-    default:
-        break;
-    }
 }
