@@ -7,9 +7,11 @@ QMapWidget::QMapWidget(QWidget *parent)
     : QWidget(parent)
     , current(QPoint(0,0))
 {
-    mapimage = new QWidget(this);
-    mapimage->setObjectName(QString::fromUtf8("map"));
-    mapimage->setGeometry(QRect(5, 5, width()-5, height()-5));
+    //mapimage = new QWidget(this);
+    //mapimage->setObjectName(QString::fromUtf8("map"));
+    //mapimage->setGeometry(QRect(5, 5, width()-5, height()-5));
+	bgimage = new QImage(QString(UIDIR "map.svg"));
+	mapimage = new QImage(QString(UIDIR "map.jpg"));
 }
 
 QMapWidget::~QMapWidget()
@@ -18,13 +20,13 @@ QMapWidget::~QMapWidget()
 
 void QMapWidget::mousePressEvent(QMouseEvent *event)
 {
-    cout << "MousePressEvent " << event->pos().x() << " " << event->pos().y() << "\n";
+    //cout << "MousePressEvent " << event->pos().x() << " " << event->pos().y() << "\n";
     start = event->pos();
 }
 
 void QMapWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    cout << "MouseDragEvent " << event->pos().x() << " " << event->pos().y() << "\n";
+    //cout << "MouseDragEvent " << event->pos().x() << " " << event->pos().y() << "\n";
     stop = event->pos();
     moveMap(stop.x() - start.x(), stop.y() - start.y());
     start = event->pos();
@@ -32,7 +34,7 @@ void QMapWidget::mouseMoveEvent(QMouseEvent *event)
 
 void QMapWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    cout << "MouseReleaseEvent " << event->pos().x() << " " << event->pos().y() << "\n";
+    //cout << "MouseReleaseEvent " << event->pos().x() << " " << event->pos().y() << "\n";
     stop = event->pos();
     moveMap(stop.x() - start.x(), stop.y() - start.y());
 }
@@ -57,9 +59,9 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     QRectF source(0, 0, 400, 360);
     QRectF target(0, 0, w, h);
 
-    painter.drawImage(target, svgMap, source);
+    painter.drawImage(target, *bgimage, source);
     source = QRectF(current.x(), current.y(), w-40, h-40);
     target = QRectF(20, 20, w-40, h-40);
-    painter.drawImage(target, jpgMap, source);
+    painter.drawImage(target, *mapimage, source);
 }
 

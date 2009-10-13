@@ -19,7 +19,9 @@ private:
     QPoint start;
     QPoint stop;
     QPoint current;
-    QWidget *mapimage;
+    //QWidget *mapimage;
+    QImage *bgimage;
+    QImage *mapimage;
 };
 
 #endif // QMAPWIDGET_H
