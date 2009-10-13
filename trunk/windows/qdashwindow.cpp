@@ -21,7 +21,7 @@
 
 const float PI = 3.14159265358979323846f;
 
-const int STEPCOUNT = 5;
+const int STEPCOUNT = 3;
 const double STEPCOUNTF = STEPCOUNT;
 const int TRANSITTIME = 150;
 const int STEPTIME = TRANSITTIME/STEPCOUNT;

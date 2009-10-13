@@ -2,7 +2,9 @@ TEMPLATE = app
 TARGET = qTracker
 QT += core \
     gui
-HEADERS += images/ui.h \
+HEADERS += widgets/qgaugewidget.h \
+    widgets/qmapwidget.h \
+    images/ui.h \
     mobility/location_global.h \
     mobility/xqlocation_s60_p.h \
     mobility/xqlocation.h \
@@ -41,12 +43,18 @@ symbian {
         images/speed10.svg \
         images/speed200.svg \
         images/style.css \
-        images/speedneedle.svg
+        images/speedneedle.svg \
+        images/map.svg \
+        images/map.jpg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
     VERSION = 1.0.1
+    TARGET.EPOCHEAPSIZE = 0x20000 0x1400000
+    TARGET.EPOCSTACKSIZE += 0x14000
 }
-SOURCES += images/ui.cpp \
+SOURCES += widgets/qgaugewidget.cpp \
+    widgets/qmapwidget.cpp \
+    images/ui.cpp \
     mobility/xqlocation_s60_p.cpp \
     mobility/xqlocation.cpp \
     widgets/qaltitudewidget.cpp \

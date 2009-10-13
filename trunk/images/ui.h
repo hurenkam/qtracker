@@ -22,8 +22,8 @@ extern QImage svgSecond;
 extern QImage svgCompassNeedle;
 extern QImage svgSpeedNeedle;
 
-extern QImage svgMap;
-extern QImage jpgMap;
+//extern QImage svgMap;
+//extern QImage jpgMap;
 
 #ifdef Q_OS_SYMBIAN
 #define UIDIR "c:/private/EA82CEF3/ui/"
