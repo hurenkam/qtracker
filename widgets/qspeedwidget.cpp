@@ -5,11 +5,12 @@
 
 QSpeedWidget::QSpeedWidget(QWidget *parent)
     : QGaugeWidget(parent)
+    , scale(10)
+    , steps(0)
+    , speed(0)
+    , delta(0.0)
     , curspeed(0.0)
     , setspeed(0.0)
-    , delta(0.0)
-    , steps(0)
-    , scale(10)
     , distance(0.0)
 {
         timer = new QTimer(this);

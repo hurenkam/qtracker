@@ -20,13 +20,13 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-        QTimer *timer;
-    double speed;
+    QTimer *timer;
     int scale;
     int steps;
-    double setspeed;
-    double curspeed;
+    double speed;
     double delta;
+    double curspeed;
+    double setspeed;
     double distance;
 };
 
