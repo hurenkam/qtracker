@@ -14,7 +14,7 @@ public:
 signals:
     //void zoom();
     //void options();
-    
+
     void singleTap();
     void doubleTap();
     void longTap();
@@ -37,14 +37,13 @@ protected:
     void QGaugeWidget::cancelSingleTapTimer();
 
 private:
-	
-	static const int StIdle = 0;
-	static const int StInitialTouch = 1;
-	static const int StSingleTapPending = 2;
-	static const int StLongTouch = 3;
-	static const int StSecondTouch = 4;
-	static const int StMoving = 5;
-	
+    static const int StIdle = 0;
+    static const int StInitialTouch = 1;
+    static const int StSingleTapPending = 2;
+    static const int StLongTouch = 3;
+    static const int StSecondTouch = 4;
+    static const int StMoving = 5;
+
     QTimer longtaptimer;
     QTimer singletaptimer;
     QPoint previous;

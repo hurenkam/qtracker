@@ -19,8 +19,8 @@ protected:
 
 private:
     QTimer *timer;
-    double set;
     double current;
+    double set;
     double delta;
     int    steps;
 
