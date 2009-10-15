@@ -28,14 +28,22 @@
 **
 ****************************************************************************/
 
-#include "QDashWindow.h"
-
-#include <QtGui>
+//#include <QtGui>
 #include <QApplication>
+#include <QPixmap>
+#include <QSplashScreen>
+#include "QDashWindow.h"
+#include "ui.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QPixmap pixmap(UIDIR "splash.png");
+    QSplashScreen splash(pixmap);
+    splash.show();
+    splash.showMessage("Wait...");
+    qApp->processEvents();
+    
     QDashWindow w;
     w.show();
     return a.exec();
