@@ -52,7 +52,7 @@ void QSatViewWidget::paintSatInfo(QPainter &painter, int id)
     }
     else
     {
-    int c = (2 * (int(strength[id]/64.0 * 0x7f) % 128)) & 0xff;
+    int c = (2 * (int(strength[id]/96.0 * 0x7f) % 128)) & 0xff;
             painter.setPen(QColor(c,c,0));
             painter.setBrush(QColor(c,c,0));
     }

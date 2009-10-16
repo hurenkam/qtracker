@@ -1,7 +1,8 @@
 TEMPLATE = app
 TARGET = qTracker
 QT += core \
-    gui
+    gui \
+    xml
 HEADERS += widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
     images/ui.h \
@@ -45,11 +46,12 @@ symbian {
         images/style.css \
         images/speedneedle.svg \
         images/map.svg \
-        images/map.jpg
+        images/splash.png
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 1.0.1
-    TARGET.EPOCHEAPSIZE = 0x20000 0x1400000
+    VERSION = 1.0.3
+    TARGET.EPOCHEAPSIZE = 0x20000 \
+        0x1c00000
     TARGET.EPOCSTACKSIZE += 0x14000
 }
 SOURCES += widgets/qgaugewidget.cpp \

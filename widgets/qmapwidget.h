@@ -91,6 +91,7 @@ private:
     QImage *bgimage;
     bool scrolling;
     QMapMetaData *meta;
+    bool onmap;
 };
 
 #endif // QMAPWIDGET_H

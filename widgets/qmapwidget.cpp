@@ -5,8 +5,8 @@
 #include <cmath>
 
 #include <iostream>
-using namespace std;
-//#define LOG( a ) cout << a
+//using namespace std;
+//#define LOG( a ) std::cout << a
 #define LOG( a )
 
 
@@ -65,14 +65,13 @@ QMapMetaData::QMapMetaData(QString filename)
         switch (tt)
         {
             case QXmlStreamReader::Invalid:
-                //cout << "Invalid Token: " << xml.errorString().toStdString() << "\n";
+                LOG( "QMapMetaData::QMapMetaData(): Invalid token!" << xml.errorString().toStdString() << "\n"; )
                 break;
             case QXmlStreamReader::StartElement:
                 LOG( "QMapMetaData::QMapMetaData(): StartElement " << xml.name().toString().toStdString() << "\n"; )
                 if (xml.name().toString() == QString("map")) ReadMapElement(xml);
                 if (xml.name().toString() == QString("resolution")) ReadResolutionElement(xml);
                 if (xml.name().toString() == QString("refpoint")) ReadRefpointElement(xml);
-                //cout << xml.name().toString().toStdString();
                 break;
             case QXmlStreamReader::NoToken:
             case QXmlStreamReader::StartDocument:
@@ -273,14 +272,14 @@ QMapWidget::QMapWidget(QWidget *parent)
     , position(QPointF(0,0))
     , scrolling(true)
     , meta(0)
+    , onmap(false)
 {
     bgimage = new QImage(QString(UIDIR "map.svg"));
-    mapimage = new QImage(QString(MAPDIR "51g11_eindhoven.jpg"));
-    meta = new QMapMetaData(QString(MAPDIR "51g11_eindhoven.xml"));
+    mapimage = new QImage(QString(MAPDIR "nederland.jpg"));
+    meta = new QMapMetaData(QString(MAPDIR "nederland.xml"));
     meta->SetSize(mapimage->width(),mapimage->height());
     meta->Calibrate();
 
-    SetDragMin(1,1);
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(doubleTap()), this, SLOT(followGPSPosition()));
 }
@@ -292,10 +291,11 @@ QMapWidget::~QMapWidget()
 void QMapWidget::updatePosition(double lat, double lon)
 {
     LOG( "QMapWidget::updatePosition()\n"; )
-    if ( scrolling ||
-         !meta->IsCalibrated() ||
-         !meta->IsPositionOnMap(lat,lon))
-        return;
+    if (scrolling) return;
+    if (!meta->IsCalibrated()) return;
+    
+    onmap = meta->IsPositionOnMap(lat,lon);
+    if ( !onmap ) return;
 
     LOG( "QMapWidget::updatePosition() OnMap!\n"; )
     double x,y;
@@ -326,6 +326,7 @@ void QMapWidget::paintEvent(QPaintEvent *event)
 
     double w = width();
     double h = height();
+    double s = h / 36;
 
     QPainter painter(this);
     QRectF source(0, 0, 400, 360);
@@ -335,5 +336,18 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     source = QRectF(cursor.x(), cursor.y(), w-40, h-40);
     target = QRectF(20, 20, w-40, h-40);
     painter.drawImage(target, *mapimage, source);
+    
+    if (!onmap)
+    {
+		painter.setPen(Qt::red);
+		painter.setBrush(Qt::red);
+    }
+    else
+    {
+		painter.setPen(Qt::green);
+		painter.setBrush(Qt::green);
+    }
+    painter.translate(w/2,h/2);
+    painter.drawEllipse(s/-2,s/-2,s,s);
 }
 

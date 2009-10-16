@@ -13,6 +13,7 @@ public:
 
 public slots:
         void timerStep();
+        void reset();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);

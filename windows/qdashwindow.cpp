@@ -171,6 +171,9 @@ QDashWindow::QDashWindow(QWidget *parent)
     connect(&location, SIGNAL(altitudeChanged(double,float)), this, SLOT(updateAltitude(double)));
     connect(&location, SIGNAL(speedChanged(float)), this, SLOT(updateSpeed(float)));
     connect(&location, SIGNAL(headingChanged(float)), this, SLOT(updateHeading(float)));
+    
+    connect(speed, SIGNAL(doubleTap()), this, SLOT(resetDistance()));
+    connect(timer, SIGNAL(doubleTap()), this, SLOT(resetTimer()));
 
     t->start(1000);
     if (location.open() == XQLocation::NoError)
@@ -232,6 +235,12 @@ void QDashWindow::InitWidgets()
     connect(mapper,SIGNAL(mapped(const int &)),this,SLOT(ZoomToGauge(const int &)));
 }
 
+void QDashWindow::resetTimer()
+{
+    timevalid = false;
+    timeChanged();
+}
+
 void QDashWindow::timeChanged()
 {
     if (zoomstep != 0) return;
@@ -271,6 +280,12 @@ void QDashWindow::updateAltitude(double alt)
     if (zoomstep != 0) return;
 
     altitude->SetAltitude(alt);
+}
+
+void QDashWindow::resetDistance()
+{
+    distance = 0;
+    speed->SetDistance(distance);
 }
 
 void QDashWindow::updateDistance(double lat, double lon)

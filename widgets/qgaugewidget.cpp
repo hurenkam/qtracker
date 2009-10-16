@@ -3,8 +3,8 @@
 
 #include <iostream>
 using namespace std;
-#define LOG( a ) cout << a
-//#define LOG( a )
+//#define LOG( a ) cout << a
+#define LOG( a )
 
 
 const char* states[] = {
@@ -13,14 +13,15 @@ const char* states[] = {
     "stSingleTapPending",
     "stLongTouch",
     "stSecondTouch",
-    "stMoving"
+    "stMoving",
+    "stLongMove"
 };
 
 QGaugeWidget::QGaugeWidget(QWidget *parent)
     : QWidget(parent)
     , state(StIdle)
-    , minx(10)
-    , miny(10)
+    , minx(25)
+    , miny(25)
 {
     singletaptimer.setSingleShot(true);
     singletaptimer.setInterval(200);
@@ -28,6 +29,9 @@ QGaugeWidget::QGaugeWidget(QWidget *parent)
     longtaptimer.setSingleShot(true);
     longtaptimer.setInterval(1000);
     connect(&longtaptimer,SIGNAL(timeout()),this,SLOT(longTapTimeout()));
+    longmovetimer.setSingleShot(true);
+    longmovetimer.setInterval(300);
+    connect(&longmovetimer,SIGNAL(timeout()),this,SLOT(longMoveTimeout()));
 }
 
 QGaugeWidget::~QGaugeWidget()
@@ -92,9 +96,30 @@ void QGaugeWidget::singleTapTimeout()
     }
 }
 
+void QGaugeWidget::longMoveTimeout()
+{
+    LOG( states[state] << "\n <-- longTapTimeout\n"; )
+    switch(state)
+    {
+    case StMoving:
+        state = StLongMove;
+        LOG ( states[state] << "\n\n"; )
+        break;
+    default:
+        LOG( "^^^ unexpected event!\n\n"; )
+        // error!
+        break;
+    }
+}
+
 void QGaugeWidget::startLongTapTimer()
 {
     longtaptimer.start();
+}
+
+void QGaugeWidget::startLongMoveTimer()
+{
+    longmovetimer.start();
 }
 
 void QGaugeWidget::startSingleTapTimer()
@@ -112,20 +137,45 @@ void QGaugeWidget::cancelSingleTapTimer()
     singletaptimer.stop();
 }
 
+void QGaugeWidget::cancelLongMoveTimer()
+{
+    longmovetimer.stop();
+}
+
 void QGaugeWidget::mouseMoveEvent(QMouseEvent* event)
 {
     int dx = event->pos().x() - previous.x();
     int dy = event->pos().y() - previous.y();
-    if ((abs(dx) > minx) || (abs(dy) > miny))
-    {
-        LOG( states[state] << "\n <-- mouseMove\n"; )
-        cancelLongTapTimer();
-        cancelSingleTapTimer();
-        state = StMoving;
-        previous = event->pos();
-        emit drag(dx,dy);
-        LOG ( " --> cancelLongTapTimer\n --> cancelSingleTapTimer\n --> emit drag()" << states[state] << "\n\n"; )
-    }
+
+    LOG( states[state] << "\n <-- mouseMove\n"; )
+	switch(state)
+	{
+	case QGaugeWidget::StInitialTouch:
+	case QGaugeWidget::StSecondTouch:
+	    if ((abs(dx) > minx) || (abs(dy) > miny))
+	    {
+			state = StMoving;
+			startLongMoveTimer();
+			previous = event->pos();
+			emit drag(dx,dy);
+	    }
+	    break;
+	case QGaugeWidget::StMoving:
+		previous = event->pos();
+		emit drag(dx,dy);
+		break;
+	case QGaugeWidget::StLongTouch:
+		state = StLongMove;
+	case QGaugeWidget::StLongMove:
+		previous = event->pos();
+		emit drag(dx,dy);
+		break;
+	default:
+		LOG( "^^^ unexpected event!\n\n"; )
+		// error!
+		break;
+	}
+	LOG ( " --> cancelLongTapTimer\n --> cancelSingleTapTimer\n --> emit drag()" << states[state] << "\n\n"; )
 }
 
 void QGaugeWidget::mouseReleaseEvent(QMouseEvent * /*event*/)
@@ -151,6 +201,12 @@ void QGaugeWidget::mouseReleaseEvent(QMouseEvent * /*event*/)
         LOG ( " --> emit longTap\n" << states[state] << "\n\n"; )
         break;
     case QGaugeWidget::StMoving:
+        // emit drag event
+    	cancelLongMoveTimer();
+        state = StIdle;
+        LOG ( states[state] << "\n\n"; )
+        break;
+    case QGaugeWidget::StLongMove:
         // emit drag event
         state = StIdle;
         LOG ( states[state] << "\n\n"; )
