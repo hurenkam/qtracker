@@ -21,7 +21,7 @@ signals:
 protected slots:
     void longTapTimeout();
     void singleTapTimeout();
-    void longMoveTimeout();
+    //void longMoveTimeout();
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -31,8 +31,8 @@ protected:
     void QGaugeWidget::cancelSingleTapTimer();
     void QGaugeWidget::startLongTapTimer();
     void QGaugeWidget::cancelLongTapTimer();
-    void QGaugeWidget::startLongMoveTimer();
-    void QGaugeWidget::cancelLongMoveTimer();
+    //void QGaugeWidget::startLongMoveTimer();
+    //void QGaugeWidget::cancelLongMoveTimer();
 
 private:
     static const int StIdle = 0;
@@ -41,10 +41,10 @@ private:
     static const int StLongTouch = 3;
     static const int StSecondTouch = 4;
     static const int StMoving = 5;
-    static const int StLongMove = 6;
+    //static const int StLongMove = 6;
 
     QTimer longtaptimer;
-    QTimer longmovetimer;
+    //QTimer longmovetimer;
     QTimer singletaptimer;
     QPoint previous;
     int state;
