@@ -32,8 +32,8 @@ public slots:
     void locationChanged(double latitude, double longitude, double altitude, float speed, float heading);
     void updateDistance(double lat,double lon);
     void updateAltitude(double altitude);
-    void updateSpeed(double speed);
-    void updateHeading(double course);
+    void updateSpeed(float speed);
+    void updateHeading(float course);
     void updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse);
     void ZoomTimerExpired();
     void ZoomToGauge(int i);
@@ -55,26 +55,19 @@ private:
     QHeadingWidget *heading;
     QMapWidget *map;
     QSignalMapper *mapper;
-
     QWidget* gauges[6];
+
+    XQLocation location;
     QTimer *zoomtimer;
+
     int zoomstep;
     int zoomgauge;
     int tozoom;
     bool landscape;
 
-    XQLocation location;
-    int counter;
     QTime starttime;
 
-    float altmin;
-    float altmax;
-    bool  altvalid;
-
     int   count;
-    float althist[historysize];
-    float speedhist[historysize];
-    float headhist[historysize];
 
     double prevlat;
     double prevlon;

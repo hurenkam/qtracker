@@ -17,14 +17,21 @@
 #include "QSignalMapper.h"
 #include "ui.h"
 #include "math.h"
-#include <iostream.h>
+#include <stdio.h>
 
 const float PI = 3.14159265358979323846f;
 
+#ifdef Q_OS_SYMBIAN
 const int STEPCOUNT = 3;
 const double STEPCOUNTF = STEPCOUNT;
 const int TRANSITTIME = 150;
 const int STEPTIME = TRANSITTIME/STEPCOUNT;
+#else
+const int STEPCOUNT = 7;
+const double STEPCOUNTF = STEPCOUNT;
+const int TRANSITTIME = 150;
+const int STEPTIME = TRANSITTIME/STEPCOUNT;
+#endif
 
 int positions[7][6][4] = {
     { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
@@ -133,17 +140,15 @@ static void CalculateDistanceAndBearing(
 
 QDashWindow::QDashWindow(QWidget *parent)
         : QMainWindow(parent)
+        , zoomstep(0)
+        , zoomgauge(0)
+        , tozoom(0)
+        , landscape(true)
         , starttime(0,0,0)
-        , counter(0)
-        , altvalid(false)
+        , distance(0)
         , timevalid(false)
         , posvalid(false)
         , showmap(true)
-        , distance(0)
-        , zoomgauge(0)
-        , tozoom(0)
-        , zoomstep(0)
-        , landscape(true)
 {
     LoadImages();
     InitWidgets();
@@ -162,6 +167,10 @@ QDashWindow::QDashWindow(QWidget *parent)
     connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
     connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
     connect(&location, SIGNAL(updateSatInfo(int,int,double,double,bool)), this, SLOT(updateSatInfo(int,int,double,double,bool)));
+
+    connect(&location, SIGNAL(altitudeChanged(double,float)), this, SLOT(updateAltitude(double)));
+    connect(&location, SIGNAL(speedChanged(float)), this, SLOT(updateSpeed(float)));
+    connect(&location, SIGNAL(headingChanged(float)), this, SLOT(updateHeading(float)));
 
     t->start(1000);
     if (location.open() == XQLocation::NoError)
@@ -217,7 +226,7 @@ void QDashWindow::InitWidgets()
     mapper = new QSignalMapper(this);
     for (int i=0; i<6; i++)
     {
-        connect(gauges[i], SIGNAL(zoom()), mapper, SLOT(map()));
+        connect(gauges[i], SIGNAL(singleTap()), mapper, SLOT(map()));
         mapper->setMapping(gauges[i], i+1);
     }
     connect(mapper,SIGNAL(mapped(const int &)),this,SLOT(ZoomToGauge(const int &)));
@@ -289,7 +298,7 @@ void QDashWindow::updateDistance(double lat, double lon)
     }
 }
 
-void QDashWindow::updateHeading(double course)
+void QDashWindow::updateHeading(float course)
 {
     if (zoomstep != 0) return;
 
@@ -297,7 +306,7 @@ void QDashWindow::updateHeading(double course)
     heading->SetNeedle(0);
 }
 
-void QDashWindow::updateSpeed(double s)
+void QDashWindow::updateSpeed(float s)
 {
     if (zoomstep != 0) return;
 
@@ -321,10 +330,12 @@ void QDashWindow::locationChanged(
     if (zoomstep != 0) return;
 
     updateDistance(lat,lon);
-    updateHeading(course);
-    updateSpeed(s);
-    updateAltitude(alt);
-    satview->update();
+    //updateHeading(course);
+    //updateSpeed(s);
+    //updateAltitude(alt);
+    //satview->update();
+    if (zoomgauge == 0)
+        map->updatePosition(lat,lon);
 }
 
 void QDashWindow::Setup()
@@ -399,7 +410,7 @@ void QDashWindow::ZoomToGauge(int i)
     StartTransition(i);
 }
 
-void QDashWindow::GaugeOptions(int i)
+void QDashWindow::GaugeOptions(int /*i*/)
 {
     // return if in transition
     if (zoomstep > 0) return;
