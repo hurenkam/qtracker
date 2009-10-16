@@ -80,6 +80,7 @@ public slots:
     void updatePosition(double lat, double lon);
     void followGPSPosition();
     void moveMap(int x, int y);
+    void openMap();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
