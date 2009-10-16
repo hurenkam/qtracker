@@ -1,5 +1,7 @@
 #include <QPainter>
 #include <QXmlStreamReader>
+#include <QString>
+#include <QFileDialog>
 #include "ui.h"
 #include "qmapwidget.h"
 #include <cmath>
@@ -281,11 +283,25 @@ QMapWidget::QMapWidget(QWidget *parent)
     meta->Calibrate();
 
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
-    connect(this, SIGNAL(doubleTap()), this, SLOT(followGPSPosition()));
+    connect(this, SIGNAL(singleTap()), this, SLOT(followGPSPosition()));
+    connect(this, SIGNAL(doubleTap()), this, SLOT(openMap()));
 }
 
 QMapWidget::~QMapWidget()
 {
+}
+
+void QMapWidget::openMap()
+{
+    QString filename = QFileDialog::getOpenFileName(this,
+    		tr("Open Map"),MAPDIR,
+    		tr("Calibrated (*.xml *.mcx *.ozi);;Uncalibrated (*.jpg)")
+    		);
+    //if (meta) delete meta;
+    if (mapimage) delete mapimage;
+    mapimage = new QImage(filename);
+    meta->SetSize(mapimage->width(),mapimage->height());
+    update();
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
