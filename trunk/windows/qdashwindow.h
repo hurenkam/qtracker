@@ -38,6 +38,8 @@ public slots:
     void ZoomTimerExpired();
     void ZoomToGauge(int i);
     void GaugeOptions(int i);
+    void resetDistance();
+    void resetTimer();
 
 protected:
     void InitWidgets();
