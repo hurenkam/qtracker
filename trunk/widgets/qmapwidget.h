@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QPoint>
 #include <QtXml>
+#include <QTableWidget>
+#include <QListWidget>
 #include "qgaugewidget.h"
 
 class RefPoint
@@ -27,7 +29,7 @@ private:
     double lon;
 };
 
-class QMapMetaData : public QObject
+class QMapMetaData: public QObject
 {
     Q_OBJECT
 public:
@@ -39,7 +41,7 @@ public:
     bool Wgs2XY(double alat, double alon, double& ax, double& ay);
     bool IsPositionOnMap(double alat, double alon);
     bool IsCalibrated() { return iscalibrated; }
-    bool SetSize(int w, int h) { width = w; height = h; }
+    void SetSize(int w, int h) { width = w; height = h; }
 
 private:
     void ReadMapElement(QXmlStreamReader& xml);
@@ -80,19 +82,26 @@ public slots:
     void updatePosition(double lat, double lon);
     void followGPSPosition();
     void moveMap(int x, int y);
-    void openMap();
+    void SelectMap();
+    void SelectBestMapForCurrentPosition();
+    void FindMapsForCurrentPosition(QStringList& found);
+    void LoadMap(QString filename);
+    void MapSelected(QListWidgetItem *item);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
+    void CreateMapList();
 
 private:
+    double latitude;
+    double longitude;
     QPoint cursor;
-    QPointF position;
     QImage *mapimage;
     QImage *bgimage;
     bool scrolling;
     QMapMetaData *meta;
-    bool onmap;
+    //bool onmap;
+    QMap<QString, QMapMetaData*> maplist;
 };
 
 #endif // QMAPWIDGET_H
