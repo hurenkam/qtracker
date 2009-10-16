@@ -38,13 +38,15 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
     QPixmap pixmap(UIDIR "splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("Wait...");
     qApp->processEvents();
-    
+
     QDashWindow w;
     w.show();
+    splash.hide();
     return a.exec();
 }
