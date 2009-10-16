@@ -13,16 +13,16 @@ QSpeedWidget::QSpeedWidget(QWidget *parent)
     , setspeed(0.0)
     , distance(0.0)
 {
-        timer = new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
 }
 
 void QSpeedWidget::SetSpeed(double s)
 {
-        timer->stop();
-        steps = 6;
-        setspeed = s;
-        delta = (setspeed - curspeed)/steps;
+    timer->stop();
+    steps = 6;
+    setspeed = s;
+    delta = (setspeed - curspeed)/steps;
     timer->start(330);
 }
 

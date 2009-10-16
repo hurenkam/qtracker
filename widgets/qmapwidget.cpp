@@ -2,8 +2,13 @@
 #include <QXmlStreamReader>
 #include "ui.h"
 #include "qmapwidget.h"
+#include <cmath>
+
 #include <iostream>
 using namespace std;
+//#define LOG( a ) cout << a
+#define LOG( a )
+
 
 #ifdef Q_OS_SYMBIAN
 #define MAPDIR "c:/data/qtracker/maps/"
@@ -11,133 +16,41 @@ using namespace std;
 #define MAPDIR "/Users/hurenkam/workspace/qtracker/maps/"
 #endif
 
-/*
-class Map:
-    def __init__(self,name=None,filename=None,refpoints=[],size=(2582,1944)):
-    # Size defaults to 5M, this is the max resolution of an N95 camera
-    # larger values are not likely since the app would run out of RAM
-        self.refpoints = refpoints
-        self.size=size
-        self.name=name
-        self.filename=filename
-        self.iscalibrated = False
-        self.Calibrate()
+const float PI = 3.14159265358979323846f;
 
-    def PrintInfo(self):
-        if self.size != None:
-            print "Map %s (%i x %i)" % (self.name, self.size[0], self.size[1])
-        else:
-            print "Map %s (? x ?)" % self.name
+static void CalculateDistanceAndBearing(
+                double fromlat,
+                double fromlon,
+                double tolat,
+                double tolon,
+                double &distance,
+                double &bearing)
+{
+    double earths_radius = (6378137.0 + 6356752.3141) / 2.0;
 
-        if self.iscalibrated:
-            lat1,lon1,lat2,lon2 = self.area
-            print "x2lon:%f y2lat:%f lon2x:%f lat2y:%f" % (self.x2lon, self.y2lat, self.lon2x, self.lat2y)
-            print "Wgs84 topleft:     %f, %f" % (lat1,lon1)
-            print "Wgs84 bottomright: %f, %f" % (lat2,lon2)
+    double from_theta = float(fromlat) / 360.0 * 2.0 * PI;
+    double from_landa = float(fromlon) / 360.0 * 2.0 * PI;
+    double to_theta = float(tolat)     / 360.0 * 2.0 * PI;
+    double to_landa = float(tolon)     / 360.0 * 2.0 * PI;
 
-    def AddRefpoint(self,ref):
-        self.refpoints.append(ref)
-        self.Calibrate()
+    distance = acos(
+            sin(from_theta) * sin(to_theta) +
+            cos(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
+                ) * earths_radius;
 
-    def ClearRefpoints(self):
-        self.refpoints = []
-        self.iscalibrated = False
+    bearing = atan2(
+                sin(to_landa-from_landa) * cos(to_theta),
+                cos(from_theta) * sin(to_theta) -
+                sin(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
+            );
+    bearing = bearing / 2.0 / PI * 360.0;
+}
 
-    def Calibrate(self):
-        if self.refpoints != None and len(self.refpoints) > 1:
 
-            r = self.refpoints
-            found = False
-            for i in range(0,len(r)):
-                for j in range(0,len(r)):
-                    if r[i].x != r[j].x and r[i].y != r[j].y \
-                        and r[i].latitude != r[j].latitude and r[i].longitude != r[j].longitude:
-
-                            r1 = r[i]
-                            r2 = r[j]
-                            found = True
-                            break
-
-            if not found:
-                print "Refpoints available, but either dx or dy is 0"
-                return
-
-            dx = r2.x - r1.x
-            dy = r2.y - r1.y
-            dlon = r2.longitude - r1.longitude
-            dlat = r2.latitude - r1.latitude
-
-            theta = (math.atan2(dy,dx) * 180 / math.pi) + 90
-            if theta > 180:
-                theta -= 360
-            d,b = r1.DistanceAndBearing(r2)
-            dtheta = b - theta
-            if dtheta > 180:
-                dtheta -= 360
-
-            self.x = r1.x
-            self.y = r1.y
-            self.lat = r1.latitude
-            self.lon = r1.longitude
-            try:
-                self.x2lon = dlon/dx
-                self.y2lat = dlat/dy
-                self.lon2x = dx/dlon
-                self.lat2y = dy/dlat
-            except:
-                print "Calibration failed for map ",self.name
-                print "Refpoints: ",self.refpoints
-                return
-
-            self.iscalibrated = True
-            self.area = self.WgsArea()
-            #self.SaveCalibrationData()
-
-    def WgsArea(self):
-        if self.iscalibrated:
-            lat1,lon1 = self.XY2Wgs(0,0)
-            lat2,lon2 = self.XY2Wgs(self.size[0],self.size[1])
-            return (lat1,lon1,lat2,lon2)
-
-    def XY2Wgs(self,x,y):
-        if self.iscalibrated:
-            lon = (x - self.x)*self.x2lon + self.lon
-            lat = (y - self.y)*self.y2lat + self.lat
-            return lat,lon
-        else:
-            #print "Not calibrated"
-            return None
-
-    def Wgs2XY(self,lat,lon):
-        if self.iscalibrated:
-            x = (lon - self.lon)*self.lon2x + self.x
-            y = (lat - self.lat)*self.lat2y + self.y
-            return x,y
-        else:
-            #print "Not calibrated"
-            return None
-
-    def SetSize(self,size):
-        self.size=size
-        self.area = self.WgsArea()
-
-    def PointOnMap(self,point):
-        if self.size == None:
-            return None
-
-        if not self.iscalibrated:
-            return None
-
-        lat = point.latitude
-        lon = point.longitude
-        lat1,lon1,lat2,lon2 = self.area
-        if lat > lat1 or lat < lat2 or lon < lon1 or lon > lon2:
-            return None
-
-        return self.Wgs2XY(point.latitude,point.longitude)
-*/
 
 QMapMetaData::QMapMetaData(QString filename)
+    : iscalibrated(false)
+    , count(0)
 {
     QXmlStreamReader xml;
     QFile file(filename);
@@ -155,6 +68,7 @@ QMapMetaData::QMapMetaData(QString filename)
                 //cout << "Invalid Token: " << xml.errorString().toStdString() << "\n";
                 break;
             case QXmlStreamReader::StartElement:
+                LOG( "QMapMetaData::QMapMetaData(): StartElement " << xml.name().toString().toStdString() << "\n"; )
                 if (xml.name().toString() == QString("map")) ReadMapElement(xml);
                 if (xml.name().toString() == QString("resolution")) ReadResolutionElement(xml);
                 if (xml.name().toString() == QString("refpoint")) ReadRefpointElement(xml);
@@ -184,8 +98,8 @@ void QMapMetaData::ReadMapElement(QXmlStreamReader& xml)
 void QMapMetaData::ReadResolutionElement(QXmlStreamReader& xml)
 {
     QXmlStreamAttributes attribs = xml.attributes();
-    width = attribs.value(QString(),QString("width")).toString().toDouble();
-    height = attribs.value(QString(),QString("height")).toString().toDouble();
+    width = int(attribs.value(QString(),QString("width")).toString().toDouble());
+    height = int(attribs.value(QString(),QString("height")).toString().toDouble());
 }
 
 void QMapMetaData::ReadRefpointElement(QXmlStreamReader& xml)
@@ -193,11 +107,158 @@ void QMapMetaData::ReadRefpointElement(QXmlStreamReader& xml)
     if ((count <0) || (count>9)) return;
 
     QXmlStreamAttributes attribs = xml.attributes();
-    refpoints[count].setX(attribs.value(QString(),QString("x")).toString().toDouble());
-    refpoints[count].setY(attribs.value(QString(),QString("y")).toString().toDouble());
+    refpoints[count].setX(int(attribs.value(QString(),QString("x")).toString().toDouble()));
+    refpoints[count].setY(int(attribs.value(QString(),QString("y")).toString().toDouble()));
     refpoints[count].setLatitude(attribs.value(QString(),QString("lat")).toString().toDouble());
     refpoints[count].setLongitude(attribs.value(QString(),QString("lon")).toString().toDouble());
+    LOG( "QMapMetaData::ReadRefpointElement("<< count << "): " << refpoints[count].X() << " " << refpoints[count].Y() << " "\
+         << refpoints[count].Latitude() << " " << refpoints[count].Longitude() << "\n"; )
     count++;
+}
+
+void QMapMetaData::CalculateIndexesFromRefpoints(int i, int j)
+{
+    LOG( "QMapMetaData::CalculateIndexesFromRefpoints(" << i << "," << j << ")\n"; )
+    int dx = refpoints[j].X() - refpoints[i].X();
+    int dy = refpoints[j].Y() - refpoints[i].Y();
+    double dlon = refpoints[j].Longitude() - refpoints[i].Longitude();
+    double dlat = refpoints[j].Latitude() - refpoints[i].Latitude();
+    LOG( "QMapMetaData::CalculateIndexesFromRefpoints(): " << dx << " " << dy << " " << dlon << " " << dlat << "\n"; )
+
+    double theta = (atan2(dy,dx) * 180 / PI) + 90;
+    if (theta > 180)
+        theta -= 360;
+
+    double d,b;
+    CalculateDistanceAndBearing(
+        refpoints[i].Latitude(),refpoints[i].Longitude(),
+        refpoints[j].Latitude(),refpoints[j].Longitude(),
+        d,b);
+
+    double dtheta = b - theta;
+    if (dtheta > 180)
+        dtheta -= 360;
+
+    x = refpoints[i].X();
+    y = refpoints[i].Y();
+    lat = refpoints[i].Latitude();
+    lon = refpoints[i].Longitude();
+    x2lon = dlon/dx;
+    y2lat = dlat/dy;
+    lon2x = dx/dlon;
+    lat2y = dy/dlat;
+    iscalibrated = true;
+    LOG( "QMapMetaData::CalculateIndexesFromRefpoints(): " << x << " " << y << " " << lat << " " << lon << "\n"; )
+    LOG( "QMapMetaData::CalculateIndexesFromRefpoints(): " << x2lon << " " << y2lat << " " << lat2y << " " << lon2x << "\n"; )
+}
+
+bool QMapMetaData::IsValidRefpointPair(int i, int j)
+{
+    if (i == j) return false;
+    LOG( "QMapMetaData::IsValidRefpointPair(" << i << "," << j << ")\n"; )
+
+    if ((refpoints[i].X() != refpoints[j].X()) &&
+        (refpoints[i].Y() != refpoints[j].Y()) &&
+        (refpoints[i].Latitude() != refpoints[j].Latitude()) &&
+        (refpoints[i].Longitude() != refpoints[j].Longitude()))
+        return true;
+
+    LOG( "QMapMetaData::IsValidRefpointPair(): No!\n"; )
+    return false;
+}
+
+void QMapMetaData::Calibrate()
+{
+    LOG( "QMapMetaData::Calibrate()\n"; )
+    if (count < 2) return;
+
+    int i=0;
+    int j=0;
+    bool found = false;
+    while (!found && (i<count))
+    {
+        while (!found && (j < count))
+        {
+            found = IsValidRefpointPair(i,j);
+            j++;
+        }
+        i++;
+    }
+
+    if (!found) return;
+
+    CalculateIndexesFromRefpoints(--i,--j);
+}
+
+bool QMapMetaData::WgsArea(double& lat1, double& lon1, double& lat2, double& lon2)
+{
+    if (!iscalibrated) return false;
+    //LOG( "QMapMetaData::WgsArea(): " << width << " " << height << "\n"; )
+
+    XY2Wgs(0,0,lat1,lon1);
+    XY2Wgs(width,height,lat2,lon2);
+
+    return true;
+}
+
+bool QMapMetaData::XY2Wgs(double ax, double ay, double& alat, double& alon)
+{
+    if (!iscalibrated) return false;
+
+    alon = (ax - x) * x2lon + lon;
+    alat = (ay - y) * y2lat + lat;
+
+    return true;
+}
+
+bool QMapMetaData::Wgs2XY(double alat, double alon, double& ax, double& ay)
+{
+    if (!iscalibrated) return false;
+
+    ax = (alon - lon) * lon2x + x;
+    ay = (alat - lat) * lat2y + y;
+    return true;
+}
+
+bool QMapMetaData::IsPositionOnMap(double alat, double alon)
+{
+    LOG( "QMapMetaData::IsPositionOnMap(" << alat << "," << alon << ")\n"; )
+    if ((width == 0) || (height == 0) || (!iscalibrated)) return false;
+
+    double lat1,lat2,lon1,lon2;
+    WgsArea(lat1,lon1,lat2,lon2);
+    LOG( "QMapMetaData::IsPositionOnMap(): " << lat1 << "," << lon1 << "..." << lat2 << "," << lon2 << "\n"; )
+
+    if (lat1 > lat2)
+        if ((alat < lat2) || (alat > lat1))
+        {
+            LOG( "QMapMetaData::IsPositionOnMap(): fail1 \n"; )
+            return false;
+        }
+
+    if (lat2 > lat1)
+        if ((alat < lat1) || (alat > lat2))
+        {
+            LOG( "QMapMetaData::IsPositionOnMap(): fail2 " << alat << "<" << lat1 << " or " << alat <<">" << lat2 << "\n"; )
+            return false;
+        }
+
+    if (lon1 > lon2)
+        if ((alon < lon2) || (alon > lon1))
+        {
+            LOG( "QMapMetaData::IsPositionOnMap(): fail3 \n"; )
+            return false;
+        }
+
+    if (lon2 > lon1)
+        if ((alon < lon1) || (alon > lon2))
+        {
+            LOG( "QMapMetaData::IsPositionOnMap(): fail4 \n"; )
+            return false;
+        }
+
+    LOG( "QMapMetaData::IsPositionOnMap(): Yes!\n"; )
+    return true;
 }
 
 QMapMetaData::~QMapMetaData()
@@ -207,43 +268,55 @@ QMapMetaData::~QMapMetaData()
 
 
 QMapWidget::QMapWidget(QWidget *parent)
-    : QWidget(parent)
-    , current(QPoint(0,0))
+    : QGaugeWidget(parent)
+    , cursor(QPoint(0,0))
+    , position(QPointF(0,0))
+    , scrolling(true)
+    , meta(0)
 {
     bgimage = new QImage(QString(UIDIR "map.svg"));
     mapimage = new QImage(QString(MAPDIR "51g11_eindhoven.jpg"));
-    QMapMetaData metadata(QString(MAPDIR "51g11_eindhoven.xml"));
+    meta = new QMapMetaData(QString(MAPDIR "51g11_eindhoven.xml"));
+    meta->SetSize(mapimage->width(),mapimage->height());
+    meta->Calibrate();
+
+    SetDragMin(1,1);
+    connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
+    connect(this, SIGNAL(doubleTap()), this, SLOT(followGPSPosition()));
 }
 
 QMapWidget::~QMapWidget()
 {
 }
 
-void QMapWidget::mousePressEvent(QMouseEvent *event)
+void QMapWidget::updatePosition(double lat, double lon)
 {
-    //cout << "MousePressEvent " << event->pos().x() << " " << event->pos().y() << "\n";
-    start = event->pos();
-}
+    LOG( "QMapWidget::updatePosition()\n"; )
+    if ( scrolling ||
+         !meta->IsCalibrated() ||
+         !meta->IsPositionOnMap(lat,lon))
+        return;
 
-void QMapWidget::mouseMoveEvent(QMouseEvent *event)
-{
-    //cout << "MouseDragEvent " << event->pos().x() << " " << event->pos().y() << "\n";
-    stop = event->pos();
-    moveMap(stop.x() - start.x(), stop.y() - start.y());
-    start = event->pos();
-}
-
-void QMapWidget::mouseReleaseEvent(QMouseEvent *event)
-{
-    //cout << "MouseReleaseEvent " << event->pos().x() << " " << event->pos().y() << "\n";
-    stop = event->pos();
-    moveMap(stop.x() - start.x(), stop.y() - start.y());
+    LOG( "QMapWidget::updatePosition() OnMap!\n"; )
+    double x,y;
+    meta->Wgs2XY(lat,lon,x,y);
+    cursor.setX(x);
+    cursor.setY(y);
+    update();
 }
 
 void QMapWidget::moveMap(int x, int y)
 {
-    current.setX(current.x()-x);
-    current.setY(current.y()-y);
+    scrolling = true;
+    cursor.setX(cursor.x()-x);
+    cursor.setY(cursor.y()-y);
+    update();
+}
+
+void QMapWidget::followGPSPosition()
+{
+    LOG( "QMapWidget::followGPSPosition()\n"; )
+    scrolling = false;
     update();
 }
 
@@ -259,7 +332,7 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     QRectF target(0, 0, w, h);
 
     painter.drawImage(target, *bgimage, source);
-    source = QRectF(current.x(), current.y(), w-40, h-40);
+    source = QRectF(cursor.x(), cursor.y(), w-40, h-40);
     target = QRectF(20, 20, w-40, h-40);
     painter.drawImage(target, *mapimage, source);
 }

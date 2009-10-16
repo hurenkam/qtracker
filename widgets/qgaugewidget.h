@@ -10,24 +10,19 @@ class QGaugeWidget : public QWidget
 public:
     QGaugeWidget(QWidget *parent = 0);
     ~QGaugeWidget();
+    void SetDragMin(int aminx, int aminy) { minx=aminx; miny=aminy; }
 
 signals:
-    //void zoom();
-    //void options();
-
     void singleTap();
     void doubleTap();
     void longTap();
-    void drag(QPoint delta);
+    void drag(int x, int y);
 
 protected slots:
-    //void timerExpired();
     void longTapTimeout();
     void singleTapTimeout();
 
 protected:
-    //void cancelTimer();
-    //void startTimer();
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
@@ -48,8 +43,8 @@ private:
     QTimer singletaptimer;
     QPoint previous;
     int state;
-    //QTimer *timer;
-    //bool longpress;
+    int minx;
+    int miny;
 };
 
 #endif // QGAUGEWIDGET_H

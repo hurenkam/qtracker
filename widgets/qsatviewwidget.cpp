@@ -32,7 +32,7 @@ void QSatViewWidget::ClearSatInfo(int id)
 
 void QSatViewWidget::SetSatInfo(int i, int s, double a, double e, bool u)
 {
-        if ((i <0) || (i>31)) return;
+    if ((i <0) || (i>31)) return;
 
     inuse[i] = u;
     strength[i] = s;
