@@ -8,8 +8,8 @@
 
 #include <iostream>
 //using namespace std;
-//#define LOG( a ) std::cout << a
-#define LOG( a )
+#define LOG( a ) std::cout << a
+//#define LOG( a )
 
 
 #ifdef Q_OS_SYMBIAN
@@ -223,38 +223,38 @@ bool QMapMetaData::Wgs2XY(double alat, double alon, double& ax, double& ay)
 
 bool QMapMetaData::IsPositionOnMap(double alat, double alon)
 {
-    LOG( "QMapMetaData::IsPositionOnMap(" << alat << "," << alon << ")\n"; )
+    //LOG( "QMapMetaData::IsPositionOnMap(" << alat << "," << alon << ")\n"; )
     if ((width == 0) || (height == 0) || (!iscalibrated)) return false;
 
     double lat1,lat2,lon1,lon2;
     WgsArea(lat1,lon1,lat2,lon2);
-    LOG( "QMapMetaData::IsPositionOnMap(): " << lat1 << "," << lon1 << "..." << lat2 << "," << lon2 << "\n"; )
+    //LOG( "QMapMetaData::IsPositionOnMap(): " << lat1 << "," << lon1 << "..." << lat2 << "," << lon2 << "\n"; )
 
     if (lat1 > lat2)
         if ((alat < lat2) || (alat > lat1))
         {
-            LOG( "QMapMetaData::IsPositionOnMap(): fail1 \n"; )
+            //LOG( "QMapMetaData::IsPositionOnMap(): fail1 \n"; )
             return false;
         }
 
     if (lat2 > lat1)
         if ((alat < lat1) || (alat > lat2))
         {
-            LOG( "QMapMetaData::IsPositionOnMap(): fail2 " << alat << "<" << lat1 << " or " << alat <<">" << lat2 << "\n"; )
+            //LOG( "QMapMetaData::IsPositionOnMap(): fail2 " << alat << "<" << lat1 << " or " << alat <<">" << lat2 << "\n"; )
             return false;
         }
 
     if (lon1 > lon2)
         if ((alon < lon2) || (alon > lon1))
         {
-            LOG( "QMapMetaData::IsPositionOnMap(): fail3 \n"; )
+            //LOG( "QMapMetaData::IsPositionOnMap(): fail3 \n"; )
             return false;
         }
 
     if (lon2 > lon1)
         if ((alon < lon1) || (alon > lon2))
         {
-            LOG( "QMapMetaData::IsPositionOnMap(): fail4 \n"; )
+            //LOG( "QMapMetaData::IsPositionOnMap(): fail4 \n"; )
             return false;
         }
 
@@ -270,50 +270,113 @@ QMapMetaData::~QMapMetaData()
 
 QMapWidget::QMapWidget(QWidget *parent)
     : QGaugeWidget(parent)
+    , latitude(0)
+    , longitude(0)
     , cursor(QPoint(0,0))
-    , position(QPointF(0,0))
     , scrolling(true)
     , meta(0)
-    , onmap(false)
 {
     bgimage = new QImage(QString(UIDIR "map.svg"));
-    mapimage = new QImage(QString(MAPDIR "nederland.jpg"));
-    meta = new QMapMetaData(QString(MAPDIR "nederland.xml"));
+    mapimage = new QImage(QString(MAPDIR "51g_eindhoven.jpg"));
+    meta = new QMapMetaData(QString(MAPDIR "51g_eindhoven.xml"));
     meta->SetSize(mapimage->width(),mapimage->height());
     meta->Calibrate();
 
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(followGPSPosition()));
-    connect(this, SIGNAL(doubleTap()), this, SLOT(openMap()));
+    connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMap()));
+
+    CreateMapList();
 }
 
 QMapWidget::~QMapWidget()
 {
 }
 
-void QMapWidget::openMap()
+void QMapWidget::CreateMapList()
 {
-    QString filename = QFileDialog::getOpenFileName(this,
-    		tr("Open Map"),MAPDIR,
-    		tr("Calibrated (*.xml *.mcx *.ozi);;Uncalibrated (*.jpg)")
-    		);
-    //if (meta) delete meta;
-    if (mapimage) delete mapimage;
-    mapimage = new QImage(filename);
+    QDir directory = QDir(MAPDIR);
+
+    QStringList files = directory.entryList(QStringList(QString("*.xml")),
+                                 QDir::Files | QDir::NoSymLinks);
+
+    for (int i = 0; i < files.size(); ++i)
+    {
+        LOG( "QMapWidget::CreateMapList() " << files[i].toStdString() << "\n"; )
+        maplist[files[i]] = new QMapMetaData(QString(MAPDIR) + files[i]);
+    }
+}
+
+void QMapWidget::SelectBestMapForCurrentPosition()
+{
+    LOG( "QMapWidget::SelectBestMapForCurrentPosition()\n"; )
+    QStringList found;
+    FindMapsForCurrentPosition(found);
+    if (found.size() > 0)
+    {
+        LOG( "QMapWidget::SelectBestMapForCurrentPosition(): " << found[0].toStdString() << "\n"; )
+        // for now select first entry
+        LoadMap(found[0]);
+    }
+}
+
+void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
+{
+    LOG( "QMapWidget::FindMapsForCurrentPosition()\n"; )
+    QStringList keys = maplist.keys();
+    for (int i=0; i<keys.size(); ++i)
+    {
+        if (maplist[keys[i]]->IsPositionOnMap(latitude,longitude))
+        {
+            LOG( "QMapWidget::FindMapsForCurrentPosition(): " << keys[i].toStdString() << "\n"; )
+            found.append(keys[i]);
+        }
+    }
+}
+
+void QMapWidget::LoadMap(QString filename)
+{
+    LOG( "QMapWidget::LoadMap(): " << filename.toStdString() << "\n"; )
+    meta = maplist[filename];
+    filename.remove(filename.size()-4,4);
+    filename.append(".jpg");
+    delete mapimage;
+    mapimage = new QImage(QString(MAPDIR) + filename);
     meta->SetSize(mapimage->width(),mapimage->height());
-    update();
+    meta->Calibrate();
+}
+
+void QMapWidget::MapSelected(QListWidgetItem *item)
+{
+    QString filename = item->text();
+    item->listWidget()->hide();
+    LOG( "QMapWidget::MapSelected(): " << filename.toStdString() << "\n"; )
+    LoadMap(filename);
+}
+
+void QMapWidget::SelectMap()
+{
+    QListWidget *listWidget = new QListWidget(this);
+    QStringList files = maplist.keys();
+    for (int i = 0; i < files.size(); ++i)
+    {
+        new QListWidgetItem(files[i], listWidget);
+    }
+    connect(listWidget, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(MapSelected(QListWidgetItem *)));
+    listWidget->setGeometry(QRect(20,20, width()-40, height()-40));
+    listWidget->show();
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
 {
-    LOG( "QMapWidget::updatePosition()\n"; )
+    //LOG( "QMapWidget::updatePosition()\n"; )
+    latitude = lat;
+    longitude = lon;
     if (scrolling) return;
     if (!meta->IsCalibrated()) return;
-    
-    onmap = meta->IsPositionOnMap(lat,lon);
-    if ( !onmap ) return;
+    if (!meta->IsPositionOnMap(lat,lon)) return;
 
-    LOG( "QMapWidget::updatePosition() OnMap!\n"; )
+    //LOG( "QMapWidget::updatePosition() OnMap!\n"; )
     double x,y;
     meta->Wgs2XY(lat,lon,x,y);
     cursor.setX(x);
@@ -333,6 +396,8 @@ void QMapWidget::followGPSPosition()
 {
     LOG( "QMapWidget::followGPSPosition()\n"; )
     scrolling = false;
+    if (!meta->IsPositionOnMap(latitude,longitude))
+        SelectBestMapForCurrentPosition();
     update();
 }
 
@@ -349,19 +414,19 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     QRectF target(0, 0, w, h);
 
     painter.drawImage(target, *bgimage, source);
-    source = QRectF(cursor.x(), cursor.y(), w-40, h-40);
+    source = QRectF(20+cursor.x()-w/2, 20+cursor.y()-h/2, w-40, h-40);
     target = QRectF(20, 20, w-40, h-40);
     painter.drawImage(target, *mapimage, source);
-    
-    if (!onmap)
+
+    if (scrolling || !meta->IsPositionOnMap(latitude,longitude))
     {
-		painter.setPen(Qt::red);
-		painter.setBrush(Qt::red);
+                painter.setPen(Qt::red);
+                painter.setBrush(Qt::red);
     }
     else
     {
-		painter.setPen(Qt::green);
-		painter.setBrush(Qt::green);
+                painter.setPen(Qt::green);
+                painter.setBrush(Qt::green);
     }
     painter.translate(w/2,h/2);
     painter.drawEllipse(s/-2,s/-2,s,s);
