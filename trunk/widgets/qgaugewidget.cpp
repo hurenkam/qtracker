@@ -19,6 +19,8 @@ const char* states[] = {
 QGaugeWidget::QGaugeWidget(QWidget *parent)
     : QWidget(parent)
     , state(StIdle)
+    , minx(10)
+    , miny(10)
 {
     singletaptimer.setSingleShot(true);
     singletaptimer.setInterval(200);
@@ -32,9 +34,10 @@ QGaugeWidget::~QGaugeWidget()
 {
 }
 
-void QGaugeWidget::mousePressEvent(QMouseEvent * /* event */)
+void QGaugeWidget::mousePressEvent(QMouseEvent *event)
 {
     LOG( states[state] << "\n <-- mousePressEvent\n"; )
+    previous = event->pos();
     switch(state)
     {
     case StIdle:
@@ -109,9 +112,20 @@ void QGaugeWidget::cancelSingleTapTimer()
     singletaptimer.stop();
 }
 
-void QGaugeWidget::mouseMoveEvent(QMouseEvent* /*event*/)
+void QGaugeWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    // if (movement not too small) emit drag event
+    int dx = event->pos().x() - previous.x();
+    int dy = event->pos().y() - previous.y();
+    if ((abs(dx) > minx) || (abs(dy) > miny))
+    {
+        LOG( states[state] << "\n <-- mouseMove\n"; )
+        cancelLongTapTimer();
+        cancelSingleTapTimer();
+        state = StMoving;
+        previous = event->pos();
+        emit drag(dx,dy);
+        LOG ( " --> cancelLongTapTimer\n --> cancelSingleTapTimer\n --> emit drag()" << states[state] << "\n\n"; )
+    }
 }
 
 void QGaugeWidget::mouseReleaseEvent(QMouseEvent * /*event*/)
@@ -138,6 +152,7 @@ void QGaugeWidget::mouseReleaseEvent(QMouseEvent * /*event*/)
         break;
     case QGaugeWidget::StMoving:
         // emit drag event
+        state = StIdle;
         LOG ( states[state] << "\n\n"; )
         break;
     default:
