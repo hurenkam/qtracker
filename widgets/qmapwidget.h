@@ -43,7 +43,7 @@ public:
     bool IsPositionOnMap(double alat, double alon);
     bool IsCalibrated() { return iscalibrated; }
     void SetSize(int w, int h) { width = w; height = h; }
-
+    
 private:
     void ReadMapElement(QXmlStreamReader& xml);
     void ReadResolutionElement(QXmlStreamReader& xml);
@@ -78,6 +78,15 @@ class QMapSelectionDialog : public QDialog
 public:
     QMapSelectionDialog(QMapList& maps, QWidget *parent = 0);
     ~QMapSelectionDialog();
+
+signals:
+	void selectmap(QString);
+
+public slots:
+	virtual void accept();
+    	
+private:
+	QListWidget *listWidget;
 };
 
 class QMapWidget : public QGaugeWidget

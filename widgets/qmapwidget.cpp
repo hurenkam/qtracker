@@ -8,8 +8,8 @@
 
 #include <iostream>
 //using namespace std;
-#define LOG( a ) std::cout << a
-//#define LOG( a )
+//#define LOG( a ) std::cout << a
+#define LOG( a )
 
 
 #ifdef Q_OS_SYMBIAN
@@ -260,7 +260,7 @@ QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
     QHBoxLayout *list = new QHBoxLayout();
     QHBoxLayout *buttons = new QHBoxLayout();
     QVBoxLayout *main = new QVBoxLayout(this);
-    QListWidget *listWidget = new QListWidget();
+    listWidget = new QListWidget();
     QPushButton *cancel = new QPushButton(tr("Cancel"));
     QPushButton *confirm = new QPushButton(tr("Confirm"));
 
@@ -271,21 +271,27 @@ QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
     }
 
     list->addWidget(listWidget);
-    buttons->addWidget(cancel);
     buttons->addWidget(confirm);
+    buttons->addWidget(cancel);
     main->addLayout(list);
     main->addLayout(buttons);
     setLayout(main);
 
-    //connect(listWidget, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(MapSelected(QListWidgetItem *)));
-    //listWidget->setGeometry(QRect(0,0, width(), height()-50));
     listWidget->show();
-    //cancel->setGeometry(QRect(width()/2,height()-50, width()/2, 50));
     cancel->show();
-    //confirm->setGeometry(QRect(0,height()-50, width()/2, 50));
     confirm->show();
+    
     connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
+    //connect(this,SIGNAL(accepted),this,SLOT(emitSelection()));
+}
+
+void QMapSelectionDialog::accept()
+{
+	QString filename = listWidget->currentItem()->text();
+	emit selectmap(filename);
+	QDialog::accept();
+	close();
 }
 
 QMapSelectionDialog::~QMapSelectionDialog()
@@ -368,6 +374,7 @@ void QMapWidget::LoadMap(QString filename)
     mapimage = new QImage(QString(MAPDIR) + filename);
     meta->SetSize(mapimage->width(),mapimage->height());
     meta->Calibrate();
+    update();
 }
 
 void QMapWidget::MapSelected(QListWidgetItem *item)
@@ -391,9 +398,10 @@ void QMapWidget::SelectMap()
     listWidget->setGeometry(QRect(20,20, width()-40, height()-40));
     listWidget->show();
 */
-    QMapSelectionDialog *dialog = new QMapSelectionDialog(maplist,this);
-    //dialog->setGeometry(QRect(20,20,width()-40,height()-40));
-    dialog->exec();
+    QMapSelectionDialog *dialog = new QMapSelectionDialog(maplist);
+    connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(LoadMap(QString)));
+    dialog->setModal(true);
+    dialog->showFullScreen();
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
