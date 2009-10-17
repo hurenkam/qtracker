@@ -6,6 +6,7 @@
 #include <QtXml>
 #include <QTableWidget>
 #include <QListWidget>
+#include <QDialog>
 #include "qgaugewidget.h"
 
 class RefPoint
@@ -68,7 +69,16 @@ private:
     bool iscalibrated;
 };
 
+typedef QMap<QString, QMapMetaData*> QMapList;
 
+class QMapSelectionDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    QMapSelectionDialog(QMapList& maps, QWidget *parent = 0);
+    ~QMapSelectionDialog();
+};
 
 class QMapWidget : public QGaugeWidget
 {
@@ -101,7 +111,7 @@ private:
     bool scrolling;
     QMapMetaData *meta;
     //bool onmap;
-    QMap<QString, QMapMetaData*> maplist;
+    QMapList maplist;
 };
 
 #endif // QMAPWIDGET_H

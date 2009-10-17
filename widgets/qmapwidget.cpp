@@ -221,6 +221,19 @@ bool QMapMetaData::Wgs2XY(double alat, double alon, double& ax, double& ay)
     return true;
 }
 
+static bool IsValueInRange(double v, double r1, double r2)
+{
+    if (r1 > r2)
+        if ((v < r2) || (v > r1))
+            return false;
+
+    if (r2 > r1)
+        if ((v < r1) || (v > r2))
+            return false;
+
+    return true;
+}
+
 bool QMapMetaData::IsPositionOnMap(double alat, double alon)
 {
     //LOG( "QMapMetaData::IsPositionOnMap(" << alat << "," << alon << ")\n"; )
@@ -228,35 +241,9 @@ bool QMapMetaData::IsPositionOnMap(double alat, double alon)
 
     double lat1,lat2,lon1,lon2;
     WgsArea(lat1,lon1,lat2,lon2);
-    //LOG( "QMapMetaData::IsPositionOnMap(): " << lat1 << "," << lon1 << "..." << lat2 << "," << lon2 << "\n"; )
 
-    if (lat1 > lat2)
-        if ((alat < lat2) || (alat > lat1))
-        {
-            //LOG( "QMapMetaData::IsPositionOnMap(): fail1 \n"; )
-            return false;
-        }
-
-    if (lat2 > lat1)
-        if ((alat < lat1) || (alat > lat2))
-        {
-            //LOG( "QMapMetaData::IsPositionOnMap(): fail2 " << alat << "<" << lat1 << " or " << alat <<">" << lat2 << "\n"; )
-            return false;
-        }
-
-    if (lon1 > lon2)
-        if ((alon < lon2) || (alon > lon1))
-        {
-            //LOG( "QMapMetaData::IsPositionOnMap(): fail3 \n"; )
-            return false;
-        }
-
-    if (lon2 > lon1)
-        if ((alon < lon1) || (alon > lon2))
-        {
-            //LOG( "QMapMetaData::IsPositionOnMap(): fail4 \n"; )
-            return false;
-        }
+    if (!IsValueInRange(alat,lat1,lat2)) return false;
+    if (!IsValueInRange(alon,lon1,lon2)) return false;
 
     LOG( "QMapMetaData::IsPositionOnMap(): Yes!\n"; )
     return true;
@@ -267,6 +254,43 @@ QMapMetaData::~QMapMetaData()
 }
 
 
+QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
+    : QDialog(parent)
+{
+    QHBoxLayout *list = new QHBoxLayout();
+    QHBoxLayout *buttons = new QHBoxLayout();
+    QVBoxLayout *main = new QVBoxLayout(this);
+    QListWidget *listWidget = new QListWidget();
+    QPushButton *cancel = new QPushButton(tr("Cancel"));
+    QPushButton *confirm = new QPushButton(tr("Confirm"));
+
+    QStringList files = maps.keys();
+    for (int i = 0; i < files.size(); ++i)
+    {
+        new QListWidgetItem(files[i], listWidget);
+    }
+
+    list->addWidget(listWidget);
+    buttons->addWidget(cancel);
+    buttons->addWidget(confirm);
+    main->addLayout(list);
+    main->addLayout(buttons);
+    setLayout(main);
+
+    //connect(listWidget, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(MapSelected(QListWidgetItem *)));
+    //listWidget->setGeometry(QRect(0,0, width(), height()-50));
+    listWidget->show();
+    //cancel->setGeometry(QRect(width()/2,height()-50, width()/2, 50));
+    cancel->show();
+    //confirm->setGeometry(QRect(0,height()-50, width()/2, 50));
+    confirm->show();
+    connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
+}
+
+QMapSelectionDialog::~QMapSelectionDialog()
+{
+}
 
 QMapWidget::QMapWidget(QWidget *parent)
     : QGaugeWidget(parent)
@@ -356,6 +380,7 @@ void QMapWidget::MapSelected(QListWidgetItem *item)
 
 void QMapWidget::SelectMap()
 {
+/*
     QListWidget *listWidget = new QListWidget(this);
     QStringList files = maplist.keys();
     for (int i = 0; i < files.size(); ++i)
@@ -365,6 +390,10 @@ void QMapWidget::SelectMap()
     connect(listWidget, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(MapSelected(QListWidgetItem *)));
     listWidget->setGeometry(QRect(20,20, width()-40, height()-40));
     listWidget->show();
+*/
+    QMapSelectionDialog *dialog = new QMapSelectionDialog(maplist,this);
+    //dialog->setGeometry(QRect(20,20,width()-40,height()-40));
+    dialog->exec();
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
@@ -398,7 +427,7 @@ void QMapWidget::followGPSPosition()
     scrolling = false;
     if (!meta->IsPositionOnMap(latitude,longitude))
         SelectBestMapForCurrentPosition();
-    update();
+    updatePosition(latitude,longitude);
 }
 
 void QMapWidget::paintEvent(QPaintEvent *event)
@@ -420,13 +449,13 @@ void QMapWidget::paintEvent(QPaintEvent *event)
 
     if (scrolling || !meta->IsPositionOnMap(latitude,longitude))
     {
-                painter.setPen(Qt::red);
-                painter.setBrush(Qt::red);
+        painter.setPen(Qt::red);
+        painter.setBrush(Qt::red);
     }
     else
     {
-                painter.setPen(Qt::green);
-                painter.setBrush(Qt::green);
+        painter.setPen(Qt::green);
+        painter.setBrush(Qt::green);
     }
     painter.translate(w/2,h/2);
     painter.drawEllipse(s/-2,s/-2,s,s);
