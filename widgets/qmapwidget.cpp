@@ -2,6 +2,7 @@
 #include <QXmlStreamReader>
 #include <QString>
 #include <QFileDialog>
+#include <QFlags>
 #include "ui.h"
 #include "qmapwidget.h"
 #include <cmath>
@@ -257,10 +258,10 @@ QMapMetaData::~QMapMetaData()
 QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
     : QDialog(parent)
 {
-    QHBoxLayout *list = new QHBoxLayout();
-    QHBoxLayout *buttons = new QHBoxLayout();
+    QHBoxLayout *list = new QHBoxLayout(this);
+    QHBoxLayout *buttons = new QHBoxLayout(this);
     QVBoxLayout *main = new QVBoxLayout(this);
-    listWidget = new QListWidget();
+    listWidget = new QListWidget(this);
     QPushButton *cancel = new QPushButton(tr("Cancel"));
     QPushButton *confirm = new QPushButton(tr("Confirm"));
 
@@ -280,6 +281,7 @@ QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
     listWidget->show();
     cancel->show();
     confirm->show();
+    setAttribute(Qt::WA_DeleteOnClose);
     
     connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
@@ -305,13 +307,9 @@ QMapWidget::QMapWidget(QWidget *parent)
     , cursor(QPoint(0,0))
     , scrolling(true)
     , meta(0)
+    , mapimage(0)
+    , bgimage(new QImage(QString(UIDIR "map.svg")))
 {
-    bgimage = new QImage(QString(UIDIR "map.svg"));
-    mapimage = new QImage(QString(MAPDIR "51g_eindhoven.jpg"));
-    meta = new QMapMetaData(QString(MAPDIR "51g_eindhoven.xml"));
-    meta->SetSize(mapimage->width(),mapimage->height());
-    meta->Calibrate();
-
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(followGPSPosition()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMap()));
@@ -370,34 +368,27 @@ void QMapWidget::LoadMap(QString filename)
     meta = maplist[filename];
     filename.remove(filename.size()-4,4);
     filename.append(".jpg");
-    delete mapimage;
-    mapimage = new QImage(QString(MAPDIR) + filename);
-    meta->SetSize(mapimage->width(),mapimage->height());
-    meta->Calibrate();
+    if (!mapimage)
+        delete mapimage;
+    mapimage = new QImage();
+    bool result = mapimage->load(QString(MAPDIR) + filename);
+    if (!result)
+	{
+		QMessageBox msg;
+		msg.setText(QString("Unable to load map ") + filename);
+		msg.setIcon(QMessageBox::Warning);
+		msg.exec();
+	}
+    else
+	{
+		meta->SetSize(mapimage->width(),mapimage->height());
+		meta->Calibrate();
+	}
     update();
-}
-
-void QMapWidget::MapSelected(QListWidgetItem *item)
-{
-    QString filename = item->text();
-    item->listWidget()->hide();
-    LOG( "QMapWidget::MapSelected(): " << filename.toStdString() << "\n"; )
-    LoadMap(filename);
 }
 
 void QMapWidget::SelectMap()
 {
-/*
-    QListWidget *listWidget = new QListWidget(this);
-    QStringList files = maplist.keys();
-    for (int i = 0; i < files.size(); ++i)
-    {
-        new QListWidgetItem(files[i], listWidget);
-    }
-    connect(listWidget, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(MapSelected(QListWidgetItem *)));
-    listWidget->setGeometry(QRect(20,20, width()-40, height()-40));
-    listWidget->show();
-*/
     QMapSelectionDialog *dialog = new QMapSelectionDialog(maplist);
     connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(LoadMap(QString)));
     dialog->setModal(true);
@@ -410,6 +401,7 @@ void QMapWidget::updatePosition(double lat, double lon)
     latitude = lat;
     longitude = lon;
     if (scrolling) return;
+    if (!meta) return;
     if (!meta->IsCalibrated()) return;
     if (!meta->IsPositionOnMap(lat,lon)) return;
 
@@ -432,9 +424,10 @@ void QMapWidget::moveMap(int x, int y)
 void QMapWidget::followGPSPosition()
 {
     LOG( "QMapWidget::followGPSPosition()\n"; )
-    scrolling = false;
-    if (!meta->IsPositionOnMap(latitude,longitude))
+    if (!meta || !meta->IsPositionOnMap(latitude,longitude))
         SelectBestMapForCurrentPosition();
+    
+    scrolling = false;
     updatePosition(latitude,longitude);
 }
 
@@ -455,7 +448,7 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     target = QRectF(20, 20, w-40, h-40);
     painter.drawImage(target, *mapimage, source);
 
-    if (scrolling || !meta->IsPositionOnMap(latitude,longitude))
+    if (scrolling || !meta || !meta->IsPositionOnMap(latitude,longitude))
     {
         painter.setPen(Qt::red);
         painter.setBrush(Qt::red);

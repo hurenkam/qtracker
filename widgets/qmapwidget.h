@@ -105,7 +105,6 @@ public slots:
     void SelectBestMapForCurrentPosition();
     void FindMapsForCurrentPosition(QStringList& found);
     void LoadMap(QString filename);
-    void MapSelected(QListWidgetItem *item);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
@@ -115,8 +114,8 @@ private:
     double latitude;
     double longitude;
     QPoint cursor;
-    QImage *mapimage;
-    QImage *bgimage;
+    QImage* mapimage;
+    QImage* bgimage;
     bool scrolling;
     QMapMetaData *meta;
     //bool onmap;
