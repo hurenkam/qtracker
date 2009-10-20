@@ -74,6 +74,7 @@ QMapMetaData::QMapMetaData(QString filename)
         }
     }
     file.close();
+    Calibrate();
 }
 
 void QMapMetaData::ReadMapElement(QXmlStreamReader& xml)
