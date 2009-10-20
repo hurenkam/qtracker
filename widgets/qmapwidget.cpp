@@ -18,16 +18,18 @@
 
 QMapWidget::QMapWidget(QWidget *parent)
     : QGaugeWidget(parent)
+    , state(StNoMap)
+    , zoom(0.5)
+    , x(0)
+    , y(0)
     , latitude(0)
     , longitude(0)
-    , cursor(QPoint(0,0))
-    , scrolling(true)
     , meta(0)
     , mapimage(0)
     , bgimage(new QImage(QString(UIDIR "map.svg")))
 {
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
-    connect(this, SIGNAL(singleTap()), this, SLOT(followGPSPosition()));
+    connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMap()));
 
     CreateMapList();
@@ -35,6 +37,14 @@ QMapWidget::QMapWidget(QWidget *parent)
 
 QMapWidget::~QMapWidget()
 {
+/*
+    delete mapimage;
+    mapimage = 0;
+    meta = 0;
+    QStringList names = maplist.keys();
+    for (int i; i<maplist.size(); ++i)
+        delete maplist[names[i]];
+*/
 }
 
 void QMapWidget::CreateMapList()
@@ -51,7 +61,7 @@ void QMapWidget::CreateMapList()
     }
 }
 
-void QMapWidget::SelectBestMapForCurrentPosition()
+bool QMapWidget::SelectBestMapForCurrentPosition()
 {
     LOG( "QMapWidget::SelectBestMapForCurrentPosition()\n"; )
     QStringList found;
@@ -61,15 +71,16 @@ void QMapWidget::SelectBestMapForCurrentPosition()
         LOG( "QMapWidget::SelectBestMapForCurrentPosition(): " << found[0].toStdString() << "\n"; )
         // for now select first entry
         int index = 0;
-		int lon2x = maplist[found[0]]->Lon2x(); 
-		for (int i=1; i<found.size(); ++i)
-			if (maplist[found[i]]->Lon2x() > lon2x)
-			{
-				lon2x = maplist[found[i]]->Lon2x();
-				index = i;
-			}
-		LoadMap(found[index]);    
-	}
+        int lon2x = maplist[found[0]]->Lon2x();
+        for (int i=1; i<found.size(); ++i)
+            if (maplist[found[i]]->Lon2x() > lon2x)
+            {
+                lon2x = maplist[found[i]]->Lon2x();
+                index = i;
+            }
+        return LoadMap(found[index]);
+    }
+    return false;
 }
 
 void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
@@ -86,7 +97,7 @@ void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
     }
 }
 
-void QMapWidget::LoadMap(QString filename)
+bool QMapWidget::LoadMap(QString filename)
 {
     LOG( "QMapWidget::LoadMap(): " << filename.toStdString() << "\n"; )
     meta = maplist[filename];
@@ -97,24 +108,35 @@ void QMapWidget::LoadMap(QString filename)
     mapimage = new QImage();
     bool result = mapimage->load(QString(MAPDIR) + filename);
     if (!result)
-	{
-		QMessageBox msg;
-		msg.setText(QString("Unable to load map ") + filename);
-		msg.setIcon(QMessageBox::Warning);
-		msg.exec();
-	}
+    {
+            QMessageBox msg;
+            msg.setText(QString("Unable to load map ") + filename);
+            msg.setIcon(QMessageBox::Warning);
+            msg.exec();
+    }
     else
-	{
-		meta->SetSize(mapimage->width(),mapimage->height());
-		meta->Calibrate();
-	}
+    {
+            meta->SetSize(mapimage->width(),mapimage->height());
+            meta->Calibrate();
+            x = mapimage->width()/2;
+            y = mapimage->height()/2;
+    }
     update();
+    return result;
+}
+
+void QMapWidget::MapSelected(QString map)
+{
+    if (LoadMap(map))
+        state = StScrolling;
+    else
+        state = StNoMap;
 }
 
 void QMapWidget::SelectMap()
 {
     QMapSelectionDialog *dialog = new QMapSelectionDialog(maplist);
-    connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(LoadMap(QString)));
+    connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
     dialog->setModal(true);
 #ifdef Q_OS_SYMBIAN
     dialog->showFullScreen();
@@ -128,36 +150,58 @@ void QMapWidget::updatePosition(double lat, double lon)
     //LOG( "QMapWidget::updatePosition()\n"; )
     latitude = lat;
     longitude = lon;
-    if (scrolling) return;
-    if (!meta) return;
-    if (!meta->IsCalibrated()) return;
-    if (!meta->IsPositionOnMap(lat,lon)) return;
+    if (state == StFollowGPS)
+        FollowGPS();
+    else
+        update();
+}
 
-    //LOG( "QMapWidget::updatePosition() OnMap!\n"; )
-    double x,y;
-    meta->Wgs2XY(lat,lon,x,y);
-    cursor.setX(x);
-    cursor.setY(y);
+void QMapWidget::moveMap(int dx, int dy)
+{
+    x -= dx;
+    y -= dy;
+    if (state == StFollowGPS)
+        state = StScrolling;
     update();
 }
 
-void QMapWidget::moveMap(int x, int y)
+void QMapWidget::FollowGPS()
 {
-    scrolling = true;
-    cursor.setX(cursor.x()-x);
-    cursor.setY(cursor.y()-y);
+    LOG( "QMapWidget::FollowGPS()\n"; )
+
+    if (IsPositionOnMap())
+    {   // OnMap
+        SetCursorToCurrentPosition();
+        state = StFollowGPS;
+    }
+    else
+    {   // OffMap
+        QStringList foundmaps;
+        FindMapsForCurrentPosition(foundmaps);
+        if (foundmaps.size() > 0)
+        {
+            // MapAvailable
+            if (SelectBestMapForCurrentPosition())
+                // Load Succeeded
+                state = StFollowGPS;
+            else
+                // Load Failed
+                state = StNoMap;
+        }
+        else
+        {
+            // NoMapAvailable
+            if (mapimage)
+                // KeepPreviousMap
+                state = StFollowGPS;
+            else
+                // NoPreviousMap
+                state = StNoMap;
+        }
+    }
     update();
 }
 
-void QMapWidget::followGPSPosition()
-{
-    LOG( "QMapWidget::followGPSPosition()\n"; )
-    if (!meta || !meta->IsPositionOnMap(latitude,longitude))
-        SelectBestMapForCurrentPosition();
-
-    scrolling = false;
-    updatePosition(latitude,longitude);
-}
 
 void QMapWidget::paintEvent(QPaintEvent *event)
 {
@@ -169,15 +213,21 @@ void QMapWidget::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     QRectF source(0, 0, 400, 360);
-    QRectF target(0, 0, w, h);
+    QRectF target(-w/2, -h/2, w, h);
+    painter.setWindow(-w/2,-h/2,w,h);
 
     painter.drawImage(target, *bgimage, source);
-    source = QRectF(20+cursor.x()-w/2, 20+cursor.y()-h/2, w-40, h-40);
-    target = QRectF(20, 20, w-40, h-40);
+    painter.setViewport(20,20,w-40,h-40);
     if (mapimage)
+    {
+        source = QRectF(w*zoom/-2 + x, h*zoom/-2 + y, w*zoom, h*zoom);
+        target = QRectF(w*zoom/-2, h*zoom/-2, w*zoom, h*zoom);
+        painter.setWindow(-w/2*zoom,-h/2*zoom,w*zoom,h*zoom);
         painter.drawImage(target, *mapimage, source);
+        painter.setWindow(-w/2,-h/2,w,h);
+    }
 
-    if (scrolling || !meta || !meta->IsPositionOnMap(latitude,longitude))
+    if ((state == StScrolling) || (!IsPositionOnMap()))
     {
         painter.setPen(Qt::red);
         painter.setBrush(Qt::red);
@@ -187,7 +237,5 @@ void QMapWidget::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::green);
         painter.setBrush(Qt::green);
     }
-    painter.translate(w/2,h/2);
     painter.drawEllipse(s/-2,s/-2,s,s);
 }
-
