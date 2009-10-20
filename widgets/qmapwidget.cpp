@@ -60,8 +60,16 @@ void QMapWidget::SelectBestMapForCurrentPosition()
     {
         LOG( "QMapWidget::SelectBestMapForCurrentPosition(): " << found[0].toStdString() << "\n"; )
         // for now select first entry
-        LoadMap(found[0]);
-    }
+        int index = 0;
+		int lon2x = maplist[found[0]]->Lon2x(); 
+		for (int i=1; i<found.size(); ++i)
+			if (maplist[found[i]]->Lon2x() > lon2x)
+			{
+				lon2x = maplist[found[i]]->Lon2x();
+				index = i;
+			}
+		LoadMap(found[index]);    
+	}
 }
 
 void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
@@ -84,22 +92,22 @@ void QMapWidget::LoadMap(QString filename)
     meta = maplist[filename];
     filename.remove(filename.size()-4,4);
     filename.append(".jpg");
-    if (!mapimage)
+    if (mapimage)
         delete mapimage;
     mapimage = new QImage();
     bool result = mapimage->load(QString(MAPDIR) + filename);
     if (!result)
-        {
-                QMessageBox msg;
-                msg.setText(QString("Unable to load map ") + filename);
-                msg.setIcon(QMessageBox::Warning);
-                msg.exec();
-        }
+	{
+		QMessageBox msg;
+		msg.setText(QString("Unable to load map ") + filename);
+		msg.setIcon(QMessageBox::Warning);
+		msg.exec();
+	}
     else
-        {
-                meta->SetSize(mapimage->width(),mapimage->height());
-                meta->Calibrate();
-        }
+	{
+		meta->SetSize(mapimage->width(),mapimage->height());
+		meta->Calibrate();
+	}
     update();
 }
 

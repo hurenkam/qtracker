@@ -3,6 +3,9 @@
 
 #include <QListWidget>
 #include <QDialog>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 #include "qmapmetadata.h"
 
 class QMapSelectionDialog : public QDialog
@@ -14,13 +17,18 @@ public:
     ~QMapSelectionDialog();
 
 signals:
-        void selectmap(QString);
+	void selectmap(QString);
 
 public slots:
-        virtual void accept();
+	virtual void accept();
 
 private:
-        QListWidget *listWidget;
+	QPushButton *confirm;
+	QPushButton *cancel;
+	QHBoxLayout *list;
+	QHBoxLayout *buttons;
+	QVBoxLayout *main;
+	QListWidget *listWidget;
 };
 
 
