@@ -3,7 +3,9 @@ TARGET = qTracker
 QT += core \
     gui \
     xml
-HEADERS += widgets/qgaugewidget.h \
+HEADERS += datatypes/qmapmetadata.h \
+    dialogs/qmapselectiondialog.h \
+    widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
     images/ui.h \
     mobility/location_global.h \
@@ -51,10 +53,12 @@ symbian {
     DEPLOYMENT += UiFiles
     VERSION = 1.0.3
     TARGET.EPOCHEAPSIZE = 0x20000 \
-        0x1c00000
+        0x2400000
     TARGET.EPOCSTACKSIZE += 0x14000
 }
-SOURCES += widgets/qgaugewidget.cpp \
+SOURCES += datatypes/qmapmetadata.cpp \
+    dialogs/qmapselectiondialog.cpp \
+    widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
     images/ui.cpp \
     mobility/xqlocation_s60_p.cpp \

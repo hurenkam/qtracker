@@ -39,6 +39,11 @@ public:
     bool IsCalibrated() { return iscalibrated; }
     void SetSize(int w, int h) { width = w; height = h; }
 
+    double Lon2x() { return lon2x; }
+    double Lat2y() { return lat2y; }
+    double X2Lon() { return x2lon; }
+    double Y2Lat() { return y2lat; }
+
 private:
     void ReadMapElement(QXmlStreamReader& xml);
     void ReadResolutionElement(QXmlStreamReader& xml);

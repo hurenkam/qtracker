@@ -1,18 +1,18 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPushBUtton>
+#include <QPushButton>
 #include <QStringList>
 #include "qmapselectiondialog.h"
 
 QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
     : QDialog(parent)
 {
-    QVBoxLayout *main = new QVBoxLayout();
-    QHBoxLayout *list = new QHBoxLayout();
-    QHBoxLayout *buttons = new QHBoxLayout();
+    main = new QVBoxLayout();
+    list = new QHBoxLayout();
+    buttons = new QHBoxLayout();
     listWidget = new QListWidget();
-    QPushButton *cancel = new QPushButton(tr("Cancel"));
-    QPushButton *confirm = new QPushButton(tr("Confirm"));
+    cancel = new QPushButton(tr("Cancel"));
+    confirm = new QPushButton(tr("Confirm"));
 
     QStringList files = maps.keys();
     for (int i = 0; i < files.size(); ++i)
@@ -47,4 +47,10 @@ void QMapSelectionDialog::accept()
 
 QMapSelectionDialog::~QMapSelectionDialog()
 {
+	delete listWidget;
+	delete cancel;
+	delete confirm;
+	delete list;
+	delete buttons;
+	delete main;
 }
