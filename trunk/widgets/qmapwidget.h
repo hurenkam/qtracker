@@ -12,29 +12,40 @@ class QMapWidget : public QGaugeWidget
 public:
     QMapWidget(QWidget *parent = 0);
     ~QMapWidget();
+    bool IsPositionOnMap() { return (meta && meta->IsPositionOnMap(latitude,longitude)); }
 
 public slots:
     void updatePosition(double lat, double lon);
-    void followGPSPosition();
     void moveMap(int x, int y);
     void SelectMap();
-    void SelectBestMapForCurrentPosition();
     void FindMapsForCurrentPosition(QStringList& found);
-    void LoadMap(QString filename);
+    void MapSelected(QString map);
+    void FollowGPS();
 
 protected:
+    bool LoadMap(QString filename);
+    bool SelectBestMapForCurrentPosition();
+    bool SetCursorToCurrentPosition()
+    {
+        if (meta)
+            meta->Wgs2XY(latitude,longitude,x,y);
+    }
     virtual void paintEvent(QPaintEvent *event);
     void CreateMapList();
 
 private:
+    static const int StNoMap = 0;
+    static const int StScrolling = 1;
+    static const int StFollowGPS = 2;
+    int state;
+    double zoom;
+
+    double x, y;
     double latitude;
     double longitude;
-    QPoint cursor;
     QImage* mapimage;
     QImage* bgimage;
-    bool scrolling;
     QMapMetaData *meta;
-    //bool onmap;
     QMapList maplist;
 };
 
