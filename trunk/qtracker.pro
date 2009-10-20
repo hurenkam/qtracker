@@ -51,7 +51,7 @@ symbian {
         images/splash.png
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 1.0.3
+    VERSION = 1.0.4
     TARGET.EPOCHEAPSIZE = 0x20000 \
         0x2400000
     TARGET.EPOCSTACKSIZE += 0x14000
