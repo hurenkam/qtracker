@@ -4,7 +4,8 @@
 #include <QStringList>
 #include "qmapselectiondialog.h"
 
-QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
+//QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
+QMapSelectionDialog::QMapSelectionDialog(QStringList& files, QWidget *parent)
     : QDialog(parent)
 {
     main = new QVBoxLayout();
@@ -14,7 +15,7 @@ QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
     cancel = new QPushButton(tr("Cancel"));
     confirm = new QPushButton(tr("Confirm"));
 
-    QStringList files = maps.keys();
+    //QStringList files = maps.keys();
     for (int i = 0; i < files.size(); ++i)
     {
         new QListWidgetItem(files[i], listWidget);
@@ -47,10 +48,10 @@ void QMapSelectionDialog::accept()
 
 QMapSelectionDialog::~QMapSelectionDialog()
 {
-	delete listWidget;
-	delete cancel;
-	delete confirm;
-	delete list;
-	delete buttons;
-	delete main;
+        delete listWidget;
+        delete cancel;
+        delete confirm;
+        delete list;
+        delete buttons;
+        delete main;
 }

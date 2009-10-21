@@ -40,6 +40,7 @@ public slots:
     void GaugeOptions(int i);
     void resetDistance();
     void resetTimer();
+    void ToggleMap();
 
 protected:
     void InitWidgets();
@@ -79,6 +80,7 @@ private:
     bool posvalid;
 
     bool showmap;
+    bool mapzoomed;
 };
 
 #endif /* QDASHWINDOW_H_ */
