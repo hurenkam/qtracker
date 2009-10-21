@@ -2,6 +2,7 @@
 #define QMAPWIDGET_H
 
 #include <QWidget>
+#include <QPushButton>
 #include "qgaugewidget.h"
 #include "qmapmetadata.h"
 
@@ -21,6 +22,9 @@ public slots:
     void FindMapsForCurrentPosition(QStringList& found);
     void MapSelected(QString map);
     void FollowGPS();
+    
+private slots:
+    void zoomRepeat();
 
 protected:
     bool LoadMap(QString filename);
@@ -34,19 +38,29 @@ protected:
     void CreateMapList();
 
 private:
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    
     static const int StNoMap = 0;
     static const int StScrolling = 1;
     static const int StFollowGPS = 2;
     int state;
-    double zoom;
+    int zoom;
 
     double x, y;
     double latitude;
     double longitude;
     QImage* mapimage;
     QImage* bgimage;
+    QImage* svgZoomIn;
+    QImage* svgZoomOut;
+    //QPushButton *btnZoomIn;
+    //QPushButton *btnZoomOut;
     QMapMetaData *meta;
     QMapList maplist;
+    int zooming;
+    QTimer zoomtimer;
 };
 
 #endif // QMAPWIDGET_H
