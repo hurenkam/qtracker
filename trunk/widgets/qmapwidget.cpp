@@ -33,13 +33,20 @@ QMapWidget::QMapWidget(QWidget *parent)
     , bgimage(new QImage(QString(UIDIR "map.svg")))
     , svgZoomIn(new QImage(QString(UIDIR "zoom-in.svg")))
     , svgZoomOut(new QImage(QString(UIDIR "zoom-out.svg")))
+    , svgOptions(new QImage(QString(UIDIR "options.svg")))
+    , svgHome(new QImage(QString(UIDIR "home.svg")))
     , zooming(0)
 {
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
-    connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
-    connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMap()));
+    //connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
+    connect(this, SIGNAL(doubleTap()), this, SLOT(FollowGPS()));
     CreateMapList();
     connect(&zoomtimer,SIGNAL(timeout()),this,SLOT(zoomRepeat()));
+    zoomtimer.setInterval(150);
+    connect(this, SIGNAL(zoomin()), this, SLOT(zoomIn()));
+    connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
+    connect(this, SIGNAL(options()), this, SLOT(SelectMap()));  // to be menu
+    connect(this, SIGNAL(home()), this, SLOT(SelectMapForCurrentPosition()));
 }
 
 QMapWidget::~QMapWidget()
@@ -142,7 +149,22 @@ void QMapWidget::MapSelected(QString map)
 
 void QMapWidget::SelectMap()
 {
-    QMapSelectionDialog *dialog = new QMapSelectionDialog(maplist);
+    QStringList files = maplist.keys();
+    QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
+    connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
+    dialog->setModal(true);
+#ifdef Q_OS_SYMBIAN
+    dialog->showFullScreen();
+#else
+    dialog->show();
+#endif
+}
+
+void QMapWidget::SelectMapForCurrentPosition()
+{
+    QStringList files;
+    FindMapsForCurrentPosition(files);
+    QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
     connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
     dialog->setModal(true);
 #ifdef Q_OS_SYMBIAN
@@ -211,55 +233,56 @@ void QMapWidget::FollowGPS()
 
 void QMapWidget::zoomRepeat()
 {
-	zoom += zooming;
-	if (zoom > zoommax) zoom = zoommax;
-	if (zoom < 0) zoom = 0;
-    zoomtimer.setInterval(150);
-	update();
+    zoom += zooming;
+    if (zoom > zoommax) zoom = zoommax;
+    if (zoom < 0) zoom = 0;
+    update();
+}
+
+void QMapWidget::zoomIn()
+{
+    zooming = -1;
+    zoomRepeat();
+    zoomtimer.start();
+}
+
+void QMapWidget::zoomOut()
+{
+    zooming = +1;
+    zoomRepeat();
+    zoomtimer.start();
 }
 
 void QMapWidget::mousePressEvent(QMouseEvent *event)
 {
-	if ((event->pos().x() > width()-75) && (event->pos().y() < 75))
-	{
-		zooming = -1;
-		zoomRepeat();
-	}
-	else if ((event->pos().x() > width()-75) && (event->pos().y() > height()-75))
-	{
-        zooming = 1;
-        zoomRepeat();
-	}
-	else
-		QGaugeWidget::mousePressEvent(event);
-	
-	if (zooming != 0)
-	{
-	    zoomtimer.setInterval(350);
-        zoomtimer.start();
-	}
+    if ((event->pos().x() > width()-75) && (event->pos().y() < 75)) emit zoomin();
+    else if ((event->pos().x() > width()-75) && (event->pos().y() > height()-75)) emit zoomout();
+    else if ((event->pos().x() < 75) && (event->pos().y() < 75)) emit home();
+    else if ((event->pos().x() < 75) && (event->pos().y() > height()-75)) emit options();
+    else
+        QGaugeWidget::mousePressEvent(event);
 }
 
 void QMapWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if (zooming == 0)
-		QGaugeWidget::mouseMoveEvent(event);
+                QGaugeWidget::mouseMoveEvent(event);
 }
 
 void QMapWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (zooming == 0)
-	{
-		QGaugeWidget::mouseReleaseEvent(event);
-	}
-	zooming = 0;
-	zoomtimer.stop();
+        if (zooming == 0)
+        {
+                QGaugeWidget::mouseReleaseEvent(event);
+        }
+        zooming = 0;
+        zoomtimer.stop();
 }
 
 void QMapWidget::paintEvent(QPaintEvent *event)
 {
-	QWidget::paintEvent(event);
-	
+        QWidget::paintEvent(event);
+
     double w = width();
     double h = height();
     double s = h / 36;
@@ -273,7 +296,7 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     painter.setViewport(20,20,w-40,h-40);
     if (mapimage)
     {
-		double z = zoomlevels[zoom];
+                double z = zoomlevels[zoom];
         source = QRectF(w*z/-2 + x, h*z/-2 + y, w*z, h*z);
         target = QRectF(w*z/-2, h*z/-2, w*z, h*z);
         painter.setWindow(-w/2*z,-h/2*z,w*z,h*z);
@@ -282,9 +305,14 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     }
     source = QRectF(0,0,48,48);
     target = QRectF(w/2-48,h/-2,48,48);
+    painter.setViewport(12,12,w-24,h-24);
     painter.drawImage(target, *svgZoomIn, source);
     target = QRectF(w/2-48,h/2-48,48,48);
     painter.drawImage(target, *svgZoomOut, source);
+    target = QRectF(w/-2,h/2-48,48,48);
+    painter.drawImage(target, *svgOptions, source);
+    target = QRectF(w/-2,h/-2,48,48);
+    painter.drawImage(target, *svgHome, source);
 
     if ((state == StScrolling) || (!IsPositionOnMap()))
     {

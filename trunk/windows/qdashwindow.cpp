@@ -149,6 +149,7 @@ QDashWindow::QDashWindow(QWidget *parent)
         , timevalid(false)
         , posvalid(false)
         , showmap(true)
+        , mapzoomed(false)
 {
     LoadImages();
     InitWidgets();
@@ -171,9 +172,10 @@ QDashWindow::QDashWindow(QWidget *parent)
     connect(&location, SIGNAL(altitudeChanged(double,float)), this, SLOT(updateAltitude(double)));
     connect(&location, SIGNAL(speedChanged(float)), this, SLOT(updateSpeed(float)));
     connect(&location, SIGNAL(headingChanged(float)), this, SLOT(updateHeading(float)));
-    
+
     connect(speed, SIGNAL(doubleTap()), this, SLOT(resetDistance()));
     connect(timer, SIGNAL(doubleTap()), this, SLOT(resetTimer()));
+    connect(map, SIGNAL(singleTap()), this, SLOT(ToggleMap()));
 
     t->start(1000);
     if (location.open() == XQLocation::NoError)
@@ -345,21 +347,34 @@ void QDashWindow::locationChanged(
     if (zoomstep != 0) return;
 
     updateDistance(lat,lon);
-    //updateHeading(course);
-    //updateSpeed(s);
-    //updateAltitude(alt);
-    //satview->update();
     if (zoomgauge == 0)
         map->updatePosition(lat,lon);
 }
 
+void QDashWindow::ToggleMap()
+{
+    mapzoomed = !mapzoomed;
+    Setup();
+    update();
+}
+
 void QDashWindow::Setup()
 {
+    if (mapzoomed)
+    {
+        for (int i =0; i<6; i++)
+            gauges[i]->hide();
+
+        map->setGeometry(0,0,width(),height());
+        return;
+    }
+
     if (zoomstep == 0)
     {
         for (int i = 0; i<6; i++)
         {
             gauges[i]->setGeometry(GetRect(landscape,i,zoomgauge));
+            gauges[i]->show();
         }
     }
     else
@@ -369,18 +384,23 @@ void QDashWindow::Setup()
         {
             r = GetIntermediateRect(landscape,i,zoomgauge,tozoom,zoomstep);
             gauges[i]->setGeometry(r);
+            gauges[i]->show();
         }
     }
 
     if ( zoomstep == 0)             // No transition
     {
         if (zoomgauge != 0)         // Gauge zoomed
-            map->setGeometry(0,0,0,0);
+            //map->setGeometry(0,0,0,0);
+            map->hide();
         else                        // Map visibile
+        {
             if (landscape)          // Landscape
                 map->setGeometry(120,0,400,360);
             else                    // Portrait
                 map->setGeometry(0,120,360,400);
+            map->show();
+        }
     }
     else                            // In Transition
     {
@@ -391,6 +411,7 @@ void QDashWindow::Setup()
                 map->setGeometry(120,0+delta,400,360+delta);
             else
                 map->setGeometry(0+delta,120,360+delta,400);
+            map->show();
         }
         if (zoomgauge == 0)
         {
@@ -398,6 +419,7 @@ void QDashWindow::Setup()
                 map->setGeometry(120,360-delta,400,720-delta);
             else
                 map->setGeometry(360-delta,120,720-delta,400);
+            map->show();
         }
     }
 }

@@ -13,22 +13,23 @@ class QMapSelectionDialog : public QDialog
     Q_OBJECT
 
 public:
-    QMapSelectionDialog(QMapList& maps, QWidget *parent = 0);
+    //QMapSelectionDialog(QMapList& maps, QWidget *parent = 0);
+    QMapSelectionDialog(QStringList& files, QWidget *parent = 0);
     ~QMapSelectionDialog();
 
 signals:
-	void selectmap(QString);
+        void selectmap(QString);
 
 public slots:
-	virtual void accept();
+        virtual void accept();
 
 private:
-	QPushButton *confirm;
-	QPushButton *cancel;
-	QHBoxLayout *list;
-	QHBoxLayout *buttons;
-	QVBoxLayout *main;
-	QListWidget *listWidget;
+        QPushButton *confirm;
+        QPushButton *cancel;
+        QHBoxLayout *list;
+        QHBoxLayout *buttons;
+        QVBoxLayout *main;
+        QListWidget *listWidget;
 };
 
 
