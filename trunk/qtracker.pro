@@ -48,7 +48,9 @@ symbian {
         images/style.css \
         images/speedneedle.svg \
         images/map.svg \
-        images/splash.png
+        images/splash.png \
+        images/zoom-in.svg \
+        images/zoom-out.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
     VERSION = 1.0.4
