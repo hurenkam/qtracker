@@ -50,7 +50,10 @@ symbian {
         images/map.svg \
         images/splash.png \
         images/zoom-in.svg \
-        images/zoom-out.svg
+        images/zoom-out.svg \
+        images/home.svg \
+        images/options.svg \
+        images/statusbar.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
     VERSION = 1.0.4

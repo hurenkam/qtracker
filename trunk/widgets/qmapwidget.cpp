@@ -40,8 +40,8 @@ QMapWidget::QMapWidget(QWidget *parent)
     , mapname("<no map loaded>")
 {
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
-    //connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
-    connect(this, SIGNAL(doubleTap()), this, SLOT(FollowGPS()));
+    connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
+    connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMapForCurrentPosition()));
     CreateMapList();
     connect(&zoomtimer,SIGNAL(timeout()),this,SLOT(zoomRepeat()));
     zoomtimer.setInterval(150);
@@ -168,14 +168,25 @@ void QMapWidget::SelectMapForCurrentPosition()
 {
     QStringList files;
     FindMapsForCurrentPosition(files);
-    QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
-    connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
-    dialog->setModal(true);
-#ifdef Q_OS_SYMBIAN
-    dialog->showFullScreen();
-#else
-    dialog->show();
-#endif
+    
+    if (files.length() > 0)
+    {
+		QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
+		connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
+		dialog->setModal(true);
+	#ifdef Q_OS_SYMBIAN
+		dialog->showFullScreen();
+	#else
+		dialog->show();
+	#endif
+    }
+    else
+	{
+		QMessageBox msg;
+		msg.setText(QString("No maps available for this location"));
+		msg.setIcon(QMessageBox::Warning);
+		msg.exec();
+	}
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
