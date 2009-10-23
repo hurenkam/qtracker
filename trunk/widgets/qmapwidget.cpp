@@ -35,7 +35,9 @@ QMapWidget::QMapWidget(QWidget *parent)
     , svgZoomOut(new QImage(QString(UIDIR "zoom-out.svg")))
     , svgOptions(new QImage(QString(UIDIR "options.svg")))
     , svgHome(new QImage(QString(UIDIR "home.svg")))
+    , svgBar(new QImage(QString(UIDIR "statusbar.svg")))
     , zooming(0)
+    , mapname("<no map loaded>")
 {
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     //connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
@@ -127,6 +129,7 @@ bool QMapWidget::LoadMap(QString filename)
             msg.setText(QString("Unable to load map ") + filename);
             msg.setIcon(QMessageBox::Warning);
             msg.exec();
+            mapname = QString("<no map loaded>");
     }
     else
     {
@@ -134,6 +137,7 @@ bool QMapWidget::LoadMap(QString filename)
             meta->Calibrate();
             x = mapimage->width()/2;
             y = mapimage->height()/2;
+            mapname = filename;
     }
     update();
     return result;
@@ -296,7 +300,7 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     painter.setViewport(20,20,w-40,h-40);
     if (mapimage)
     {
-                double z = zoomlevels[zoom];
+        double z = zoomlevels[zoom];
         source = QRectF(w*z/-2 + x, h*z/-2 + y, w*z, h*z);
         target = QRectF(w*z/-2, h*z/-2, w*z, h*z);
         painter.setWindow(-w/2*z,-h/2*z,w*z,h*z);
@@ -313,6 +317,20 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     painter.drawImage(target, *svgOptions, source);
     target = QRectF(w/-2,h/-2,48,48);
     painter.drawImage(target, *svgHome, source);
+    source = QRectF(0,0,300,48);
+    target = QRectF(w/-2,h/2-48,300,48);
+    painter.drawImage(target, *svgBar, source);
+
+    char buf[25];
+    sprintf(buf,"%s",mapname.toStdString().c_str());
+    painter.setFont(QFont("Courier", 168/TEXTDIVIDER));
+    QRect r = painter.boundingRect(w/-2+58,h/2-38,260,28, Qt::AlignLeft, buf);
+    painter.setPen(QPen(Qt::blue));
+    painter.drawText(r, Qt::AlignLeft, buf);
+
+    sprintf(buf,"%08.5fN %08.5fE",latitude,longitude);
+    r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, buf);
+    painter.drawText(r, Qt::AlignLeft, buf);
 
     if ((state == StScrolling) || (!IsPositionOnMap()))
     {

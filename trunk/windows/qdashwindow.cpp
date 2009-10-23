@@ -173,9 +173,9 @@ QDashWindow::QDashWindow(QWidget *parent)
     connect(&location, SIGNAL(speedChanged(float)), this, SLOT(updateSpeed(float)));
     connect(&location, SIGNAL(headingChanged(float)), this, SLOT(updateHeading(float)));
 
-    connect(speed, SIGNAL(doubleTap()), this, SLOT(resetDistance()));
-    connect(timer, SIGNAL(doubleTap()), this, SLOT(resetTimer()));
-    connect(map, SIGNAL(singleTap()), this, SLOT(ToggleMap()));
+    connect(speed, SIGNAL(longTap()), this, SLOT(resetDistance()));
+    connect(timer, SIGNAL(longTap()), this, SLOT(resetTimer()));
+    connect(map, SIGNAL(longTap()), this, SLOT(ToggleMap()));
 
     t->start(1000);
     if (location.open() == XQLocation::NoError)

@@ -14,8 +14,8 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
     , deltaneedle(0.0)
     , stepsneedle(0)
 {
-        timer = new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
 }
 
 void QHeadingWidget::timerStep()
