@@ -66,12 +66,14 @@ private:
     QImage* svgZoomOut;
     QImage* svgOptions;
     QImage* svgHome;
+    QImage* svgBar;
     //QPushButton *btnZoomIn;
     //QPushButton *btnZoomOut;
     QMapMetaData *meta;
     QMapList maplist;
     int zooming;
     QTimer zoomtimer;
+    QString mapname;
 };
 
 #endif // QMAPWIDGET_H
