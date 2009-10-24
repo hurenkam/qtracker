@@ -168,25 +168,25 @@ void QMapWidget::SelectMapForCurrentPosition()
 {
     QStringList files;
     FindMapsForCurrentPosition(files);
-    
+
     if (files.length() > 0)
     {
-		QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
-		connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
-		dialog->setModal(true);
-	#ifdef Q_OS_SYMBIAN
-		dialog->showFullScreen();
-	#else
-		dialog->show();
-	#endif
+                QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
+                connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
+                dialog->setModal(true);
+        #ifdef Q_OS_SYMBIAN
+                dialog->showFullScreen();
+        #else
+                dialog->show();
+        #endif
     }
     else
-	{
-		QMessageBox msg;
-		msg.setText(QString("No maps available for this location"));
-		msg.setIcon(QMessageBox::Warning);
-		msg.exec();
-	}
+        {
+                QMessageBox msg;
+                msg.setText(QString("No maps available for this location"));
+                msg.setIcon(QMessageBox::Warning);
+                msg.exec();
+        }
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
@@ -202,6 +202,8 @@ void QMapWidget::updatePosition(double lat, double lon)
 
 void QMapWidget::moveMap(int dx, int dy)
 {
+    if (!mapimage) return;
+
     x -= dx * zoomlevels[zoom];
     y -= dy * zoomlevels[zoom];
     if (state == StFollowGPS)
@@ -339,19 +341,28 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     painter.setPen(QPen(Qt::blue));
     painter.drawText(r, Qt::AlignLeft, buf);
 
-    sprintf(buf,"%08.5fN %08.5fE",latitude,longitude);
-    r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, buf);
-    painter.drawText(r, Qt::AlignLeft, buf);
-
     if ((state == StScrolling) || (!IsPositionOnMap()))
     {
         painter.setPen(Qt::red);
         painter.setBrush(Qt::red);
+        painter.drawEllipse(s/-2,s/-2,s,s);
+        painter.setPen(QPen(Qt::black));
+
+        double lat, lon;
+        if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
+            sprintf(buf,"%08.5fN %08.5fE",lat,lon);
+        else
+            sprintf(buf,"%04i,%04i",x,y);
     }
     else
     {
         painter.setPen(Qt::green);
         painter.setBrush(Qt::green);
+        painter.drawEllipse(s/-2,s/-2,s,s);
+        painter.setPen(QPen(Qt::blue));
+        sprintf(buf,"%08.5fN %08.5fE",latitude,longitude);
     }
-    painter.drawEllipse(s/-2,s/-2,s,s);
+
+    r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, buf);
+    painter.drawText(r, Qt::AlignLeft, buf);
 }
