@@ -38,3 +38,18 @@ void LoadImages()
     svgCompassNeedle.load(QString(UIDIR "compassneedle.svg"));
     svgSpeedNeedle.load(QString(UIDIR "speedneedle.svg"));
 }
+
+/* See also:
+ * http://www.mobilenme.com/content/view/48/26/
+ * http://discussion.forum.nokia.com/forum/showthread.php?t=114197
+
+QString GetInstallationDrive()
+{
+    TParsePtrC appparser(Application()->AppFullName());
+    TParse parser;
+    TPtrC drive = appparser.Drive();
+
+    QString text = QString::fromUtf16(textFromInterface.Ptr(),
+        textFromInterface.Length());
+}
+*/
