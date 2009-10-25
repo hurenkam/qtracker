@@ -18,13 +18,15 @@ public:
 signals:
     void zoomin();
     void zoomout();
-    void home();
+    void waypoint();
     void options();
+    void datum();
 
 public slots:
     void updatePosition(double lat, double lon);
     void moveMap(int x, int y);
     void SelectMap();
+    void SelectPoint();
     void SelectMapForCurrentPosition();
     void MapSelected(QString map);
     void FollowGPS();
@@ -65,7 +67,8 @@ private:
     QImage* svgZoomIn;
     QImage* svgZoomOut;
     QImage* svgOptions;
-    QImage* svgHome;
+    //QImage* svgHome;
+    QImage* svgFlag;
     QImage* svgBar;
     //QPushButton *btnZoomIn;
     //QPushButton *btnZoomOut;

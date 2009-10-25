@@ -5,6 +5,7 @@
 #include "ui.h"
 #include "qmapwidget.h"
 #include "qmapselectiondialog.h"
+#include "qwaypointdialog.h"
 
 #include <iostream>
 //#define LOG( a ) std::cout << a
@@ -34,7 +35,8 @@ QMapWidget::QMapWidget(QWidget *parent)
     , svgZoomIn(new QImage(QString(UIDIR "zoom-in.svg")))
     , svgZoomOut(new QImage(QString(UIDIR "zoom-out.svg")))
     , svgOptions(new QImage(QString(UIDIR "options.svg")))
-    , svgHome(new QImage(QString(UIDIR "home.svg")))
+    //, svgHome(new QImage(QString(UIDIR "home.svg")))
+    , svgFlag(new QImage(QString(UIDIR "flag.svg")))
     , svgBar(new QImage(QString(UIDIR "statusbar.svg")))
     , zooming(0)
     , mapname("<no map loaded>")
@@ -48,7 +50,9 @@ QMapWidget::QMapWidget(QWidget *parent)
     connect(this, SIGNAL(zoomin()), this, SLOT(zoomIn()));
     connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
     connect(this, SIGNAL(options()), this, SLOT(SelectMap()));  // to be menu
-    connect(this, SIGNAL(home()), this, SLOT(SelectMapForCurrentPosition()));
+    connect(this, SIGNAL(datum()), this, SLOT(SelectMap()));  // to be menu
+    //connect(this, SIGNAL(home()), this, SLOT(SelectMapForCurrentPosition()));
+    connect(this, SIGNAL(waypoint()), this, SLOT(SelectPoint()));
 }
 
 QMapWidget::~QMapWidget()
@@ -156,6 +160,30 @@ void QMapWidget::SelectMap()
     QStringList files = maplist.keys();
     QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
     connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
+    dialog->setModal(true);
+#ifdef Q_OS_SYMBIAN
+    dialog->showFullScreen();
+#else
+    dialog->show();
+#endif
+}
+
+void QMapWidget::SelectPoint()
+{
+    QWaypointDialog *dialog;
+
+    if ((state == StScrolling) || (!IsPositionOnMap()))
+    {
+        double lat=0, lon=0;
+        if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
+            dialog = new QWaypointDialog(QString("wpt"),lat,lon);
+    }
+    else
+    {
+        dialog = new QWaypointDialog(QString("wpt"),latitude,longitude);
+    }
+
+    //connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
     dialog->setModal(true);
 #ifdef Q_OS_SYMBIAN
     dialog->showFullScreen();
@@ -272,10 +300,11 @@ void QMapWidget::zoomOut()
 
 void QMapWidget::mousePressEvent(QMouseEvent *event)
 {
-    if ((event->pos().x() > width()-75) && (event->pos().y() < 75)) emit zoomin();
-    else if ((event->pos().x() > width()-75) && (event->pos().y() > height()-75)) emit zoomout();
-    else if ((event->pos().x() < 75) && (event->pos().y() < 75)) emit home();
-    else if ((event->pos().x() < 75) && (event->pos().y() > height()-75)) emit options();
+    if ((event->pos().x() > width()-60) && (event->pos().y() < 60)) emit zoomin();
+    else if ((event->pos().x() > width()-60) && (event->pos().y() > height()-60)) emit zoomout();
+    else if ((event->pos().x() < 60) && (event->pos().y() < 60)) emit waypoint();
+    else if ((event->pos().x() < 60) && (event->pos().y() > height()-60)) emit options();
+    else if ((event->pos().x() > 60) && (event->pos().x() < 260) && (event->pos().y() > height()-50)) emit datum();
     else
         QGaugeWidget::mousePressEvent(event);
 }
@@ -329,7 +358,7 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     target = QRectF(w/-2,h/2-48,48,48);
     painter.drawImage(target, *svgOptions, source);
     target = QRectF(w/-2,h/-2,48,48);
-    painter.drawImage(target, *svgHome, source);
+    painter.drawImage(target, *svgFlag, source);
     source = QRectF(0,0,300,48);
     target = QRectF(w/-2,h/2-48,300,48);
     painter.drawImage(target, *svgBar, source);

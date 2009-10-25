@@ -32,6 +32,7 @@ QMapSelectionDialog::QMapSelectionDialog(QStringList& files, QWidget *parent)
     cancel->show();
     confirm->show();
     setAttribute(Qt::WA_DeleteOnClose);
+    //setTitle(tr("Select Map"));
 
     connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
