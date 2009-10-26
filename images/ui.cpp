@@ -31,15 +31,15 @@ QImage svgSpeedNeedle;
 
 QString GetDrive()
 {
-	TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName()); 
-	TParse parser;
-	TPtrC drive = appparser.Drive();
-	return QString::fromUtf16(drive.Ptr());
+        TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
+        TParse parser;
+        TPtrC drive = appparser.Drive();
+        return QString::fromUtf16(drive.Ptr(),drive.Length());
 }
 #else
 QString GetDrive()
 {
-    return tr("");
+    return QString("");
 }
 #endif
 
