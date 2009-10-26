@@ -23,20 +23,40 @@ QImage svgSpeedNeedle;
 //QImage svgMap;
 //QImage jpgMap;
 
+#ifdef Q_OS_SYMBIAN
+#include "f32file.h" // efsrv.lib
+#include "eikenv.h" // eikcore.lib
+#include "eikappui.h" // eikcore.lib
+#include "eikapp.h" // eikcore.lib
+
+QString GetDrive()
+{
+	TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName()); 
+	TParse parser;
+	TPtrC drive = appparser.Drive();
+	return QString::fromUtf16(drive.Ptr());
+}
+#else
+QString GetDrive()
+{
+    return tr("");
+}
+#endif
+
 void LoadImages()
 {
-    svgClock.load(QString(UIDIR "clock.svg"));
-    svgAltitude.load(QString(UIDIR "speed10.svg"));
-    svgHeading.load(QString(UIDIR "compass.svg"));
-    svgSatView.load(QString(UIDIR "satview.svg"));
-    svgSpeed10.load(QString(UIDIR "speed10.svg"));
-    svgSpeed200.load(QString(UIDIR "speed200.svg"));
+    svgClock.load(GetDrive() + QString( UIDIR "clock.svg"));
+    svgAltitude.load(GetDrive() + QString(UIDIR "speed10.svg"));
+    svgHeading.load(GetDrive() + QString(UIDIR "compass.svg"));
+    svgSatView.load(GetDrive() + QString(UIDIR "satview.svg"));
+    svgSpeed10.load(GetDrive() + QString(UIDIR "speed10.svg"));
+    svgSpeed200.load(GetDrive() + QString(UIDIR "speed200.svg"));
 
-    svgLong.load(QString(UIDIR "longhand.svg"));
-    svgShort.load(QString(UIDIR "shorthand.svg"));
-    svgSecond.load(QString(UIDIR "secondhand.svg"));
-    svgCompassNeedle.load(QString(UIDIR "compassneedle.svg"));
-    svgSpeedNeedle.load(QString(UIDIR "speedneedle.svg"));
+    svgLong.load(GetDrive() + QString(UIDIR "longhand.svg"));
+    svgShort.load(GetDrive() + QString(UIDIR "shorthand.svg"));
+    svgSecond.load(GetDrive() + QString(UIDIR "secondhand.svg"));
+    svgCompassNeedle.load(GetDrive() + QString(UIDIR "compassneedle.svg"));
+    svgSpeedNeedle.load(GetDrive() + QString(UIDIR "speedneedle.svg"));
 }
 
 /* See also:
