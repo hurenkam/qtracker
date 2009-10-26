@@ -22,11 +22,8 @@ extern QImage svgSecond;
 extern QImage svgCompassNeedle;
 extern QImage svgSpeedNeedle;
 
-//extern QImage svgMap;
-//extern QImage jpgMap;
-
 #ifdef Q_OS_SYMBIAN
-#define UIDIR "c:/private/EA82CEF3/ui/"
+#define UIDIR "/private/EA82CEF3/ui/"
 #define TEXTDIVIDER 36
 #else
 #define UIDIR "/Users/hurenkam/workspace/qtracker/images/"
@@ -34,4 +31,5 @@ extern QImage svgSpeedNeedle;
 #endif
 
 void LoadImages();
+QString GetDrive();
 #endif /* UI_H_ */
