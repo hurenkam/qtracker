@@ -5,6 +5,7 @@
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -26,29 +27,27 @@ class QWaypointDialog : public QDialog
     Q_OBJECT
 
 public:
-    //QMapSelectionDialog(QMapList& maps, QWidget *parent = 0);
     QWaypointDialog(QString name, double lat, double lon, QWidget *parent = 0);
     ~QWaypointDialog();
 
 signals:
-        void confirmed(QString,double,double);
+	void confirmed(QString,double,double);
 
 public slots:
-        virtual void accept();
+	virtual void accept();
 
 private:
-        QPushButton *confirm;
-        QPushButton *cancel;
-        QGroupBox   *groupbox;
-        QVBoxLayout *leftbox;
-        QVBoxLayout *rightbox;
-        QHBoxLayout *buttons;
-        QVBoxLayout *mainbox;
-        QHBoxLayout *databox;
+	QPushButton *confirm;
+	QPushButton *cancel;
+	QGroupBox   *groupbox;
+	QGridLayout *gridbox;
+	QHBoxLayout *buttons;
+	QVBoxLayout *mainbox;
+	QHBoxLayout *databox;
 
-        QLineEdit   *wptname;
-        QDoubleEdit *latitude;
-        QDoubleEdit *longitude;
+	QLineEdit   *wptname;
+	QDoubleEdit *latitude;
+	QDoubleEdit *longitude;
 };
 
 

@@ -1,5 +1,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QPushButton>
 #include <QStringList>
 #include <QLabel>
@@ -7,16 +8,14 @@
 #include <QDoubleValidator>
 #include "qwaypointdialog.h"
 
-//QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
 QWaypointDialog::QWaypointDialog(QString name, double lat, double lon, QWidget *parent)
     : QDialog(parent)
 {
     mainbox =  new QVBoxLayout();
-    leftbox =  new QVBoxLayout();
-    rightbox = new QVBoxLayout();
+    gridbox = new QGridLayout();
     groupbox = new QGroupBox(tr("Add Waypoint:"));
+    groupbox->setLayout(gridbox);
     buttons =  new QHBoxLayout();
-    databox = new QHBoxLayout();
     wptname = new QLineEdit(name,this);
     latitude = new QDoubleEdit(lat,this);
     longitude = new QDoubleEdit(lon,this);
@@ -24,15 +23,12 @@ QWaypointDialog::QWaypointDialog(QString name, double lat, double lon, QWidget *
     cancel =  new QPushButton(tr("Cancel"));
     confirm = new QPushButton(tr("Confirm"));
 
-    leftbox->addWidget(new QLabel(tr("Name:")));
-    leftbox->addWidget(new QLabel(tr("Latitude:")));
-    leftbox->addWidget(new QLabel(tr("Longitude:")));
-    rightbox->addWidget(wptname);
-    rightbox->addWidget(latitude);
-    rightbox->addWidget(longitude);
-    databox->addLayout(leftbox);
-    databox->addLayout(rightbox);
-    groupbox->setLayout(databox);
+    gridbox->addWidget(new QLabel(tr("Name:")),0,0);
+    gridbox->addWidget(new QLabel(tr("Latitude:")),1,0);
+    gridbox->addWidget(new QLabel(tr("Longitude:")),2,0);
+    gridbox->addWidget(wptname,0,1);
+    gridbox->addWidget(latitude,1,1);
+    gridbox->addWidget(longitude,2,1);
 
     buttons->addWidget(confirm);
     buttons->addWidget(cancel);
@@ -43,7 +39,6 @@ QWaypointDialog::QWaypointDialog(QString name, double lat, double lon, QWidget *
     cancel->show();
     confirm->show();
     setAttribute(Qt::WA_DeleteOnClose);
-    //setTitle(tr("Select Point"));
 
     connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
@@ -52,24 +47,23 @@ QWaypointDialog::QWaypointDialog(QString name, double lat, double lon, QWidget *
 
 void QWaypointDialog::accept()
 {
-        QString name = wptname->text();
-        double lat = latitude->text().toDouble();
-        double lon = longitude->text().toDouble();
-        emit confirmed(name,lat,lon);
-        QDialog::accept();
-        close();
+	QString name = wptname->text();
+	double lat = latitude->text().toDouble();
+	double lon = longitude->text().toDouble();
+	emit confirmed(name,lat,lon);
+	QDialog::accept();
+	close();
 }
 
 QWaypointDialog::~QWaypointDialog()
 {
-        delete wptname;
-        delete latitude;
-        delete longitude;
-        delete cancel;
-        delete confirm;
-        delete leftbox;
-        delete rightbox;
-        delete databox;
-        delete buttons;
-        delete mainbox;
+	delete wptname;
+	delete latitude;
+	delete longitude;
+	delete cancel;
+	delete confirm;
+	delete databox;
+	delete buttons;
+	delete gridbox;
+	delete mainbox;
 }

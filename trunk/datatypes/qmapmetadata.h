@@ -31,6 +31,9 @@ class QMapMetaData: public QObject
 public:
     QMapMetaData(QString filename);
     ~QMapMetaData();
+    bool AddRefPoint(double lat, double lon, int x, int y);
+    void Save();
+    
     void Calibrate();
     bool WgsArea(double& lat1, double& lon1, double& lat2, double& lon2);
     bool XY2Wgs(double ax, double ay, double& alat, double& alon);
@@ -48,6 +51,9 @@ private:
     void ReadMapElement(QXmlStreamReader& xml);
     void ReadResolutionElement(QXmlStreamReader& xml);
     void ReadRefpointElement(QXmlStreamReader& xml);
+    void SaveResolutionElement(QXmlStreamWriter& xml);
+    void SaveRefpointElement(QXmlStreamWriter& xml, RefPoint& r);
+    void SaveMapElement(QXmlStreamWriter& xml);
 
     void CalculateIndexesFromRefpoints(int i, int j);
     bool IsValidRefpointPair(int i, int j);
@@ -56,7 +62,8 @@ private:
     int width;
     int height;
     int count;
-    QString filename;
+    QString imagefilename;
+    QString metafilename;
 
     int x;
     int y;

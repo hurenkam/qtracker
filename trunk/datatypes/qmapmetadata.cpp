@@ -1,4 +1,5 @@
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 #include <QString>
 #include "qmapmetadata.h"
 
@@ -40,8 +41,9 @@ QMapMetaData::QMapMetaData(QString filename)
     : iscalibrated(false)
     , count(0)
 {
+    metafilename = filename;
     QXmlStreamReader xml;
-    QFile file(filename);
+    QFile file(metafilename);
     QXmlStreamReader::TokenType tt;
     file.open(QIODevice::ReadOnly);
     file.readLine();
@@ -77,10 +79,69 @@ QMapMetaData::QMapMetaData(QString filename)
     Calibrate();
 }
 
+bool QMapMetaData::AddRefPoint(double lat, double lon, int x, int y)
+{
+	if ((count <0) || (count>9)) return false;
+	
+	refpoints[count].setX(x);
+	refpoints[count].setY(y);
+	refpoints[count].setLatitude(lat);
+	refpoints[count].setLongitude(lon);
+	LOG( "QMapMetaData::AddRefpoint("<< count << "): " << refpoints[count].X() << " " << refpoints[count].Y() << " "\
+		 << refpoints[count].Latitude() << " " << refpoints[count].Longitude() << "\n"; )
+	count++;
+	
+	Save();
+	return true;
+}
+
+void QMapMetaData::SaveResolutionElement(QXmlStreamWriter& xml)
+{
+	xml.writeStartElement("resolution");
+	xml.writeAttribute("width",QVariant(width).toString());
+	xml.writeAttribute("height",QVariant(height).toString());
+	xml.writeEndElement(); // resolution
+}
+
+void QMapMetaData::SaveRefpointElement(QXmlStreamWriter& xml, RefPoint& r)
+{
+	xml.writeStartElement("refpoint");
+	xml.writeAttribute("lat",QVariant(r.Latitude()).toString());
+	xml.writeAttribute("lon",QVariant(r.Longitude()).toString());
+	xml.writeAttribute("x",QVariant(r.X()).toString());
+	xml.writeAttribute("y",QVariant(r.Y()).toString());
+	xml.writeEndElement(); // refpoint
+}
+
+void QMapMetaData::SaveMapElement(QXmlStreamWriter& xml)
+{
+	xml.writeStartElement("map");
+	xml.writeAttribute("imagefile",imagefilename);
+	SaveResolutionElement(xml);
+	for (int i =0; i<count; ++i)
+	{
+		SaveRefpointElement(xml,refpoints[i]);
+	}
+	xml.writeEndElement(); // map
+}
+
+void QMapMetaData::Save()
+{
+	QXmlStreamWriter xml;
+	QFile file(metafilename);
+	file.open(QIODevice::WriteOnly);
+    xml.setDevice(&file);
+    xml.setAutoFormatting(true);
+    xml.writeStartDocument("1.0");
+    SaveMapElement(xml);
+    xml.writeEndDocument();
+	file.close();
+}
+
 void QMapMetaData::ReadMapElement(QXmlStreamReader& xml)
 {
     QXmlStreamAttributes attribs = xml.attributes();
-    filename = attribs.value(QString(),QString("imagefile")).toString();
+    imagefilename = attribs.value(QString(),QString("imagefile")).toString();
 }
 
 void QMapMetaData::ReadResolutionElement(QXmlStreamReader& xml)
