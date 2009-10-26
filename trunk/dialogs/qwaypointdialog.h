@@ -31,23 +31,22 @@ public:
     ~QWaypointDialog();
 
 signals:
-	void confirmed(QString,double,double);
+    void confirmed(QString,double,double);
 
 public slots:
-	virtual void accept();
+    virtual void accept();
 
 private:
-	QPushButton *confirm;
-	QPushButton *cancel;
-	QGroupBox   *groupbox;
-	QGridLayout *gridbox;
-	QHBoxLayout *buttons;
-	QVBoxLayout *mainbox;
-	QHBoxLayout *databox;
+    QPushButton *confirm;
+    QPushButton *cancel;
+    QGroupBox   *groupbox;
+    QGridLayout *gridbox;
+    QHBoxLayout *buttons;
+    QVBoxLayout *mainbox;
 
-	QLineEdit   *wptname;
-	QDoubleEdit *latitude;
-	QDoubleEdit *longitude;
+    QLineEdit   *wptname;
+    QDoubleEdit *latitude;
+    QDoubleEdit *longitude;
 };
 
 

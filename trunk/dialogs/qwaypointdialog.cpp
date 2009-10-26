@@ -47,23 +47,22 @@ QWaypointDialog::QWaypointDialog(QString name, double lat, double lon, QWidget *
 
 void QWaypointDialog::accept()
 {
-	QString name = wptname->text();
-	double lat = latitude->text().toDouble();
-	double lon = longitude->text().toDouble();
-	emit confirmed(name,lat,lon);
-	QDialog::accept();
-	close();
+    QString name = wptname->text();
+    double lat = latitude->text().toDouble();
+    double lon = longitude->text().toDouble();
+    emit confirmed(name,lat,lon);
+    QDialog::accept();
+    close();
 }
 
 QWaypointDialog::~QWaypointDialog()
 {
-	delete wptname;
-	delete latitude;
-	delete longitude;
-	delete cancel;
-	delete confirm;
-	delete databox;
-	delete buttons;
-	delete gridbox;
-	delete mainbox;
+    delete wptname;
+    delete latitude;
+    delete longitude;
+    delete cancel;
+    delete confirm;
+    delete buttons;
+    delete gridbox;
+    delete mainbox;
 }
