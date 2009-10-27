@@ -32,4 +32,5 @@ extern QImage svgSpeedNeedle;
 
 void LoadImages();
 QString GetDrive();
+QString GetDriveAndPath();
 #endif /* UI_H_ */

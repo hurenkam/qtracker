@@ -32,20 +32,31 @@ QImage svgSpeedNeedle;
 QString GetDrive()
 {
         TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
-        TParse parser;
         TPtrC drive = appparser.Drive();
+        //if (drive.Length() > 0)
         return QString::fromUtf16(drive.Ptr(),drive.Length());
+        //return QString("C:");
+}
+QString GetDriveAndPath()
+{
+        TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
+        TPtrC driveandpath = appparser.DriveAndPath();
+		return QString::fromUtf16(driveandpath.Ptr(),driveandpath.Length());
 }
 #else
 QString GetDrive()
 {
     return QString("");
 }
+QString GetDriveAndPath()
+{
+    return QString("/Users/hurenkam/workspace/qtracker/");
+}
 #endif
 
 void LoadImages()
 {
-    svgClock.load(GetDrive() + QString( UIDIR "clock.svg"));
+    svgClock.load(GetDrive() + QString(UIDIR "clock.svg"));
     svgAltitude.load(GetDrive() + QString(UIDIR "speed10.svg"));
     svgHeading.load(GetDrive() + QString(UIDIR "compass.svg"));
     svgSatView.load(GetDrive() + QString(UIDIR "satview.svg"));

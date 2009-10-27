@@ -16,7 +16,7 @@ const int     zoomneutral = 3;
 const int	  zoommax = 6;
 
 #ifdef Q_OS_SYMBIAN
-#define MAPDIR "c:/data/qtracker/maps/"
+#define MAPDIR "/data/qtracker/maps/"
 #else
 #define MAPDIR "/Users/hurenkam/workspace/qtracker/maps/"
 #endif
@@ -31,13 +31,13 @@ QMapWidget::QMapWidget(QWidget *parent)
     , longitude(0)
     , meta(0)
     , mapimage(0)
-    , bgimage(new QImage(QString(UIDIR "map.svg")))
-    , svgZoomIn(new QImage(QString(UIDIR "zoom-in.svg")))
-    , svgZoomOut(new QImage(QString(UIDIR "zoom-out.svg")))
-    , svgOptions(new QImage(QString(UIDIR "options.svg")))
-    //, svgHome(new QImage(QString(UIDIR "home.svg")))
-    , svgFlag(new QImage(QString(UIDIR "flag.svg")))
-    , svgBar(new QImage(QString(UIDIR "statusbar.svg")))
+    , bgimage(new QImage(GetDrive() + QString(UIDIR "map.svg")))
+    , svgZoomIn(new QImage(GetDrive() + QString(UIDIR "zoom-in.svg")))
+    , svgZoomOut(new QImage(GetDrive() + QString(UIDIR "zoom-out.svg")))
+    , svgOptions(new QImage(GetDrive() + QString(UIDIR "options.svg")))
+    //, svgHome(new QImage(GetDrive() + QString(UIDIR "home.svg")))
+    , svgFlag(new QImage(GetDrive() + QString(UIDIR "flag.svg")))
+    , svgBar(new QImage(GetDrive() + QString(UIDIR "statusbar.svg")))
     , zooming(0)
     , mapname("<no map loaded>")
 {
@@ -69,7 +69,7 @@ QMapWidget::~QMapWidget()
 
 void QMapWidget::CreateMapList()
 {
-    QDir directory = QDir(MAPDIR);
+    QDir directory = QDir(GetDrive() + QString(MAPDIR));
 
     QStringList files = directory.entryList(QStringList(QString("*.xml")),
                                  QDir::Files | QDir::NoSymLinks);
@@ -77,7 +77,7 @@ void QMapWidget::CreateMapList()
     for (int i = 0; i < files.size(); ++i)
     {
         LOG( "QMapWidget::CreateMapList() " << files[i].toStdString() << "\n"; )
-        maplist[files[i]] = new QMapMetaData(QString(MAPDIR) + files[i]);
+        maplist[files[i]] = new QMapMetaData(GetDrive() + QString(MAPDIR) + files[i]);
     }
 }
 
