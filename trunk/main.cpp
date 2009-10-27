@@ -45,8 +45,10 @@ int main(int argc, char *argv[])
     splash.showMessage("Wait...");
     qApp->processEvents();
 
-    QDashWindow w;
-    w.show();
+    QDashWindow *w;
+    w = new QDashWindow();
+    w->setAttribute(Qt::WA_DeleteOnClose);
+    w->show();
     splash.hide();
     return a.exec();
 }
