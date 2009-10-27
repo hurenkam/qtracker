@@ -15,6 +15,7 @@
 #include "QMapWidget.h"
 #include "XQLocation.h"
 #include "QSignalMapper.h"
+#include <QSplashScreen>
 #include "ui.h"
 #include "math.h"
 #include <stdio.h>
@@ -151,8 +152,15 @@ QDashWindow::QDashWindow(QWidget *parent)
         , showmap(true)
         , mapzoomed(false)
 {
+}
+
+void QDashWindow::Init(QSplashScreen *splash)
+{
+    splash->showMessage("Loading images...",Qt::AlignLeft);
     LoadImages();
+    splash->showMessage("Initialising widgets...",Qt::AlignLeft);
     InitWidgets();
+    splash->showMessage("Setting up main screen...",Qt::AlignLeft);
 
     #ifdef Q_OS_SYMBIAN
     showFullScreen();
