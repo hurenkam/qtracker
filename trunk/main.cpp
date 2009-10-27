@@ -42,12 +42,13 @@ int main(int argc, char *argv[])
     QPixmap pixmap(UIDIR "splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
-    splash.showMessage("Wait...");
-    qApp->processEvents();
+    splash.showMessage("Wait...",Qt::AlignLeft);
+    a.processEvents();
 
     QDashWindow *w;
     w = new QDashWindow();
     w->setAttribute(Qt::WA_DeleteOnClose);
+    w->Init(&splash);
     w->show();
     splash.hide();
     return a.exec();

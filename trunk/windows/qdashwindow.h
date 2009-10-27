@@ -16,16 +16,18 @@ class QAltitudeWidget;
 class QSatViewWidget;
 class QHeadingWidget;
 class QMapWidget;
+class QSplashScreen;
 
 const int historysize = 5;
 
 class QDashWindow: public QMainWindow
 {
-        Q_OBJECT
+	Q_OBJECT
 
 public:
-        QDashWindow(QWidget *parent=0);
-        virtual ~QDashWindow();
+	QDashWindow(QWidget *parent=0);
+	virtual ~QDashWindow();
+	void Init(QSplashScreen *s=0);
 
 public slots:
     void timeChanged();
