@@ -58,7 +58,7 @@ symbian {
         images/flag.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.0.5
+    VERSION = 0.0.6
     TARGET.EPOCHEAPSIZE = 0x20000 \
         0x2400000
     TARGET.EPOCSTACKSIZE += 0x14000
