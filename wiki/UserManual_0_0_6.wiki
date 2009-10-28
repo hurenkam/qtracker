@@ -47,3 +47,7 @@ choice, then choose the topleft flag widget, the dialog is already filled with t
 GPS position if available, and when you press confirm, it will add a reference point matching
 the map x,y position to the longitude/latitude given in the dialog. Two such refpoints will
 cause the map to autocalibrate, and from then on you can use the map to navigate.
+
+LongTap on the map will cause it to be maximized. LongTap it again to go back to default
+size. SingleTap any gauge, and the gauge will maximize, and the map will disappear.
+SingleTap the maximized gauge, and the map will come back.
