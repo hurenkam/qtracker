@@ -27,7 +27,7 @@ class QWaypointDialog : public QDialog
     Q_OBJECT
 
 public:
-    QWaypointDialog(QString name, double lat, double lon, QWidget *parent = 0);
+    QWaypointDialog(QString title, QString name, double lat, double lon, QWidget *parent = 0);
     ~QWaypointDialog();
 
 signals:

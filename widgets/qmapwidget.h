@@ -29,6 +29,8 @@ public slots:
     void SelectPoint();
     void SelectMapForCurrentPosition();
     void MapSelected(QString map);
+    void WaypointSelected(QString name, double lat, double lon);
+    void RefpointSelected(QString name, double lat, double lon);
     void FollowGPS();
 
 private slots:
@@ -67,11 +69,8 @@ private:
     QImage* svgZoomIn;
     QImage* svgZoomOut;
     QImage* svgOptions;
-    //QImage* svgHome;
     QImage* svgFlag;
     QImage* svgBar;
-    //QPushButton *btnZoomIn;
-    //QPushButton *btnZoomOut;
     QMapMetaData *meta;
     QMapList maplist;
     int zooming;

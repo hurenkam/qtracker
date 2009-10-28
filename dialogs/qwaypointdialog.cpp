@@ -8,12 +8,12 @@
 #include <QDoubleValidator>
 #include "qwaypointdialog.h"
 
-QWaypointDialog::QWaypointDialog(QString name, double lat, double lon, QWidget *parent)
+QWaypointDialog::QWaypointDialog(QString title, QString name, double lat, double lon, QWidget *parent)
     : QDialog(parent)
 {
     mainbox =  new QVBoxLayout();
     gridbox = new QGridLayout();
-    groupbox = new QGroupBox(tr("Add Waypoint:"));
+    groupbox = new QGroupBox(title);
     groupbox->setLayout(gridbox);
     buttons =  new QHBoxLayout();
     wptname = new QLineEdit(name,this);

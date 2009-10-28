@@ -69,15 +69,31 @@ QMapWidget::~QMapWidget()
 
 void QMapWidget::CreateMapList()
 {
+	QStringList files;
+	
     QDir directory = QDir(GetDrive() + QString(MAPDIR));
 
-    QStringList files = directory.entryList(QStringList(QString("*.xml")),
+    files = directory.entryList(QStringList(QString("*.xml")),
                                  QDir::Files | QDir::NoSymLinks);
 
     for (int i = 0; i < files.size(); ++i)
     {
+		QString base = files[i].left(files[i].length()-4);
         LOG( "QMapWidget::CreateMapList() " << files[i].toStdString() << "\n"; )
-        maplist[files[i]] = new QMapMetaData(GetDrive() + QString(MAPDIR) + files[i]);
+        maplist[base] = new QMapMetaData(GetDrive() + QString(MAPDIR) + files[i]);
+    }
+
+    files = directory.entryList(QStringList(QString("*.jpg")),
+                                 QDir::Files | QDir::NoSymLinks);
+
+    for (int i = 0; i < files.size(); ++i)
+    {
+		QString base = files[i].left(files[i].length()-4);
+		if (!maplist.keys().contains(base))
+		{
+			LOG( "QMapWidget::CreateMapList() " << files[i].toStdString() << "\n"; )
+			maplist[base] = new QMapMetaData(GetDrive() + QString(MAPDIR) + base + QString(".xml"));
+		}
     }
 }
 
@@ -120,28 +136,35 @@ void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
 bool QMapWidget::LoadMap(QString filename)
 {
     LOG( "QMapWidget::LoadMap(): " << filename.toStdString() << "\n"; )
-    meta = maplist[filename];
-    filename.remove(filename.size()-4,4);
-    filename.append(".jpg");
+    QString fullpath = GetDrive() + QString(MAPDIR) + filename + QString(".jpg");
+    
     if (mapimage)
         delete mapimage;
+    
     mapimage = new QImage();
-    bool result = mapimage->load(QString(MAPDIR) + filename);
+    bool result = mapimage->load(fullpath);
     if (!result)
     {
-            QMessageBox msg;
-            msg.setText(QString("Unable to load map ") + filename);
-            msg.setIcon(QMessageBox::Warning);
-            msg.exec();
-            mapname = QString("<no map loaded>");
+        if (mapimage)
+        	delete mapimage;
+        
+        mapimage = 0;
+        meta = 0;
+		QMessageBox msg;
+		msg.setText(QString("Unable to load map ") + filename);
+		msg.setIcon(QMessageBox::Warning);
+		msg.exec();
+		mapname = QString("<no map loaded>");
     }
     else
     {
-            meta->SetSize(mapimage->width(),mapimage->height());
-            meta->Calibrate();
-            x = mapimage->width()/2;
-            y = mapimage->height()/2;
-            mapname = filename;
+        meta = maplist[filename];
+		meta->SetImageFilename(fullpath);
+		meta->SetSize(mapimage->width(),mapimage->height());
+		meta->Calibrate();
+		x = mapimage->width()/2;
+		y = mapimage->height()/2;
+		mapname = filename;
     }
     update();
     return result;
@@ -168,22 +191,53 @@ void QMapWidget::SelectMap()
 #endif
 }
 
+void QMapWidget::WaypointSelected(QString name, double lat, double lon)
+{
+	QMessageBox msg;
+	msg.setText(QString("not implemented"));
+	msg.setIcon(QMessageBox::Warning);
+	msg.exec();
+}
+
+void QMapWidget::RefpointSelected(QString name, double lat, double lon)
+{
+	QMessageBox msg;
+	if (meta->AddRefpoint(lat,lon,x,y))
+		msg.setText(QString("Refpoint added."));
+	else
+		msg.setText(QString("Unable to add refpoint."));
+		
+	msg.setIcon(QMessageBox::Warning);
+	msg.exec();
+}
+
 void QMapWidget::SelectPoint()
 {
     QWaypointDialog *dialog;
-
-    if ((state == StScrolling) || (!IsPositionOnMap()))
-    {
-        double lat=0, lon=0;
-        if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
-            dialog = new QWaypointDialog(QString("wpt"),lat,lon);
-    }
+    
+    // Meta data present, but not calibrated then add refpoint
+    // Else add waypoint
+    
+    if (meta && !meta->IsCalibrated())
+	{
+		dialog = new QWaypointDialog(QString("Add Refpoint:"),QString("ref"),latitude,longitude);
+		connect(dialog,SIGNAL(confirmed(QString,double,double)),this,SLOT(RefpointSelected(QString,double,double)));
+	}
     else
     {
-        dialog = new QWaypointDialog(QString("wpt"),latitude,longitude);
+		if ((state == StScrolling) || (!IsPositionOnMap()))
+		{
+			double lat=0, lon=0;
+			if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
+				dialog = new QWaypointDialog(QString("Add Waypoint:"),QString("wpt"),lat,lon);
+		}
+		else
+		{
+			dialog = new QWaypointDialog(QString("Add Waypoint:"),QString("wpt"),latitude,longitude);
+		}
+		connect(dialog,SIGNAL(confirmed(QString,double,double)),this,SLOT(WaypointSelected(QString,double,double)));
     }
-
-    //connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
+    
     dialog->setModal(true);
 #ifdef Q_OS_SYMBIAN
     dialog->showFullScreen();
@@ -199,22 +253,22 @@ void QMapWidget::SelectMapForCurrentPosition()
 
     if (files.length() > 0)
     {
-                QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
-                connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
-                dialog->setModal(true);
-        #ifdef Q_OS_SYMBIAN
-                dialog->showFullScreen();
-        #else
-                dialog->show();
-        #endif
+		QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
+		connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
+		dialog->setModal(true);
+	#ifdef Q_OS_SYMBIAN
+		dialog->showFullScreen();
+	#else
+		dialog->show();
+	#endif
     }
     else
-        {
-                QMessageBox msg;
-                msg.setText(QString("No maps available for this location"));
-                msg.setIcon(QMessageBox::Warning);
-                msg.exec();
-        }
+	{
+		QMessageBox msg;
+		msg.setText(QString("No maps available for this location"));
+		msg.setIcon(QMessageBox::Warning);
+		msg.exec();
+	}
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
@@ -381,7 +435,7 @@ void QMapWidget::paintEvent(QPaintEvent *event)
         if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
             sprintf(buf,"%08.5fN %08.5fE",lat,lon);
         else
-            sprintf(buf,"%04i,%04i",x,y);
+            sprintf(buf,"%04.0f,%04.0f",x,y);
     }
     else
     {
