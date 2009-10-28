@@ -79,7 +79,7 @@ QMapMetaData::QMapMetaData(QString filename)
     Calibrate();
 }
 
-bool QMapMetaData::AddRefPoint(double lat, double lon, int x, int y)
+bool QMapMetaData::AddRefpoint(double lat, double lon, int x, int y)
 {
 	if ((count <0) || (count>9)) return false;
 	

@@ -33,24 +33,14 @@ QString GetDrive()
 {
         TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
         TPtrC drive = appparser.Drive();
-        //if (drive.Length() > 0)
-        return QString::fromUtf16(drive.Ptr(),drive.Length());
-        //return QString("C:");
-}
-QString GetDriveAndPath()
-{
-        TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
-        TPtrC driveandpath = appparser.DriveAndPath();
-		return QString::fromUtf16(driveandpath.Ptr(),driveandpath.Length());
+        //if (!inemulator)
+        //return QString::fromUtf16(drive.Ptr(),drive.Length());
+        return QString("C:");
 }
 #else
 QString GetDrive()
 {
     return QString("");
-}
-QString GetDriveAndPath()
-{
-    return QString("/Users/hurenkam/workspace/qtracker/");
 }
 #endif
 

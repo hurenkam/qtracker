@@ -31,7 +31,7 @@ class QMapMetaData: public QObject
 public:
     QMapMetaData(QString filename);
     ~QMapMetaData();
-    bool AddRefPoint(double lat, double lon, int x, int y);
+    bool AddRefpoint(double lat, double lon, int x, int y);
     void Save();
     
     void Calibrate();
@@ -41,6 +41,7 @@ public:
     bool IsPositionOnMap(double alat, double alon);
     bool IsCalibrated() { return iscalibrated; }
     void SetSize(int w, int h) { width = w; height = h; }
+    void SetImageFilename(QString filename) { imagefilename = filename; };
 
     double Lon2x() { return lon2x; }
     double Lat2y() { return lat2y; }
