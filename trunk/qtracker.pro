@@ -22,7 +22,10 @@ FORMS +=
 RESOURCES += 
 symbian { 
     TARGET.UID3 = 0xEA82CEF3
-    LIBS += -llbs
+    LIBS += -llbs \
+        -lefsrv \
+        -leikcore \
+        -lcone
     TARGET.CAPABILITY = Location \
         LocalServices \
         NetworkServices \
