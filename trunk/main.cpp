@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QPixmap pixmap(UIDIR "splash.png");
+    QPixmap pixmap(GetDrive() + QString(UIDIR "splash.png"));
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("Wait...",Qt::AlignLeft);
