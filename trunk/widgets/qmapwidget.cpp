@@ -69,8 +69,8 @@ QMapWidget::~QMapWidget()
 
 void QMapWidget::CreateMapList()
 {
-	QStringList files;
-	
+    QStringList files;
+
     QDir directory = QDir(GetDrive() + QString(MAPDIR));
 
     files = directory.entryList(QStringList(QString("*.xml")),
@@ -78,7 +78,7 @@ void QMapWidget::CreateMapList()
 
     for (int i = 0; i < files.size(); ++i)
     {
-		QString base = files[i].left(files[i].length()-4);
+        QString base = files[i].left(files[i].length()-4);
         LOG( "QMapWidget::CreateMapList() " << files[i].toStdString() << "\n"; )
         maplist[base] = new QMapMetaData(GetDrive() + QString(MAPDIR) + files[i]);
     }
@@ -88,12 +88,12 @@ void QMapWidget::CreateMapList()
 
     for (int i = 0; i < files.size(); ++i)
     {
-		QString base = files[i].left(files[i].length()-4);
-		if (!maplist.keys().contains(base))
-		{
-			LOG( "QMapWidget::CreateMapList() " << files[i].toStdString() << "\n"; )
-			maplist[base] = new QMapMetaData(GetDrive() + QString(MAPDIR) + base + QString(".xml"));
-		}
+        QString base = files[i].left(files[i].length()-4);
+        if (!maplist.keys().contains(base))
+        {
+            LOG( "QMapWidget::CreateMapList() " << files[i].toStdString() << "\n"; )
+            maplist[base] = new QMapMetaData(GetDrive() + QString(MAPDIR) + base + QString(".xml"));
+        }
     }
 }
 
@@ -137,34 +137,35 @@ bool QMapWidget::LoadMap(QString filename)
 {
     LOG( "QMapWidget::LoadMap(): " << filename.toStdString() << "\n"; )
     QString fullpath = GetDrive() + QString(MAPDIR) + filename + QString(".jpg");
-    
+
     if (mapimage)
         delete mapimage;
-    
+
     mapimage = new QImage();
     bool result = mapimage->load(fullpath);
     if (!result)
     {
         if (mapimage)
-        	delete mapimage;
-        
+            delete mapimage;
+
         mapimage = 0;
         meta = 0;
-		QMessageBox msg;
-		msg.setText(QString("Unable to load map ") + filename);
-		msg.setIcon(QMessageBox::Warning);
-		msg.exec();
-		mapname = QString("<no map loaded>");
+        QMessageBox msg;
+        msg.setText(QString("Unable to load map ") + filename);
+        msg.setIcon(QMessageBox::Warning);
+        msg.setStandardButtons(QMessageBox::Ok);
+        msg.exec();
+        mapname = QString("<no map loaded>");
     }
     else
     {
         meta = maplist[filename];
-		meta->SetImageFilename(fullpath);
-		meta->SetSize(mapimage->width(),mapimage->height());
-		meta->Calibrate();
-		x = mapimage->width()/2;
-		y = mapimage->height()/2;
-		mapname = filename;
+        meta->SetImageFilename(fullpath);
+        meta->SetSize(mapimage->width(),mapimage->height());
+        meta->Calibrate();
+        x = mapimage->width()/2;
+        y = mapimage->height()/2;
+        mapname = filename;
     }
     update();
     return result;
@@ -193,51 +194,52 @@ void QMapWidget::SelectMap()
 
 void QMapWidget::WaypointSelected(QString name, double lat, double lon)
 {
-	QMessageBox msg;
-	msg.setText(QString("not implemented"));
-	msg.setIcon(QMessageBox::Warning);
-	msg.exec();
+    QMessageBox msg;
+    msg.setText(QString("not implemented"));
+    msg.setIcon(QMessageBox::Warning);
+    msg.setStandardButtons(QMessageBox::Ok);
+    msg.exec();
 }
 
 void QMapWidget::RefpointSelected(QString name, double lat, double lon)
 {
-	QMessageBox msg;
-	if (meta->AddRefpoint(lat,lon,x,y))
-		msg.setText(QString("Refpoint added."));
-	else
-		msg.setText(QString("Unable to add refpoint."));
-		
-	msg.setIcon(QMessageBox::Warning);
-	msg.exec();
+    QMessageBox msg;
+    if (meta->AddRefpoint(lat,lon,x,y))
+        msg.setText(QString("Refpoint added."));
+    else
+        msg.setText(QString("Unable to add refpoint."));
+
+    msg.setIcon(QMessageBox::Warning);
+    msg.setStandardButtons(QMessageBox::Ok);
+    msg.exec();
 }
 
 void QMapWidget::SelectPoint()
 {
     QWaypointDialog *dialog;
-    
+
     // Meta data present, but not calibrated then add refpoint
     // Else add waypoint
-    
     if (meta && !meta->IsCalibrated())
-	{
-		dialog = new QWaypointDialog(QString("Add Refpoint:"),QString("ref"),latitude,longitude);
-		connect(dialog,SIGNAL(confirmed(QString,double,double)),this,SLOT(RefpointSelected(QString,double,double)));
-	}
+    {
+        dialog = new QWaypointDialog(QString("Add Refpoint:"),QString("ref"),latitude,longitude);
+        connect(dialog,SIGNAL(confirmed(QString,double,double)),this,SLOT(RefpointSelected(QString,double,double)));
+    }
     else
     {
-		if ((state == StScrolling) || (!IsPositionOnMap()))
-		{
-			double lat=0, lon=0;
-			if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
-				dialog = new QWaypointDialog(QString("Add Waypoint:"),QString("wpt"),lat,lon);
-		}
-		else
-		{
-			dialog = new QWaypointDialog(QString("Add Waypoint:"),QString("wpt"),latitude,longitude);
-		}
-		connect(dialog,SIGNAL(confirmed(QString,double,double)),this,SLOT(WaypointSelected(QString,double,double)));
+        if (mapimage && ((state == StScrolling) || (!IsPositionOnMap())))
+        {
+            double lat=0, lon=0;
+            if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
+                dialog = new QWaypointDialog(QString("Add Waypoint:"),QString("wpt"),lat,lon);
+        }
+        else
+        {
+            dialog = new QWaypointDialog(QString("Add Waypoint:"),QString("wpt"),latitude,longitude);
+        }
+        connect(dialog,SIGNAL(confirmed(QString,double,double)),this,SLOT(WaypointSelected(QString,double,double)));
     }
-    
+
     dialog->setModal(true);
 #ifdef Q_OS_SYMBIAN
     dialog->showFullScreen();
@@ -253,22 +255,23 @@ void QMapWidget::SelectMapForCurrentPosition()
 
     if (files.length() > 0)
     {
-		QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
-		connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
-		dialog->setModal(true);
-	#ifdef Q_OS_SYMBIAN
-		dialog->showFullScreen();
-	#else
-		dialog->show();
-	#endif
+        QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
+        connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
+        dialog->setModal(true);
+    #ifdef Q_OS_SYMBIAN
+        dialog->showFullScreen();
+    #else
+        dialog->show();
+    #endif
     }
     else
-	{
-		QMessageBox msg;
-		msg.setText(QString("No maps available for this location"));
-		msg.setIcon(QMessageBox::Warning);
-		msg.exec();
-	}
+    {
+        QMessageBox msg;
+        msg.setText(QString("No maps available for this location"));
+        msg.setIcon(QMessageBox::Warning);
+        msg.setStandardButtons(QMessageBox::Ok);
+        msg.exec();
+    }
 }
 
 void QMapWidget::updatePosition(double lat, double lon)
@@ -366,17 +369,17 @@ void QMapWidget::mousePressEvent(QMouseEvent *event)
 void QMapWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if (zooming == 0)
-                QGaugeWidget::mouseMoveEvent(event);
+        QGaugeWidget::mouseMoveEvent(event);
 }
 
 void QMapWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-        if (zooming == 0)
-        {
-                QGaugeWidget::mouseReleaseEvent(event);
-        }
-        zooming = 0;
-        zoomtimer.stop();
+    if (zooming == 0)
+    {
+        QGaugeWidget::mouseReleaseEvent(event);
+    }
+    zooming = 0;
+    zoomtimer.stop();
 }
 
 void QMapWidget::paintEvent(QPaintEvent *event)
