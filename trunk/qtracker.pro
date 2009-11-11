@@ -26,19 +26,7 @@ symbian {
         -lefsrv \
         -leikcore \
         -lcone
-    TARGET.CAPABILITY = Location \
-        LocalServices \
-        NetworkServices \
-        PowerMgmt \
-        ProtServ \
-        ReadDeviceData \
-        ReadUserData \
-        SurroundingsDD \
-        SwEvent \
-        TrustedUI \
-        UserEnvironment \
-        WriteDeviceData \
-        WriteUserData
+    TARGET.CAPABILITY = Location
     ICON = images/icon.svg
     UiFiles.sources += images/clock.svg \
         images/compass.svg \
@@ -61,9 +49,9 @@ symbian {
         images/flag.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.0.6
-    TARGET.EPOCHEAPSIZE = 0x20000 \
-        0x2400000
+    VERSION = 0.7.76
+    TARGET.EPOCHEAPSIZE = 0x30000 \
+        0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000
 }
 SOURCES += dialogs/qwaypointdialog.cpp \
