@@ -18,6 +18,12 @@ HEADERS += dialogs/qwaypointdialog.h \
     widgets/qsatviewwidget.h \
     widgets/qspeedwidget.h \
     windows/qdashwindow.h
+INCLUDEPATH += dialogs \
+    datatypes \
+    widgets \
+    images \
+    mobility \
+    windows
 FORMS += 
 RESOURCES += 
 symbian { 
@@ -49,7 +55,7 @@ symbian {
         images/flag.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.7.76
+    VERSION = 0.7.78
     TARGET.EPOCHEAPSIZE = 0x30000 \
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000

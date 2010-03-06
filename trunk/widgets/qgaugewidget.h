@@ -27,10 +27,10 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
-    void QGaugeWidget::startSingleTapTimer();
-    void QGaugeWidget::cancelSingleTapTimer();
-    void QGaugeWidget::startLongTapTimer();
-    void QGaugeWidget::cancelLongTapTimer();
+    void startSingleTapTimer();
+    void cancelSingleTapTimer();
+    void startLongTapTimer();
+    void cancelLongTapTimer();
     //void QGaugeWidget::startLongMoveTimer();
     //void QGaugeWidget::cancelLongMoveTimer();
 

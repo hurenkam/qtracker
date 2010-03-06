@@ -15,7 +15,7 @@
 class QDoubleEdit : public QLineEdit
 {
 public:
-    QDoubleEdit::QDoubleEdit(const double input, QWidget *parent) : QLineEdit(QVariant(input).toString(), parent)
+    QDoubleEdit(const double input, QWidget *parent) : QLineEdit(QVariant(input).toString(), parent)
     {
         setValidator(new QDoubleValidator(this));
     }
