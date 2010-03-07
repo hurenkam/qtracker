@@ -3,8 +3,6 @@
 [http://code.google.com/p/qtracker/wiki/InstallManual_0_0_6 Installation Manual] | 
 WishList | KnownBugs | RoadMap
 
-#Getting started guide for qTracker v0.0.6.
-
 = Introduction =
 
 qTracker is a port of tracker-py, to Qt/S60 aimed at use with the new Nokia N97.
