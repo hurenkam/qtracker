@@ -15,7 +15,7 @@ QAltitudeWidget::QAltitudeWidget(QWidget *parent)
 {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
-    connect(this, SIGNAL(doubleTap()), this, SLOT(reset()));
+    connect(this, SIGNAL(longTap()), this, SLOT(reset()));
 }
 
 void QAltitudeWidget::timerStep()
