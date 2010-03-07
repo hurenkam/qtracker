@@ -1,1 +1,3 @@
-About | UserManual | InstallationManual | WishList | KnownBugs | RoadMap
+[http://code.google.com/p/qtracker/wiki/About About] | 
+[http://code.google.com/p/qtracker/wiki/UserManual_0_0_6 User Manual] | 
+InstallationManual | WishList | KnownBugs | RoadMap
