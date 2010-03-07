@@ -1,1 +1,1 @@
-[ About | UserManual | InstallationManual | WishList | KnownBugs | RoadMap ]
+About | UserManual | InstallationManual | WishList | KnownBugs | RoadMap
