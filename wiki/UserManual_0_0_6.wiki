@@ -1,4 +1,7 @@
-About | UserManual | InstallationManual | WishList | KnownBugs | RoadMap
+About | 
+[http://code.google.com/p/qtracker/wiki/UserManual_0_0_6 User Manual] | 
+[http://code.google.com/p/qtracker/wiki/InstallManual_0_0_6 Installation Manual] | 
+WishList | KnownBugs | RoadMap
 
 #Getting started guide for qTracker v0.0.6.
 
