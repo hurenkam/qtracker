@@ -10,12 +10,12 @@
 const float PI = 3.14159265358979323846f;
 
 static void CalculateDistanceAndBearing(
-                double fromlat,
-                double fromlon,
-                double tolat,
-                double tolon,
-                double &distance,
-                double &bearing)
+    double fromlat,
+    double fromlon,
+    double tolat,
+    double tolon,
+    double &distance,
+    double &bearing )
 {
     double earths_radius = (6378137.0 + 6356752.3141) / 2.0;
 
@@ -27,13 +27,13 @@ static void CalculateDistanceAndBearing(
     distance = acos(
             sin(from_theta) * sin(to_theta) +
             cos(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
-                ) * earths_radius;
+        ) * earths_radius;
 
     bearing = atan2(
-                sin(to_landa-from_landa) * cos(to_theta),
-                cos(from_theta) * sin(to_theta) -
-                sin(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
-            );
+            sin(to_landa-from_landa) * cos(to_theta),
+            cos(from_theta) * sin(to_theta) -
+            sin(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
+        );
     bearing = bearing / 2.0 / PI * 360.0;
 }
 
@@ -81,61 +81,62 @@ QMapMetaData::QMapMetaData(QString filename)
 
 bool QMapMetaData::AddRefpoint(double lat, double lon, int x, int y)
 {
-	if ((count <0) || (count>9)) return false;
-	
-	refpoints[count].setX(x);
-	refpoints[count].setY(y);
-	refpoints[count].setLatitude(lat);
-	refpoints[count].setLongitude(lon);
-	LOG( "QMapMetaData::AddRefpoint("<< count << "): " << refpoints[count].X() << " " << refpoints[count].Y() << " "\
-		 << refpoints[count].Latitude() << " " << refpoints[count].Longitude() << "\n"; )
-	count++;
-	
-	Save();
-	return true;
+    if ((count <0) || (count>9)) return false;
+
+    refpoints[count].setX(x);
+    refpoints[count].setY(y);
+    refpoints[count].setLatitude(lat);
+    refpoints[count].setLongitude(lon);
+    LOG( "QMapMetaData::AddRefpoint("<< count << "): " << refpoints[count].X() << " " << refpoints[count].Y() << " "\
+             << refpoints[count].Latitude() << " " << refpoints[count].Longitude() << "\n"; )
+    count++;
+
+    Save();
+    Calibrate();
+    return true;
 }
 
 void QMapMetaData::SaveResolutionElement(QXmlStreamWriter& xml)
 {
-	xml.writeStartElement("resolution");
-	xml.writeAttribute("width",QVariant(width).toString());
-	xml.writeAttribute("height",QVariant(height).toString());
-	xml.writeEndElement(); // resolution
+    xml.writeStartElement("resolution");
+    xml.writeAttribute("width",QVariant(width).toString());
+    xml.writeAttribute("height",QVariant(height).toString());
+    xml.writeEndElement(); // resolution
 }
 
 void QMapMetaData::SaveRefpointElement(QXmlStreamWriter& xml, RefPoint& r)
 {
-	xml.writeStartElement("refpoint");
-	xml.writeAttribute("lat",QVariant(r.Latitude()).toString());
-	xml.writeAttribute("lon",QVariant(r.Longitude()).toString());
-	xml.writeAttribute("x",QVariant(r.X()).toString());
-	xml.writeAttribute("y",QVariant(r.Y()).toString());
-	xml.writeEndElement(); // refpoint
+    xml.writeStartElement("refpoint");
+    xml.writeAttribute("lat",QVariant(r.Latitude()).toString());
+    xml.writeAttribute("lon",QVariant(r.Longitude()).toString());
+    xml.writeAttribute("x",QVariant(r.X()).toString());
+    xml.writeAttribute("y",QVariant(r.Y()).toString());
+    xml.writeEndElement(); // refpoint
 }
 
 void QMapMetaData::SaveMapElement(QXmlStreamWriter& xml)
 {
-	xml.writeStartElement("map");
-	xml.writeAttribute("imagefile",imagefilename);
-	SaveResolutionElement(xml);
-	for (int i =0; i<count; ++i)
-	{
-		SaveRefpointElement(xml,refpoints[i]);
-	}
-	xml.writeEndElement(); // map
+    xml.writeStartElement("map");
+    xml.writeAttribute("imagefile",imagefilename);
+    SaveResolutionElement(xml);
+    for (int i =0; i<count; ++i)
+    {
+        SaveRefpointElement(xml,refpoints[i]);
+    }
+    xml.writeEndElement(); // map
 }
 
 void QMapMetaData::Save()
 {
-	QXmlStreamWriter xml;
-	QFile file(metafilename);
-	file.open(QIODevice::WriteOnly);
+    QXmlStreamWriter xml;
+    QFile file(metafilename);
+    file.open(QIODevice::WriteOnly);
     xml.setDevice(&file);
     xml.setAutoFormatting(true);
     xml.writeStartDocument("1.0");
     SaveMapElement(xml);
     xml.writeEndDocument();
-	file.close();
+    file.close();
 }
 
 void QMapMetaData::ReadMapElement(QXmlStreamReader& xml)
