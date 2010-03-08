@@ -9,8 +9,6 @@ What I miss most of all from tracker-py is the option to show google earth track
 the maps.
 
 ----
-(The following was taken from the tracker.py wishlist)
-
 === Non-cylindrical (Lambert, others?) projection support ===
 A lot of topographic maps use Lambert conic projection, but the current
 version of tracker-py doesn't know any projection but cylindrical one.
