@@ -3,3 +3,13 @@
 [http://code.google.com/p/qtracker/wiki/InstallManual_0_0_6 Installation Manual] | 
 WishList | KnownBugs | RoadMap
 ----
+
+=== Reload required after adding refpoint ===
+One last thing - There's another bug I found: after calibrating a map, I must
+terminate qtracker and load it again before I can use the calibrated map.
+-> this should be fixed in revision 79
+
+=== Altitude widget resets via doubltap, should be longtap ===
+When doubletapping the altitude widget, it resets, while longtap does nothing.
+Doubletap should bringup an options dialog (not yet implemented), longtap should reset the widget.
+-> this should be fixed in revision 80
