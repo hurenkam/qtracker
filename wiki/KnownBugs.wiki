@@ -5,8 +5,7 @@ WishList | KnownBugs | RoadMap
 ----
 
 === Reload required after adding refpoint ===
-One last thing - There's another bug I found: after calibrating a map, I must
-terminate qtracker and load it again before I can use the calibrated map.<br>
+After calibrating a map, I must terminate qtracker and load it again before I can use the calibrated map.<br>
 ==> this should be fixed in revision 79
 
 === Altitude widget resets via doubltap, should be longtap ===
