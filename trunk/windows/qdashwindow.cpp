@@ -13,12 +13,18 @@
 #include "QSatViewWidget.h"
 #include "QHeadingWidget.h"
 #include "QMapWidget.h"
-#include "XQLocation.h"
+//#include "XQLocation.h"
 #include "QSignalMapper.h"
 #include <QSplashScreen>
+#include <QGeoPositionInfo>
+#include <QGeoPositionInfoSource>
+#include <QGeoSatelliteInfo>
+#include <QGeoSatelliteInfoSource>
 #include "ui.h"
 #include "math.h"
 #include <stdio.h>
+
+using namespace QtMobility;
 
 const float PI = 3.14159265358979323846f;
 
@@ -174,29 +180,48 @@ void QDashWindow::Init(QSplashScreen *splash)
 
     QTimer *t = new QTimer(this);
     connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
-    connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
-    connect(&location, SIGNAL(updateSatInfo(int,int,double,double,bool)), this, SLOT(updateSatInfo(int,int,double,double,bool)));
+    
+    QGeoPositionInfoSource *possource = QGeoPositionInfoSource::createDefaultSource(0);
+    if (possource) {
+        possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
+        possource->setUpdateInterval(1000);
+        connect(possource, SIGNAL(positionUpdated(const QGeoPositionInfo &)),
+                this, SLOT(updatePosition(const QGeoPositionInfo &)));
+        possource->startUpdates();
+    }
+/*    
+    QGeoSatelliteInfoSource *satsource = QGeoSatelliteInfoSource::createDefaultSource(0);
+    if (satsource) {
+        connect(satsource, SIGNAL(satellitesInViewUpdated(QList<QGeoSatelliteInfo>)),
+                this, SLOT(updateSatellitesInView(QList<QGeoSatelliteInfo>)));
+        connect(satsource, SIGNAL(satellitesInUseUpdated(QList<QGeoSatelliteInfo>)),
+                this, SLOT(updateSatellitesInUse(QList<QGeoSatelliteInfo>)));
+        satsource->startUpdates();
+    }
+*/    
+    //connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
+    //connect(&location, SIGNAL(updateSatInfo(int,int,double,double,bool)), this, SLOT(updateSatInfo(int,int,double,double,bool)));
 
-    connect(&location, SIGNAL(altitudeChanged(double,float)), this, SLOT(updateAltitude(double)));
-    connect(&location, SIGNAL(speedChanged(float)), this, SLOT(updateSpeed(float)));
-    connect(&location, SIGNAL(headingChanged(float)), this, SLOT(updateHeading(float)));
+    //connect(&location, SIGNAL(altitudeChanged(double,float)), this, SLOT(updateAltitude(double)));
+    //connect(&location, SIGNAL(speedChanged(float)), this, SLOT(updateSpeed(float)));
+    //connect(&location, SIGNAL(headingChanged(float)), this, SLOT(updateHeading(float)));
 
     connect(speed, SIGNAL(longTap()), this, SLOT(resetDistance()));
     connect(timer, SIGNAL(longTap()), this, SLOT(resetTimer()));
     connect(map, SIGNAL(longTap()), this, SLOT(ToggleMap()));
 
     t->start(1000);
-    if (location.open() == XQLocation::NoError)
-    {
-        location.startUpdates();
-        heading->SetDial(0);
-        heading->SetNeedle(0);
-    }
-    else
-    {
-        heading->SetDial(45);
-        heading->SetNeedle(-45);
-    }
+    //if (location.open() == XQLocation::NoError)
+    //{
+        //location.startUpdates();
+        //heading->SetDial(0);
+        //heading->SetNeedle(0);
+    //}
+    //else
+    //{
+        //heading->SetDial(45);
+        //heading->SetNeedle(-45);
+    //}
 
     QFile file(UIDIR "style.css");
     file.open(QFile::ReadOnly);
@@ -283,6 +308,25 @@ void QDashWindow::timeChanged()
         timevalid = true;
         starttime = time;
     }
+}
+
+void QDashWindow::updatePosition(const QGeoPositionInfo &info)
+{	
+	qDebug() << "Position updated:" << info;
+	
+    if (zoomstep != 0) return;
+
+    double lat = info.coordinate().latitude();
+    double lon = info.coordinate().longitude();
+    double alt = info.coordinate().altitude();
+    updateDistance(lat,lon);
+    updateAltitude(alt);
+    if (zoomgauge == 0)
+        map->updatePosition(lat,lon);
+}
+
+void QDashWindow::updateSatellites(const QGeoSatelliteInfo &info)
+{	
 }
 
 void QDashWindow::updateAltitude(double alt)

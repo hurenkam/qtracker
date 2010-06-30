@@ -1,17 +1,18 @@
+CONFIG += mobility
+MOBILITY += location \
+    sensors
 TEMPLATE = app
 TARGET = qTracker
 QT += core \
     gui \
     xml
-HEADERS += dialogs/qwaypointdialog.h \
+HEADERS += qTracker.loc \
+    dialogs/qwaypointdialog.h \
     datatypes/qmapmetadata.h \
     dialogs/qmapselectiondialog.h \
     widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
     images/ui.h \
-    mobility/location_global.h \
-    mobility/xqlocation_s60_p.h \
-    mobility/xqlocation.h \
     widgets/qaltitudewidget.h \
     widgets/qclockwidget.h \
     widgets/qheadingwidget.h \
@@ -60,14 +61,14 @@ symbian {
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000
 }
-SOURCES += dialogs/qwaypointdialog.cpp \
+SOURCES += qTracker.rss \
+    qTracker_reg.rss \
+    dialogs/qwaypointdialog.cpp \
     datatypes/qmapmetadata.cpp \
     dialogs/qmapselectiondialog.cpp \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
     images/ui.cpp \
-    mobility/xqlocation_s60_p.cpp \
-    mobility/xqlocation.cpp \
     widgets/qaltitudewidget.cpp \
     widgets/qclockwidget.cpp \
     widgets/qheadingwidget.cpp \

@@ -9,7 +9,9 @@
 #define QDASHWINDOW_H_
 
 #include <QtGui>
-#include "xqlocation.h"
+#include <QGeoPositionInfo>
+#include <QGeoSatelliteInfo>
+//#include "xqlocation.h"
 class QClockWidget;
 class QSpeedWidget;
 class QAltitudeWidget;
@@ -37,6 +39,8 @@ public slots:
     void updateSpeed(float speed);
     void updateHeading(float course);
     void updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse);
+    void updatePosition(const QtMobility::QGeoPositionInfo &info);
+    void updateSatellites(const QtMobility::QGeoSatelliteInfo &info);
     void ZoomTimerExpired();
     void ZoomToGauge(int i);
     void GaugeOptions(int i);
@@ -62,7 +66,7 @@ private:
     QSignalMapper *mapper;
     QWidget* gauges[6];
 
-    XQLocation location;
+    //XQLocation location;
     QTimer *zoomtimer;
 
     int zoomstep;
