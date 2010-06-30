@@ -9,9 +9,13 @@
 #define QDASHWINDOW_H_
 
 #include <QtGui>
+#include <QList>
+#include <QCompass>
+#include <QCompassReading>
 #include <QGeoPositionInfo>
+#include <QGeoPositionInfoSource>
 #include <QGeoSatelliteInfo>
-//#include "xqlocation.h"
+#include <QGeoSatelliteInfoSource>
 class QClockWidget;
 class QSpeedWidget;
 class QAltitudeWidget;
@@ -19,6 +23,8 @@ class QSatViewWidget;
 class QHeadingWidget;
 class QMapWidget;
 class QSplashScreen;
+
+using namespace QtMobility;
 
 const int historysize = 5;
 
@@ -33,24 +39,23 @@ public:
 
 public slots:
     void timeChanged();
-    void locationChanged(double latitude, double longitude, double altitude, float speed, float heading);
-    void updateDistance(double lat,double lon);
-    void updateAltitude(double altitude);
-    void updateSpeed(float speed);
-    void updateHeading(float course);
-    void updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse);
-    void updatePosition(const QtMobility::QGeoPositionInfo &info);
-    void updateSatellites(const QtMobility::QGeoSatelliteInfo &info);
+    void updateHeading();
+    void updatePosition(const QGeoPositionInfo &info);
+    void updateSatellitesInView(const QList<QGeoSatelliteInfo> &info);
+    void updateSatellitesInUse(const QList<QGeoSatelliteInfo> &info);
     void ZoomTimerExpired();
     void ZoomToGauge(int i);
     void GaugeOptions(int i);
     void resetDistance();
     void resetTimer();
     void ToggleMap();
+    void clearSatellites();
 
 protected:
     void InitWidgets();
     void StartTransition(int to);
+    void updateSatelliteList();
+    void updateDistance(double lat,double lon);
 
     virtual void resizeEvent(QResizeEvent * event);
     void Setup();
@@ -65,8 +70,12 @@ private:
     QMapWidget *map;
     QSignalMapper *mapper;
     QWidget* gauges[6];
+    QGeoPositionInfoSource *possource;
+    QGeoSatelliteInfoSource *satsource;
+    QList<QGeoSatelliteInfo> inUse;
+    QList<QGeoSatelliteInfo> inView;
 
-    //XQLocation location;
+    QCompass *compass;
     QTimer *zoomtimer;
 
     int zoomstep;

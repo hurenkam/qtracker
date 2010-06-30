@@ -13,9 +13,10 @@
 #include "QSatViewWidget.h"
 #include "QHeadingWidget.h"
 #include "QMapWidget.h"
-//#include "XQLocation.h"
 #include "QSignalMapper.h"
 #include <QSplashScreen>
+#include <QCompass>
+#include <QCompassReading>
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
 #include <QGeoSatelliteInfo>
@@ -181,16 +182,23 @@ void QDashWindow::Init(QSplashScreen *splash)
     QTimer *t = new QTimer(this);
     connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
     
-    QGeoPositionInfoSource *possource = QGeoPositionInfoSource::createDefaultSource(0);
+    compass = new QtMobility::QCompass();
+    connect(compass, SIGNAL(readingChanged()), this, SLOT(updateHeading()));
+    
+    possource = QGeoPositionInfoSource::createDefaultSource(this);
     if (possource) {
         possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
-        possource->setUpdateInterval(1000);
-        connect(possource, SIGNAL(positionUpdated(const QGeoPositionInfo &)),
-                this, SLOT(updatePosition(const QGeoPositionInfo &)));
+        possource->setUpdateInterval(500);
+        connect(possource, SIGNAL(positionUpdated(QGeoPositionInfo)),
+                this, SLOT(updatePosition(QGeoPositionInfo)));
         possource->startUpdates();
     }
-/*    
-    QGeoSatelliteInfoSource *satsource = QGeoSatelliteInfoSource::createDefaultSource(0);
+    else
+	{
+        heading->SetDial(45);
+	}
+    
+    satsource = QGeoSatelliteInfoSource::createDefaultSource(this);
     if (satsource) {
         connect(satsource, SIGNAL(satellitesInViewUpdated(QList<QGeoSatelliteInfo>)),
                 this, SLOT(updateSatellitesInView(QList<QGeoSatelliteInfo>)));
@@ -198,30 +206,16 @@ void QDashWindow::Init(QSplashScreen *splash)
                 this, SLOT(updateSatellitesInUse(QList<QGeoSatelliteInfo>)));
         satsource->startUpdates();
     }
-*/    
-    //connect(&location, SIGNAL(locationChanged(double, double, double, float, float)), this, SLOT(locationChanged(double, double, double, float, float)));
-    //connect(&location, SIGNAL(updateSatInfo(int,int,double,double,bool)), this, SLOT(updateSatInfo(int,int,double,double,bool)));
-
-    //connect(&location, SIGNAL(altitudeChanged(double,float)), this, SLOT(updateAltitude(double)));
-    //connect(&location, SIGNAL(speedChanged(float)), this, SLOT(updateSpeed(float)));
-    //connect(&location, SIGNAL(headingChanged(float)), this, SLOT(updateHeading(float)));
-
+    else
+	{
+		heading->SetNeedle(-45);
+	}
+    
     connect(speed, SIGNAL(longTap()), this, SLOT(resetDistance()));
     connect(timer, SIGNAL(longTap()), this, SLOT(resetTimer()));
     connect(map, SIGNAL(longTap()), this, SLOT(ToggleMap()));
 
     t->start(1000);
-    //if (location.open() == XQLocation::NoError)
-    //{
-        //location.startUpdates();
-        //heading->SetDial(0);
-        //heading->SetNeedle(0);
-    //}
-    //else
-    //{
-        //heading->SetDial(45);
-        //heading->SetNeedle(-45);
-    //}
 
     QFile file(UIDIR "style.css");
     file.open(QFile::ReadOnly);
@@ -310,30 +304,77 @@ void QDashWindow::timeChanged()
     }
 }
 
+void QDashWindow::clearSatellites()
+{
+    inView.clear();
+    inUse.clear();
+    updateSatelliteList();
+}
+
 void QDashWindow::updatePosition(const QGeoPositionInfo &info)
 {	
 	qDebug() << "Position updated:" << info;
 	
+	// Exit if animation in progress
     if (zoomstep != 0) return;
 
-    double lat = info.coordinate().latitude();
-    double lon = info.coordinate().longitude();
-    double alt = info.coordinate().altitude();
-    updateDistance(lat,lon);
-    updateAltitude(alt);
-    if (zoomgauge == 0)
-        map->updatePosition(lat,lon);
+    updateDistance(info.coordinate().latitude(),info.coordinate().longitude());
+    altitude->SetAltitude(info.coordinate().altitude());
+    if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
+        speed->SetSpeed(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
+    if (info.hasAttribute(QGeoPositionInfo::Direction))
+        heading->SetDial(360-info.attribute(QGeoPositionInfo::Direction));
+    
+	// Exit if map is not visible
+    if (zoomgauge != 0) return;
+    
+    map->updatePosition(info.coordinate().latitude(),info.coordinate().longitude());
 }
 
-void QDashWindow::updateSatellites(const QGeoSatelliteInfo &info)
+bool sortByPrn(const QGeoSatelliteInfo &s1, const QGeoSatelliteInfo &s2)
+{
+    return s1.prnNumber() < s2.prnNumber();
+}
+
+void QDashWindow::updateSatellitesInView(const QList<QGeoSatelliteInfo> &info)
 {	
+	inView = info;
+	qSort(inView.begin(), inView.end(), sortByPrn);
+	updateSatelliteList();
 }
 
-void QDashWindow::updateAltitude(double alt)
+void QDashWindow::updateSatellitesInUse(const QList<QGeoSatelliteInfo> &info)
+{	
+	inUse = info;
+	qSort(inUse.begin(), inUse.end(), sortByPrn);
+	updateSatelliteList();
+}
+
+void QDashWindow::updateSatelliteList()
 {
     if (zoomstep != 0) return;
+    
+	int strength = 0;
+	double azimuth = 0;
+	double elevation = 0;
+	
+    int useSize = inUse.size();
+    int viewSize = inView.size();
 
-    altitude->SetAltitude(alt);
+    if ((useSize == 0) && (viewSize == 0)) {
+        return;
+    }
+
+  	satview->ClearSatInfo(-1);
+    for (int i = 0; i < viewSize; ++i) 
+    {
+        strength = inView.at(i).signalStrength();
+        azimuth = inView.at(i).attribute(QGeoSatelliteInfo::Azimuth);
+        elevation = inView.at(i).attribute(QGeoSatelliteInfo::Elevation);
+        
+      	satview->SetSatInfo(i,strength,azimuth,elevation,false);
+    }
+  	satview->update();
 }
 
 void QDashWindow::resetDistance()
@@ -367,40 +408,12 @@ void QDashWindow::updateDistance(double lat, double lon)
     }
 }
 
-void QDashWindow::updateHeading(float course)
+void QDashWindow::updateHeading()
 {
     if (zoomstep != 0) return;
 
+    float course = compass->reading()->azimuth();
     heading->SetDial(360-course);
-    heading->SetNeedle(0);
-}
-
-void QDashWindow::updateSpeed(float s)
-{
-    if (zoomstep != 0) return;
-
-    speed->SetSpeed(s*3.6);
-}
-
-void QDashWindow::updateSatInfo(int id, int strength, double azimuth, double elevation, bool inuse)
-{
-    if (zoomstep != 0) return;
-
-    satview->SetSatInfo(id,strength,azimuth,elevation,inuse);
-}
-
-void QDashWindow::locationChanged(
-    double lat,
-    double lon,
-    double alt,
-    float s,
-    float course)
-{
-    if (zoomstep != 0) return;
-
-    updateDistance(lat,lon);
-    if (zoomgauge == 0)
-        map->updatePosition(lat,lon);
 }
 
 void QDashWindow::ToggleMap()
