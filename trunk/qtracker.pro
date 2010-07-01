@@ -6,8 +6,7 @@ TARGET = qTracker
 QT += core \
     gui \
     xml
-HEADERS += qTracker.loc \
-    dialogs/qwaypointdialog.h \
+HEADERS += dialogs/qwaypointdialog.h \
     datatypes/qmapmetadata.h \
     dialogs/qmapselectiondialog.h \
     widgets/qgaugewidget.h \
@@ -56,14 +55,12 @@ symbian {
         images/flag.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.7.109
+    VERSION = 0.8.110
     TARGET.EPOCHEAPSIZE = 0x30000 \
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000
 }
-SOURCES += qTracker.rss \
-    qTracker_reg.rss \
-    dialogs/qwaypointdialog.cpp \
+SOURCES += dialogs/qwaypointdialog.cpp \
     datatypes/qmapmetadata.cpp \
     dialogs/qmapselectiondialog.cpp \
     widgets/qgaugewidget.cpp \
