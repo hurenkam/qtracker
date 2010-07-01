@@ -374,13 +374,22 @@ void QDashWindow::updateSatelliteList()
     }
 
   	satview->ClearSatInfo(-1);
-    for (int i = 0; i < viewSize; ++i) 
+  	int i=0;
+  	for (; i < viewSize; ++i) 
     {
         strength = inView.at(i).signalStrength();
         azimuth = inView.at(i).attribute(QGeoSatelliteInfo::Azimuth);
         elevation = inView.at(i).attribute(QGeoSatelliteInfo::Elevation);
         
       	satview->SetSatInfo(i,strength,azimuth,elevation,false);
+    }
+    for (int j=0; j < useSize; ++j) 
+    {
+        strength = inUse.at(j).signalStrength();
+        azimuth = inUse.at(j).attribute(QGeoSatelliteInfo::Azimuth);
+        elevation = inUse.at(j).attribute(QGeoSatelliteInfo::Elevation);
+        
+      	satview->SetSatInfo(j+i+1,strength,azimuth,elevation,true);
     }
   	satview->update();
 }
