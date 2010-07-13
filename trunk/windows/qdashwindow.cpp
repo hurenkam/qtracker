@@ -183,14 +183,27 @@ void QDashWindow::Init(QSplashScreen *splash)
 
     QTimer *t = new QTimer(this);
     connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
-/*    
-    compass = new QCompass();
+    
+    //compass = new QCompass();
+    compass = new QSensor("QCompass");
     if (compass)
     {
-		connect(compass, SIGNAL(readingChanged()), this, SLOT(updateHeading()));
-		updateHeading();
+        reading = static_cast<QCompassReading *>(compass->reading());
+        if (reading)
+        {
+            updateHeading();
+            connect(compass, SIGNAL(readingChanged()), this, SLOT(updateHeading()));
+        }
+        else
+        {
+        	heading->SetDial(-90);
+        }
     }
-*/
+    else
+	{
+        heading->SetDial(-45);
+	}
+
     possource = QGeoPositionInfoSource::createDefaultSource(this);
     if (possource) {
         possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
@@ -214,10 +227,10 @@ void QDashWindow::Init(QSplashScreen *splash)
         satsource->startUpdates();
         //satsource->requestUpdate();
     }
-    else
-	{
-		heading->SetNeedle(-45);
-	}
+    //else
+	//{
+		//heading->SetNeedle(180);
+	//}
     
     connect(speed, SIGNAL(longTap()), this, SLOT(resetDistance()));
     connect(timer, SIGNAL(longTap()), this, SLOT(resetTimer()));
@@ -330,8 +343,8 @@ void QDashWindow::updatePosition(const QGeoPositionInfo &info)
     altitude->SetAltitude(info.coordinate().altitude());
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
         speed->SetSpeed(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
-    if (info.hasAttribute(QGeoPositionInfo::Direction))
-        heading->SetDial(360.0-info.attribute(QGeoPositionInfo::Direction));
+    //if (info.hasAttribute(QGeoPositionInfo::Direction))
+        //heading->SetDial(360.0-info.attribute(QGeoPositionInfo::Direction));
     
 	// Exit if map is not visible
     if (zoomgauge != 0) return;
@@ -424,15 +437,14 @@ void QDashWindow::updateDistance(double lat, double lon)
         prevlon = lon;
     }
 }
-/*
+
 void QDashWindow::updateHeading()
 {
     if (zoomstep != 0) return;
 
-    float course = compass->reading()->azimuth();
-    heading->SetDial(360.0-course);
+    heading->SetDial(360.0-reading->azimuth());
 }
-*/
+
 void QDashWindow::ToggleMap()
 {
     mapzoomed = !mapzoomed;

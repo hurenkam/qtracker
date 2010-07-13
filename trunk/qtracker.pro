@@ -6,8 +6,9 @@ TARGET = qTracker
 QT += core \
     gui \
     xml
-HEADERS += dialogs/qwaypointdialog.h \
-    datatypes/qmapmetadata.h \
+HEADERS += datatypes/geodata.h \
+    datatypes/gpxio.h \
+    dialogs/qwaypointdialog.h \
     dialogs/qmapselectiondialog.h \
     widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
@@ -32,7 +33,9 @@ symbian {
         -lefsrv \
         -leikcore \
         -lcone
-    TARGET.CAPABILITY = Location
+    TARGET.CAPABILITY = Location \
+        ReadDeviceData \
+        WriteDeviceData
     ICON = images/icon.svg
     UiFiles.sources += images/clock.svg \
         images/compass.svg \
@@ -60,8 +63,9 @@ symbian {
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000
 }
-SOURCES += dialogs/qwaypointdialog.cpp \
-    datatypes/qmapmetadata.cpp \
+SOURCES += datatypes/geodata.cpp \
+    datatypes/gpxio.cpp \
+    dialogs/qwaypointdialog.cpp \
     dialogs/qmapselectiondialog.cpp \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \

@@ -66,3 +66,52 @@ QWaypointDialog::~QWaypointDialog()
     delete gridbox;
     delete mainbox;
 }
+
+QTrackDialog::QTrackDialog(QString title, QString name, QWidget *parent)
+    : QDialog(parent)
+{
+    mainbox =  new QVBoxLayout();
+    gridbox = new QGridLayout();
+    groupbox = new QGroupBox(title);
+    groupbox->setLayout(gridbox);
+    buttons =  new QHBoxLayout();
+    trkname = new QLineEdit(name,this);
+
+    cancel =  new QPushButton(tr("Cancel"));
+    confirm = new QPushButton(tr("Confirm"));
+
+    gridbox->addWidget(new QLabel(tr("Name:")),0,0);
+    gridbox->addWidget(trkname,0,1);
+
+    buttons->addWidget(confirm);
+    buttons->addWidget(cancel);
+    mainbox->addWidget(groupbox);
+    mainbox->addLayout(buttons);
+    setLayout(mainbox);
+
+    cancel->show();
+    confirm->show();
+    setAttribute(Qt::WA_DeleteOnClose);
+
+    connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
+    //connect(this,SIGNAL(accepted),this,SLOT(emitSelection()));
+}
+
+void QTrackDialog::accept()
+{
+    QString name = trkname->text();
+    emit confirmed(name);
+    QDialog::accept();
+    close();
+}
+
+QTrackDialog::~QTrackDialog()
+{
+    delete trkname;
+    delete cancel;
+    delete confirm;
+    delete buttons;
+    delete gridbox;
+    delete mainbox;
+}

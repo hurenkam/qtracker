@@ -4,7 +4,14 @@
 #include <QWidget>
 #include <QPushButton>
 #include "qgaugewidget.h"
-#include "qmapmetadata.h"
+#include "geodata.h"
+
+class ScreenPos
+{
+public:
+	int x;
+	int y;
+};
 
 class QMapWidget : public QGaugeWidget
 {
@@ -14,6 +21,8 @@ public:
     QMapWidget(QWidget *parent = 0);
     ~QMapWidget();
     bool IsPositionOnMap() { return (meta && meta->IsPositionOnMap(latitude,longitude)); }
+    bool IsPositionOnScreen(WayPoint& wpt);
+    ScreenPos PositionOnScreen(WayPoint& wpt);
 
 signals:
     void zoomin();
@@ -32,6 +41,12 @@ public slots:
     void WaypointSelected(QString name, double lat, double lon);
     void RefpointSelected(QString name, double lat, double lon);
     void FollowGPS();
+    
+    void StartTrack();
+    void TrackStarted(QString n);
+    void ShowTrack(Track* t);
+    void HideTracks();
+    void ShowTrackPoint(WayPoint& w);
 
 private slots:
     void zoomRepeat();
@@ -45,8 +60,17 @@ protected:
     bool SetCursorToCurrentPosition()
     {
         if (meta)
-            meta->Wgs2XY(latitude,longitude,x,y);
+            return meta->Wgs2XY(latitude,longitude,x,y);
+        else
+        	return false;
     }
+    
+    virtual void paintBackground(QPainter& painter);
+    virtual void paintMap(QPainter& painter);
+    virtual void paintWaypoints(QPainter& painter);
+    virtual void paintWidgets(QPainter& painter);
+    virtual void paintDot(QPainter& painter,int x,int y,QColor c);
+    virtual void paintBar(QPainter& painter);
     virtual void paintEvent(QPaintEvent *event);
     void CreateMapList();
 
@@ -71,11 +95,13 @@ private:
     QImage* svgOptions;
     QImage* svgFlag;
     QImage* svgBar;
-    QMapMetaData *meta;
-    QMapList maplist;
+    MapMetaData *meta;
+    //MapList maplist;
     int zooming;
     QTimer zoomtimer;
     QString mapname;
+    QList<Track*> tracks;
+    Track* recordtrack;
 };
 
 #endif // QMAPWIDGET_H

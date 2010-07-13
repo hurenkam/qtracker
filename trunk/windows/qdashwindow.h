@@ -39,7 +39,7 @@ public:
 
 public slots:
     void timeChanged();
-    //void updateHeading();
+    void updateHeading();
     void updatePosition(const QGeoPositionInfo &info);
     void updateSatellitesInView(const QList<QGeoSatelliteInfo> &info);
     void updateSatellitesInUse(const QList<QGeoSatelliteInfo> &info);
@@ -75,7 +75,8 @@ private:
     QList<QGeoSatelliteInfo> inUse;
     QList<QGeoSatelliteInfo> inView;
 
-    //QCompass *compass;
+    QSensor *compass;
+    QCompassReading *reading;
     QTimer *zoomtimer;
 
     int zoomstep;

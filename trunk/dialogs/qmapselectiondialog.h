@@ -6,7 +6,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include "qmapmetadata.h"
 
 class QMapSelectionDialog : public QDialog
 {
