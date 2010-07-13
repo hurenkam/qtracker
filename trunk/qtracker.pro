@@ -59,7 +59,7 @@ symbian {
         images/hiker.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.111
+    VERSION = 0.8.118
     TARGET.EPOCHEAPSIZE = 0x30000 \
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000

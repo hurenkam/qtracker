@@ -64,6 +64,7 @@ protected:
 	QMap<QString, WayPoint*> map;
 	
 public:
+	// Todo: handle case if name already exists
 	void AddWayPoint(WayPoint* w)       { map[w->Name()]=w; emit updated(w->Name()); }
 	QList<QString> WptNames()           { return map.keys(); }
 	WayPoint& GetItem(QString n)        { return *map[n]; }
@@ -199,6 +200,7 @@ protected:
 	QMap<QString, Track*> map;
 	
 public:
+	// Todo: handle case if name already exists
 	void AddTrack(Track* t)           { map[t->Name()]=t; emit updated(t->Name()); }
 	void AddMetaData(AreaMetaData* m) { }
 };
@@ -233,6 +235,7 @@ protected:
 	QMap<QString, Route*> map;
 	
 public:
+	// Todo: handle case if name already exists
 	void AddRoute(Route* r)            { map[r->Name()]=r; emit updated(r->Name()); }
 	void AddMetaData(AreaMetaData* m)  { }
 };
