@@ -64,6 +64,7 @@ static bool IsValueInRange(double v, double r1, double r2)
 
 MapList::MapList()
 {
+    LOG( "MapList::MapList()\n"; )
 	instance = this;
     QStringList files;
 
@@ -72,6 +73,7 @@ MapList::MapList()
     files = directory.entryList(QStringList(QString("*.xml")),
                                  QDir::Files | QDir::NoSymLinks);
 
+    LOG( "MapList::MapList() #xml: " << files.size() << "\n"; )
     for (int i = 0; i < files.size(); ++i)
     {
         QString base = files[i].left(files[i].length()-4);
@@ -83,6 +85,7 @@ MapList::MapList()
     files = directory.entryList(QStringList(QString("*.jpg")),
                                  QDir::Files | QDir::NoSymLinks);
 
+    LOG( "MapList::MapList() #jpg: " << files.size() << "\n"; )
     for (int i = 0; i < files.size(); ++i)
     {
         QString base = files[i].left(files[i].length()-4);

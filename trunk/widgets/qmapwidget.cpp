@@ -39,6 +39,7 @@ QMapWidget::QMapWidget(QWidget *parent)
     , svgOptions(new QImage(GetDrive() + QString(UIDIR "options.svg")))
     //, svgHome(new QImage(GetDrive() + QString(UIDIR "home.svg")))
     , svgFlag(new QImage(GetDrive() + QString(UIDIR "flag.svg")))
+    , svgHiker(new QImage(GetDrive() + QString(UIDIR "hiker.svg")))
     , svgBar(new QImage(GetDrive() + QString(UIDIR "statusbar.svg")))
     , zooming(0)
     , mapname("<no map loaded>")
@@ -54,8 +55,8 @@ QMapWidget::QMapWidget(QWidget *parent)
     connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
     connect(this, SIGNAL(options()), this, SLOT(SelectMap()));  // to be menu
     connect(this, SIGNAL(datum()), this, SLOT(SelectMap()));  // to be menu
-    //connect(this, SIGNAL(waypoint()), this, SLOT(SelectPoint()));
-    connect(this, SIGNAL(waypoint()), this, SLOT(StartTrack()));
+    connect(this, SIGNAL(waypoint()), this, SLOT(SelectPoint()));
+    connect(this, SIGNAL(track()), this, SLOT(StartTrack()));
 }
 
 QMapWidget::~QMapWidget()
@@ -278,7 +279,7 @@ void QMapWidget::TrackStarted(QString n)
 	ShowTrack(recordtrack);
 }
 
-void QMapWidget::ShowTrack(const Track* t)
+void QMapWidget::ShowTrack(Track* t)
 {
     LOG( "QMapWidget::ShowTrack()\n"; )
 	tracks.append(t);
@@ -287,9 +288,9 @@ void QMapWidget::ShowTrack(const Track* t)
     connect(t, SIGNAL(updated(WayPoint&)), this, SLOT(ShowTrackPoint(WayPoint&)));
 }
 
-void QMapWidget::ShowTrackPoint(const WayPoint& w)
+void QMapWidget::ShowTrackPoint(WayPoint& w)
 {
-    LOG2( "QMapWidget::ShowTrackPoint()\n"; )
+    LOG( "QMapWidget::ShowTrackPoint()\n"; )
     if (!mapimage) return;
     if (!meta) return;
     if (!meta->IsPositionOnMap(w.Latitude(),w.Longitude())) return;
@@ -435,7 +436,8 @@ void QMapWidget::mousePressEvent(QMouseEvent *event)
 {
     if ((event->pos().x() > width()-60) && (event->pos().y() < 60)) emit zoomin();
     else if ((event->pos().x() > width()-60) && (event->pos().y() > height()-60)) emit zoomout();
-    else if ((event->pos().x() < 60) && (event->pos().y() < 60)) emit waypoint();
+    else if ((event->pos().x() < 50) && (event->pos().y() < 60)) emit waypoint();
+    else if ((event->pos().x() > 60) && (event->pos().x() < 120) && (event->pos().y() < 60)) emit track();
     else if ((event->pos().x() < 60) && (event->pos().y() > height()-60)) emit options();
     else if ((event->pos().x() > 60) && (event->pos().x() < 260) && (event->pos().y() > height()-50)) emit datum();
     else
@@ -552,6 +554,8 @@ void QMapWidget::paintWidgets(QPainter& painter)
     painter.drawImage(target, *svgOptions, source);
     target = QRectF(w/-2,h/-2,48,48);
     painter.drawImage(target, *svgFlag, source);
+    target = QRectF(w/-2+60,h/-2,48,48);
+    painter.drawImage(target, *svgHiker, source);
 }
 
 void QMapWidget::paintDot(QPainter& painter,int x,int y,QColor c)

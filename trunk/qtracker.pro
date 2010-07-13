@@ -55,7 +55,8 @@ symbian {
         images/home.svg \
         images/options.svg \
         images/statusbar.svg \
-        images/flag.svg
+        images/flag.svg \
+        images/hiker.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
     VERSION = 0.8.111

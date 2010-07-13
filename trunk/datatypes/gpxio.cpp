@@ -236,6 +236,7 @@ void GpxIO::WriteTrackFile(const Track& t)
 	QFile file(t.FileName());
 	file.open(QIODevice::ReadWrite);
 	writer.setDevice(&file);
+	writer.setAutoFormatting(true);
 	WriteGpxHeader();
 	WriteTrack(t);
 	WriteGpxFooter();
@@ -249,6 +250,7 @@ void GpxIO::WriteRouteFile(const Route& r)
 	QFile file(r.FileName());
 	file.open(QIODevice::ReadWrite);
 	writer.setDevice(&file);
+	writer.setAutoFormatting(true);
 	WriteGpxHeader();
 	WriteRoute(r);
 	WriteGpxFooter();
@@ -258,22 +260,27 @@ void GpxIO::WriteRouteFile(const Route& r)
 //========================================================================
 
 void GpxIO::WriteGpxHeader()
-{
-    LOG2( "GpxIO::WriteGpxHeader()\n"; )
+{	
+    LOG( "GpxIO::WriteGpxHeader()\n"; )
 	writer.writeStartDocument();
 	writer.writeStartElement("gpx");
+	writer.writeAttribute("version","1.0");
+	writer.writeAttribute("creator","qTracker r111 http://qtracker.googlecode.com");
+	writer.writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+	writer.writeAttribute("xmlns","http://www.topografix.com/GPX/1/0");
+	writer.writeAttribute("xsi:schemaLocation","http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
 }
 
 void GpxIO::WriteGpxFooter()
 {
-    LOG2( "GpxIO::WriteGpxFooter()\n"; )
+    LOG( "GpxIO::WriteGpxFooter()\n"; )
 	writer.writeEndElement();
 	writer.writeEndDocument();
 }
 
 void GpxIO::WriteTrack(const Track& t)
 {
-    LOG2( "GpxIO::WriteTrack()\n"; )
+    LOG( "GpxIO::WriteTrack()\n"; )
 	writer.writeStartElement("trk");
 	if (t.Name() != "" )
 		writer.writeTextElement("name",t.Name());
@@ -286,14 +293,14 @@ void GpxIO::WriteTrack(const Track& t)
 
 void GpxIO::WriteRoute(const Route& r)
 {
-    LOG2( "GpxIO::WriteRoute()\n"; )
+    LOG( "GpxIO::WriteRoute()\n"; )
 	writer.writeStartElement("rte");
 	writer.writeEndElement();
 }
 
 void GpxIO::WriteWayPoint(const WayPoint& w, QString tag)
 {
-    LOG2( "GpxIO::WriteWayPoint()\n"; )
+    LOG( "GpxIO::WriteWayPoint()\n"; )
 	writer.writeStartElement(tag);
 	writer.writeAttribute("lat",QString::number(w.Latitude()));
 	writer.writeAttribute("lon",QString::number(w.Longitude()));

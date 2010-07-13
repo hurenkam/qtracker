@@ -176,12 +176,12 @@ protected:
 	QString name;
 	QList<WayPoint*> list;
 public:
-	const QString Name() const             { return name; }
-	const QString FileName() const         { return QString(GetDrive() + QString(TRACKDIR) + name + ".gpx"); }
-	void SetName(QString n)                { name = n; }
-	void AddPoint(WayPoint* w)             { list.append(w); emit updated(*w); }
-	const WayPoint& GetItem(int i) const   { return *list[i]; }
-	const int Length() const               { return list.length(); }
+	QString Name() const             { return name; }
+	QString FileName() const         { return QString(GetDrive() + QString(TRACKDIR) + name + ".gpx"); }
+	void SetName(QString n)          { name = n; }
+	void AddPoint(WayPoint* w)       { list.append(w); emit updated(*w); }
+	WayPoint& GetItem(int i) const   { return *list[i]; }
+	int Length() const               { return list.length(); }
 };
 
 class TrackList: public QObject

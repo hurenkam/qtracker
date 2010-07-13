@@ -28,6 +28,7 @@ signals:
     void zoomin();
     void zoomout();
     void waypoint();
+    void track();
     void options();
     void datum();
 
@@ -44,9 +45,9 @@ public slots:
     
     void StartTrack();
     void TrackStarted(QString n);
-    void ShowTrack(const Track* t);
+    void ShowTrack(Track* t);
     void HideTracks();
-    void ShowTrackPoint(const WayPoint& w);
+    void ShowTrackPoint(WayPoint& w);
 
 private slots:
     void zoomRepeat();
@@ -94,13 +95,14 @@ private:
     QImage* svgZoomOut;
     QImage* svgOptions;
     QImage* svgFlag;
+    QImage* svgHiker;
     QImage* svgBar;
     MapMetaData *meta;
     //MapList maplist;
     int zooming;
     QTimer zoomtimer;
     QString mapname;
-    QList<const Track*> tracks;
+    QList<Track*> tracks;
     Track* recordtrack;
 };
 
