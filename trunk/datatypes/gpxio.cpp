@@ -1,5 +1,6 @@
 #include <QFile>
 #include <QXmlStreamReader>
+#include <QString>
 #include "gpxio.h"
 
 #include <iostream>
@@ -230,26 +231,77 @@ void GpxIO::WriteMapMetaFile(const MapMetaData& m)
 
 void GpxIO::WriteTrackFile(const Track& t)
 {
+    LOG( "GpxIO::WriteTrackFile(" << t.FileName().toStdString() << ")\n"; )
+
+	QFile file(t.FileName());
+	file.open(QIODevice::ReadWrite);
+	writer.setDevice(&file);
+	WriteGpxHeader();
+	WriteTrack(t);
+	WriteGpxFooter();
+	file.close();
 }
 
 void GpxIO::WriteRouteFile(const Route& r)
 {
+    LOG( "GpxIO::WriteRouteFile(" << r.FileName().toStdString() << ")\n"; )
+
+	QFile file(r.FileName());
+	file.open(QIODevice::ReadWrite);
+	writer.setDevice(&file);
+	WriteGpxHeader();
+	WriteRoute(r);
+	WriteGpxFooter();
+	file.close();
 }
 
 //========================================================================
 
 void GpxIO::WriteGpxHeader()
 {
+    LOG2( "GpxIO::WriteGpxHeader()\n"; )
+	writer.writeStartDocument();
+	writer.writeStartElement("gpx");
 }
 
-void GpxIO::WriteTrack(Track& t)
+void GpxIO::WriteGpxFooter()
 {
+    LOG2( "GpxIO::WriteGpxFooter()\n"; )
+	writer.writeEndElement();
+	writer.writeEndDocument();
 }
 
-void GpxIO::WriteRoute(Route& r)
+void GpxIO::WriteTrack(const Track& t)
 {
+    LOG2( "GpxIO::WriteTrack()\n"; )
+	writer.writeStartElement("trk");
+	if (t.Name() != "" )
+		writer.writeTextElement("name",t.Name());
+	writer.writeStartElement("trkseg");
+	for (int i=0; i<t.Length(); i++)
+		WriteWayPoint(t.GetItem(i),"trkpt");
+	writer.writeEndElement();
+	writer.writeEndElement();
 }
 
-void GpxIO::WriteWayPoint(WayPoint& w, QString tag)
+void GpxIO::WriteRoute(const Route& r)
 {
+    LOG2( "GpxIO::WriteRoute()\n"; )
+	writer.writeStartElement("rte");
+	writer.writeEndElement();
+}
+
+void GpxIO::WriteWayPoint(const WayPoint& w, QString tag)
+{
+    LOG2( "GpxIO::WriteWayPoint()\n"; )
+	writer.writeStartElement(tag);
+	writer.writeAttribute("lat",QString::number(w.Latitude()));
+	writer.writeAttribute("lon",QString::number(w.Longitude()));
+	if (w.Name() != "" )
+		writer.writeTextElement("name",w.Name());
+	if (w.Time() != "" )
+		writer.writeTextElement("time",w.Time());
+	if (w.Elevation() != 0.0)
+		writer.writeTextElement("ele",QString::number(w.Elevation()));
+	writer.writeEndElement();
 }

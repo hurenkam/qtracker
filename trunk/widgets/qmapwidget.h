@@ -44,9 +44,9 @@ public slots:
     
     void StartTrack();
     void TrackStarted(QString n);
-    void ShowTrack(Track* t);
+    void ShowTrack(const Track* t);
     void HideTracks();
-    void ShowTrackPoint(WayPoint& w);
+    void ShowTrackPoint(const WayPoint& w);
 
 private slots:
     void zoomRepeat();
@@ -100,7 +100,7 @@ private:
     int zooming;
     QTimer zoomtimer;
     QString mapname;
-    QList<Track*> tracks;
+    QList<const Track*> tracks;
     Track* recordtrack;
 };
 

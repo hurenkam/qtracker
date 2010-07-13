@@ -6,6 +6,7 @@
 #include "qmapwidget.h"
 #include "qmapselectiondialog.h"
 #include "qwaypointdialog.h"
+#include "gpxio.h"
 
 #include <iostream>
 //#define LOG( a ) std::cout << a
@@ -248,6 +249,7 @@ void QMapWidget::StartTrack()
 	if (recordtrack)
 	{
 	    recordtrack->disconnect(SIGNAL(updated(WayPoint&)));
+	    GpxIO::Instance()->WriteTrackFile(*recordtrack);
 	    recordtrack = 0;
 	}
 	else
@@ -276,7 +278,7 @@ void QMapWidget::TrackStarted(QString n)
 	ShowTrack(recordtrack);
 }
 
-void QMapWidget::ShowTrack(Track* t)
+void QMapWidget::ShowTrack(const Track* t)
 {
     LOG( "QMapWidget::ShowTrack()\n"; )
 	tracks.append(t);
@@ -285,7 +287,7 @@ void QMapWidget::ShowTrack(Track* t)
     connect(t, SIGNAL(updated(WayPoint&)), this, SLOT(ShowTrackPoint(WayPoint&)));
 }
 
-void QMapWidget::ShowTrackPoint(WayPoint& w)
+void QMapWidget::ShowTrackPoint(const WayPoint& w)
 {
     LOG2( "QMapWidget::ShowTrackPoint()\n"; )
     if (!mapimage) return;
@@ -302,8 +304,12 @@ void QMapWidget::ShowTrackPoint(WayPoint& w)
 
 void QMapWidget::HideTracks()
 {
+	const Track* t;
 	while (tracks.length()>0)
-		tracks.takeFirst()->disconnect(SIGNAL(updated(WayPoint&)));
+	{
+		t = tracks.takeFirst();
+		disconnect(t, SIGNAL(updated(WayPoint&)));
+	}
 	
 	if (!mapimage) return;
 	if (!meta) return;

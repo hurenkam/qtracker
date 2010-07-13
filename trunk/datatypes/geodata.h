@@ -14,9 +14,15 @@
 #include "ui.h"
 
 #ifdef Q_OS_SYMBIAN
-#define MAPDIR "/data/qtracker/maps/"
+#define MAPDIR      "/data/qtracker/maps/"
+#define ROUTEDIR    "/data/qtracker/routes/"
+#define TRACKDIR    "/data/qtracker/tracks/"
+#define WAYPOINTDIR "/data/qtracker/"
 #else
-#define MAPDIR "/Users/hurenkam/workspace/qtracker/maps/"
+#define MAPDIR      "/Users/hurenkam/workspace/qtracker/maps/"
+#define ROUTEDIR    "/Users/hurenkam/workspace/qtracker/routes/"
+#define TRACKDIR    "/Users/hurenkam/workspace/qtracker/tracks/"
+#define WAYPOINTDIR "/Users/hurenkam/workspace/qtracker/"
 #endif
 
 class WayPoint
@@ -31,11 +37,11 @@ public:
 	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
 	    : latitude(lat), longitude(lon), elevation(ele), time(t), name(n) {}
 
-	QString Name()                     { return name; }
-	double Latitude()                  { return latitude; }
-	double Longitude()                 { return longitude; }
-	double Elevation()                 { return elevation; }
-	QString Time()                     { return time; }
+	QString Name() const               { return name; }
+	double Latitude() const            { return latitude; }
+	double Longitude() const           { return longitude; }
+	double Elevation() const           { return elevation; }
+	QString Time() const               { return time; }
 	
 	void SetName(QString n)            { name = n; }
 	void SetLatitude(double l)         { latitude = l; }
@@ -61,6 +67,7 @@ public:
 	void AddWayPoint(WayPoint* w)       { map[w->Name()]=w; emit updated(w->Name()); }
 	QList<QString> WptNames()           { return map.keys(); }
 	WayPoint& GetItem(QString n)        { return *map[n]; }
+	QString FileName()                  { return QString(GetDrive() + QString(WAYPOINTDIR) + "waypoints.gpx"); }
 };
 
 class Bounds
@@ -169,11 +176,12 @@ protected:
 	QString name;
 	QList<WayPoint*> list;
 public:
-	QString Name()             { return name; }
-	void SetName(QString n)    { name = n; }
-	void AddPoint(WayPoint* w) { list.append(w); emit updated(*w); }
-	WayPoint& GetItem(int i)   { return *list[i]; }
-	int Length()               { return list.length(); }
+	const QString Name() const             { return name; }
+	const QString FileName() const         { return QString(GetDrive() + QString(TRACKDIR) + name + ".gpx"); }
+	void SetName(QString n)                { name = n; }
+	void AddPoint(WayPoint* w)             { list.append(w); emit updated(*w); }
+	const WayPoint& GetItem(int i) const   { return *list[i]; }
+	const int Length() const               { return list.length(); }
 };
 
 class TrackList: public QObject
@@ -204,7 +212,8 @@ protected:
 	QString name;
 	QList<WayPoint*> list;
 public:
-	QString Name()                    { return name; }
+	const QString Name() const        { return name; }
+	const QString FileName() const    { return QString(GetDrive() + QString(TRACKDIR) + name + ".gpx"); }
 	void SetName(QString n)           { name = n; }
 	void AddPoint(WayPoint* w)        { list.append(w); emit updated(*w); }
 };

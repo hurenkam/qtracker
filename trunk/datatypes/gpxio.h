@@ -67,9 +67,10 @@ public:
 
 private:
     void WriteGpxHeader();
-    void WriteTrack(Track& t);
-    void WriteRoute(Route& r);
-    void WriteWayPoint(WayPoint& w, QString tag);
+    void WriteGpxFooter();
+    void WriteTrack(const Track& t);
+    void WriteRoute(const Route& r);
+    void WriteWayPoint(const WayPoint& w, QString tag);
 };
 
 #endif
