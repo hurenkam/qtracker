@@ -5,19 +5,21 @@
 #include <QList>
 #include <QMap>
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 #include "geodata.h"
 
 class XmlIO
 {
 protected:
-    QXmlStreamReader xml;
+    QXmlStreamReader reader;
+    QXmlStreamWriter writer;
     QXmlStreamReader::TokenType tt;
 
 public:
-    QString ReadElementString()            { return xml.readElementText(); }
-    double  ReadElementDouble()            { return xml.readElementText().toDouble(); }
-    QString ReadAttributeString(QString a) { return xml.attributes().value(a).toString(); }
-    double  ReadAttributeDouble(QString a) { return xml.attributes().value(a).toString().toDouble(); }
+    QString ReadElementString()            { return reader.readElementText(); }
+    double  ReadElementDouble()            { return reader.readElementText().toDouble(); }
+    QString ReadAttributeString(QString a) { return reader.attributes().value(a).toString(); }
+    double  ReadAttributeDouble(QString a) { return reader.attributes().value(a).toString().toDouble(); }
 
 };
 
@@ -44,10 +46,8 @@ protected:
 
 public:
     void ImportGpxFile(QString filename);
-    
     MapMetaData* ReadMapMetaFile(QString filename);
-    void WriteMapMetaFile(const MapMetaData& m);
-
+    
 private:
     void ReadGpx();
     WayPoint* ReadWayPoint(QString tag);
@@ -59,6 +59,17 @@ private:
     RefPoint ReadRefPoint();
     Bounds ReadBounds();
     void ReadExtensions();
+
+public:    
+    void WriteMapMetaFile(const MapMetaData& m);
+    void WriteTrackFile(const Track& t);
+    void WriteRouteFile(const Route& r);
+
+private:
+    void WriteGpxHeader();
+    void WriteTrack(Track& t);
+    void WriteRoute(Route& r);
+    void WriteWayPoint(WayPoint& w, QString tag);
 };
 
 #endif
