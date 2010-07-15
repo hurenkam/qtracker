@@ -15,6 +15,7 @@ First, there is no menu (yet), this is because up to now, i've been able to mana
 all functionality using dedicated widgets on the screen. 
 
 == Gauges ==
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="180" width="320" border="0" />
 
 qTracker by default starts out with 6 minimized gauges, and a map widget that
 occupies about half the screen. There are 4 types of event supported by the widgets
