@@ -101,29 +101,4 @@ private:
     QVBoxLayout *main;
 };
 
-class QTrackDialog : public QDialog
-{
-    Q_OBJECT
-
-public:
-    QTrackDialog(QString title, QString name, QWidget *parent = 0);
-    ~QTrackDialog();
-
-signals:
-    void confirmed(QString);
-
-public slots:
-    virtual void accept();
-
-private:
-    QPushButton *confirm;
-    QPushButton *cancel;
-    QGroupBox   *groupbox;
-    QGridLayout *gridbox;
-    QHBoxLayout *buttons;
-    QVBoxLayout *mainbox;
-
-    QLineEdit   *trkname;
-};
-
 #endif // QWAYPOINTDIALOG_H

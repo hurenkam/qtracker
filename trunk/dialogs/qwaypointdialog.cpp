@@ -75,56 +75,6 @@ QWaypointDialog::~QWaypointDialog()
     delete mainbox;
 }
 
-QTrackDialog::QTrackDialog(QString title, QString name, QWidget *parent)
-    : QDialog(parent)
-{
-    mainbox =  new QVBoxLayout();
-    gridbox = new QGridLayout();
-    groupbox = new QGroupBox(title);
-    groupbox->setLayout(gridbox);
-    buttons =  new QHBoxLayout();
-    trkname = new QLineEdit(name,this);
-
-    cancel =  new QPushButton(tr("Cancel"));
-    confirm = new QPushButton(tr("Confirm"));
-
-    gridbox->addWidget(new QLabel(tr("Name:")),0,0);
-    gridbox->addWidget(trkname,0,1);
-
-    buttons->addWidget(confirm);
-    buttons->addWidget(cancel);
-    mainbox->addWidget(groupbox);
-    mainbox->addLayout(buttons);
-    setLayout(mainbox);
-
-    cancel->show();
-    confirm->show();
-    setAttribute(Qt::WA_DeleteOnClose);
-
-    connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
-    //connect(this,SIGNAL(accepted),this,SLOT(emitSelection()));
-}
-
-void QTrackDialog::accept()
-{
-    QString name = trkname->text();
-    emit confirmed(name);
-    QDialog::accept();
-    close();
-}
-
-QTrackDialog::~QTrackDialog()
-{
-    delete trkname;
-    delete cancel;
-    delete confirm;
-    delete buttons;
-    delete gridbox;
-    delete mainbox;
-}
-
-
 QNewTrackTab::QNewTrackTab(QTrackTabsDialog *parent)
     : QWidget(parent), center(0)
 {
@@ -173,7 +123,6 @@ QNewTrackTab::QNewTrackTab(QTrackTabsDialog *parent)
     QWidget *filler = new QWidget;
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	
-	//center = new QBoxLayout(QBoxLayout::TopToBottom);
 	center = new QBoxLayout(QBoxLayout::LeftToRight);
 	center->addWidget(typegroup);
 	center->addWidget(distgroup);
@@ -212,9 +161,8 @@ QNewTrackTab::~QNewTrackTab()
 QTrackTabsDialog::QTrackTabsDialog(QString title, QString name, QWidget *parent)
     : QDialog(parent)
 {
-	//setStyleSheet(QString("QTabBar::tab { min-width:12px; min-height:12px; }"));
-
     tabs = new QTabWidget(this);
+    //tabs->setStyleSheet("QTabBar::tab { border:1px; margin-top:1px; margin-bottom:1px }");
     tabs->addTab(new QNewTrackTab(this), tr("New"));
     tabs->addTab(new QNewTrackTab(this), tr("List"));
     tabs->addTab(new QNewTrackTab(this), tr("Options"));
