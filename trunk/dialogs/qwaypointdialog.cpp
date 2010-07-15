@@ -126,12 +126,11 @@ QTrackDialog::~QTrackDialog()
 
 
 QNewTrackTab::QNewTrackTab(QTrackTabsDialog *parent)
-    : QWidget(parent)
+    : QWidget(parent), center(0)
 {
 	trkname = new QLineEdit("trk",this);
 	
-	vertical = new QVBoxLayout();
-	horizontal = new QVBoxLayout();
+	main = new QVBoxLayout();
 	
 	QHBoxLayout *namebox = new QHBoxLayout();
 	namebox->addWidget(new QLabel(tr("Name:")));
@@ -171,26 +170,18 @@ QNewTrackTab::QNewTrackTab(QTrackTabsDialog *parent)
 	distbox->addStretch(1);
 	distgroup->setLayout(distbox);
 	
-    QWidget *bottomFiller = new QWidget;
-    bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QWidget *filler = new QWidget;
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	
-	vertical->addLayout(namebox);
-	vertical->addWidget(typegroup);
-	vertical->addWidget(distgroup);
-	vertical->addWidget(bottomFiller);
-	vertical->addLayout(buttonbox);
-
-	QHBoxLayout *sidebyside = new QHBoxLayout();
-	sidebyside->addWidget(typegroup);
-	sidebyside->addWidget(distgroup);
-	horizontal->addLayout(namebox);
-	horizontal->addLayout(sidebyside);
-	horizontal->addLayout(buttonbox);
-
-	//if (width() < height())
-	//    setLayout(vertical);
-	//else
-		setLayout(horizontal);
+	//center = new QBoxLayout(QBoxLayout::TopToBottom);
+	center = new QBoxLayout(QBoxLayout::LeftToRight);
+	center->addWidget(typegroup);
+	center->addWidget(distgroup);
+	main->addLayout(namebox);
+	main->addLayout(center);
+	main->addWidget(filler);
+	main->addLayout(buttonbox);
+	setLayout(main);
 	
 	cancel->show();
 	confirm->show();
@@ -203,12 +194,12 @@ QNewTrackTab::QNewTrackTab(QTrackTabsDialog *parent)
 void QNewTrackTab::resizeEvent( QResizeEvent * event )
 {
     LOG( "QNewTrackTab::resizeEvent()\n"; )
-    //delete layout();
+    if (!center) return;
     
-    //if (event->size().width() < event->size().height())
-	//    setLayout(vertical);
-	//else
-	//	setLayout(horizontal);
+    if (event->size().width() < event->size().height())
+	    center->setDirection(QBoxLayout::TopToBottom);
+	else
+	    center->setDirection(QBoxLayout::LeftToRight);
 
     QWidget::resizeEvent(event);
 }
@@ -221,6 +212,7 @@ QNewTrackTab::~QNewTrackTab()
 QTrackTabsDialog::QTrackTabsDialog(QString title, QString name, QWidget *parent)
     : QDialog(parent)
 {
+	//setStyleSheet(QString("QTabBar::tab { min-width:12px; min-height:12px; }"));
 
     tabs = new QTabWidget(this);
     tabs->addTab(new QNewTrackTab(this), tr("New"));

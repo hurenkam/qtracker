@@ -91,14 +91,14 @@ protected:
     virtual void resizeEvent(QResizeEvent * event);
 
 private:
+	QBoxLayout *center;
 	QGroupBox *distgroup;
 	QGroupBox *typegroup;
 	QHBoxLayout *namebox;
 	QHBoxLayout *buttonbox;
 	
 	QLineEdit   *trkname;
-    QVBoxLayout *vertical;
-    QVBoxLayout *horizontal;
+    QVBoxLayout *main;
 };
 
 class QTrackDialog : public QDialog
