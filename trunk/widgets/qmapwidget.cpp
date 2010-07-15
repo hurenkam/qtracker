@@ -45,7 +45,9 @@ QMapWidget::QMapWidget(QWidget *parent)
     , zooming(0)
     , mapname("<no map loaded>")
     , recordtrack(0)
+    , prevpos(0)
 {
+	prevtime = QDateTime::currentDateTime().toUTC();
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMapForCurrentPosition()));
@@ -276,6 +278,8 @@ void QMapWidget::TrackStarted(QString n, int t, int d)
     
 	recordtrack = new Track;
 	recordtrack->SetName(n);
+	updatetime = t;
+	updatedistance = d;
 	TrackList::Instance()->AddTrack(recordtrack);
 	ShowTrack(recordtrack);
 }
@@ -350,17 +354,51 @@ void QMapWidget::SelectMapForCurrentPosition()
     }
 }
 
-void QMapWidget::updatePosition(double lat, double lon)
+void QMapWidget::updatePosition(const QGeoCoordinate& pos)
 {
     //LOG( "QMapWidget::updatePosition()\n"; )
-    latitude = lat;
-    longitude = lon;
+    latitude = pos.latitude();
+    longitude = pos.longitude();
+    altitude = pos.altitude();
+    
+	QDateTime curtime = QDateTime::currentDateTime().toUTC();
+	QString timestamp = curtime.toString("yyyy-MM-ddThh:mm:ssZ");
+	WayPoint* curpos = new WayPoint(latitude,longitude,altitude,timestamp);
+	
+	int deltatime = 0;
+	double deltadistance = 0;
+	
     if (recordtrack)
-        recordtrack->AddPoint(new WayPoint(lat,lon));
+	{
+    	deltatime = prevtime.secsTo(curtime);
+        if (prevpos != 0)
+        	deltadistance = prevpos->distance(curpos);
+		
+		if ((updatetime==0) && (updatedistance==0))
+		{
+            recordtrack->AddPoint(curpos);
+            curpos = 0;
+		}
+		else if ((updatetime!=0) && (updatetime < deltatime))
+		{
+            prevtime = curtime;
+            recordtrack->AddPoint(curpos);
+            curpos = 0;
+        }
+		else if ((updatedistance!=0) && ((prevpos==0) || (updatedistance < deltadistance)))
+		{
+        	prevpos = curpos;
+            recordtrack->AddPoint(curpos);
+            curpos = 0;
+        }
+	}
     if (state == StFollowGPS)
         FollowGPS();
     else
         update();
+    
+    if (curpos)
+    	delete curpos;
 }
 
 void QMapWidget::moveMap(int dx, int dy)

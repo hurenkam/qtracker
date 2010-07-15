@@ -48,14 +48,24 @@ signals:
 	void newtrack(QString, int, int);
 
 public slots:
-    void emitnewtrack() { if (trkname) emit newtrack(trkname->text(),0,30); }
+    void emitnewtrack()     { if (trkname) emit newtrack(trkname->text(),time,dist); }
+    void selectdistance();
+    void selecttime();
+    void selectall();
+    void updatetime(int id);
+    void updatedistance(int id);
 
 protected:
     virtual void resizeEvent(QResizeEvent * event);
 
 private:
+    int time;
+    int dist;
 	QBoxLayout *center;
-	QGroupBox *distgroup;
+	QGroupBox    *distgroup;
+	QButtonGroup *distbuttons;
+	QGroupBox    *timegroup;
+	QButtonGroup *timebuttons;
 	QGroupBox *typegroup;
 	QHBoxLayout *namebox;
 	QHBoxLayout *buttonbox;

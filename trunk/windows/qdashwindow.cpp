@@ -183,7 +183,7 @@ void QDashWindow::Init(QSplashScreen *splash)
 
     QTimer *t = new QTimer(this);
     connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
-    
+/*
     //compass = new QCompass();
     compass = new QSensor("QCompass");
     if (compass)
@@ -203,7 +203,7 @@ void QDashWindow::Init(QSplashScreen *splash)
 	{
         heading->SetDial(-45);
 	}
-
+*/
     possource = QGeoPositionInfoSource::createDefaultSource(this);
     if (possource) {
         possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
@@ -335,21 +335,24 @@ void QDashWindow::clearSatellites()
 void QDashWindow::updatePosition(const QGeoPositionInfo &info)
 {	
 	qDebug() << "Position updated:" << info;
+	double lat = info.coordinate().latitude();
+	double lon = info.coordinate().longitude();
+	double ele = info.coordinate().altitude();
 	
 	// Exit if animation in progress
     if (zoomstep != 0) return;
 
-    updateDistance(info.coordinate().latitude(),info.coordinate().longitude());
-    altitude->SetAltitude(info.coordinate().altitude());
+    updateDistance(lat,lon);
+    altitude->SetAltitude(ele);
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
         speed->SetSpeed(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
-    //if (info.hasAttribute(QGeoPositionInfo::Direction))
-        //heading->SetDial(360.0-info.attribute(QGeoPositionInfo::Direction));
+    if (info.hasAttribute(QGeoPositionInfo::Direction))
+        heading->SetDial(360.0-info.attribute(QGeoPositionInfo::Direction));
     
 	// Exit if map is not visible
     if (zoomgauge != 0) return;
     
-    map->updatePosition(info.coordinate().latitude(),info.coordinate().longitude());
+    map->updatePosition(info.coordinate());
 }
 
 bool sortByPrn(const QGeoSatelliteInfo &s1, const QGeoSatelliteInfo &s2)
@@ -442,7 +445,7 @@ void QDashWindow::updateHeading()
 {
     if (zoomstep != 0) return;
 
-    heading->SetDial(360.0-reading->azimuth());
+    //heading->SetDial(360.0-reading->azimuth());
 }
 
 void QDashWindow::ToggleMap()

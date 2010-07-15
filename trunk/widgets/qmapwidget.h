@@ -3,8 +3,12 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QGeoPositionInfo>
+#include <QGeoCoordinate>
 #include "qgaugewidget.h"
 #include "geodata.h"
+
+using namespace QtMobility;
 
 class ScreenPos
 {
@@ -33,7 +37,8 @@ signals:
     void datum();
 
 public slots:
-    void updatePosition(double lat, double lon);
+    //void updatePosition(double lat, double lon, double ele=0.0);
+    void updatePosition(const QGeoCoordinate& pos);
     void moveMap(int x, int y);
     void SelectMap();
     void SelectPoint();
@@ -89,6 +94,11 @@ private:
     double x, y;
     double latitude;
     double longitude;
+    double altitude;
+    WayPoint *prevpos;
+    int updatetime;
+    int updatedistance;
+    QDateTime prevtime;
     QImage* mapimage;
     QImage* bgimage;
     QImage* svgZoomIn;

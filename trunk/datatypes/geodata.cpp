@@ -49,6 +49,20 @@ static void CalculateDistanceAndBearing(
     bearing = bearing / 2.0 / PI * 360.0;
 }
 
+double WayPoint::distance(WayPoint* to)
+{
+	double d, b;
+	CalculateDistanceAndBearing(Latitude(),Longitude(),to->Latitude(),to->Longitude(),d,b);
+	return d;
+}
+
+double WayPoint::bearing(WayPoint* to)
+{
+	double d, b;
+	CalculateDistanceAndBearing(Latitude(),Longitude(),to->Latitude(),to->Longitude(),d,b);
+	return b;
+}
+
 static bool IsValueInRange(double v, double r1, double r2)
 {
     if (r1 > r2)

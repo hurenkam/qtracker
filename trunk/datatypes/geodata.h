@@ -24,7 +24,15 @@
 #define TRACKDIR    "/Users/hurenkam/workspace/qtracker/tracks/"
 #define WAYPOINTDIR "/Users/hurenkam/workspace/qtracker/"
 #endif
-
+/*
+extern static void CalculateDistanceAndBearing(
+    double fromlat,
+    double fromlon,
+    double tolat,
+    double tolon,
+    double &distance,
+    double &bearing );
+*/
 class WayPoint
 {
 protected:
@@ -48,6 +56,9 @@ public:
 	void SetLongitude(double l)        { longitude = l; }
 	void SetElevation(double e)        { elevation = e; }
 	void SetTime(QString t)            { time = t; }
+	
+	double distance(WayPoint *to);
+	double bearing(WayPoint *to);
 };
 
 class WayPointList : public QObject
@@ -176,7 +187,10 @@ signals:
 protected:
 	QString name;
 	QList<WayPoint*> list;
+	//int updatetime;
+	//int updatedistance;
 public:
+	//Track(QString n="", int t=0, int d=0): name(n), updatetime(t), updatedistance(d) {}
 	QString Name() const             { return name; }
 	QString FileName() const         { return QString(GetDrive() + QString(TRACKDIR) + name + ".gpx"); }
 	void SetName(QString n)          { name = n; }
