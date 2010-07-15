@@ -28,7 +28,7 @@ values for altitude, reported trip distance in speed gauge, and trip time in the
 Due to a bug, the altitude gauge is reset via DoubleTap, and not LongTap, this will be
 solved in a future release.
 
-== Map ==
+== Maps ==
 
 A map can be loaded by pressing the button in the bottom left of the map widget, this
 will bring up a list of available maps in (!:/data/qtracker/maps), maps of type .xml and
@@ -54,3 +54,10 @@ cause the map to autocalibrate, and from then on you can use the map to navigate
 LongTap on the map will cause it to be maximized. LongTap it again to go back to default
 size. SingleTap any gauge, and the gauge will maximize, and the map will disappear.
 SingleTap the maximized gauge, and the map will come back.
+
+
+== Tracks ==
+
+A track can be recorded by pressing the hiker logo (2nd item on the topleft of the screen), it will bringup the track dialog box, with as default the tab 'new' highlighted.
+You can fill in a name, and set a time or distance based interval. Press the Start button to start recording.
+Once a track recording is started, it will appear on the map (zoom in to better see the dots). Pressing the hiker logo again, will stop and save the track into a gpx file.
