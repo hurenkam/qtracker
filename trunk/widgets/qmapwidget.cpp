@@ -6,6 +6,7 @@
 #include "qmapwidget.h"
 #include "qmapselectiondialog.h"
 #include "qwaypointdialog.h"
+#include "qtrackdialog.h"
 #include "gpxio.h"
 
 #include <iostream>

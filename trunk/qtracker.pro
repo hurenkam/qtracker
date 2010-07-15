@@ -6,7 +6,8 @@ TARGET = qTracker
 QT += core \
     gui \
     xml
-HEADERS += datatypes/geodata.h \
+HEADERS += dialogs/qtrackdialog.h \
+    datatypes/geodata.h \
     datatypes/gpxio.h \
     dialogs/qwaypointdialog.h \
     dialogs/qmapselectiondialog.h \
@@ -64,7 +65,8 @@ symbian {
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000
 }
-SOURCES += datatypes/geodata.cpp \
+SOURCES += dialogs/qtrackdialog.cpp \
+    datatypes/geodata.cpp \
     datatypes/gpxio.cpp \
     dialogs/qwaypointdialog.cpp \
     dialogs/qmapselectiondialog.cpp \
