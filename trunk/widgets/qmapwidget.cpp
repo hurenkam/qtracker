@@ -255,9 +255,9 @@ void QMapWidget::StartTrack()
 	}
 	else
 	{
-		QTrackDialog *dialog;
-		dialog = new QTrackDialog(QString("Start Track:"),QString("trk"));
-		connect(dialog,SIGNAL(confirmed(QString)),this,SLOT(TrackStarted(QString)));
+		QTrackTabsDialog *dialog;
+		dialog = new QTrackTabsDialog(QString("Start Track:"),QString("trk"));
+		connect(dialog,SIGNAL(newtrack(QString,int,int)),this,SLOT(TrackStarted(QString,int,int)));
 	
 		dialog->setModal(true);
 	#ifdef Q_OS_SYMBIAN
@@ -268,7 +268,7 @@ void QMapWidget::StartTrack()
 	}
 }
 
-void QMapWidget::TrackStarted(QString n)
+void QMapWidget::TrackStarted(QString n, int t, int d)
 {
     LOG( "QMapWidget::TrackStarted()\n"; )
     if (recordtrack) return;

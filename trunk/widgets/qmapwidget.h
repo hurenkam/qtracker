@@ -44,7 +44,7 @@ public slots:
     void FollowGPS();
     
     void StartTrack();
-    void TrackStarted(QString n);
+    void TrackStarted(QString n, int t, int d);
     void ShowTrack(Track* t);
     void HideTracks();
     void ShowTrackPoint(WayPoint& w);
