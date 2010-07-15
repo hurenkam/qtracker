@@ -58,6 +58,8 @@ SingleTap the maximized gauge, and the map will come back.
 
 == Tracks ==
 
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/screenshot-124-2.jpg" height="180" width="320" border="0" /><br>
+
 A track can be recorded by pressing the hiker logo (2nd item on the topleft of the screen), it will bringup the track dialog box, with as default the tab 'new' highlighted.
 You can fill in a name, and set a time or distance based interval. Press the Start button to start recording.
 Once a track recording is started, it will appear on the map (zoom in to better see the dots). Pressing the hiker logo again, will stop and save the track into a gpx file.
