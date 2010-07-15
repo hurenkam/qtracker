@@ -265,7 +265,7 @@ void GpxIO::WriteGpxHeader()
 	writer.writeStartDocument();
 	writer.writeStartElement("gpx");
 	writer.writeAttribute("version","1.0");
-	writer.writeAttribute("creator","qTracker r118 http://qtracker.googlecode.com");
+	writer.writeAttribute("creator","qTracker r124 http://qtracker.googlecode.com");
 	writer.writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
 	writer.writeAttribute("xmlns","http://www.topografix.com/GPX/1/0");
 	writer.writeAttribute("xsi:schemaLocation","http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
