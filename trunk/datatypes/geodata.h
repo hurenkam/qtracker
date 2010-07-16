@@ -217,6 +217,8 @@ public:
 	// Todo: handle case if name already exists
 	void AddTrack(Track* t)           { map[t->Name()]=t; emit updated(t->Name()); }
 	void AddMetaData(AreaMetaData* m) { }
+	QList<QString> Keys()             { return map.keys(); }
+	Track& GetItem(QString k) const   { return *map[k]; }
 };
 
 class Route: public QObject

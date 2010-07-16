@@ -154,6 +154,8 @@ bool QMapWidget::LoadMap(QString filename)
         x = mapimage->width()/2;
         y = mapimage->height()/2;
         mapname = filename;
+        if (recordtrack)
+        	paintTrack(recordtrack);
     }
     update();
     return result;
@@ -245,35 +247,21 @@ void QMapWidget::SelectPoint()
 #endif
 }
 
-void QMapWidget::StartTrack()
+void QMapWidget::StartTrack() // name doesn't cover the load, should be renamed
 {
-	if (recordtrack)
-	{
-	    recordtrack->disconnect(SIGNAL(updated(WayPoint&)));
-	    GpxIO::Instance()->WriteTrackFile(*recordtrack);
-	    recordtrack = 0;
-	    prevpos = 0;
-	    prevtime = QDateTime::fromTime_t(0);
-
-	    QMessageBox msg;
-	    msg.setText(QString("Track saved."));
-	    msg.setIcon(QMessageBox::Information);
-	    msg.setStandardButtons(QMessageBox::Ok);
-	    msg.exec();
-	}
-	else
-	{
-		QTrackTabsDialog *dialog;
-		dialog = new QTrackTabsDialog(QString("Start Track:"),QString("trk"));
-		connect(dialog,SIGNAL(newtrack(QString,int,int)),this,SLOT(TrackStarted(QString,int,int)));
+	QTrackTabsDialog *dialog;
+	dialog = new QTrackTabsDialog(recordtrack);
 	
-		dialog->setModal(true);
-	#ifdef Q_OS_SYMBIAN
-		dialog->showFullScreen();
-	#else
-		dialog->show();
-	#endif
-	}
+	connect(dialog,SIGNAL(newtrack(QString,int,int)),this,SLOT(TrackStarted(QString,int,int)));
+	connect(dialog,SIGNAL(updatetrack(QString,int,int)),this,SLOT(TrackUpdated(QString,int,int)));
+	connect(dialog,SIGNAL(stoptrack(QString)),this,SLOT(TrackStopped(QString)));
+
+	dialog->setModal(true);
+#ifdef Q_OS_SYMBIAN
+	dialog->showFullScreen();
+#else
+	dialog->show();
+#endif
 }
 
 void QMapWidget::TrackStarted(QString n, int t, int d)
@@ -295,12 +283,48 @@ void QMapWidget::TrackStarted(QString n, int t, int d)
     msg.exec();
 }
 
+void QMapWidget::TrackUpdated(QString n, int t, int d)
+{
+    LOG( "QMapWidget::TrackUpdated()\n"; )
+	updatetime = t;
+	updatedistance = d;
+
+    QMessageBox msg;
+    msg.setText(QString("Track updated."));
+    msg.setIcon(QMessageBox::Information);
+    msg.setStandardButtons(QMessageBox::Ok);
+    msg.exec();
+}
+
+void QMapWidget::TrackStopped(QString name)
+{
+    LOG( "QMapWidget::TrackStopped()\n"; )
+	if (!recordtrack) return;
+	
+	recordtrack->disconnect(SIGNAL(updated(WayPoint&)));
+	GpxIO::Instance()->WriteTrackFile(*recordtrack);
+	recordtrack = 0;
+	prevpos = 0;
+	prevtime = QDateTime::fromTime_t(0);
+
+	QMessageBox msg;
+	msg.setText(QString("Track saved."));
+	msg.setIcon(QMessageBox::Information);
+	msg.setStandardButtons(QMessageBox::Ok);
+	msg.exec();
+}
+
+void QMapWidget::paintTrack(Track* t)
+{
+	for (int i=0; i < t->Length(); i++)
+		ShowTrackPoint(t->GetItem(i));
+}
+
 void QMapWidget::ShowTrack(Track* t)
 {
     LOG( "QMapWidget::ShowTrack()\n"; )
 	tracks.append(t);
-    for (int i=0; i < t->Length(); i++)
-    	ShowTrackPoint(t->GetItem(i));
+    paintTrack(t);
     connect(t, SIGNAL(updated(WayPoint&)), this, SLOT(ShowTrackPoint(WayPoint&)));
 }
 

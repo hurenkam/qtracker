@@ -50,6 +50,8 @@ public slots:
     
     void StartTrack();
     void TrackStarted(QString n, int t, int d);
+    void TrackUpdated(QString n, int t, int d);
+    void TrackStopped(QString name);
     void ShowTrack(Track* t);
     void HideTracks();
     void ShowTrackPoint(WayPoint& w);
@@ -71,6 +73,7 @@ protected:
         	return false;
     }
     
+    virtual void paintTrack(Track* t);
     virtual void paintBackground(QPainter& painter);
     virtual void paintMap(QPainter& painter);
     virtual void paintWaypoints(QPainter& painter);
