@@ -47,7 +47,7 @@ QMapWidget::QMapWidget(QWidget *parent)
     , recordtrack(0)
     , prevpos(0)
 {
-	prevtime = QDateTime::currentDateTime().toUTC();
+	prevtime = QDateTime::fromTime_t(0);
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMapForCurrentPosition()));
@@ -182,19 +182,12 @@ void QMapWidget::SelectMap()
 
 void QMapWidget::WaypointSelected(QString name, double lat, double lon)
 {
-/*
-    QMessageBox msg;
-    msg.setText(QString("not implemented"));
-    msg.setIcon(QMessageBox::Warning);
-    msg.setStandardButtons(QMessageBox::Ok);
-    msg.exec();
-*/
     QMessageBox msg;
     WayPoint *w = new WayPoint(lat,lon);
     w->SetName(name);
     WayPointList::Instance().AddWayPoint(w);
     msg.setText(QString("Waypoint added."));
-    msg.setIcon(QMessageBox::Warning);
+    msg.setIcon(QMessageBox::Information);
     msg.setStandardButtons(QMessageBox::Ok);
     msg.exec();
 }
@@ -205,11 +198,15 @@ void QMapWidget::RefpointSelected(QString name, double lat, double lon)
     RefPoint r(lat,lon,x,y);
     r.SetName(name);
     if (meta->AddRefPoint(r)) //meta->AddRefpoint(lat,lon,x,y))
+    {
         msg.setText(QString("Refpoint added."));
+        msg.setIcon(QMessageBox::Information);
+    }
     else
+    {
         msg.setText(QString("Unable to add refpoint."));
-
-    msg.setIcon(QMessageBox::Warning);
+        msg.setIcon(QMessageBox::Warning);
+    }
     msg.setStandardButtons(QMessageBox::Ok);
     msg.exec();
 }
@@ -255,6 +252,14 @@ void QMapWidget::StartTrack()
 	    recordtrack->disconnect(SIGNAL(updated(WayPoint&)));
 	    GpxIO::Instance()->WriteTrackFile(*recordtrack);
 	    recordtrack = 0;
+	    prevpos = 0;
+	    prevtime = QDateTime::fromTime_t(0);
+
+	    QMessageBox msg;
+	    msg.setText(QString("Track saved."));
+	    msg.setIcon(QMessageBox::Information);
+	    msg.setStandardButtons(QMessageBox::Ok);
+	    msg.exec();
 	}
 	else
 	{
@@ -282,6 +287,12 @@ void QMapWidget::TrackStarted(QString n, int t, int d)
 	updatedistance = d;
 	TrackList::Instance()->AddTrack(recordtrack);
 	ShowTrack(recordtrack);
+	
+    QMessageBox msg;
+    msg.setText(QString("Track started."));
+    msg.setIcon(QMessageBox::Information);
+    msg.setStandardButtons(QMessageBox::Ok);
+    msg.exec();
 }
 
 void QMapWidget::ShowTrack(Track* t)
@@ -303,8 +314,8 @@ void QMapWidget::ShowTrackPoint(WayPoint& w)
     meta->Wgs2XY(w.Latitude(),w.Longitude(),tx,ty);
     
     QPainter painter(mapimage);
-    painter.setPen(Qt::black);
-    painter.setBrush(Qt::black);
+    painter.setPen(Qt::yellow);
+    painter.setBrush(Qt::yellow);
     painter.drawEllipse(tx-2,ty-2,4,4);
 }
 
