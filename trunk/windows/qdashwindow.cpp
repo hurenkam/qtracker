@@ -168,14 +168,7 @@ void QDashWindow::Init(QSplashScreen *splash)
     splash->showMessage("Initialising widgets...",Qt::AlignLeft);
     InitWidgets();
     splash->showMessage("Setting up main screen...",Qt::AlignLeft);
-
-    #ifdef Q_OS_SYMBIAN
     showFullScreen();
-    #else
-    //resize(360,640);
-    resize(640,360);
-    #endif
-    
     clearSatellites();
 
     zoomtimer = new QTimer(this);
@@ -238,7 +231,7 @@ void QDashWindow::Init(QSplashScreen *splash)
 
     t->start(1000);
 
-    QFile file(UIDIR "style.css");
+    QFile file(":/css/style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     setStyleSheet(styleSheet);

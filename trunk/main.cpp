@@ -38,8 +38,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    Q_INIT_RESOURCE(ui);
 
-    QPixmap pixmap(GetDrive() + QString(UIDIR "splash.png"));
+    QPixmap pixmap(":/splash/splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("Wait...",Qt::AlignLeft);

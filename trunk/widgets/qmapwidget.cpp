@@ -16,7 +16,7 @@
 
 static double zoomlevels[] = { 0.33, 0.5, 0.66, 1.0, 1.41, 2.0, 3.0 };
 const int     zoomneutral = 3;
-const int	  zoommax = 6;
+const int     zoommax = 6;
 
 #ifdef Q_OS_SYMBIAN
 #define MAPDIR "/data/qtracker/maps/"
@@ -34,20 +34,20 @@ QMapWidget::QMapWidget(QWidget *parent)
     , longitude(0)
     , meta(0)
     , mapimage(0)
-    , bgimage(new QImage(GetDrive() + QString(UIDIR "map.svg")))
-    , svgZoomIn(new QImage(GetDrive() + QString(UIDIR "zoom-in.svg")))
-    , svgZoomOut(new QImage(GetDrive() + QString(UIDIR "zoom-out.svg")))
-    , svgOptions(new QImage(GetDrive() + QString(UIDIR "options.svg")))
-    //, svgHome(new QImage(GetDrive() + QString(UIDIR "home.svg")))
-    , svgFlag(new QImage(GetDrive() + QString(UIDIR "flag.svg")))
-    , svgHiker(new QImage(GetDrive() + QString(UIDIR "hiker.svg")))
-    , svgBar(new QImage(GetDrive() + QString(UIDIR "statusbar.svg")))
+    , bgimage(new QImage(":/map/map.svg"))
+    , svgZoomIn(new QImage(":/map/zoom-in.svg"))
+    , svgZoomOut(new QImage(":/map/zoom-out.svg"))
+    , svgOptions(new QImage(":/map/options.svg"))
+    //, svgHome(new QImage(":/map/home.svg"))
+    , svgFlag(new QImage(":/map/flag.svg"))
+    , svgHiker(new QImage(":/map/hiker.svg"))
+    , svgBar(new QImage(":/map/statusbar.svg"))
     , zooming(0)
     , mapname("<no map loaded>")
     , recordtrack(0)
     , prevpos(0)
 {
-	prevtime = QDateTime::fromTime_t(0);
+    prevtime = QDateTime::fromTime_t(0);
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMapForCurrentPosition()));

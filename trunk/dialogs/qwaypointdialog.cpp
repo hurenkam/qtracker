@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QDoubleValidator>
 #include <QResizeEvent>
+#include <QFile>
 #include "qwaypointdialog.h"
 
 #include <iostream>
@@ -44,9 +45,15 @@ QWaypointDialog::QWaypointDialog(QString title, QString name, double lat, double
     mainbox->addLayout(buttons);
     setLayout(mainbox);
 
+    QFile file(":/css/style.css");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    setStyleSheet(styleSheet);
+
     cancel->show();
     confirm->show();
     setAttribute(Qt::WA_DeleteOnClose);
+    showFullScreen();
 
     connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));

@@ -27,7 +27,8 @@ INCLUDEPATH += dialogs \
     mobility \
     windows
 FORMS += 
-RESOURCES += 
+RESOURCES += \ 
+    images/ui.qrc
 symbian { 
     TARGET.UID3 = 0xEA82CEF3
     LIBS += -llbs \
@@ -36,28 +37,6 @@ symbian {
         -lcone
     TARGET.CAPABILITY = Location
     ICON = images/icon.svg
-    UiFiles.sources += images/clock.svg \
-        images/compass.svg \
-        images/compassneedle.svg \
-        images/longhand.svg \
-        images/satview.svg \
-        images/secondhand.svg \
-        images/shorthand.svg \
-        images/speed10.svg \
-        images/speed200.svg \
-        images/style.css \
-        images/speedneedle.svg \
-        images/map.svg \
-        images/splash.png \
-        images/zoom-in.svg \
-        images/zoom-out.svg \
-        images/home.svg \
-        images/options.svg \
-        images/statusbar.svg \
-        images/flag.svg \
-        images/hiker.svg
-    UiFiles.path = ./ui
-    DEPLOYMENT += UiFiles
     VERSION = 0.8.136
     TARGET.EPOCHEAPSIZE = 0x30000 \
         0x3000000

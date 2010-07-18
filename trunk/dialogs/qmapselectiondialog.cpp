@@ -2,6 +2,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QStringList>
+#include <QFile>
 #include "qmapselectiondialog.h"
 
 //QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
@@ -28,11 +29,17 @@ QMapSelectionDialog::QMapSelectionDialog(QStringList& files, QWidget *parent)
     main->addLayout(buttons);
     setLayout(main);
 
+    QFile file(":/css/style.css");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    setStyleSheet(styleSheet);
+
     listWidget->show();
     cancel->show();
     confirm->show();
     setAttribute(Qt::WA_DeleteOnClose);
     //setTitle(tr("Select Map"));
+    showFullScreen();
 
     connect(cancel,SIGNAL(clicked()),this,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
@@ -41,18 +48,18 @@ QMapSelectionDialog::QMapSelectionDialog(QStringList& files, QWidget *parent)
 
 void QMapSelectionDialog::accept()
 {
-        QString filename = listWidget->currentItem()->text();
-        emit selectmap(filename);
-        QDialog::accept();
-        close();
+    QString filename = listWidget->currentItem()->text();
+    emit selectmap(filename);
+    QDialog::accept();
+    close();
 }
 
 QMapSelectionDialog::~QMapSelectionDialog()
 {
-        delete listWidget;
-        delete cancel;
-        delete confirm;
-        delete list;
-        delete buttons;
-        delete main;
+    delete listWidget;
+    delete cancel;
+    delete confirm;
+    delete list;
+    delete buttons;
+    delete main;
 }

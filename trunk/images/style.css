@@ -1,1 +1,83 @@
-QMainWindow { background: #0050c0; color: #c0c0c0 }
+QMainWindow {
+    background: #0050c0;
+    color: #c0c0c0;
+    font: bold 20px;
+}
+
+QDialog {
+    background: #0050c0;
+    color: #c0c0c0;
+    font: bold 20px;
+}
+
+QPushButton {
+    background: #0040a0;
+    font: bold 20px;
+    color: #C0C0D0;
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: #003080;
+}
+
+QRadioButton {
+    font: bold 20px;
+}
+
+QLineEdit {
+    font: 20px;
+}
+
+QLabel {
+    font: bold 20px;
+    padding: 2px;
+}
+
+QGroupBox {
+    background: transparent;
+    border: 0px solid gray;
+    font: bold 20px;
+    color: #C0C0D0;
+}
+
+QTabWidget::pane { /* The tab widget frame */
+    border: 0px solid #0040a0;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                             stop: 0 #0040a0, stop: 0.4 #0444a4,
+                             stop: 0.5 #0949a9, stop: 1.0 #0e4eae);
+}
+
+QTabWidget::tab-bar {
+    left: 0px; /* move to the right by 5px */
+}
+
+/* Style the tab using the tab sub-control. Note that
+ it reads QTabBar _not_ QTabWidget */
+QTabBar::tab {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #003890, stop: 0.4 #043c94,
+                                stop: 0.5 #094199, stop: 1.0 #0e469e);
+    border: 2px solid #0C5CcD;
+    border-bottom-color: #0050c0; /* same as the pane color */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    min-width: 8ex;
+    padding: 2px;
+    min-height: 30px;
+    font: bold 18px;
+    color: #C0C0D0;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: #0040a0;
+    color: #E0E0E0;
+}
+
+QTabBar::tab:selected {
+    border-color: #0040a0;
+    border-bottom-color: #0040a0; /* same as pane color */
+}
+
+QTabBar::tab:!selected {
+    margin-top: 5px; /* make non-selected tabs look smaller */
+}
