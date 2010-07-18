@@ -31,8 +31,8 @@ QString GetDrive()
         TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
         TPtrC drive = appparser.Drive();
         //if (!inemulator)
-        return QString::fromUtf16(drive.Ptr(),drive.Length());
-        //return QString("C:");
+        //return QString::fromUtf16(drive.Ptr(),drive.Length());
+        return QString("C:");
 }
 #else
 QString GetDrive()
@@ -43,16 +43,16 @@ QString GetDrive()
 
 void LoadImages()
 {
-    svgClock.load(":/dash/clock.svg");
-    svgAltitude.load(":/dash/speed10.svg");
-    svgHeading.load(":/dash/compass.svg");
-    svgSatView.load(":/dash/satview.svg");
-    svgSpeed10.load(":/dash/speed10.svg");
-    svgSpeed200.load(":/dash/speed200.svg");
+    svgClock.load(DASHRCDIR "clock.svg");
+    svgAltitude.load(DASHRCDIR "speed10.svg");
+    svgHeading.load(DASHRCDIR "compass.svg");
+    svgSatView.load(DASHRCDIR "satview.svg");
+    svgSpeed10.load(DASHRCDIR "speed10.svg");
+    svgSpeed200.load(DASHRCDIR "speed200.svg");
 
-    svgLong.load(":/dash/longhand.svg");
-    svgShort.load(":/dash/shorthand.svg");
-    svgSecond.load(":/dash/secondhand.svg");
-    svgCompassNeedle.load(":/dash/compassneedle.svg");
-    svgSpeedNeedle.load(":/dash/speedneedle.svg");
+    svgLong.load(DASHRCDIR "longhand.svg");
+    svgShort.load(DASHRCDIR "shorthand.svg");
+    svgSecond.load(DASHRCDIR "secondhand.svg");
+    svgCompassNeedle.load(DASHRCDIR "compassneedle.svg");
+    svgSpeedNeedle.load(DASHRCDIR "speedneedle.svg");
 }

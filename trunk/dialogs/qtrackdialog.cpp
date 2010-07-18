@@ -438,7 +438,7 @@ QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
 {
     tabs = new QTabWidget(this);
 
-    QFile file(":/css/style.css");
+    QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     setStyleSheet(styleSheet);

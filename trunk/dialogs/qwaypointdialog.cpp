@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QFile>
 #include "qwaypointdialog.h"
+#include "ui.h"
 
 #include <iostream>
 //#define LOG( a ) std::cout << a
@@ -45,7 +46,7 @@ QWaypointDialog::QWaypointDialog(QString title, QString name, double lat, double
     mainbox->addLayout(buttons);
     setLayout(mainbox);
 
-    QFile file(":/css/style.css");
+    QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     setStyleSheet(styleSheet);

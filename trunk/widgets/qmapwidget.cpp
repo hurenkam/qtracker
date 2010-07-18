@@ -34,14 +34,13 @@ QMapWidget::QMapWidget(QWidget *parent)
     , longitude(0)
     , meta(0)
     , mapimage(0)
-    , bgimage(new QImage(":/map/map.svg"))
-    , svgZoomIn(new QImage(":/map/zoom-in.svg"))
-    , svgZoomOut(new QImage(":/map/zoom-out.svg"))
-    , svgOptions(new QImage(":/map/options.svg"))
-    //, svgHome(new QImage(":/map/home.svg"))
-    , svgFlag(new QImage(":/map/flag.svg"))
-    , svgHiker(new QImage(":/map/hiker.svg"))
-    , svgBar(new QImage(":/map/statusbar.svg"))
+	, bgimage(new QImage(MAPRCDIR "map.svg"))
+	, svgZoomIn(new QImage(MAPRCDIR "zoom-in.svg"))
+	, svgZoomOut(new QImage(MAPRCDIR "zoom-out.svg"))
+	, svgOptions(new QImage(MAPRCDIR "options.svg"))
+	, svgFlag(new QImage(MAPRCDIR "flag.svg"))
+	, svgHiker(new QImage(MAPRCDIR "hiker.svg"))
+	, svgBar(new QImage(MAPRCDIR "statusbar.svg"))
     , zooming(0)
     , mapname("<no map loaded>")
     , recordtrack(0)
@@ -154,8 +153,8 @@ bool QMapWidget::LoadMap(QString filename)
         x = mapimage->width()/2;
         y = mapimage->height()/2;
         mapname = filename;
-        if (recordtrack)
-        	paintTrack(recordtrack);
+        for (int i=0; i<tracks.length(); i++)
+        	paintTrack(tracks[i]);
     }
     update();
     return result;

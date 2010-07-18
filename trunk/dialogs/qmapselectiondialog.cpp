@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QFile>
 #include "qmapselectiondialog.h"
+#include "ui.h"
 
 //QMapSelectionDialog::QMapSelectionDialog(QMapList& maps, QWidget *parent)
 QMapSelectionDialog::QMapSelectionDialog(QStringList& files, QWidget *parent)
@@ -29,7 +30,7 @@ QMapSelectionDialog::QMapSelectionDialog(QStringList& files, QWidget *parent)
     main->addLayout(buttons);
     setLayout(main);
 
-    QFile file(":/css/style.css");
+    QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     setStyleSheet(styleSheet);

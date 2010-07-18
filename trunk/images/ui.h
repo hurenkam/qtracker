@@ -23,11 +23,22 @@ extern QImage svgCompassNeedle;
 extern QImage svgSpeedNeedle;
 
 #ifdef Q_OS_SYMBIAN
-#define UIDIR "/private/EA82CEF3/ui/"
 #define TEXTDIVIDER 36
 #else
 #define UIDIR "/Users/hurenkam/workspace/qtracker/images/"
 #define TEXTDIVIDER 12
+#endif
+
+#ifdef USE_QT_RESOURCES
+#define DASHRCDIR   ":/dash/"
+#define MAPRCDIR    ":/map/"
+#define CSSRCDIR    ":/css/"
+#define SPLASHRCDIR ":/splash/"
+#else
+#define DASHRCDIR    GetDrive() + "/private/EA82CEF3/ui/"
+#define MAPRCDIR     GetDrive() + "/private/EA82CEF3/ui/"
+#define CSSRCDIR     GetDrive() + "/private/EA82CEF3/ui/"
+#define SPLASHRCDIR  GetDrive() + "/private/EA82CEF3/ui/"
 #endif
 
 void LoadImages();

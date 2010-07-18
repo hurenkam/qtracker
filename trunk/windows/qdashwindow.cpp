@@ -231,7 +231,7 @@ void QDashWindow::Init(QSplashScreen *splash)
 
     t->start(1000);
 
-    QFile file(":/css/style.css");
+    QFile file(SPLASHRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     setStyleSheet(styleSheet);
