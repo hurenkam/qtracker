@@ -35,10 +35,20 @@
 #include "QDashWindow.h"
 #include "ui.h"
 
+#ifdef Q_OS_SYMBIAN
+#include "eikenv.h"
+#define ENABLE_RED_BUTTON_EXIT { CEikonEnv::Static()->SetSystem( EFalse ); }
+#define DISABLE_RED_BUTTON_EXIT { CEikonEnv::Static()->SetSystem( ETrue ); }
+#else
+#define ENABLE_RED_BUTTON_EXIT
+#define DISABLE_RED_BUTTON_EXIT
+#endif
+
 int main(int argc, char *argv[])
 {
+    DISABLE_RED_BUTTON_EXIT
+    
     QApplication a(argc, argv);
-
     QPixmap pixmap(SPLASHRCDIR "splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
