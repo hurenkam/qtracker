@@ -14,6 +14,15 @@
 #define LOG2( a ) std::cout << a
 #define LOG( a )
 
+#ifdef Q_OS_SYMBIAN
+#include "eikenv.h"
+#define ENABLE_RED_BUTTON_EXIT { CEikonEnv::Static()->SetSystem( EFalse ); }
+#define DISABLE_RED_BUTTON_EXIT { CEikonEnv::Static()->SetSystem( ETrue ); }
+#else
+#define ENABLE_RED_BUTTON_EXIT
+#define DISABLE_RED_BUTTON_EXIT
+#endif
+
 static double zoomlevels[] = { 0.33, 0.5, 0.66, 1.0, 1.41, 2.0, 3.0 };
 const int     zoomneutral = 3;
 const int     zoommax = 6;
@@ -275,6 +284,8 @@ void QMapWidget::TrackStarted(QString n, int t, int d)
 	TrackList::Instance()->AddTrack(recordtrack);
 	ShowTrack(recordtrack);
 	
+	DISABLE_RED_BUTTON_EXIT
+	
     QMessageBox msg;
     msg.setText(QString("Track started."));
     msg.setIcon(QMessageBox::Information);
@@ -306,6 +317,8 @@ void QMapWidget::TrackStopped(QString name)
 	prevpos = 0;
 	prevtime = QDateTime::fromTime_t(0);
 
+	ENABLE_RED_BUTTON_EXIT
+	
 	QMessageBox msg;
 	msg.setText(QString("Track saved."));
 	msg.setIcon(QMessageBox::Information);
