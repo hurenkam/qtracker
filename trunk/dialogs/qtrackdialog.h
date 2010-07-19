@@ -115,6 +115,15 @@ private:
 	QButtonGroup *timebuttons;
 };
 
+class QTrackListItemWidget: public QListWidgetItem
+{
+public:
+	QTrackListItemWidget(QString name, bool visible=false, QListWidget *parent=0);
+	void Show();
+	void Hide();
+	void Delete();
+};
+
 class QTrackListTab: public QWidget
 {
     Q_OBJECT

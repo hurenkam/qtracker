@@ -5,7 +5,8 @@ TEMPLATE = app
 TARGET = qTracker
 QT += core \
     gui \
-    xml
+    xml \
+    svg
 HEADERS += dialogs/qtrackdialog.h \
     datatypes/geodata.h \
     datatypes/gpxio.h \
@@ -55,10 +56,13 @@ symbian {
         images/options.svg \
         images/statusbar.svg \
         images/flag.svg \
-        images/hiker.svg
+        images/hiker.svg \
+        images/delete.svg \
+        images/visible.svg \
+        images/invisible.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.136
+    VERSION = 0.8.142
     TARGET.EPOCHEAPSIZE = 0x30000 \
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000

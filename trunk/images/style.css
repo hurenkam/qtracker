@@ -4,6 +4,21 @@ QMainWindow {
     font: bold 20px;
 }
 
+QScrollBar {
+	border: 2px #0040a0;
+	background: #0050c0;
+}
+
+QScrollArea {
+    border: 0px solid #0040a0;
+    background: #0040a0;
+}
+
+QScrollArea QWidget {
+    border: 0px solid #0040a0;
+    background: #0040a0;
+}
+
 QDialog {
     background: #0050c0;
     color: #c0c0c0;

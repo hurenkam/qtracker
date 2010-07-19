@@ -34,11 +34,13 @@ extern QImage svgSpeedNeedle;
 #define MAPRCDIR    ":/map/"
 #define CSSRCDIR    ":/css/"
 #define SPLASHRCDIR ":/splash/"
+#define DIALOGRCDIR ":/dialog/"
 #else
 #define DASHRCDIR    GetDrive() + "/private/EA82CEF3/ui/"
 #define MAPRCDIR     GetDrive() + "/private/EA82CEF3/ui/"
 #define CSSRCDIR     GetDrive() + "/private/EA82CEF3/ui/"
 #define SPLASHRCDIR  GetDrive() + "/private/EA82CEF3/ui/"
+#define DIALOGRCDIR  GetDrive() + "/private/EA82CEF3/ui/"
 #endif
 
 void LoadImages();

@@ -10,6 +10,7 @@
 #include <QDoubleValidator>
 #include <QResizeEvent>
 #include <QDateTime>
+#include <QSvgWidget>
 #include "qtrackdialog.h"
 
 #include <iostream>
@@ -347,42 +348,75 @@ QCurrentTrackTab::~QCurrentTrackTab()
 
 
 
+class QTrackListWidget: public QWidget
+{
+public:
+    QTrackListWidget(QTrackListTab* parent=0) : QWidget(parent) 
+    {
+    	QVBoxLayout* center = new QVBoxLayout();
+        QWidget*     filler = new QWidget();
+        filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    	
+        QStringList files = TrackFiles();
+        for (int i=0; i<files.length(); i++)
+        {
+        	QHBoxLayout* item = new QHBoxLayout();
+        	QSvgWidget*  del = new QSvgWidget(DASHRCDIR "delete.svg");
+            QWidget*     filler = new QWidget();
+            filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            
+            QStringList  keys = TrackList::Instance()->Keys();
+            QSvgWidget*  toggle;
+        	if (keys.contains(files[i]))
+         	    toggle = new QSvgWidget(DASHRCDIR "visible.svg");
+        	else
+         	    toggle = new QSvgWidget(DASHRCDIR "invisible.svg");
+        	
+        	item->addWidget(del);
+        	item->addWidget(toggle);
+            item->addWidget(new QLabel(files[i]));
+        	item->addWidget(filler);
+            center->addLayout(item);
+        }
+        
+    	center->addWidget(filler);
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    	setLayout(center);
+    }
+    
+    QStringList TrackFiles()
+    {
+        QDir directory = QDir(GetDrive() + QString(TRACKDIR));
+        QStringList files = directory.entryList(QStringList(QString("*.gpx")),
+                                                                 QDir::Files | QDir::NoSymLinks);
+
+        LOG( "QTrackListTab::TrackFiles() #gpx: " << files.size() << "\n"; )
+        for (int i = 0; i < files.length(); ++i)
+        {
+                files[i] = files[i].left(files[i].length()-4);
+        }
+        return files;
+    }
+};
+
+
+
 QTrackListTab::QTrackListTab(QTrackTabsDialog *parent)
 : QWidget(parent)
 {
     QVBoxLayout* main = new QVBoxLayout();
     QHBoxLayout* buttons = new QHBoxLayout();
-
-    QListWidget* shown = new QListWidget();
-    QListWidget* hidden = new QListWidget();
     QPushButton* exit = new QPushButton(tr("Exit"));
-
-    // Tracks shown
-    QStringList keys =  TrackList::Instance()->Keys();
-    shown->addItems(keys);
-
-    // Tracks hidden
-    QStringList files = TrackFiles();
-    for (int i=0; i<keys.length(); i++)
-        files.removeAll(keys[i]);
-    hidden->addItems(files);
-
-    QGroupBox   *topleft = new QGroupBox("Shown");
-    QVBoxLayout *shownbox = new QVBoxLayout();
-    shownbox->addWidget(shown);
-    topleft->setLayout(shownbox);
-
-    QGroupBox *bottomright = new QGroupBox("Hidden");
-    QVBoxLayout *hiddenbox = new QVBoxLayout();
-    hiddenbox->addWidget(hidden);
-    bottomright->setLayout(hiddenbox);
-
-    center = new QBoxLayout(QBoxLayout::LeftToRight);
-    center->addWidget(topleft);
-    center->addWidget(bottomright);
-
+    QWidget*     filler = new QWidget;
+    QScrollArea* scroll = new QScrollArea();
+    
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     buttons->addWidget(exit);
-    main->addLayout(center);
+    
+    scroll->setWidget(new QTrackListWidget());
+    scroll->show();
+    scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    main->addWidget(scroll);
     main->addLayout(buttons);
     setLayout(main);
 
@@ -409,13 +443,14 @@ QStringList QTrackListTab::TrackFiles()
 void QTrackListTab::resizeEvent( QResizeEvent * event )
 {
     LOG( "QTrackListTab::resizeEvent()\n"; )
+/*
     if (!center) return;
     
     if (event->size().width() < event->size().height())
         center->setDirection(QBoxLayout::TopToBottom);
     else
         center->setDirection(QBoxLayout::LeftToRight);
-
+*/
     QWidget::resizeEvent(event);
 }
 
