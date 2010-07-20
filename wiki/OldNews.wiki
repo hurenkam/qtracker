@@ -1,13 +1,31 @@
-#summary One-sentence summary of this page.
+* Older news
+ * November 1st 2009
 
-= Introduction =
+  Uploaded a self-signed package based on release 76 (v0.7.76). This contains one bug-fix w.r.t. v0.0.6.
 
-Add your content here.
+ * November 1st 2009
 
+  I found an interesting project online: Proj.4, which seems
+  to be aimed at providing a library that can do projection
+  conversions. I'm going to see if i can use it to implement
+  most of the datums i use.
+  See this page: http://trac.osgeo.org/proj/
 
-= Details =
+ * October 29th 2009
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  It looks like the 'Tower' Qt 4.5 prerelease for S60 is no 
+  longer available, and is now replaced with the 'Colossus' 
+  4.6 beta. I'm not sure if qTracker is binary compatible
+  with this new beta.
+
+  The latest Qt packages can be found here:
+  http://pepper.troll.no/s60prereleases/
+
+  <b>Update:</b><br>
+  I've uploaded a new sis built against Qt 4.6 colossus.
+  Although i see a little degradation in the handling of the SVG
+  images, most functionality is on par with the previous release.
+
+ * October 28th 2009
+
+  First alpha (0.0.6) version released.
