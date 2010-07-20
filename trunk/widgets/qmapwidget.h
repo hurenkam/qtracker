@@ -51,9 +51,12 @@ public slots:
     void StartTrack();
     void TrackStarted(QString n, int t, int d);
     void TrackUpdated(QString n, int t, int d);
-    void TrackStopped(QString name);
+    void TrackStopped(const QString& name);
+    void TrackDeleted(const QString& name);
+    void TrackUnload(const QString& name);
+    void TrackLoad(const QString& name);
     void ShowTrack(Track* t);
-    void HideTracks();
+    void HideTrack(QString name);
     void ShowTrackPoint(WayPoint& w);
 
 private slots:
@@ -111,11 +114,10 @@ private:
     QImage* svgHiker;
     QImage* svgBar;
     MapMetaData *meta;
-    //MapList maplist;
     int zooming;
     QTimer zoomtimer;
     QString mapname;
-    QList<Track*> tracks;
+    bool ismapdirty;
     Track* recordtrack;
 };
 

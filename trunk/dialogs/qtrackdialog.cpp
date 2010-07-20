@@ -21,191 +21,37 @@
 #define LOG( a )
 
 
-QNewTrackTab::QNewTrackTab(QTrackTabsDialog *parent)
-    : QWidget(parent), center(0), time(0), dist(30)
+QCurrentTrackTab::QCurrentTrackTab(QTrackTabsDialog* d, QTabWidget* t, Track* track)
+    : QWidget(d), dialog(d), tab(t), center(0), time(0), dist(30)
 {
-    QDateTime curtime = QDateTime::currentDateTime().toUTC();
-    QString trackname = curtime.toString("trk-yyyyMMdd-hhmmss");
-    trkname = new QLineEdit(trackname,this);
-
-    main = new QVBoxLayout();
-
-    QHBoxLayout *namebox = new QHBoxLayout();
-    namebox->addWidget(new QLabel(tr("Name:")));
-    namebox->addWidget(trkname);
-
-    QHBoxLayout *buttonbox =  new QHBoxLayout();
-    QPushButton *cancel =  new QPushButton(tr("Cancel"));
-    QPushButton *confirm = new QPushButton(tr("Start"));
-    buttonbox->addWidget(confirm);
-    buttonbox->addWidget(cancel);
-
-    QGroupBox *typegroup = new QGroupBox();
-    QRadioButton *typeall  = new QRadioButton(tr("All"));
-    QRadioButton *typetime = new QRadioButton(tr("Time based"));
-    QRadioButton *typedist = new QRadioButton(tr("Distance based"));
-    QVBoxLayout *typebox = new QVBoxLayout;
-    typebox->addWidget(typeall);
-    typebox->addWidget(typetime);
-    typebox->addWidget(typedist);
-    typebox->addStretch(1);
-    typegroup->setLayout(typebox);
-
-    distgroup = new QGroupBox();
-    distbuttons = new QButtonGroup(distgroup);
-    QRadioButton *dist10m  = new QRadioButton(tr("10m"));
-    QRadioButton *dist30m  = new QRadioButton(tr("30m"));
-    QRadioButton *dist100m = new QRadioButton(tr("100m"));
-    QRadioButton *dist300m = new QRadioButton(tr("300m"));
-    QRadioButton *dist1km  = new QRadioButton(tr("1km"));
-    distbuttons->addButton(dist10m,  0);
-    distbuttons->addButton(dist30m,  1);
-    distbuttons->addButton(dist100m, 2);
-    distbuttons->addButton(dist300m, 3);
-    distbuttons->addButton(dist1km,  4);
-    QVBoxLayout *distbox = new QVBoxLayout();
-    distbox->addWidget(dist10m);
-    distbox->addWidget(dist30m);
-    distbox->addWidget(dist100m);
-    distbox->addWidget(dist300m);
-    distbox->addWidget(dist1km);
-    distbox->addStretch(1);
-    distgroup->setLayout(distbox);
-
-    timegroup = new QGroupBox();
-    timebuttons = new QButtonGroup(timegroup);
-    QRadioButton *time5s  = new QRadioButton(tr( "5s"));
-    QRadioButton *time15s = new QRadioButton(tr("15s"));
-    QRadioButton *time1m  = new QRadioButton(tr( "1m"));
-    QRadioButton *time5m  = new QRadioButton(tr( "5m"));
-    QRadioButton *time15m = new QRadioButton(tr("15m"));
-    timebuttons->addButton(time5s, 0);
-    timebuttons->addButton(time15s,1);
-    timebuttons->addButton(time1m, 2);
-    timebuttons->addButton(time5m, 3);
-    timebuttons->addButton(time15m,4);
-    QVBoxLayout *timebox = new QVBoxLayout();
-    timebox->addWidget(time5s);
-    timebox->addWidget(time15s);
-    timebox->addWidget(time1m);
-    timebox->addWidget(time5m);
-    timebox->addWidget(time15m);
-    timebox->addStretch(1);
-    timegroup->setLayout(timebox);
-
-    QWidget *filler = new QWidget;
-    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    QFile file(":/css/style.css");
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    typegroup->setStyleSheet(styleSheet);
-    distgroup->setStyleSheet(styleSheet);
-    timegroup->setStyleSheet(styleSheet);
-
-    center = new QBoxLayout(QBoxLayout::LeftToRight);
-    center->addWidget(typegroup);
-    center->addWidget(distgroup);
-    center->addWidget(timegroup);
-    main->addLayout(namebox);
-    main->addLayout(center);
-    main->addWidget(filler);
-    main->addLayout(buttonbox);
-    setLayout(main);
-
-    typedist->setChecked(true);
-    dist30m->setChecked(true);
-    time15s->setChecked(true);
-    distgroup->show();
-    timegroup->hide();
-    cancel->show();
-    confirm->show();
-
-    connect(cancel,SIGNAL(clicked()),parent,SLOT(reject()));
-    connect(confirm,SIGNAL(clicked()),this,SLOT(emitnewtrack()));
-    connect(typeall, SIGNAL(clicked()),this,SLOT(selectall()));
-    connect(typetime,SIGNAL(clicked()),this,SLOT(selecttime()));
-    connect(typedist,SIGNAL(clicked()),this,SLOT(selectdistance()));
-    connect(timebuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatetime(int)));
-    connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatedistance(int)));
-
-    connect(this,SIGNAL(newtrack(QString,int,int)),   parent,SIGNAL(newtrack(QString,int,int)));
-}
-
-void QNewTrackTab::resizeEvent( QResizeEvent * event )
-{
-    LOG( "QNewTrackTab::resizeEvent()\n"; )
-    if (!center) return;
-    
-    if (event->size().width() < event->size().height())
-	    center->setDirection(QBoxLayout::TopToBottom);
+	QVBoxLayout* main = new QVBoxLayout();
+	QHBoxLayout* namebox = new QHBoxLayout();
+	namebox->addWidget(new QLabel(tr("Name:")));
+	trkname = new QLineEdit(this);
+	
+	if (track)
+		SetTrackName(track->Name());
 	else
-	    center->setDirection(QBoxLayout::LeftToRight);
+		NewTrackName();
+	
+	namebox->addWidget(trkname);
 
-    QWidget::resizeEvent(event);
-}
-
-void QNewTrackTab::selectall()
-{
-    time = 0;
-    dist = 0;
-    timegroup->hide();
-    distgroup->hide();
-}
-
-void QNewTrackTab::selecttime()
-{
-    dist = 0;
-    distgroup->hide();
-    updatetime(timebuttons->checkedId());
-    timegroup->show();
-}
-
-void QNewTrackTab::updatetime(int id)
-{
-    int values[5] = { 5, 15, 60, 300, 900 };
-    time = values[id];
-}
-
-void QNewTrackTab::selectdistance()
-{
-    time = 0;
-    timegroup->hide();
-    updatedistance(distbuttons->checkedId());
-    distgroup->show();
-}
-
-void QNewTrackTab::updatedistance(int id)
-{
-    int values[5] = { 10, 30, 100, 300, 1000 };
-    dist = values[id];
-}
-
-QNewTrackTab::~QNewTrackTab()
-{
-    delete trkname;
-}
-
-
-
-QCurrentTrackTab::QCurrentTrackTab(QString name, QTrackTabsDialog *parent)
-    : QWidget(parent), trackname(name), center(0), time(0), dist(30)
-{
-    QDateTime curtime = QDateTime::currentDateTime().toUTC();
-    QLabel* trkname = new QLabel(trackname,this);
-    QVBoxLayout* main = new QVBoxLayout();
-
-    QHBoxLayout *namebox = new QHBoxLayout();
-    namebox->addWidget(new QLabel(tr("Name:")));
-    namebox->addWidget(trkname);
-
-    QHBoxLayout *buttonbox =  new QHBoxLayout();
-    QPushButton *cancel =  new QPushButton(tr("Cancel"));
-    QPushButton *stop = new QPushButton(tr("Stop"));
-    QPushButton *update = new QPushButton(tr("Update"));
+	stop = new QPushButton(tr("Stop"));
+	upd = new QPushButton(tr("Update"));
+	start =  new QPushButton(tr("Start"));
+	QPushButton* cancel =  new QPushButton(tr("Cancel"));
+	
+    QHBoxLayout* buttonbox =  new QHBoxLayout();
+    buttonbox->addWidget(start);
     buttonbox->addWidget(stop);
-    buttonbox->addWidget(update);
+    buttonbox->addWidget(upd);
     buttonbox->addWidget(cancel);
+    
+    tab->addTab(this,"");
+    if (track)
+		SwitchToCurrent();
+    else
+		SwitchToNew();
 
     QGroupBox *typegroup = new QGroupBox();
     QRadioButton *typeall  = new QRadioButton(tr("All"));
@@ -278,21 +124,53 @@ QCurrentTrackTab::QCurrentTrackTab(QString name, QTrackTabsDialog *parent)
     time15s->setChecked(true);
     distgroup->show();
     timegroup->hide();
-    cancel->show();
-    update->show();
-    stop->show();
 
-    connect(cancel,SIGNAL(clicked()),parent,SLOT(reject()));
+    connect(start,SIGNAL(clicked()),this,SLOT(emitnewtrack()));
     connect(stop,SIGNAL(clicked()),this,SLOT(emitstoptrack()));
-    connect(update,SIGNAL(clicked()),this,SLOT(emitupdatetrack()));
+    connect(upd,SIGNAL(clicked()),this,SLOT(emitupdatetrack()));
+    connect(cancel,SIGNAL(clicked()),dialog,SLOT(reject()));
+    
+    
     connect(typeall, SIGNAL(clicked()),this,SLOT(selectall()));
     connect(typetime,SIGNAL(clicked()),this,SLOT(selecttime()));
     connect(typedist,SIGNAL(clicked()),this,SLOT(selectdistance()));
     connect(timebuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatetime(int)));
     connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatedistance(int)));
 
-    connect(this,SIGNAL(updatetrack(QString,int,int)),parent,SIGNAL(updatetrack(QString,int,int)));
-    connect(this,SIGNAL(stoptrack(QString)),          parent,SIGNAL(stoptrack(QString)));
+    connect(this,SIGNAL(newtrack(QString,int,int)),   dialog,SIGNAL(newtrack(QString,int,int)));
+    connect(this,SIGNAL(updatetrack(QString,int,int)),dialog,SIGNAL(updatetrack(QString,int,int)));
+    connect(this,SIGNAL(stoptrack(QString)),          dialog,SIGNAL(stoptrack(QString)));
+}
+
+void QCurrentTrackTab::SetTrackName(QString name)
+{
+	trackname = name;
+	trkname->setText(trackname);
+}
+
+void QCurrentTrackTab::NewTrackName()
+{
+	QDateTime curtime = QDateTime::currentDateTime().toUTC();
+    SetTrackName(curtime.toString("trk-yyyyMMdd-hhmmss"));
+}
+
+void QCurrentTrackTab::SwitchToNew()
+{
+	NewTrackName();
+	tab->setTabText(0,tr("New"));
+    stop->hide();
+    upd->hide();
+    start->show();
+    update();
+}
+
+void QCurrentTrackTab::SwitchToCurrent()
+{
+	tab->setTabText(0,tr("Current"));
+    start->hide();
+    stop->show();
+    upd->show();
+    update();
 }
 
 void QCurrentTrackTab::resizeEvent( QResizeEvent * event )
@@ -353,12 +231,10 @@ QCurrentTrackTab::~QCurrentTrackTab()
 QTrackListWidget::QTrackListWidget(QTrackListTab* parent)  
 : QWidget(parent)
 {
-	QVBoxLayout*   center = new QVBoxLayout();
-	QWidget*       filler = new QWidget();
-	QSignalMapper* togglemapper = new QSignalMapper(this);
-	QSignalMapper* deletemapper = new QSignalMapper(this);
-	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	
+	center = new QVBoxLayout();
+	togglemapper = new QSignalMapper(this);
+	deletemapper = new QSignalMapper(this);
+
 	QStringList files = TrackFiles();
 	for (int i=0; i<files.length(); i++)
 	{
@@ -380,6 +256,7 @@ QTrackListWidget::QTrackListWidget(QTrackListTab* parent)
 		item->addWidget(new QLabel(files[i]));
 		item->addWidget(filler);
 		center->addLayout(item);
+		items[files[i]]=item;
 		
 		connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
 		connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
@@ -388,10 +265,29 @@ QTrackListWidget::QTrackListWidget(QTrackListTab* parent)
 	}
 	connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteTrack(const QString &)));
 	connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleTrack(const QString &)));
+	connect(TrackList::Instance(),SIGNAL(added(QString)),this,SLOT(TrackAdded(QString)));
+	connect(TrackList::Instance(),SIGNAL(removed(QString)),this,SLOT(TrackRemoved(QString)));
 
+	QWidget* filler = new QWidget();
+	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	center->addWidget(filler);
+	
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setLayout(center);
+}
+
+void QTrackListWidget::TrackRemoved(QString name)
+{
+	LOG( "QTrackListTab::TrackRemoved(): " << name.toStdString() << "\n"; )
+	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+	togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+}
+
+void QTrackListWidget::TrackAdded(QString name)
+{
+	LOG( "QTrackListTab::TrackAdded(): " << name.toStdString() << "\n"; )
+	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+	togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
 }
 
 QStringList QTrackListWidget::TrackFiles()
@@ -410,13 +306,17 @@ QStringList QTrackListWidget::TrackFiles()
 
 void QTrackListWidget::DeleteTrack(const QString& name)
 {
-	LOG2( "QTrackListWidget::DeleteTrack(): " << name.toStdString() << "\n"; )
+	LOG( "QTrackListWidget::DeleteTrack(): " << name.toStdString() << "\n"; )
+    QHBoxLayout* item = items[name];
+	center->removeItem(item);
+	items.remove(name);
+	delete item;
 	emit deletetrack(name);
 }
 
 void QTrackListWidget::ToggleTrack(const QString& name)
 {
-	LOG2( "QTrackListWidget::ToggleTrack(): " << name.toStdString() << "\n"; )
+	LOG( "QTrackListWidget::ToggleTrack(): " << name.toStdString() << "\n"; )
 	QStringList  keys = TrackList::Instance()->Keys();
 	if (keys.contains(name))
 		emit hidetrack(name);
@@ -431,7 +331,7 @@ QTrackListTab::QTrackListTab(QTrackTabsDialog *parent)
 {
     QVBoxLayout* main = new QVBoxLayout();
     QHBoxLayout* buttons = new QHBoxLayout();
-    QPushButton* exit = new QPushButton(tr("Exit"));
+    QPushButton* exit = new QPushButton(tr("Cancel"));
     QWidget*     filler = new QWidget;
     QScrollArea* scroll = new QScrollArea();
     QTrackListWidget* list = new QTrackListWidget();
@@ -455,20 +355,6 @@ QTrackListTab::QTrackListTab(QTrackTabsDialog *parent)
     connect(exit,SIGNAL(clicked()),parent,SLOT(reject()));
 }
 
-void QTrackListTab::resizeEvent( QResizeEvent * event )
-{
-    LOG( "QTrackListTab::resizeEvent()\n"; )
-/*
-    if (!center) return;
-    
-    if (event->size().width() < event->size().height())
-        center->setDirection(QBoxLayout::TopToBottom);
-    else
-        center->setDirection(QBoxLayout::LeftToRight);
-*/
-    QWidget::resizeEvent(event);
-}
-
 QTrackListTab::~QTrackListTab()
 {
 }
@@ -478,26 +364,14 @@ QTrackListTab::~QTrackListTab()
 QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
     : QDialog(parent)
 {
-    tabs = new QTabWidget(this);
+    QTabWidget* tabs = new QTabWidget(this);
 
     QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     setStyleSheet(styleSheet);
 
-    if (track)
-    {
-	    QCurrentTrackTab* tab = new QCurrentTrackTab(track->Name(),this);
-    	tabs->addTab(tab, tr("Current"));
-        connect(tab,SIGNAL(stoptrack(QString)),this,SLOT(accept()));
-    }
-    else
-    {
-    	QNewTrackTab* tab = new QNewTrackTab(this);
-    	tabs->addTab(tab, tr("New"));
-        connect(tab,SIGNAL(newtrack(QString,int,int)),this,SLOT(accept()));
-    }
-    
+    new QCurrentTrackTab(this,tabs,track);
     tabs->addTab(new QTrackListTab(this),tr("List"));
     tabs->addTab(new QWidget(this), tr("Options"));
 
@@ -512,10 +386,4 @@ void QTrackTabsDialog::accept()
 {
     QDialog::accept();
     close();
-}
-
-QTrackTabsDialog::~QTrackTabsDialog()
-{
-    LOG( "QTrackTabsDialog::~QTrackTabsDialog()\n"; )
-    delete tabs;
 }

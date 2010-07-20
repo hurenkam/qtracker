@@ -76,6 +76,17 @@ static bool IsValueInRange(double v, double r1, double r2)
     return true;
 }
 
+void TrackList::RemoveTrack(QString name)         
+{ 
+    LOG( "TrackList::RemoveTrack()\n"; )
+	Track* t = map[name]; 
+	map.remove(name); 
+	delete t; 
+    emit removed(name); 
+}
+
+
+
 MapList::MapList()
 {
     LOG( "MapList::MapList()\n"; )

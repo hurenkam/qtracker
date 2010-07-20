@@ -2,6 +2,7 @@
 #include <QFlags>
 #include <QIcon>
 #include <cmath>
+#include <QDir>
 #include "ui.h"
 #include "qmapwidget.h"
 #include "qmapselectiondialog.h"
@@ -54,6 +55,7 @@ QMapWidget::QMapWidget(QWidget *parent)
     , mapname("<no map loaded>")
     , recordtrack(0)
     , prevpos(0)
+    , ismapdirty(false)
 {
     prevtime = QDateTime::fromTime_t(0);
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
@@ -68,6 +70,8 @@ QMapWidget::QMapWidget(QWidget *parent)
     connect(this, SIGNAL(datum()), this, SLOT(SelectMap()));  // to be menu
     connect(this, SIGNAL(waypoint()), this, SLOT(SelectPoint()));
     connect(this, SIGNAL(track()), this, SLOT(StartTrack()));
+    connect(TrackList::Instance(),SIGNAL(added(Track*)),this,SLOT(ShowTrack(Track*)));
+	connect(TrackList::Instance(),SIGNAL(removed(QString)),this,SLOT(HideTrack(QString)));
 }
 
 QMapWidget::~QMapWidget()
@@ -153,6 +157,7 @@ bool QMapWidget::LoadMap(QString filename)
         mapname = QString("<no map loaded>");
         mapimage = 0;
         meta = 0;
+        ismapdirty = false;
     }
     else
     {
@@ -162,8 +167,7 @@ bool QMapWidget::LoadMap(QString filename)
         x = mapimage->width()/2;
         y = mapimage->height()/2;
         mapname = filename;
-        for (int i=0; i<tracks.length(); i++)
-        	paintTrack(tracks[i]);
+        ismapdirty = true;
     }
     update();
     return result;
@@ -183,11 +187,7 @@ void QMapWidget::SelectMap()
     QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
     connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
     dialog->setModal(true);
-#ifdef Q_OS_SYMBIAN
-    dialog->showFullScreen();
-#else
     dialog->show();
-#endif
 }
 
 void QMapWidget::WaypointSelected(QString name, double lat, double lon)
@@ -248,11 +248,7 @@ void QMapWidget::SelectPoint()
     }
 
     dialog->setModal(true);
-#ifdef Q_OS_SYMBIAN
-    dialog->showFullScreen();
-#else
     dialog->show();
-#endif
 }
 
 void QMapWidget::StartTrack() // name doesn't cover the load, should be renamed
@@ -263,13 +259,12 @@ void QMapWidget::StartTrack() // name doesn't cover the load, should be renamed
 	connect(dialog,SIGNAL(newtrack(QString,int,int)),this,SLOT(TrackStarted(QString,int,int)));
 	connect(dialog,SIGNAL(updatetrack(QString,int,int)),this,SLOT(TrackUpdated(QString,int,int)));
 	connect(dialog,SIGNAL(stoptrack(QString)),this,SLOT(TrackStopped(QString)));
+	connect(dialog,SIGNAL(deletetrack(const QString&)),this,SLOT(TrackDeleted(const QString&)));
+	connect(dialog,SIGNAL(showtrack(const QString&)),this,SLOT(TrackLoad(const QString&)));
+	connect(dialog,SIGNAL(hidetrack(const QString&)),this,SLOT(TrackUnload(const QString&)));
 
 	dialog->setModal(true);
-#ifdef Q_OS_SYMBIAN
-	dialog->showFullScreen();
-#else
 	dialog->show();
-#endif
 }
 
 void QMapWidget::TrackStarted(QString n, int t, int d)
@@ -282,15 +277,9 @@ void QMapWidget::TrackStarted(QString n, int t, int d)
 	updatetime = t;
 	updatedistance = d;
 	TrackList::Instance()->AddTrack(recordtrack);
-	ShowTrack(recordtrack);
+	//ShowTrack(recordtrack);
 	
 	DISABLE_RED_BUTTON_EXIT
-	
-    QMessageBox msg;
-    msg.setText(QString("Track started."));
-    msg.setIcon(QMessageBox::Information);
-    msg.setStandardButtons(QMessageBox::Ok);
-    msg.exec();
 }
 
 void QMapWidget::TrackUpdated(QString n, int t, int d)
@@ -298,15 +287,9 @@ void QMapWidget::TrackUpdated(QString n, int t, int d)
     LOG( "QMapWidget::TrackUpdated()\n"; )
 	updatetime = t;
 	updatedistance = d;
-
-    QMessageBox msg;
-    msg.setText(QString("Track updated."));
-    msg.setIcon(QMessageBox::Information);
-    msg.setStandardButtons(QMessageBox::Ok);
-    msg.exec();
 }
 
-void QMapWidget::TrackStopped(QString name)
+void QMapWidget::TrackStopped(const QString& name)
 {
     LOG( "QMapWidget::TrackStopped()\n"; )
 	if (!recordtrack) return;
@@ -318,12 +301,23 @@ void QMapWidget::TrackStopped(QString name)
 	prevtime = QDateTime::fromTime_t(0);
 
 	ENABLE_RED_BUTTON_EXIT
-	
-	QMessageBox msg;
-	msg.setText(QString("Track saved."));
-	msg.setIcon(QMessageBox::Information);
-	msg.setStandardButtons(QMessageBox::Ok);
-	msg.exec();
+}
+
+void QMapWidget::TrackDeleted(const QString& name)
+{
+    LOG( "QMapWidget::TrackDeleted()\n"; )
+    		
+	QString filename = name + ".gpx";
+    QDir dir = QDir(TRACKDIR);
+
+	if ( !dir.remove(filename) )
+	{	
+		QMessageBox msg;
+		msg.setText(QString("Unable to delete file."));
+		msg.setIcon(QMessageBox::Warning);
+		msg.setStandardButtons(QMessageBox::Ok);
+		msg.exec();
+	}
 }
 
 void QMapWidget::paintTrack(Track* t)
@@ -335,9 +329,38 @@ void QMapWidget::paintTrack(Track* t)
 void QMapWidget::ShowTrack(Track* t)
 {
     LOG( "QMapWidget::ShowTrack()\n"; )
-	tracks.append(t);
+	//tracks[t->Name()]=t;
     paintTrack(t);
     connect(t, SIGNAL(updated(WayPoint&)), this, SLOT(ShowTrackPoint(WayPoint&)));
+}
+
+void QMapWidget::HideTrack(QString name)
+{
+    LOG( "QMapWidget::HideTrack()\n"; )
+
+	if (!ismapdirty)
+	{
+	    LOG( "QMapWidget::HideTrack() map not dirty so reload\n"; )
+		delete mapimage;
+		mapimage = new QImage();
+		meta = &MapList::Instance()->GetItem(mapname);
+		bool result = mapimage->load(meta->GetImageFilename());
+		if (!result)
+		{
+			if (mapimage)
+				delete mapimage;
+			
+			QMessageBox msg;
+			msg.setText(QString("Unable to load map ") + mapname);
+			msg.setIcon(QMessageBox::Warning);
+			msg.setStandardButtons(QMessageBox::Ok);
+			msg.exec();
+			mapname = QString("<no map loaded>");
+			mapimage = 0;
+			meta = 0;
+		}
+		ismapdirty = true;
+	}
 }
 
 void QMapWidget::ShowTrackPoint(WayPoint& w)
@@ -355,24 +378,18 @@ void QMapWidget::ShowTrackPoint(WayPoint& w)
     painter.drawEllipse(tx-2,ty-2,4,4);
 }
 
-void QMapWidget::HideTracks()
+void QMapWidget::TrackLoad(const QString& name)
 {
-	const Track* t;
-	while (tracks.length()>0)
-	{
-		t = tracks.takeFirst();
-		disconnect(t, SIGNAL(updated(WayPoint&)));
-	}
-	
-	if (!mapimage) return;
-	if (!meta) return;
-	
-	delete mapimage;
-    if (!mapimage->load(meta->GetImageFilename()))
-    {
-    	mapimage = 0;
-    	meta = 0;
-    }
+    LOG( "QMapWidget::TrackLoad()" << name.toStdString() << "\n"; )
+		
+    QString filename = TRACKDIR + name + ".gpx";
+    GpxIO::Instance()->ImportGpxFile(filename);
+}
+
+void QMapWidget::TrackUnload(const QString& name)
+{
+    LOG( "QMapWidget::TrackUnload()" << name.toStdString() << "\n"; )
+    TrackList::Instance()->RemoveTrack(name);
 }
 
 void QMapWidget::SelectMapForCurrentPosition()
@@ -385,11 +402,7 @@ void QMapWidget::SelectMapForCurrentPosition()
         QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
         connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
         dialog->setModal(true);
-    #ifdef Q_OS_SYMBIAN
-        dialog->showFullScreen();
-    #else
         dialog->show();
-    #endif
     }
     else
     {
@@ -559,6 +572,15 @@ void QMapWidget::paintBackground(QPainter& painter)
 
 void QMapWidget::paintMap(QPainter& painter)
 {
+	if (ismapdirty)
+    {
+	    LOG( "QMapWidget::paintMap() map dirty so repaint tracks.\n"; )
+		QStringList keys=TrackList::Instance()->Keys();
+		for (int i=0; i<keys.length(); i++)
+			paintTrack(&TrackList::Instance()->GetItem(keys[i]));
+		ismapdirty = false;
+    }
+	
     if (mapimage)
     {
 		double w = width();

@@ -24,15 +24,7 @@
 #define TRACKDIR    "/Users/hurenkam/workspace/qtracker/tracks/"
 #define WAYPOINTDIR "/Users/hurenkam/workspace/qtracker/"
 #endif
-/*
-extern static void CalculateDistanceAndBearing(
-    double fromlat,
-    double fromlon,
-    double tolat,
-    double tolon,
-    double &distance,
-    double &bearing );
-*/
+
 class WayPoint
 {
 protected:
@@ -203,7 +195,10 @@ class TrackList: public QObject
 {
     Q_OBJECT
 signals:
-    void updated(QString n);
+    void added(Track*);
+    void added(const QString&);
+    void removed(QString);
+    
 public:
     static TrackList* Instance() { if (!instance) instance = new TrackList(); return instance; }
 private:
@@ -215,10 +210,11 @@ protected:
 	
 public:
 	// Todo: handle case if name already exists
-	void AddTrack(Track* t)           { map[t->Name()]=t; emit updated(t->Name()); }
-	void AddMetaData(AreaMetaData* m) { }
-	QList<QString> Keys()             { return map.keys(); }
-	Track& GetItem(QString k) const   { return *map[k]; }
+	void AddTrack(Track* t)                { map[t->Name()]=t; emit added(t); emit added(t->Name()); }
+	void RemoveTrack(QString name);
+	void AddMetaData(AreaMetaData* m)      { }
+	QList<QString> Keys()                  { return map.keys(); }
+	Track& GetItem(QString k) const        { return *map[k]; }
 };
 
 class Route: public QObject

@@ -11,7 +11,6 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include "geodata.h"
-//#include <QDoubleValidator>
 
 class QTrackTabsDialog : public QDialog
 {
@@ -19,63 +18,18 @@ class QTrackTabsDialog : public QDialog
 
 public:
     QTrackTabsDialog(Track* track=0, QWidget *parent = 0);
-    ~QTrackTabsDialog();
 
 signals:
+	void deletetrack(const QString&);
+	void showtrack(const QString&);
+	void hidetrack(const QString&);
     void updatetrack(QString, int, int);
     void newtrack(QString, int, int);
     void stoptrack(QString);
     void changeoptions(bool, int, int);
-	void deletetrack(const QString& name);
-	void showtrack(const QString& name);
-	void hidetrack(const QString& name);
-
 
 public slots:
     virtual void accept();
-
-private:
-    QTabWidget       *tabs;
-    QDialogButtonBox *buttons;
-};
-
-class QNewTrackTab: public QWidget
-{
-    Q_OBJECT
-
-public:
-    QNewTrackTab(QTrackTabsDialog *parent = 0);
-    ~QNewTrackTab();
-
-signals:
-	void newtrack(QString, int, int);
-
-public slots:
-    void emitnewtrack()        { if (trkname) emit newtrack(trkname->text(),time,dist); }
-    //void emitupdatetrack()     { if (trkname) emit newtrack(trkname->text(),time,dist); }
-    void selectdistance();
-    void selecttime();
-    void selectall();
-    void updatetime(int id);
-    void updatedistance(int id);
-
-protected:
-    virtual void resizeEvent(QResizeEvent * event);
-
-private:
-    int time;
-    int dist;
-	QBoxLayout *center;
-	QGroupBox    *distgroup;
-	QButtonGroup *distbuttons;
-	QGroupBox    *timegroup;
-	QButtonGroup *timebuttons;
-	QGroupBox *typegroup;
-	QHBoxLayout *namebox;
-	QHBoxLayout *buttonbox;
-	
-	QLineEdit   *trkname;
-    QVBoxLayout *main;
 };
 
 class QCurrentTrackTab: public QWidget
@@ -83,29 +37,41 @@ class QCurrentTrackTab: public QWidget
     Q_OBJECT
 
 public:
-    QCurrentTrackTab(QString name, QTrackTabsDialog *parent = 0);
+    QCurrentTrackTab(QTrackTabsDialog *d, QTabWidget* t, Track* track=0);
     ~QCurrentTrackTab();
+    void SetTrackName(QString name);
 
 signals:
+    void newtrack(QString, int, int);
     void updatetrack(QString, int, int);
 	void stoptrack(QString);
 
 public slots:
+    void emitnewtrack()           { emit newtrack(trackname,time,dist); SwitchToCurrent(); }
     void emitupdatetrack()        { emit updatetrack(trackname,time,dist); }
-    void emitstoptrack()          { emit stoptrack(trackname); }
+    void emitstoptrack()          { emit stoptrack(trackname); SwitchToNew(); }
     void selectdistance();
     void selecttime();
     void selectall();
     void updatetime(int id);
     void updatedistance(int id);
-
+    
 protected:
     virtual void resizeEvent(QResizeEvent * event);
+    void SwitchToNew();
+    void SwitchToCurrent();
+    void NewTrackName();
 
 private:
+	QTrackTabsDialog *dialog;
+	QTabWidget* tab;
 	QString trackname;
     int time;
     int dist;
+	QLineEdit*    trkname;
+	QPushButton*  stop;
+	QPushButton*  upd;
+	QPushButton*  start;
 	QBoxLayout   *center;
 	QGroupBox    *distgroup;
 	QButtonGroup *distbuttons;
@@ -120,31 +86,33 @@ class QTrackListTab: public QWidget
 public:
     QTrackListTab(QTrackTabsDialog *parent = 0);
     ~QTrackListTab();
-
-protected:
-    virtual void resizeEvent(QResizeEvent * event);
-
-private:
-	QBoxLayout   *center;
 };
 
 class QTrackListWidget: public QWidget
 {
 	Q_OBJECT
-	
+
+private:
+    QSignalMapper* togglemapper;
+    QSignalMapper* deletemapper;
+    QMap<QString,QHBoxLayout*> items;
+    QVBoxLayout* center;
+
 public:
     QTrackListWidget(QTrackListTab* parent=0);
 
 signals:
-	void deletetrack(const QString& name);
-	void showtrack(const QString& name);
-	void hidetrack(const QString& name);
+	void deletetrack(const QString&);
+	void showtrack(const QString&);
+	void hidetrack(const QString&);
 
 public slots:
     void DeleteTrack(const QString& name);
     void ToggleTrack(const QString& name);
+    void TrackAdded(QString name);
+    void TrackRemoved(QString name);
     
-private:
+protected:
     QStringList TrackFiles();
 };
 
