@@ -62,7 +62,7 @@ symbian {
         images/invisible.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.149
+    VERSION = 0.8.152
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
