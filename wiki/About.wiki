@@ -4,6 +4,15 @@
 WishList | KnownBugs | RoadMap
 ----
 
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000048.jpg" height="180" width="320" border="0" />
+
+Software aimed at helping hikers & geocachers to determine their position, and record & monitoring tracks, routes and waypoints. 
+
+Platform: Qt for Symbian S60
+(note that the code can also be compiled and run on non-s60 platforms, but not all
+functionality is available then, e.g. GPS/Sensors/Messaging).
+
 * Works: *
  * Show position on map
  * Show wgs84 coordinates on map
