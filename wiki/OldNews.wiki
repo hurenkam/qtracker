@@ -1,4 +1,4 @@
-* Older news
+
  * March 7th 2010
 
   Uploaded a self-signed package based on release 78 (v0.7.78). No changes compared to revision 76, but this one is built against Qt 4.6.2.
