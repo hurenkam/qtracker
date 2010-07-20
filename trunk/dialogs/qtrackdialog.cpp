@@ -11,6 +11,8 @@
 #include <QResizeEvent>
 #include <QDateTime>
 #include <QSvgWidget>
+#include <QToolButton>
+#include <QIcon>
 #include "qtrackdialog.h"
 
 #include <iostream>
@@ -127,7 +129,7 @@ QNewTrackTab::QNewTrackTab(QTrackTabsDialog *parent)
     connect(timebuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatetime(int)));
     connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatedistance(int)));
 
-    connect(this,SIGNAL(newtrack(QString,int,int)),parent,SLOT(emitnewtrack(QString,int,int)));
+    connect(this,SIGNAL(newtrack(QString,int,int)),   parent,SIGNAL(newtrack(QString,int,int)));
 }
 
 void QNewTrackTab::resizeEvent( QResizeEvent * event )
@@ -289,8 +291,8 @@ QCurrentTrackTab::QCurrentTrackTab(QString name, QTrackTabsDialog *parent)
     connect(timebuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatetime(int)));
     connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatedistance(int)));
 
-    connect(this,SIGNAL(stoptrack(QString)),parent,SLOT(emitstoptrack(QString)));
-    connect(this,SIGNAL(updatetrack(QString,int,int)),parent,SLOT(emitupdatetrack(QString,int,int)));
+    connect(this,SIGNAL(updatetrack(QString,int,int)),parent,SIGNAL(updatetrack(QString,int,int)));
+    connect(this,SIGNAL(stoptrack(QString)),          parent,SIGNAL(stoptrack(QString)));
 }
 
 void QCurrentTrackTab::resizeEvent( QResizeEvent * event )
@@ -348,56 +350,79 @@ QCurrentTrackTab::~QCurrentTrackTab()
 
 
 
-class QTrackListWidget: public QWidget
+QTrackListWidget::QTrackListWidget(QTrackListTab* parent)  
+: QWidget(parent)
 {
-public:
-    QTrackListWidget(QTrackListTab* parent=0) : QWidget(parent) 
-    {
-    	QVBoxLayout* center = new QVBoxLayout();
-        QWidget*     filler = new QWidget();
-        filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    	
-        QStringList files = TrackFiles();
-        for (int i=0; i<files.length(); i++)
-        {
-        	QHBoxLayout* item = new QHBoxLayout();
-        	QSvgWidget*  del = new QSvgWidget(DASHRCDIR "delete.svg");
-            QWidget*     filler = new QWidget();
-            filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            
-            QStringList  keys = TrackList::Instance()->Keys();
-            QSvgWidget*  toggle;
-        	if (keys.contains(files[i]))
-         	    toggle = new QSvgWidget(DASHRCDIR "visible.svg");
-        	else
-         	    toggle = new QSvgWidget(DASHRCDIR "invisible.svg");
-        	
-        	item->addWidget(del);
-        	item->addWidget(toggle);
-            item->addWidget(new QLabel(files[i]));
-        	item->addWidget(filler);
-            center->addLayout(item);
-        }
-        
-    	center->addWidget(filler);
-        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    	setLayout(center);
-    }
-    
-    QStringList TrackFiles()
-    {
-        QDir directory = QDir(GetDrive() + QString(TRACKDIR));
-        QStringList files = directory.entryList(QStringList(QString("*.gpx")),
-                                                                 QDir::Files | QDir::NoSymLinks);
+	QVBoxLayout*   center = new QVBoxLayout();
+	QWidget*       filler = new QWidget();
+	QSignalMapper* togglemapper = new QSignalMapper(this);
+	QSignalMapper* deletemapper = new QSignalMapper(this);
+	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	
+	QStringList files = TrackFiles();
+	for (int i=0; i<files.length(); i++)
+	{
+		QHBoxLayout* item = new QHBoxLayout();
+		QToolButton* togglebutton = new QToolButton();
+		QToolButton* delbutton = new QToolButton();
+		QWidget*     filler = new QWidget();
+		delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
+		filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		
+		QStringList  keys = TrackList::Instance()->Keys();
+		if (keys.contains(files[i]))
+			togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+		else
+			togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+		
+		item->addWidget(delbutton);
+		item->addWidget(togglebutton);
+		item->addWidget(new QLabel(files[i]));
+		item->addWidget(filler);
+		center->addLayout(item);
+		
+		connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
+		connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
+		deletemapper->setMapping(delbutton,files[i]);
+		togglemapper->setMapping(togglebutton,files[i]);
+	}
+	connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteTrack(const QString &)));
+	connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleTrack(const QString &)));
 
-        LOG( "QTrackListTab::TrackFiles() #gpx: " << files.size() << "\n"; )
-        for (int i = 0; i < files.length(); ++i)
-        {
-                files[i] = files[i].left(files[i].length()-4);
-        }
-        return files;
-    }
-};
+	center->addWidget(filler);
+	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	setLayout(center);
+}
+
+QStringList QTrackListWidget::TrackFiles()
+{
+	QDir directory = QDir(GetDrive() + QString(TRACKDIR));
+	QStringList files = directory.entryList(QStringList(QString("*.gpx")),
+															 QDir::Files | QDir::NoSymLinks);
+
+	LOG( "QTrackListTab::TrackFiles() #gpx: " << files.size() << "\n"; )
+	for (int i = 0; i < files.length(); ++i)
+	{
+			files[i] = files[i].left(files[i].length()-4);
+	}
+	return files;
+}
+
+void QTrackListWidget::DeleteTrack(const QString& name)
+{
+	LOG2( "QTrackListWidget::DeleteTrack(): " << name.toStdString() << "\n"; )
+	emit deletetrack(name);
+}
+
+void QTrackListWidget::ToggleTrack(const QString& name)
+{
+	LOG2( "QTrackListWidget::ToggleTrack(): " << name.toStdString() << "\n"; )
+	QStringList  keys = TrackList::Instance()->Keys();
+	if (keys.contains(name))
+		emit hidetrack(name);
+	else
+		emit showtrack(name);
+}
 
 
 
@@ -409,11 +434,12 @@ QTrackListTab::QTrackListTab(QTrackTabsDialog *parent)
     QPushButton* exit = new QPushButton(tr("Exit"));
     QWidget*     filler = new QWidget;
     QScrollArea* scroll = new QScrollArea();
+    QTrackListWidget* list = new QTrackListWidget();
     
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     buttons->addWidget(exit);
     
-    scroll->setWidget(new QTrackListWidget());
+    scroll->setWidget(list);
     scroll->show();
     scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     main->addWidget(scroll);
@@ -423,21 +449,10 @@ QTrackListTab::QTrackListTab(QTrackTabsDialog *parent)
     exit->show();
     setAttribute(Qt::WA_DeleteOnClose);
 
+    connect(list,SIGNAL(deletetrack(const QString&)),parent,SIGNAL(deletetrack(const QString&)));
+    connect(list,SIGNAL(showtrack(const QString&)),  parent,SIGNAL(showtrack(const QString&)));
+    connect(list,SIGNAL(hidetrack(const QString&)),  parent,SIGNAL(hidetrack(const QString&)));
     connect(exit,SIGNAL(clicked()),parent,SLOT(reject()));
-}
-
-QStringList QTrackListTab::TrackFiles()
-{
-    QDir directory = QDir(GetDrive() + QString(TRACKDIR));
-    QStringList files = directory.entryList(QStringList(QString("*.gpx")),
-                                                             QDir::Files | QDir::NoSymLinks);
-
-    LOG( "QTrackListTab::TrackFiles() #gpx: " << files.size() << "\n"; )
-    for (int i = 0; i < files.length(); ++i)
-    {
-            files[i] = files[i].left(files[i].length()-4);
-    }
-    return files;
 }
 
 void QTrackListTab::resizeEvent( QResizeEvent * event )
@@ -452,14 +467,6 @@ void QTrackListTab::resizeEvent( QResizeEvent * event )
         center->setDirection(QBoxLayout::LeftToRight);
 */
     QWidget::resizeEvent(event);
-}
-
-void QTrackListTab::emithidetrack(int id)
-{
-}
-
-void QTrackListTab::emitshowtrack(int id)
-{
 }
 
 QTrackListTab::~QTrackListTab()
@@ -479,11 +486,19 @@ QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
     setStyleSheet(styleSheet);
 
     if (track)
-    	tabs->addTab(new QCurrentTrackTab(track->Name(),this), tr("Current"));
+    {
+	    QCurrentTrackTab* tab = new QCurrentTrackTab(track->Name(),this);
+    	tabs->addTab(tab, tr("Current"));
+        connect(tab,SIGNAL(stoptrack(QString)),this,SLOT(accept()));
+    }
     else
-    	tabs->addTab(new QNewTrackTab(this), tr("New"));
+    {
+    	QNewTrackTab* tab = new QNewTrackTab(this);
+    	tabs->addTab(tab, tr("New"));
+        connect(tab,SIGNAL(newtrack(QString,int,int)),this,SLOT(accept()));
+    }
     
-    tabs->addTab(new QTrackListTab(this), tr("List"));
+    tabs->addTab(new QTrackListTab(this),tr("List"));
     tabs->addTab(new QWidget(this), tr("Options"));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -491,41 +506,6 @@ QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
     setLayout(mainLayout);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);
-}
-
-void QTrackTabsDialog::emitnewtrack(QString name, int time, int distance)        
-{ 
-    LOG( "QTrackTabsDialog::emitnewtrack(" << name.toStdString() << ", " << time << ", " << distance << ")\n"; )
-    emit newtrack(name,time,distance);
-    accept();
-}
-
-void QTrackTabsDialog::emitupdatetrack(QString name, int time, int distance)        
-{ 
-    LOG( "QTrackTabsDialog::emitnewtrack(" << name.toStdString() << ", " << time << ", " << distance << ")\n"; )
-    emit updatetrack(name,time,distance);
-    accept();
-}
-
-void QTrackTabsDialog::emitdeletetrack(QString name)                             
-{ 
-    LOG2( "QTrackTabsDialog::emitdeletetrack()\n"; )
-    emit deletetrack(name);
-    accept();
-}
-
-void QTrackTabsDialog::emitstoptrack(QString name)                             
-{ 
-    LOG( "QTrackTabsDialog::emitstoptrack()\n"; )
-    emit stoptrack(name);
-    accept();
-}
-
-void QTrackTabsDialog::emitchangeoptions(bool autostart, int time, int distance) 
-{ 
-    LOG2( "QTrackTabsDialog::emitchangeoptions()\n"; )
-    emit changeoptions(autostart,time,distance);
-    accept();
 }
 
 void QTrackTabsDialog::accept()

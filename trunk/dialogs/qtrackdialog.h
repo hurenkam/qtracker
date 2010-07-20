@@ -24,17 +24,15 @@ public:
 signals:
     void updatetrack(QString, int, int);
     void newtrack(QString, int, int);
-    void deletetrack(QString);
     void stoptrack(QString);
     void changeoptions(bool, int, int);
+	void deletetrack(const QString& name);
+	void showtrack(const QString& name);
+	void hidetrack(const QString& name);
+
 
 public slots:
     virtual void accept();
-    void emitupdatetrack(QString name, int time, int distance);
-    void emitnewtrack(QString name, int time, int distance);
-    void emitdeletetrack(QString name);
-    void emitstoptrack(QString name);
-    void emitchangeoptions(bool autostart, int time, int distance);
 
 private:
     QTabWidget       *tabs;
@@ -115,15 +113,6 @@ private:
 	QButtonGroup *timebuttons;
 };
 
-class QTrackListItemWidget: public QListWidgetItem
-{
-public:
-	QTrackListItemWidget(QString name, bool visible=false, QListWidget *parent=0);
-	void Show();
-	void Hide();
-	void Delete();
-};
-
 class QTrackListTab: public QWidget
 {
     Q_OBJECT
@@ -132,20 +121,31 @@ public:
     QTrackListTab(QTrackTabsDialog *parent = 0);
     ~QTrackListTab();
 
-signals:
-    void showtrack(Track *);
-    void hidetrack(Track *);
-
-public slots:
-    void emithidetrack(int id);
-    void emitshowtrack(int id);
-
 protected:
     virtual void resizeEvent(QResizeEvent * event);
-	QStringList TrackFiles();
 
 private:
 	QBoxLayout   *center;
+};
+
+class QTrackListWidget: public QWidget
+{
+	Q_OBJECT
+	
+public:
+    QTrackListWidget(QTrackListTab* parent=0);
+
+signals:
+	void deletetrack(const QString& name);
+	void showtrack(const QString& name);
+	void hidetrack(const QString& name);
+
+public slots:
+    void DeleteTrack(const QString& name);
+    void ToggleTrack(const QString& name);
+    
+private:
+    QStringList TrackFiles();
 };
 
 #endif // QWAYPOINTDIALOG_H
