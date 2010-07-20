@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <QPixmap>
 #include <QSplashScreen>
+#include <QWaitCondition>
 #include "QDashWindow.h"
 #include "ui.h"
 
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
     QPixmap pixmap(SPLASHRCDIR "splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
-    splash.showMessage("Wait...",Qt::AlignLeft);
+    splash.showMessage("qTracker v" VER,Qt::AlignLeft);
     a.processEvents();
 
     QDashWindow *w;

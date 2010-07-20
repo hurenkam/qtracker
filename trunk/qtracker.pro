@@ -63,6 +63,8 @@ symbian {
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
     VERSION = 0.8.149
+	VERSTR = '\\"$${VERSION}\\"'    
+	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000
