@@ -1,6 +1,6 @@
 [http://code.google.com/p/qtracker/wiki/About About] | 
-[http://code.google.com/p/qtracker/wiki/UserManual_0_0_6 User Manual] | 
-[http://code.google.com/p/qtracker/wiki/InstallManual_0_0_6 Installation Manual] | 
+[http://code.google.com/p/qtracker/wiki/UserManual_0_8 User Manual] | 
+[http://code.google.com/p/qtracker/wiki/InstallManual_0_8 Installation Manual] | 
 WishList | KnownBugs | RoadMap
 ----
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="90" width="160" border="0" />
@@ -66,8 +66,7 @@ size. SingleTap any gauge, and the gauge will maximize, and the map will disappe
 SingleTap the maximized gauge, and the map will come back.
 
 
-== Tracks == <img src="http://qtracker.googlecode.com/svn/trunk/images/options.svg" height="25" width="25" border="0" />
-
+== Tracks ==
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="180" width="320" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="180" width="320" border="0" /><br>
 
