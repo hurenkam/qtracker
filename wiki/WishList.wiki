@@ -9,14 +9,16 @@ WishList | KnownBugs | RoadMap
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
-= qTracker wishlist =
+= New qTracker wishlist: =
 
 === Show (google earth) tracks on the map ===
 What I miss most of all from tracker-py is the option to show google earth tracks on
 the maps.
 
 ----
-= tracker-py wishlist =
+<br><br>
+
+= From tracker-py wishlist: =
 
 === Non-cylindrical (Lambert, others?) projection support ===
 A lot of topographic maps use Lambert conic projection, but the current
