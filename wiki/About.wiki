@@ -32,10 +32,6 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * Gpx import
  * Persistent settings (current map, zoom mode)
 
-* Known bugs (v0.8.149) *
- * When deleting a track, the tracklist is not always properly updated, parts of the previous line may remain.
- * Because i now use QXmlStreamReader to read all Xml based config files, some historic metadata files from tracker-py with the 'missing =' bug won't read properly, causing qTracker to hang during startup. Fixing the metadata by putting the '=' sign after the version attribute in the xml tag on the first line of the file solves this. I'll look into a generic solution to fix the hangup, since even bad data should not cause the app to stall.
-
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/screenshot-124-1.jpg" height="180" width="320" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000040.jpg" height="180" width="320" border="0" />
 <br>
