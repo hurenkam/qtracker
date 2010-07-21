@@ -9,4 +9,5 @@ WishList | KnownBugs | RoadMap
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
+Release 0.8.149
  * Repaint of TrackList after delete is not right.
