@@ -15,8 +15,8 @@ WishList | KnownBugs | RoadMap
 What I miss most of all from tracker-py is the option to show google earth tracks on
 the maps.
 
-----
 <br><br>
+----
 
 = From tracker-py wishlist: =
 
