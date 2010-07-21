@@ -32,6 +32,8 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * Gpx import
  * Persistent settings (current map, zoom mode)
 
+* Screenshots *
+
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/screenshot-124-1.jpg" height="180" width="320" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000040.jpg" height="180" width="320" border="0" />
 <br>
