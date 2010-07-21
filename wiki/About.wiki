@@ -36,18 +36,6 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * When deleting a track, the tracklist is not always properly updated, parts of the previous line may remain.
  * Because i now use QXmlStreamReader to read all Xml based config files, some historic metadata files from tracker-py with the 'missing =' bug won't read properly, causing qTracker to hang during startup. Fixing the metadata by putting the '=' sign after the version attribute in the xml tag on the first line of the file solves this. I'll look into a generic solution to fix the hangup, since even bad data should not cause the app to stall.
 
-* Planned features: *
- * Use magnetic north sensor
- * Screensaver disable & autodisable
- * Waypoint monitor
- * Track display & recording (use server backend)
- * Route display & editing
- * Route & Track monitoring
- * Gauge options & more gauge info (average speed, descent/ascent distance, select units)
-
-* Future: *
- * Create a plugin architecture to enable 3rd party widgets/layouts/events
-
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/screenshot-124-1.jpg" height="180" width="320" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000040.jpg" height="180" width="320" border="0" />
 <br>
