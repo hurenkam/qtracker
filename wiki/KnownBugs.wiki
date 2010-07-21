@@ -1,14 +1,13 @@
 [http://code.google.com/p/qtracker/wiki/About About] | 
-[http://code.google.com/p/qtracker/wiki/UserManual_0_0_6 User Manual] | 
-[http://code.google.com/p/qtracker/wiki/InstallManual_0_0_6 Installation Manual] | 
+[http://code.google.com/p/qtracker/wiki/UserManual User Manual] | 
+[http://code.google.com/p/qtracker/wiki/InstallManual Installation Manual] | 
 WishList | KnownBugs | RoadMap
+----
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000048.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
 === Reload required after adding refpoint ===
-After calibrating a map, I must terminate qtracker and load it again before I can use the calibrated map.<br>
-==> this should be fixed in revision 79
-
-=== Altitude widget resets via doubltap, should be longtap ===
-When doubletapping the altitude widget, it resets, while longtap does nothing.
-Doubletap should bringup an options dialog (not yet implemented), longtap should reset the widget.<br>
-==> this should be fixed in revision 80
+ * Repaint of TrackList after delete is not right.
