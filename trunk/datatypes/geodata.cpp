@@ -86,7 +86,6 @@ void TrackList::RemoveTrack(QString name)
 }
 
 
-
 MapList::MapList()
 {
     LOG( "MapList::MapList()\n"; )
@@ -122,6 +121,23 @@ MapList::MapList()
             GpxIO::Instance()->WriteMapMetaFile(*map[base]);
         }
     }
+}
+
+QStringList MapList::FindMapsForPosition(const WayPoint& w)
+{
+	LOG( "QMapList::FindMapsForPosition()\n"; )
+
+	QStringList result;
+	QStringList keys = MapNames();
+	for (int i=0; i<keys.size(); ++i)
+	{
+		if (map[keys[i]]->IsPositionOnMap(w))
+		{
+			LOG( "QMapList::FindMapsForPosition(): " << keys[i].toStdString() << "\n"; )
+			result.append(keys[i]);
+		}
+	}
+	return result;
 }
 
 bool MapMetaData::WgsArea(double& lat1, double& lon1, double& lat2, double& lon2)

@@ -42,7 +42,7 @@ public slots:
     void moveMap(int x, int y);
     void SelectMap();
     void SelectPoint();
-    void SelectMapForCurrentPosition();
+    //void SelectMapForCurrentPosition();
     void MapSelected(QString map);
     void WaypointSelected(QString name, double lat, double lon);
     void RefpointSelected(QString name, double lat, double lon);

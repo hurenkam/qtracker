@@ -31,18 +31,17 @@ private:
     static GpxIO* instance;
 	GpxIO()
     : wptlist(WayPointList::Instance())
+    , rtelist(*RouteList::Instance())
+    , trklist(*TrackList::Instance())
+    , maplist(MapList::Instance())
 	{ 
-		//wptlist = WayPointList::Instance();
-		rtelist = RouteList::Instance();
-		trklist = TrackList::Instance();
-		maplist = MapList::Instance();
 	}
 
 protected:
     WayPointList& wptlist;
-    RouteList* rtelist;
-    TrackList* trklist;
-    MapList* maplist;
+    RouteList& rtelist;
+    TrackList& trklist;
+    MapList& maplist;
 
 public:
     void ImportGpxFile(QString filename);

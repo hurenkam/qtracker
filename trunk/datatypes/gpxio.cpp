@@ -57,8 +57,8 @@ void GpxIO::ReadGpx()
 			//if (xml.name()=="time")       ReadElementString();
 			//if (xml.name()=="bounds")     ReadBounds();
 			if (reader.name()=="wpt")        wptlist.AddWayPoint(ReadWayPoint("wpt"));
-			if (reader.name()=="rte")        rtelist->AddRoute(ReadRoute());
-			if (reader.name()=="trk")        trklist->AddTrack(ReadTrack());
+			if (reader.name()=="rte")        rtelist.AddRoute(ReadRoute());
+			if (reader.name()=="trk")        trklist.AddTrack(ReadTrack());
 			if (reader.name()=="extensions") ReadExtensions();
         }
         reader.readNext();
@@ -141,9 +141,9 @@ void GpxIO::ReadExtensions()
         
 		if (reader.tokenType()==QXmlStreamReader::StartElement)
 		{
-			if (reader.name()=="mapmeta") maplist->AddMetaData(ReadMapMetaData("mapmeta"));
-			if (reader.name()=="rtemeta") rtelist->AddMetaData(ReadAreaMetaData("rtemeta"));
-			if (reader.name()=="trkmeta") trklist->AddMetaData(ReadAreaMetaData("trkmeta"));
+			if (reader.name()=="mapmeta") maplist.AddMetaData(ReadMapMetaData("mapmeta"));
+			if (reader.name()=="rtemeta") rtelist.AddMetaData(ReadAreaMetaData("rtemeta"));
+			if (reader.name()=="trkmeta") trklist.AddMetaData(ReadAreaMetaData("trkmeta"));
 		}
         reader.readNext();
 	}

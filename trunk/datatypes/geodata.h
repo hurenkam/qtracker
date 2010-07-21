@@ -160,6 +160,7 @@ public:
     bool XY2Wgs(double ax, double ay, double& alat, double& alon);
     bool Wgs2XY(double alat, double alon, double& ax, double& ay);
     bool IsPositionOnMap(double alat, double alon);
+    bool IsPositionOnMap(const WayPoint& w) { return IsPositionOnMap(w.Latitude(),w.Longitude()); }
     bool IsCalibrated() { return iscalibrated; }
     void SetSize(int w, int h) { resolution.SetWidth(w); resolution.SetHeight(h); }
     //void SetImageFilename(QString filename) { imagename = filename; };
@@ -255,7 +256,7 @@ public:
 class MapList
 {
 public:
-    static MapList* Instance() { if (!instance) new MapList(); return instance; }
+    static MapList& Instance() { if (!instance) new MapList(); return *instance; }
 private:
     static MapList* instance;
     MapList();
@@ -268,6 +269,7 @@ public:
 	void AddMetaData(MapMetaData* m)       { map[m->Name()]=m; }
 	QList<QString> MapNames()              { return map.keys(); }
 	MapMetaData& GetItem(QString n)        { return *map[n]; }
+	QStringList FindMapsForPosition(const WayPoint& w);
 };
 
 #endif /* GEODATA_H_ */

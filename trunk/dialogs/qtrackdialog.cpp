@@ -280,14 +280,16 @@ void QTrackListWidget::TrackRemoved(QString name)
 {
 	LOG( "QTrackListTab::TrackRemoved(): " << name.toStdString() << "\n"; )
 	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+	if (togglebutton)
+	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
 }
 
 void QTrackListWidget::TrackAdded(QString name)
 {
 	LOG( "QTrackListTab::TrackAdded(): " << name.toStdString() << "\n"; )
 	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+	if (togglebutton)
+	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
 }
 
 QStringList QTrackListWidget::TrackFiles()

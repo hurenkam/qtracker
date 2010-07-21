@@ -5,7 +5,7 @@
 #include <QDir>
 #include "ui.h"
 #include "qmapwidget.h"
-#include "qmapselectiondialog.h"
+#include "qmapdialog.h"
 #include "qwaypointdialog.h"
 #include "qtrackdialog.h"
 #include "gpxio.h"
@@ -60,7 +60,7 @@ QMapWidget::QMapWidget(QWidget *parent)
     prevtime = QDateTime::fromTime_t(0);
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
-    connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMapForCurrentPosition()));
+    connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMap()));
     CreateMapList();
     connect(&zoomtimer,SIGNAL(timeout()),this,SLOT(zoomRepeat()));
     zoomtimer.setInterval(150);
@@ -101,11 +101,11 @@ bool QMapWidget::SelectBestMapForCurrentPosition()
         LOG( "QMapWidget::SelectBestMapForCurrentPosition(): " << found[0].toStdString() << "\n"; )
         // for now select first entry
         int index = 0;
-        MapMetaData m = MapList::Instance()->GetItem(found[0]);
+        MapMetaData m = MapList::Instance().GetItem(found[0]);
         int lon2x = m.Lon2x();
         for (int i=1; i<found.size(); ++i)
         {
-        	m = MapList::Instance()->GetItem(found[i]);
+        	m = MapList::Instance().GetItem(found[i]);
         	if (m.Lon2x() > lon2x)
             {
                 lon2x = m.Lon2x();
@@ -122,10 +122,10 @@ void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
 {
     LOG( "QMapWidget::FindMapsForCurrentPosition()\n"; )
 
-    QStringList keys = MapList::Instance()->MapNames();
+    QStringList keys = MapList::Instance().MapNames();
     for (int i=0; i<keys.size(); ++i)
     {
-        if (MapList::Instance()->GetItem(keys[i]).IsPositionOnMap(latitude,longitude))
+        if (MapList::Instance().GetItem(keys[i]).IsPositionOnMap(latitude,longitude))
         {
             LOG( "QMapWidget::FindMapsForCurrentPosition(): " << keys[i].toStdString() << "\n"; )
             found.append(keys[i]);
@@ -142,7 +142,7 @@ bool QMapWidget::LoadMap(QString filename)
         delete mapimage;
 
     mapimage = new QImage();
-    meta = &MapList::Instance()->GetItem(filename);
+    meta = &MapList::Instance().GetItem(filename);
     bool result = mapimage->load(meta->GetImageFilename());
     if (!result)
     {
@@ -175,19 +175,11 @@ bool QMapWidget::LoadMap(QString filename)
 
 void QMapWidget::MapSelected(QString map)
 {
+    LOG( "QMapWidget::MapSelected()\n"; )
     if (LoadMap(map))
         state = StScrolling;
     else
         state = StNoMap;
-}
-
-void QMapWidget::SelectMap()
-{
-    QStringList files = MapList::Instance()->MapNames(); //maplist.keys();
-    QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
-    connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
-    dialog->setModal(true);
-    dialog->show();
 }
 
 void QMapWidget::WaypointSelected(QString name, double lat, double lon)
@@ -343,7 +335,7 @@ void QMapWidget::HideTrack(QString name)
 	    LOG( "QMapWidget::HideTrack() map not dirty so reload\n"; )
 		delete mapimage;
 		mapimage = new QImage();
-		meta = &MapList::Instance()->GetItem(mapname);
+		meta = &MapList::Instance().GetItem(mapname);
 		bool result = mapimage->load(meta->GetImageFilename());
 		if (!result)
 		{
@@ -392,26 +384,13 @@ void QMapWidget::TrackUnload(const QString& name)
     TrackList::Instance()->RemoveTrack(name);
 }
 
-void QMapWidget::SelectMapForCurrentPosition()
+void QMapWidget::SelectMap()
 {
-    QStringList files;
-    FindMapsForCurrentPosition(files);
-
-    if (files.length() > 0)
-    {
-        QMapSelectionDialog *dialog = new QMapSelectionDialog(files);
-        connect(dialog,SIGNAL(selectmap(QString)),this,SLOT(MapSelected(QString)));
-        dialog->setModal(true);
-        dialog->show();
-    }
-    else
-    {
-        QMessageBox msg;
-        msg.setText(QString("No maps available for this location"));
-        msg.setIcon(QMessageBox::Warning);
-        msg.setStandardButtons(QMessageBox::Ok);
-        msg.exec();
-    }
+	WayPoint w = WayPoint(latitude,longitude);
+	QMapTabsDialog *dialog = new QMapTabsDialog(&w);
+    connect(dialog,SIGNAL(loadmap(QString)),this,SLOT(MapSelected(QString)));
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void QMapWidget::updatePosition(const QGeoCoordinate& pos)

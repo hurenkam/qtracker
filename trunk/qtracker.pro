@@ -11,7 +11,7 @@ HEADERS += dialogs/qtrackdialog.h \
     datatypes/geodata.h \
     datatypes/gpxio.h \
     dialogs/qwaypointdialog.h \
-    dialogs/qmapselectiondialog.h \
+    dialogs/qmapdialog.h \
     widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
     images/ui.h \
@@ -62,7 +62,7 @@ symbian {
         images/invisible.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.152
+    VERSION = 0.8.184
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
@@ -73,7 +73,7 @@ SOURCES += dialogs/qtrackdialog.cpp \
     datatypes/geodata.cpp \
     datatypes/gpxio.cpp \
     dialogs/qwaypointdialog.cpp \
-    dialogs/qmapselectiondialog.cpp \
+    dialogs/qmapdialog.cpp \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
     images/ui.cpp \
