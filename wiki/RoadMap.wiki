@@ -3,3 +3,16 @@
 [http://code.google.com/p/qtracker/wiki/InstallManual_0_0_6 Installation Manual] | 
 WishList | KnownBugs | RoadMap
 ----
+
+
+* Planned features: *
+ * Use magnetic north sensor
+ * Screensaver disable & autodisable
+ * Waypoint monitor
+ * Track display & recording (use server backend)
+ * Route display & editing
+ * Route & Track monitoring
+ * Gauge options & more gauge info (average speed, descent/ascent distance, select units)
+
+* Future: *
+ * Create a plugin architecture to enable 3rd party widgets/layouts/events
