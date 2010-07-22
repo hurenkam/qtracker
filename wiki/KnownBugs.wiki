@@ -10,8 +10,6 @@ WishList | KnownBugs | RoadMap
 ----
 
 === Release 0.8.184 ===
- * Found what looks like a bug in the set refpoint code, it is possible that calibration
-   of new maps doesn't work. Existing maps (e.g. from tracker-py) should work fine.
-   I've fixed the problem in svn, will do some tests before uploading the new version. 
+ * Found what looks like a bug in the set refpoint code, it is possible that calibration of new maps doesn't work. Existing maps (e.g. from tracker-py) should work fine. I've fixed the problem in svn, will do some tests before uploading the new version. 
  * When deleting a track, the tracklist is not always properly updated, parts of the previous line may remain.
  * Because i now use QXmlStreamReader to read all Xml based config files, some historic metadata files from tracker-py with the 'missing =' bug won't read properly, causing qTracker to hang during startup. Fixing the metadata by putting the '=' sign after the version attribute in the xml tag on the first line of the file solves this. I'll look into a generic solution to fix the hangup, since even bad data should not cause the app to stall.
