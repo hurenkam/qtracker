@@ -34,8 +34,15 @@ protected:
 	double elevation;
 	QString time;
 public:
-	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
+	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="wpt")
 	    : latitude(lat), longitude(lon), elevation(ele), time(t), name(n) {}
+	
+	WayPoint(const WayPoint& w)
+	    : latitude(w.Latitude())
+	    , longitude(w.Longitude())
+	    , elevation(w.Elevation())
+	    , time(w.Time())
+	    , name(w.Name()) {}
 
 	QString Name() const               { return name; }
 	double Latitude() const            { return latitude; }
@@ -57,7 +64,10 @@ class WayPointList : public QObject
 {
     Q_OBJECT
 signals:
-    void updated(QString n);
+    void added(const QString&);
+    void updated(const QString&);
+    void removed(const QString&);
+    
 public:
     static WayPointList& Instance() { if (!instance) instance = new WayPointList(); return *instance; }
 private:
@@ -68,7 +78,8 @@ protected:
 	
 public:
 	// Todo: handle case if name already exists
-	void AddWayPoint(WayPoint* w)       { map[w->Name()]=w; emit updated(w->Name()); }
+	void AddWayPoint(WayPoint* w)       { map[w->Name()]=w; emit added(w->Name()); }
+	void AddWayPoint(const WayPoint& w) { AddWayPoint(new WayPoint(w)); }
 	QList<QString> WptNames()           { return map.keys(); }
 	WayPoint& GetItem(QString n)        { return *map[n]; }
 	QString FileName()                  { return QString(GetDrive() + QString(WAYPOINTDIR) + "waypoints.gpx"); }
@@ -111,7 +122,7 @@ protected:
 	int y;
 public:
 	RefPoint(int ax, int ay, double lat, double lon)
-	    : WayPoint(lat,lon), x(ax), y(ay) {}
+	    : WayPoint(lat,lon,0,"","ref"), x(ax), y(ay) {}
 	
     int X() { return x; }
     int Y() { return y; }

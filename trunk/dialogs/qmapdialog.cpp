@@ -127,6 +127,7 @@ QMapTabsDialog::QMapTabsDialog(WayPoint* p, QWidget *parent)
     QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
+    file.close();
     setStyleSheet(styleSheet);
 
     //new QCurrentMapTab(this,tabs);

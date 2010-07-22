@@ -22,7 +22,7 @@ class QMapWidget : public QGaugeWidget
     Q_OBJECT
 
 public:
-    QMapWidget(QWidget *parent = 0);
+    QMapWidget(QSettings& s, QWidget *parent = 0);
     ~QMapWidget();
     bool IsPositionOnMap() { return (meta && meta->IsPositionOnMap(latitude,longitude)); }
     bool IsPositionOnScreen(WayPoint& wpt);
@@ -44,7 +44,8 @@ public slots:
     void SelectPoint();
     //void SelectMapForCurrentPosition();
     void MapSelected(QString map);
-    void WaypointSelected(QString name, double lat, double lon);
+    //void WaypointSelected(QString name, double lat, double lon);
+    //void WaypointSelected(const WayPoint& w);
     void RefpointSelected(QString name, double lat, double lon);
     void FollowGPS();
     
@@ -119,6 +120,7 @@ private:
     QString mapname;
     bool ismapdirty;
     Track* recordtrack;
+    QSettings& settings;
 };
 
 #endif // QMAPWIDGET_H

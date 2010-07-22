@@ -20,13 +20,15 @@ HEADERS += dialogs/qtrackdialog.h \
     widgets/qheadingwidget.h \
     widgets/qsatviewwidget.h \
     widgets/qspeedwidget.h \
-    windows/qdashwindow.h
+    windows/qdashwindow.h \
+    application/qtracker.h
 INCLUDEPATH += dialogs \
     datatypes \
     widgets \
     images \
     mobility \
-    windows
+    windows \
+    application
 FORMS += 
 RESOURCES += 
 symbian { 
@@ -58,11 +60,12 @@ symbian {
         images/flag.svg \
         images/hiker.svg \
         images/delete.svg \
+        images/edit.svg \
         images/visible.svg \
         images/invisible.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.184
+    VERSION = 0.8.187
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
@@ -70,6 +73,7 @@ symbian {
     TARGET.EPOCSTACKSIZE += 0x14000
 }
 SOURCES += dialogs/qtrackdialog.cpp \
+    application/qtracker.cpp \
     datatypes/geodata.cpp \
     datatypes/gpxio.cpp \
     dialogs/qwaypointdialog.cpp \

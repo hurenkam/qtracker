@@ -146,18 +146,19 @@ static void CalculateDistanceAndBearing(
     bearing = bearing / 2.0 / PI * 360.0;
 }
 
-QDashWindow::QDashWindow(QWidget *parent)
+QDashWindow::QDashWindow(QSettings& s, QWidget *parent)
         : QMainWindow(parent)
-        , zoomstep(0)
-        , zoomgauge(0)
-        , tozoom(0)
-        , landscape(true)
-        , starttime(0,0,0)
-        , distance(0)
-        , timevalid(false)
+        , zoomstep    (0)
+        , zoomgauge   (s.value("dash/zoomgauge",0).toInt())
+        , tozoom      (0)
+        , landscape   (true)
+        , starttime   (s.value("dash/starttime",(0,0,0)).toTime())
+        , distance    (s.value("dash/distance",0).toDouble())
+        , timevalid   (s.value("dash/timevalid",false).toBool())
         , posvalid(false)
-        , showmap(true)
-        , mapzoomed(false)
+        //, showmap     (s.value("dash/showmap",true).toBool())
+        , mapzoomed   (s.value("dash/mapzoomed",false).toBool())
+        , settings(s)
 {
 }
 
@@ -258,7 +259,7 @@ void QDashWindow::InitWidgets()
     heading->setObjectName(QString::fromUtf8("heading"));
     heading->setGeometry(QRect(170, 5, 350, 350));
 
-    map = new QMapWidget(this);
+    map = new QMapWidget(settings,this);
     map->setObjectName(QString::fromUtf8("heading"));
     map->setGeometry(QRect(120, 0, 400, 360));
 
@@ -315,6 +316,8 @@ void QDashWindow::timeChanged()
     {
         timevalid = true;
         starttime = time;
+        settings.setValue("dash/timevalid",timevalid);
+        settings.setValue("dash/starttime",starttime);
     }
 }
 
@@ -406,6 +409,7 @@ void QDashWindow::updateSatelliteList()
 void QDashWindow::resetDistance()
 {
     distance = 0;
+    settings.setValue("dash/distance",distance);
     speed->SetDistance(distance);
 }
 
@@ -421,6 +425,7 @@ void QDashWindow::updateDistance(double lat, double lon)
         if (d > 25)
         {
             distance += d/1000.0;
+            settings.setValue("dash/distance",distance);
             prevlat = lat;
             prevlon = lon;
             speed->SetDistance(distance);
@@ -444,6 +449,7 @@ void QDashWindow::updateHeading()
 void QDashWindow::ToggleMap()
 {
     mapzoomed = !mapzoomed;
+    settings.setValue("dash/mapzoomed",mapzoomed);
     Setup();
     update();
 }
@@ -554,6 +560,7 @@ void QDashWindow::ZoomTimerExpired()
     else
     {
         zoomgauge = tozoom;
+        settings.setValue("dash/zoomgauge",zoomgauge);
         zoomtimer->stop();
         Setup();
         update();
@@ -564,6 +571,7 @@ void QDashWindow::resizeEvent ( QResizeEvent * event )
 {
     landscape = (width() > height());
     Setup();
+    settings.sync();
     QMainWindow::resizeEvent(event);
 }
 

@@ -22,7 +22,7 @@
 
 
 QCurrentTrackTab::QCurrentTrackTab(QTrackTabsDialog* d, QTabWidget* t, Track* track)
-    : QWidget(d), dialog(d), tab(t), center(0), time(0), dist(30)
+    : QWidget(d), dialog(d), tab(t), time(0), dist(30), center(0)
 {
 	QVBoxLayout* main = new QVBoxLayout();
 	QHBoxLayout* namebox = new QHBoxLayout();
@@ -371,6 +371,7 @@ QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
     QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
+    file.close();
     setStyleSheet(styleSheet);
 
     new QCurrentTrackTab(this,tabs,track);

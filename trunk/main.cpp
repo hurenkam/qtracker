@@ -28,28 +28,10 @@
 **
 ****************************************************************************/
 
-//#include <QtGui>
-#include <QApplication>
-#include <QPixmap>
-#include <QSplashScreen>
-#include <QWaitCondition>
-#include "QDashWindow.h"
-#include "ui.h"
+#include "qtracker.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    QPixmap pixmap(SPLASHRCDIR "splash.png");
-    QSplashScreen splash(pixmap);
-    splash.show();
-    splash.showMessage("qTracker v" VER,Qt::AlignLeft);
-    a.processEvents();
-
-    QDashWindow *w;
-    w = new QDashWindow();
-    w->setAttribute(Qt::WA_DeleteOnClose);
-    w->Init(&splash);
-    w->show();
-    splash.hide();
+    qTracker a(argc, argv);
     return a.exec();
 }

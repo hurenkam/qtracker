@@ -33,7 +33,7 @@ class QDashWindow: public QMainWindow
 	Q_OBJECT
 
 public:
-	QDashWindow(QWidget *parent=0);
+	QDashWindow(QSettings& s, QWidget *parent=0);
 	virtual ~QDashWindow();
 	void Init(QSplashScreen *s=0);
 
@@ -61,6 +61,7 @@ protected:
     void Setup();
 
 private:
+    QSettings& settings;
     QClockWidget *clock;
     QSpeedWidget *speed;
     QClockWidget *timer;
@@ -95,7 +96,7 @@ private:
     bool timevalid;
     bool posvalid;
 
-    bool showmap;
+    //bool showmap;
     bool mapzoomed;
 };
 
