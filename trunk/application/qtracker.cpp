@@ -36,6 +36,7 @@
 #include "QDashWindow.h"
 #include "ui.h"
 #include "qtracker.h"
+#include "geodata.h"
 
 #ifdef Q_OS_SYMBIAN
 #include <QSymbianEvent>
@@ -54,6 +55,8 @@ qTracker::qTracker(int argc, char* argv[])
 , settings("karpeer.net","qTracker",this)
 {
 	instance = this;
+	//settings.clear();
+	
 	QPixmap pixmap(SPLASHRCDIR "splash.png");
 	QSplashScreen splash(pixmap);
 	splash.show();
@@ -68,6 +71,8 @@ qTracker::qTracker(int argc, char* argv[])
 	
 qTracker::~qTracker()
 {
+	TrackList::Instance()->SaveSettings();
+	WayPointList::Instance().SaveSettings();
 	settings.sync();
 }
 

@@ -7,14 +7,14 @@
 
 #include "geodata.h"
 #include "gpxio.h"
-
-#include <iostream>
+#include "ui.h"
 
 WayPointList* WayPointList::instance = 0;
 RouteList*    RouteList::instance = 0;
 TrackList*    TrackList::instance = 0;
 MapList*      MapList::instance = 0;
 
+#include <iostream>
 //#define LOG( a ) std::cout << a
 #define LOG2( a ) std::cout << a
 #define LOG( a )
@@ -75,6 +75,71 @@ static bool IsValueInRange(double v, double r1, double r2)
 
     return true;
 }
+
+WayPointList::WayPointList()
+: settings("karpeer.net","qTracker",this) 
+{ 
+	instance = this;
+	int length = settings.beginReadArray("wpt/list");
+	for (int i=0; i<length; i++)
+	{
+		WayPoint* w = new WayPoint();
+		settings.setArrayIndex(i);
+		w->SetName      (settings.value("name").toString());
+		w->SetLatitude  (settings.value("latitude").toDouble());
+		w->SetLongitude (settings.value("longitude").toDouble());
+		w->SetElevation (settings.value("elevation").toDouble());
+		w->SetTime      (settings.value("time").toString());
+		AddWayPoint(w);
+	}
+	settings.endArray();
+};
+
+void WayPointList::SaveSettings()
+{ 
+	QStringList names = WptNames();
+	settings.beginWriteArray("wpt/list",names.length());
+	for (int i=0; i<names.length(); i++)
+	{
+		WayPoint& w = GetItem(names[i]);
+		settings.setArrayIndex(i);
+		settings.setValue("name",      w.Name());
+		settings.setValue("latitude",  w.Latitude());
+		settings.setValue("longitude", w.Longitude());
+		settings.setValue("elevation", w.Elevation());
+		settings.setValue("time",      w.Time());
+	}
+	settings.endArray();
+	settings.sync();
+} 
+
+TrackList::TrackList()
+: settings("karpeer.net","qTracker",this) 
+{ 
+	instance = this;
+	int length = settings.beginReadArray("trk/list");
+	for (int i=0; i<length; i++)
+	{
+		settings.setArrayIndex(i);
+	    QString filename = GetDrive() + TRACKDIR + settings.value("name").toString() + ".gpx";
+	    LOG( "TrackList::TrackList():" << filename.toStdString() <<  "\n"; )
+	    GpxIO::Instance()->ImportGpxFile(filename);
+	}
+	settings.endArray();
+};
+
+void TrackList::SaveSettings()
+{
+	QStringList names = Keys();
+	settings.beginWriteArray("trk/list",names.length());
+	for (int i=0; i<names.length(); i++)
+	{
+		settings.setArrayIndex(i);
+		settings.setValue("name",names[i]);
+	}
+	settings.endArray();
+	settings.sync();
+} 
 
 void TrackList::RemoveTrack(QString name)         
 { 

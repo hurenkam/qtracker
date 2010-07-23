@@ -72,11 +72,14 @@ public:
     static WayPointList& Instance() { if (!instance) instance = new WayPointList(); return *instance; }
 private:
     static WayPointList* instance;
-    WayPointList() {};
+    WayPointList();
+    ~WayPointList() { }
 protected:
+    QSettings settings;
 	QMap<QString, WayPoint*> map;
 	
 public:
+	void SaveSettings();
 	// Todo: handle case if name already exists
 	void AddWayPoint(WayPoint* w)       { map[w->Name()]=w; emit added(w->Name()); }
 	void AddWayPoint(const WayPoint& w) { AddWayPoint(new WayPoint(w)); }
@@ -212,16 +215,19 @@ signals:
     void removed(QString);
     
 public:
-    static TrackList* Instance() { if (!instance) instance = new TrackList(); return instance; }
+    static TrackList* Instance() { if (!instance) new TrackList(); return instance; }
+    
 private:
     static TrackList* instance;
-    TrackList() {};
-
+    TrackList();
+    ~TrackList() {}
 protected:
+    QSettings settings;
 	QMap<QString, Track*> map;
 	
 public:
 	// Todo: handle case if name already exists
+    void SaveSettings();
 	void AddTrack(Track* t)                { map[t->Name()]=t; emit added(t); emit added(t->Name()); }
 	void RemoveTrack(QString name);
 	void AddMetaData(AreaMetaData* m)      { }
