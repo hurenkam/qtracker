@@ -9,10 +9,11 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QGroupBox>
-#include <QLineEdit>
-#include <QDoubleValidator>
+//#include <QLineEdit>
+//#include <QDoubleValidator>
 #include "geodata.h"
-
+#include "qdoubleedit.h"
+/*
 class QDoubleEdit : public QLineEdit
 {
 public:
@@ -22,34 +23,6 @@ public:
     }
     double number()                    { return text().toDouble(); }
     void setNumber(const double value) { setText(QVariant(value).toString()); }
-};
-
-/*
-class QWaypointDialog : public QDialog
-{
-    Q_OBJECT
-
-public:
-    QWaypointDialog(QString title, QString name, double lat, double lon, QWidget *parent = 0);
-    ~QWaypointDialog();
-
-signals:
-    void confirmed(QString,double,double);
-
-public slots:
-    virtual void accept();
-
-private:
-    QPushButton *confirm;
-    QPushButton *cancel;
-    QGroupBox   *groupbox;
-    QGridLayout *gridbox;
-    QHBoxLayout *buttons;
-    QVBoxLayout *mainbox;
-
-    QLineEdit   *wptname;
-    QDoubleEdit *latitude;
-    QDoubleEdit *longitude;
 };
 */
 
@@ -91,10 +64,6 @@ public:
     double   Elevation() { return elevation->number(); }
     WayPoint Position()  
         { return WayPoint(Latitude(),Longitude(),Elevation(),Time(),Name()); }
-
-protected:
-    //virtual void resizeEvent(QResizeEvent * event);
-    QString NewWayPointName(QString prefix="wpt");
 
 public slots:
     void accept();
@@ -143,8 +112,8 @@ public slots:
     void EditWayPoint(const QString& name);
     void DeleteWayPoint(const QString& name);
     void ToggleWayPoint(const QString& name);
-    void WayPointHidden(QString name);
-    void WayPointVisible(QString name);
+    void WayPointHidden(const QString& name);
+    void WayPointVisible(const QString& name);
 };
 
 #endif // QWAYPOINTDIALOG_H

@@ -3,10 +3,11 @@
 #include <QString>
 #include "gpxio.h"
 
+#include <QDebug>
 #include <iostream>
-//#define LOG( a ) std::cout << a
-#define LOG2( a ) std::cout << a
-#define LOG( a )
+#define LOG( a ) qDebug() << a
+#define LOG2( a ) 
+#define LOG3( a ) 
 
 //========================================================================
 
@@ -14,7 +15,7 @@ GpxIO* GpxIO::instance = 0;
 
 void GpxIO::ImportGpxFile(QString filename)
 {
-    LOG( "GpxIO::ImportGpxFile(" << filename.toStdString() << ")\n"; )
+    LOG( "GpxIO::ImportGpxFile(" << filename; )
     
 	QFile file(filename);
 	file.open(QIODevice::ReadOnly);
@@ -22,7 +23,7 @@ void GpxIO::ImportGpxFile(QString filename)
 
 	while (!reader.atEnd())
 	{
-        LOG( "GpxIO::ImportGpxFile() xml.name(): " << reader.name().toString().toStdString() << "\n"; )
+        LOG2( "GpxIO::ImportGpxFile() xml.name(): " << reader.name(); )
     
 		if (reader.name()=="gpx")
 			ReadGpx();
@@ -33,7 +34,7 @@ void GpxIO::ImportGpxFile(QString filename)
 
 MapMetaData* GpxIO::ReadMapMetaFile(QString filename)
 {
-    LOG( "GpxIO::ReadMapMetaFile(" << filename.toStdString() << ")\n"; )
+    LOG( "GpxIO::ReadMapMetaFile(" << filename; )
 
 	QFile file(filename);
 	file.open(QIODevice::ReadOnly);
@@ -46,11 +47,11 @@ MapMetaData* GpxIO::ReadMapMetaFile(QString filename)
 
 void GpxIO::ReadGpx()
 {
-    LOG( "GpxIO::ReadGpx()\n"; )
+    LOG( "GpxIO::ReadGpx()"; )
 
 	while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == "gpx"))
 	{
-        LOG( "GpxIO::ReadGpx() xml.name(): " << xml.name().toString().toStdString() << "\n"; )
+        LOG2( "GpxIO::ReadGpx() xml.name(): " << reader.name(); )
     
         if (reader.tokenType()==QXmlStreamReader::StartElement)
         {
@@ -67,14 +68,14 @@ void GpxIO::ReadGpx()
 
 WayPoint* GpxIO::ReadWayPoint(QString tag="wpt")
 {
-    LOG( "GpxIO::ReadWayPoint()\n"; )
+    LOG2( "GpxIO::ReadWayPoint()"; )
     
 	WayPoint* wpt = new WayPoint();
 	wpt->SetLatitude(ReadAttributeDouble("lat"));
 	wpt->SetLongitude(ReadAttributeDouble("lon"));
 	while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == tag))
 	{
-        LOG( "GpxIO::ReadWayPoint() readername(): " << reader.name().toString().toStdString() << "\n"; )
+        LOG3( "GpxIO::ReadWayPoint() readername(): " << reader.name(); )
     
 		if (reader.tokenType()==QXmlStreamReader::StartElement)
 		{
@@ -87,18 +88,18 @@ WayPoint* GpxIO::ReadWayPoint(QString tag="wpt")
 		}
 		reader.readNext();
 	}
-    LOG( "GpxIO::ReadWayPoint() " << tag.toStdString() << ": " << wpt.Name().toStdString() << ", " << wpt.Latitude() << ", " << wpt.Longitude() << "\n"; )
+    LOG2( "GpxIO::ReadWayPoint() " << tag << ": " << wpt->Name() << ", " << wpt->Latitude() << ", " << wpt->Longitude(); )
 	return wpt;
 }
 
 Route* GpxIO::ReadRoute()
 {
-    LOG( "GpxIO::ReadRoute()\n"; )
+    LOG( "GpxIO::ReadRoute()"; )
 
 	Route* rte = new Route();
 	while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == "rte"))
 	{
-        LOG( "GpxIO::ReadRoute() reader.name(): " << reader.name().toString().toStdString() << "\n"; )
+        LOG2( "GpxIO::ReadRoute() reader.name(): " << reader.name(); )
     
         
 		if (reader.tokenType()==QXmlStreamReader::StartElement)
@@ -114,12 +115,12 @@ Route* GpxIO::ReadRoute()
 
 Track* GpxIO::ReadTrack()
 {
-    LOG( "GpxIO::ReadTrack()\n"; )
+    LOG( "GpxIO::ReadTrack()"; )
 
 	Track* trk = new Track();
 	while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == "trk"))
 	{
-        LOG( "GpxIO::ReadTrack() reader.name(): " << reader.name().toString().toStdString() << "\n"; )
+        LOG2( "GpxIO::ReadTrack() reader.name(): " << reader.name(); )
     
 		if (reader.tokenType()==QXmlStreamReader::StartElement)
 		{
@@ -133,11 +134,11 @@ Track* GpxIO::ReadTrack()
 
 void GpxIO::ReadExtensions()
 {
-    LOG( "GpxIO::ReadExtensions()\n"; )
+    LOG( "GpxIO::ReadExtensions()"; )
 
     while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == "extensions"))
 	{
-        LOG( "GpxIO::ReadExtensions() reader.name(): " << reader.name().toString().toStdString() << "\n"; )
+        LOG2( "GpxIO::ReadExtensions() reader.name(): " << reader.name(); )
         
 		if (reader.tokenType()==QXmlStreamReader::StartElement)
 		{
@@ -153,11 +154,11 @@ void GpxIO::ReadExtensions()
 
 AreaMetaData* GpxIO::ReadAreaMetaData(QString tag)
 {
-    LOG( "GpxIO::ReadAreaMetaData()\n"; )
+    LOG( "GpxIO::ReadAreaMetaData()"; )
 	AreaMetaData* meta = new AreaMetaData();
 	while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == tag))
 	{
-        LOG( "GpxIO::ReadAreaMetaData() reader.name():" << reader.name().toString().toStdString() << "\n"; )
+        LOG2( "GpxIO::ReadAreaMetaData() reader.name():" << reader.name(); )
 		if (reader.tokenType()==QXmlStreamReader::StartElement)
 		{
 			if (reader.name()=="name")    meta->SetName(ReadElementString());
@@ -170,11 +171,11 @@ AreaMetaData* GpxIO::ReadAreaMetaData(QString tag)
 
 MapMetaData* GpxIO::ReadMapMetaData(QString tag)
 {
-    LOG( "GpxIO::ReadMapMetaData()\n"; )
+    LOG( "GpxIO::ReadMapMetaData()"; )
 	MapMetaData* meta = new MapMetaData();
 	while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == tag))
 	{
-        LOG( "GpxIO::ReadMapMetaData() reader.name():" << reader.name().toString().toStdString() << "\n"; )
+        LOG2( "GpxIO::ReadMapMetaData() reader.name():" << reader.name(); )
 		if (reader.tokenType()==QXmlStreamReader::StartElement)
 		{
 			if (reader.name()=="resolution") meta->SetResolution(ReadResolution());
@@ -188,38 +189,38 @@ MapMetaData* GpxIO::ReadMapMetaData(QString tag)
 
 Resolution GpxIO::ReadResolution()
 {
-    LOG( "GpxIO::ReadResolution()\n"; )
+    LOG( "GpxIO::ReadResolution()"; )
 	Resolution r = Resolution(
 			ReadAttributeDouble("width"),
 			ReadAttributeDouble("height")
 		);
-    LOG( "GpxIO::ReadResolution() result: " << r.Width() << ", " << r.Height() << "\n"; )
+    LOG( "GpxIO::ReadResolution() result: " << r.Width() << ", " << r.Height(); )
     return r;
 }
 
 RefPoint GpxIO::ReadRefPoint()
 {
-    LOG( "GpxIO::ReadRefPoint()\n"; )
+    LOG( "GpxIO::ReadRefPoint()"; )
 	RefPoint r = RefPoint(
 			ReadAttributeDouble("x"),
 			ReadAttributeDouble("y"),
 			ReadAttributeDouble("lat"),
 			ReadAttributeDouble("lon")
 		);
-    LOG( "GpxIO::ReadRefPoint() result: " << r.X() << ", " << r.Y() << ", " << r.Latitude() << ", " << r.Longitude() << "\n"; )
+    LOG( "GpxIO::ReadRefPoint() result: " << r.X() << ", " << r.Y() << ", " << r.Latitude() << ", " << r.Longitude(); )
     return r;
 }
 
 Bounds GpxIO::ReadBounds()
 {
-    LOG( "GpxIO::ReadBounds()\n"; )
+    LOG( "GpxIO::ReadBounds()"; )
 	Bounds b = Bounds(
 			ReadAttributeDouble("minlat"),
 			ReadAttributeDouble("minlon"),
 			ReadAttributeDouble("maxlat"),
 			ReadAttributeDouble("maxlon")
 		);
-    LOG( "GpxIO::ReadBounds() result: " << b.MinLatitude() << ", " << b.MinLongitude() << ", " << b.MaxLatitude() << ", " << b.MaxLongitude() << "\n"; )
+    LOG( "GpxIO::ReadBounds() result: " << b.MinLatitude() << ", " << b.MinLongitude() << ", " << b.MaxLatitude() << ", " << b.MaxLongitude(); )
     return b;
 }
 
@@ -227,11 +228,21 @@ Bounds GpxIO::ReadBounds()
 
 void GpxIO::WriteMapMetaFile(const MapMetaData& m)
 {
+    LOG( "GpxIO::WriteMapMetaFile(" << m.GetMetaFilename(); )
+
+	QFile file(m.GetMetaFilename());
+	file.open(QIODevice::ReadWrite);
+	writer.setDevice(&file);
+	writer.setAutoFormatting(true);
+	WriteGpxHeader();
+	WriteMapMetaData(m,"map");
+	WriteGpxFooter();
+	file.close();
 }
 
 void GpxIO::WriteTrackFile(const Track& t)
 {
-    LOG( "GpxIO::WriteTrackFile(" << t.FileName().toStdString() << ")\n"; )
+    LOG( "GpxIO::WriteTrackFile(" << t.FileName(); )
 
 	QFile file(t.FileName());
 	file.open(QIODevice::ReadWrite);
@@ -245,7 +256,7 @@ void GpxIO::WriteTrackFile(const Track& t)
 
 void GpxIO::WriteRouteFile(const Route& r)
 {
-    LOG( "GpxIO::WriteRouteFile(" << r.FileName().toStdString() << ")\n"; )
+    LOG( "GpxIO::WriteRouteFile(" << r.FileName(); )
 
 	QFile file(r.FileName());
 	file.open(QIODevice::ReadWrite);
@@ -261,7 +272,7 @@ void GpxIO::WriteRouteFile(const Route& r)
 
 void GpxIO::WriteGpxHeader()
 {	
-    LOG( "GpxIO::WriteGpxHeader()\n"; )
+    LOG( "GpxIO::WriteGpxHeader()"; )
 	writer.writeStartDocument();
 	writer.writeStartElement("gpx");
 	writer.writeAttribute("version","1.0");
@@ -273,14 +284,14 @@ void GpxIO::WriteGpxHeader()
 
 void GpxIO::WriteGpxFooter()
 {
-    LOG( "GpxIO::WriteGpxFooter()\n"; )
+    LOG( "GpxIO::WriteGpxFooter()"; )
 	writer.writeEndElement();
 	writer.writeEndDocument();
 }
 
 void GpxIO::WriteTrack(const Track& t)
 {
-    LOG( "GpxIO::WriteTrack()\n"; )
+    LOG( "GpxIO::WriteTrack()"; )
 	writer.writeStartElement("trk");
 	if (t.Name() != "" )
 		writer.writeTextElement("name",t.Name());
@@ -293,14 +304,14 @@ void GpxIO::WriteTrack(const Track& t)
 
 void GpxIO::WriteRoute(const Route& r)
 {
-    LOG( "GpxIO::WriteRoute()\n"; )
+    LOG( "GpxIO::WriteRoute()"; )
 	writer.writeStartElement("rte");
 	writer.writeEndElement();
 }
 
 void GpxIO::WriteWayPoint(const WayPoint& w, QString tag)
 {
-    LOG( "GpxIO::WriteWayPoint()\n"; )
+    LOG2( "GpxIO::WriteWayPoint()"; )
 	writer.writeStartElement(tag);
 	writer.writeAttribute("lat",QString::number(w.Latitude()));
 	writer.writeAttribute("lon",QString::number(w.Longitude()));
@@ -310,5 +321,36 @@ void GpxIO::WriteWayPoint(const WayPoint& w, QString tag)
 		writer.writeTextElement("time",w.Time());
 	if (w.Elevation() != 0.0)
 		writer.writeTextElement("ele",QString::number(w.Elevation()));
+	writer.writeEndElement();
+}
+
+void GpxIO::WriteMapMetaData(const MapMetaData& m, QString tag)
+{
+    LOG( "GpxIO::WriteMapMetaData()"; )
+	writer.writeStartElement(tag);
+    writer.writeAttribute("imagefile",m.GetImageFilename());
+	writer.writeTextElement("name",m.Name());
+    WriteResolution(m.GetResolution());
+    for (int i=0; i<m.Length(); i++)
+    	WriteRefPoint(m.GetRefPoint(i));
+    writer.writeEndElement();
+}
+
+void GpxIO::WriteResolution(const Resolution& r)
+{
+    writer.writeStartElement("resolution");
+    writer.writeAttribute("width",QString::number(r.Width()));
+    writer.writeAttribute("height",QString::number(r.Height()));
+    writer.writeEndElement();
+}
+
+void GpxIO::WriteRefPoint(const RefPoint& r)
+{
+    LOG2( "GpxIO::WriteRefPoint()"; )
+	writer.writeStartElement("refpoint");
+	writer.writeAttribute("lat",QString::number(r.Latitude()));
+	writer.writeAttribute("lon",QString::number(r.Longitude()));
+	writer.writeAttribute("x",QString::number(r.X()));
+	writer.writeAttribute("y",QString::number(r.Y()));
 	writer.writeEndElement();
 }

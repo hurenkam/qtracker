@@ -70,6 +70,9 @@ private:
     void WriteTrack(const Track& t);
     void WriteRoute(const Route& r);
     void WriteWayPoint(const WayPoint& w, QString tag);
+    void WriteMapMetaData(const MapMetaData& m, QString tag);
+    void WriteResolution(const Resolution& r);
+    void WriteRefPoint(const RefPoint& r);
 };
 
 #endif

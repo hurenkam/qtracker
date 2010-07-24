@@ -16,11 +16,12 @@
 #include <QList>
 #include <QListWidgetItem>
 #include "qmapdialog.h"
+#include "geodata.h"
+#include "gpxio.h"
 
-#include <iostream>
-//#define LOG( a ) std::cout << a
-#define LOG2( a ) std::cout << a
-#define LOG( a )
+#include <QDebug>
+#define LOG( a ) qDebug() << a
+#define LOG2( a ) 
 
 
 QCurrentMapTab::QCurrentMapTab(QMapTabsDialog* d, QTabWidget* t)
@@ -52,7 +53,7 @@ QCurrentMapTab::QCurrentMapTab(QMapTabsDialog* d, QTabWidget* t)
 
 void QCurrentMapTab::resizeEvent( QResizeEvent * event )
 {
-    LOG( "QCurrentTrackTab::resizeEvent()\n"; )
+    LOG( "QCurrentTrackTab::resizeEvent()"; )
     if (!center) return;
     
     if (event->size().width() < event->size().height())
@@ -74,7 +75,7 @@ QMapListTab::QMapListTab(QMapTabsDialog *d, int tabtype, WayPoint* p)
 {
     QVBoxLayout* main = new QVBoxLayout();
     QHBoxLayout* buttons = new QHBoxLayout();
-    QPushButton* confirm = new QPushButton(tr("Confirm"));
+    QPushButton* confirm = new QPushButton(tr("Load"));
     QPushButton* exit = new QPushButton(tr("Cancel"));
     QWidget*     filler = new QWidget;
     list = new QListWidget();
@@ -107,7 +108,7 @@ QMapListTab::QMapListTab(QMapTabsDialog *d, int tabtype, WayPoint* p)
 
 void QMapListTab::confirmselection()
 {
-    LOG( "QMapListTab::confirmselection()\n"; )
+    LOG( "QMapListTab::confirmselection()"; )
     QString filename = list->currentItem()->text();
     emit mapselected(filename);
     dialog->accept();
@@ -119,8 +120,97 @@ QMapListTab::~QMapListTab()
 
 
 
-QMapTabsDialog::QMapTabsDialog(WayPoint* p, QWidget *parent)
-    : QDialog(parent)
+QEditRefPointTab::QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData* m, RefPoint* r)
+: QWidget(d), dialog(d), tab(t), name(0), latitude(0), longitude(0), x(0), y(0), meta(m)
+{
+	QVBoxLayout* main = new QVBoxLayout();
+	QGridLayout* gridbox = new QGridLayout();
+	
+	// Name ======================================
+	name = new QLineEdit(this);
+	
+	QString prefix = r->Name();
+	if (prefix!="ref")
+	{
+		name->setText(prefix);
+		tab->addTab(this,"Edit");
+	}
+	else
+	{
+		name->setText(UniqueName(prefix));
+		tab->addTab(this,"New" );
+	}
+	gridbox->addWidget(new QLabel(tr("Name:")),0,0);
+	gridbox->addWidget(name,0,1);
+
+	// Latitude ======================================
+    latitude = new QDoubleEdit(r->Latitude(),this);
+	gridbox->addWidget(new QLabel(tr("Latitude:")),1,0);
+    gridbox->addWidget(latitude,1,1);
+    
+	// Longitude ======================================
+    longitude = new QDoubleEdit(r->Longitude(),this);
+	gridbox->addWidget(new QLabel(tr("Longitude:")),2,0);
+    gridbox->addWidget(longitude,2,1);
+    
+	// Elevation ======================================
+    x = new QDoubleEdit(r->X(),this);
+	gridbox->addWidget(new QLabel(tr("X:")),3,0);
+    gridbox->addWidget(x,3,1);
+    
+	// Time ======================================
+    y = new QDoubleEdit(r->Y(),this);
+	gridbox->addWidget(new QLabel(tr("Y:")),4,0);
+    gridbox->addWidget(y,4,1);
+    
+	// Filler ======================================
+    QWidget *filler = new QWidget;
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+	// Buttons ======================================
+	QPushButton* confirm =  new QPushButton(tr("Save"));
+	QPushButton* cancel  =  new QPushButton(tr("Cancel"));
+	QHBoxLayout* buttonbox =  new QHBoxLayout();
+	buttonbox->addWidget(confirm);
+	buttonbox->addWidget(cancel);
+
+	// Layout ======================================
+    main->addLayout(gridbox);
+    main->addWidget(filler);
+    main->addLayout(buttonbox);
+    setLayout(main);
+
+	// Signals ======================================
+    connect(cancel,SIGNAL(clicked()),d,SLOT(reject()));
+    connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
+    connect(confirm,SIGNAL(clicked()),d,SLOT(accept()));
+}
+
+QEditRefPointTab::~QEditRefPointTab()
+{
+}
+
+void QEditRefPointTab::accept() 
+{
+    LOG( "QEditRefPointTab::accept()"; )
+    RefPoint r = RefPoint(x->number(),y->number(),latitude->number(),longitude->number());
+    meta->AddRefPoint(r);
+    GpxIO::Instance()->WriteMapMetaFile(*meta);
+}
+
+void QEditRefPointTab::setvalue(const RefPoint& r)
+{
+    name->setText(r.Name());
+    latitude->setNumber(r.Latitude());
+    longitude->setNumber(r.Longitude());
+    double ax = r.X();
+    double ay = r.Y();
+    x->setNumber(ax);
+    y->setNumber(ay);
+}
+
+QMapTabsDialog::QMapTabsDialog(QWidget *p, MapMetaData* m, RefPoint* r)
+    : QDialog(p)
 {
     QTabWidget* tabs = new QTabWidget(this);
 
@@ -131,11 +221,10 @@ QMapTabsDialog::QMapTabsDialog(WayPoint* p, QWidget *parent)
     setStyleSheet(styleSheet);
 
     //new QCurrentMapTab(this,tabs);
-    if (p)
-        tabs->addTab(new QMapListTab(this,QMapListTab::CurrentMaps,p),tr("Local"));
-    //tabs->addTab(new QMapListTab(this,QMapListTab::RecentMaps),tr("Recent"));
+    if (r)
+        tabs->addTab(new QMapListTab(this,QMapListTab::CurrentMaps,r),tr("Local"));
     tabs->addTab(new QMapListTab(this,QMapListTab::AllMaps),tr("All"));
-    tabs->addTab(new QWidget(this), tr("Options"));
+    new QEditRefPointTab(this,tabs,m,r);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);

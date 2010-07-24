@@ -25,6 +25,9 @@
 #define WAYPOINTDIR "/Users/hurenkam/workspace/qtracker/"
 #endif
 
+extern QString UniqueName(QString prefix);
+extern QString GeoTime();
+
 class WayPoint
 {
 protected:
@@ -34,7 +37,10 @@ protected:
 	double elevation;
 	QString time;
 public:
-	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="wpt")
+	//WayPoint()
+	//	: latitude(0), longitude(0), elevation(0), name(UniqueName("wpt")), time(GeoTime()) {}
+	
+	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
 	    : latitude(lat), longitude(lon), elevation(ele), time(t), name(n) {}
 	
 	WayPoint(const WayPoint& w)
@@ -60,34 +66,6 @@ public:
 	double bearing(WayPoint *to);
 };
 
-class WayPointList : public QObject
-{
-    Q_OBJECT
-signals:
-    void added(const QString&);
-    void updated(const QString&);
-    void removed(const QString&);
-    
-public:
-    static WayPointList& Instance() { if (!instance) instance = new WayPointList(); return *instance; }
-private:
-    static WayPointList* instance;
-    WayPointList();
-    ~WayPointList() { }
-protected:
-    QSettings settings;
-	QMap<QString, WayPoint*> map;
-	
-public:
-	void SaveSettings();
-	// Todo: handle case if name already exists
-	void AddWayPoint(WayPoint* w)       { map[w->Name()]=w; emit added(w->Name()); }
-	void AddWayPoint(const WayPoint& w) { AddWayPoint(new WayPoint(w)); }
-	QList<QString> WptNames()           { return map.keys(); }
-	WayPoint& GetItem(QString n)        { return *map[n]; }
-	QString FileName()                  { return QString(GetDrive() + QString(WAYPOINTDIR) + "waypoints.gpx"); }
-};
-
 class Bounds
 {
 protected:
@@ -102,6 +80,53 @@ public:
 	double MinLongitude() { return minlongitude; }
 	double MaxLatitude()  { return maxlatitude; }
 	double MaxLongitude() { return maxlongitude; }
+	bool Contains(const WayPoint& w)
+	{
+		if (w.Latitude()  < minlatitude)  return false;
+		if (w.Latitude()  > maxlatitude)  return false;
+		if (w.Longitude() < minlongitude) return false;
+		if (w.Longitude() > maxlongitude) return false;
+		return true;
+	}
+};
+
+class WayPointList : public QObject
+{
+    Q_OBJECT
+signals:
+    void added(const QString&);
+    void updated(const QString&);
+    void removed(const QString&);
+    void visible(const QString&);
+    void invisible(const QString&);
+    
+public:
+    static WayPointList& Instance() { if (!instance) instance = new WayPointList(); return *instance; }
+private:
+    static WayPointList* instance;
+    WayPointList();
+    ~WayPointList() { }
+protected:
+    QSettings settings;
+    QStringList visiblekeys;
+	QMap<QString, WayPoint*> map;
+	
+public:
+	void SaveSettings();
+	// Todo: handle case if name already exists
+	void AddWayPoint(WayPoint* w)         { map[w->Name()]=w; visiblekeys.append(w->Name()); emit added(w->Name()); }
+	void AddWayPoint(const WayPoint& w)   { AddWayPoint(new WayPoint(w)); }
+	void RemoveWayPoint(const QString& s) { map.remove(s); visiblekeys.removeAll(s); emit removed(s); }
+	QStringList Keys()                    { return map.keys(); }
+	void Hide(const QString& key)         { if (visiblekeys.contains(key)) { visiblekeys.removeAll(key); emit invisible(key); } }
+	void Show(const QString& key)         { if (map.keys().contains(key)) { visiblekeys.append(key); emit visible(key); } }
+	QStringList VisibleKeys()             { return visiblekeys; }
+	QStringList HiddenKeys()              { QStringList l = map.keys();  for (int i=0; i<l.length(); i++) if (visiblekeys.contains(l[i])) l.removeAll(l[i]); return l; }
+	QStringList AreaKeys(Bounds a)        { QStringList l = map.keys();  for (int i=0; i<l.length(); i++) if (a.Contains(*map[l[i]]))     l.removeAll(l[i]); return l; }
+	QStringList VisibleAreaKeys(Bounds a) { QStringList l = AreaKeys(a); for (int i=0; i<l.length(); i++) if (visiblekeys.contains(l[i])) l.removeAll(l[i]); return l; }
+	bool IsVisible(const QString& k)      { return visiblekeys.contains(k); }
+	WayPoint& GetItem(QString n)          { return *map[n]; }
+	QString FileName()                    { return QString(GetDrive() + QString(WAYPOINTDIR) + "waypoints.gpx"); }
 };
 
 class Resolution
@@ -114,8 +139,8 @@ public:
 	    : width(w), height(h) {}
 	void SetWidth(int w)  { width = w; }
 	void SetHeight(int h) { height = h; }
-	int Width()           { return width; }
-	int Height()          { return height; }
+	int Width() const     { return width; }
+	int Height() const    { return height; }
 };
 
 class RefPoint: public WayPoint
@@ -124,11 +149,14 @@ protected:
 	int x;
 	int y;
 public:
+	RefPoint(const RefPoint& r)
+	    : WayPoint(r), x(r.X()), y(r.Y()) {}
+	
 	RefPoint(int ax, int ay, double lat, double lon)
 	    : WayPoint(lat,lon,0,"","ref"), x(ax), y(ay) {}
 	
-    int X() { return x; }
-    int Y() { return y; }
+    int X() const     { return x; }
+    int Y() const     { return y; }
     void SetX(int ax) { x = ax; }
     void SetY(int ay) { y = ay; }
 };
@@ -160,9 +188,12 @@ public:
     : iscalibrated(false), lat(0), lon(0), lon2x(0), lat2y(0), x2lon(0), y2lat(0), x(0), y(0)
 	{}
 	
-	QString Name()                     { return name; }
+	QString Name() const               { return name; }
 	void SetName(QString n)            { name = n; }
 	void SetResolution(Resolution r)   { resolution = r;      Calibrate(); }
+	Resolution GetResolution() const   { return resolution; }
+	int Length() const                 { return refpoints.length(); }
+	RefPoint GetRefPoint(int i) const  { return refpoints[i]; }
 	bool AddRefPoint(RefPoint r)       { refpoints.append(r); Calibrate(); return true; }
     double Lon2x()                     { return lon2x; }
     double Lat2y()                     { return lat2y; }
@@ -178,8 +209,8 @@ public:
     bool IsCalibrated() { return iscalibrated; }
     void SetSize(int w, int h) { resolution.SetWidth(w); resolution.SetHeight(h); }
     //void SetImageFilename(QString filename) { imagename = filename; };
-    QString GetMetaFilename()  { return GetDrive() + QString(MAPDIR) + name + QString(".xml"); }
-    QString GetImageFilename() { return GetDrive() + QString(MAPDIR) + name + QString(".jpg");}
+    QString GetMetaFilename() const  { return GetDrive() + QString(MAPDIR) + name + QString(".xml"); }
+    QString GetImageFilename() const { return GetDrive() + QString(MAPDIR) + name + QString(".jpg");}
 
 private:
     void CalculateIndexesFromRefpoints(int i, int j);

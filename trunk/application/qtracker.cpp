@@ -45,7 +45,7 @@
 
 #include <QDebug>
 #include <iostream>
-//#define LOG( a ) std::cout << a
+//#define LOG( a ) std::cout << a << "\n"
 #define LOG( a ) qDebug() << a
 //#define LOG( a ) 
 
@@ -54,6 +54,7 @@ qTracker::qTracker(int argc, char* argv[])
 : QApplication(argc,argv)
 , settings("karpeer.net","qTracker",this)
 {
+	LOG( "qTracker::qTracker()"; )
 	instance = this;
 	//settings.clear();
 	
@@ -71,6 +72,7 @@ qTracker::qTracker(int argc, char* argv[])
 	
 qTracker::~qTracker()
 {
+	LOG( "qTracker::~qTracker()"; )
 	TrackList::Instance()->SaveSettings();
 	WayPointList::Instance().SaveSettings();
 	settings.sync();
@@ -85,12 +87,12 @@ bool qTracker::symbianEventFilter (const QSymbianEvent * symbianEvent)
 		switch( event->Type() ) {
 			case EEventFocusGained: 
 			{
-				LOG( "Focus gained"; )
+				LOG( "qTracker::symbianEventFilter(): EEventFocusGained"; )
 				break;
 			}
 			case EEventFocusLost: 
 			{
-				LOG( "Focus lost"; )
+				LOG( "qTracker::symbianEventFilter(): EEventFocusLost"; )
 				break;
 			}
 			default:
@@ -100,7 +102,7 @@ bool qTracker::symbianEventFilter (const QSymbianEvent * symbianEvent)
 	
 	if ((symbianEvent->type() == QSymbianEvent::CommandEvent) && (symbianEvent->command() == EEikCmdExit))
 	{
-		LOG( "EEikCmdExit\n"; )
+		LOG( "qTracker::symbianEventFilter(): EEikCmdExit"; )
 		quit();
 		return true;
 	}

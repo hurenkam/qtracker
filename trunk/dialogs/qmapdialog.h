@@ -9,15 +9,29 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QGroupBox>
-#include <QLineEdit>
+//#include <QLineEdit>
 #include "geodata.h"
+#include "qdoubleedit.h"
+
+/*
+class QDoubleEdit : public QLineEdit
+{
+public:
+    QDoubleEdit(const double input, QWidget *parent) : QLineEdit(QVariant(input).toString(), parent)
+    {
+        setValidator(new QDoubleValidator(this));
+    }
+    double number()                    { return text().toDouble(); }
+    void setNumber(const double value) { setText(QVariant(value).toString()); }
+};
+*/
 
 class QMapTabsDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    QMapTabsDialog(WayPoint* p=0, QWidget *parent = 0);
+    QMapTabsDialog(QWidget *p, MapMetaData* m, RefPoint* r);
 
 signals:
     void loadmap(QString);
@@ -78,5 +92,36 @@ private:
     QMapTabsDialog* dialog;
     QListWidget* list;
 }; 
+
+class QEditRefPointTab: public QWidget
+{
+    Q_OBJECT
+
+public:
+    QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData* m, RefPoint* r);
+    ~QEditRefPointTab();
+    
+    QString  Name()      { return name->text(); }
+    double   Latitude()  { return latitude->number(); }
+    double   Longitude() { return longitude->number(); }
+    int      X()         { return x->number(); }
+    int      Y()         { return y->number(); }
+    RefPoint Value()     { return RefPoint(Latitude(),Longitude(),X(),Y()); }
+
+public slots:
+    void accept();
+    void setvalue(const RefPoint& r);
+    
+private:
+	QMapTabsDialog*      dialog;
+	QTabWidget*          tab;
+	MapMetaData*		 meta;
+
+	QLineEdit*           name;
+    QDoubleEdit*		 latitude;
+    QDoubleEdit*         longitude;
+    QDoubleEdit*		 x;
+    QDoubleEdit*		 y;
+};
 
 #endif // QMAPDIALOG_H

@@ -33,6 +33,7 @@ QPushButton {
     border-width: 2px;
     border-style: outset;
     border-color: #003080;
+    height: 40px;
 }
 
 QRadioButton {

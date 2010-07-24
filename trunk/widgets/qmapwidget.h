@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QGeoPositionInfo>
 #include <QGeoCoordinate>
+#include <QSystemDeviceInfo>
 #include "qgaugewidget.h"
 #include "geodata.h"
 
@@ -41,7 +42,7 @@ public slots:
     void updatePosition(const QGeoCoordinate& pos);
     void moveMap(int x, int y);
     void SelectMap();
-    void SelectPoint();
+    void SelectWayPoint();
     //void SelectMapForCurrentPosition();
     void MapSelected(QString map);
     //void WaypointSelected(QString name, double lat, double lon);
@@ -64,7 +65,8 @@ private slots:
     void zoomRepeat();
     void zoomIn();
     void zoomOut();
-
+    void batteryStatusChanged(QSystemDeviceInfo::BatteryStatus status);
+    
 protected:
     void FindMapsForCurrentPosition(QStringList& found);
     bool LoadMap(QString filename);
@@ -92,6 +94,7 @@ private:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
+    QSystemDeviceInfo devinfo;
     static const int StNoMap = 0;
     static const int StScrolling = 1;
     static const int StFollowGPS = 2;

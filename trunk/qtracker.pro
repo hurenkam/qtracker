@@ -1,6 +1,7 @@
 CONFIG += mobility
 MOBILITY += location \
-    sensors
+    sensors \
+    systeminfo
 TEMPLATE = app
 TARGET = qTracker
 QT += core \
@@ -21,7 +22,8 @@ HEADERS += dialogs/qtrackdialog.h \
     widgets/qsatviewwidget.h \
     widgets/qspeedwidget.h \
     windows/qdashwindow.h \
-    application/qtracker.h
+    application/qtracker.h \
+    dialogs/qdoubleedit.h
 INCLUDEPATH += dialogs \
     datatypes \
     widgets \

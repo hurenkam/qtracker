@@ -10,10 +10,9 @@
 #include "qtrackdialog.h"
 #include "gpxio.h"
 
-#include <iostream>
-//#define LOG( a ) std::cout << a
-#define LOG2( a ) std::cout << a
-#define LOG( a )
+#include <QDebug>
+#define LOG( a ) qDebug() << a
+#define LOG2( a ) 
 
 #ifdef Q_OS_SYMBIAN
 #include "eikenv.h"
@@ -57,6 +56,7 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     , prevpos       (0)
     , ismapdirty    (false)
     , settings(s)
+    , devinfo(this)
 {
     prevtime = QDateTime::fromTime_t(0);
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
@@ -69,12 +69,13 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
     connect(this, SIGNAL(options()), this, SLOT(SelectMap()));  // to be menu
     connect(this, SIGNAL(datum()), this, SLOT(SelectMap()));  // to be menu
-    connect(this, SIGNAL(waypoint()), this, SLOT(SelectPoint()));
+    connect(this, SIGNAL(waypoint()), this, SLOT(SelectWayPoint()));
     connect(this, SIGNAL(track()), this, SLOT(StartTrack()));
     connect(TrackList::Instance(),SIGNAL(added(Track*)),this,SLOT(ShowTrack(Track*)));
 	connect(TrackList::Instance(),SIGNAL(removed(QString)),this,SLOT(HideTrack(QString)));
     //connect(WayPointList::Instance(),SIGNAL(added(const WayPoint&)),this,SLOT(ShowWayPoint(const WayPoint&)));
     //connect(WayPointList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(HideWayPoint(const QString&)));
+	connect(&devinfo, SIGNAL(batteryStatusChanged(QSystemDeviceInfo::BatteryStatus)),this,SLOT(batteryStatusChanged(QSystemDeviceInfo::BatteryStatus)));
 	
 	if (settings.contains("map/name"))
 	{
@@ -99,19 +100,35 @@ QMapWidget::~QMapWidget()
 */
 }
 
+void QMapWidget::batteryStatusChanged(QSystemDeviceInfo::BatteryStatus status)
+{
+    LOG( "QMapWidget::batteryStatusChanged()"; )
+	if (status != QSystemDeviceInfo::BatteryCritical) return;
+    if (!recordtrack) return;
+
+    GpxIO::Instance()->WriteTrackFile(*recordtrack);
+    LOG( "QMapWidget::batteryStatusChanged(): Battery Critical, track saved."; )
+
+	QMessageBox msg;
+    msg.setText(QString("Battery Critical: track saved."));
+    msg.setIcon(QMessageBox::Warning);
+    msg.setStandardButtons(QMessageBox::Ok);
+    msg.exec();
+}
+
 void QMapWidget::CreateMapList()
 {
 }
 
 bool QMapWidget::SelectBestMapForCurrentPosition()
 {
-    LOG( "QMapWidget::SelectBestMapForCurrentPosition()\n"; )
+    LOG( "QMapWidget::SelectBestMapForCurrentPosition()"; )
 
     QStringList found;
     FindMapsForCurrentPosition(found);
     if (found.size() > 0)
     {
-        LOG( "QMapWidget::SelectBestMapForCurrentPosition(): " << found[0].toStdString() << "\n"; )
+        LOG( "QMapWidget::SelectBestMapForCurrentPosition(): " << found[0]; )
         // for now select first entry
         int index = 0;
         MapMetaData m = MapList::Instance().GetItem(found[0]);
@@ -133,14 +150,14 @@ bool QMapWidget::SelectBestMapForCurrentPosition()
 
 void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
 {
-    LOG( "QMapWidget::FindMapsForCurrentPosition()\n"; )
+    LOG( "QMapWidget::FindMapsForCurrentPosition()"; )
 
     QStringList keys = MapList::Instance().MapNames();
     for (int i=0; i<keys.size(); ++i)
     {
         if (MapList::Instance().GetItem(keys[i]).IsPositionOnMap(latitude,longitude))
         {
-            LOG( "QMapWidget::FindMapsForCurrentPosition(): " << keys[i].toStdString() << "\n"; )
+            LOG( "QMapWidget::FindMapsForCurrentPosition(): " << keys[i]; )
             found.append(keys[i]);
         }
     }
@@ -148,7 +165,7 @@ void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
 
 bool QMapWidget::LoadMap(QString filename)
 {
-    LOG( "QMapWidget::LoadMap(): " << filename.toStdString() << "\n"; )
+    LOG( "QMapWidget::LoadMap(): " << filename; )
     //QString fullpath = GetDrive() + QString(MAPDIR) + filename + QString(".jpg");
 
     if (mapimage)
@@ -192,7 +209,7 @@ bool QMapWidget::LoadMap(QString filename)
 
 void QMapWidget::MapSelected(QString map)
 {
-    LOG( "QMapWidget::MapSelected()\n"; )
+    LOG( "QMapWidget::MapSelected()"; )
     if (LoadMap(map))
         state = StScrolling;
     else
@@ -220,32 +237,20 @@ void QMapWidget::RefpointSelected(QString name, double lat, double lon)
     msg.exec();
 }
 
-void QMapWidget::SelectPoint()
+void QMapWidget::SelectWayPoint()
 {
-    // Meta data present, but not calibrated then add refpoint
-    // Else add waypoint"
 	QWayPointTabsDialog *dialog;
-	
-	if (meta && !meta->IsCalibrated())
-    {
-        RefPoint ref = RefPoint(x,y,latitude,longitude);
-	    dialog = new QWayPointTabsDialog(ref,this);
-	    connect(dialog,SIGNAL(newwaypoint(QString,double,double)),this,SLOT(RefpointSelected(QString,double,double)));
-    }
-    else
-    {
-    	WayPoint wpt = WayPoint(latitude,longitude,altitude);
-        double lat=0, lon=0;
-        if ( mapimage && ((state == StScrolling) || (!IsPositionOnMap()))
-             && meta && (meta->XY2Wgs(x,y,lat,lon)) )
-        {
-        	wpt.SetLatitude(lat);
-        	wpt.SetLongitude(lon);
-        	wpt.SetElevation(0);
-        }
-	    dialog = new QWayPointTabsDialog(wpt,this);
-    }
 
+	WayPoint wpt = WayPoint(latitude,longitude,altitude,GeoTime(),"<new>");
+	double lat=0, lon=0;
+	if ( mapimage && ((state == StScrolling) || (!IsPositionOnMap()))
+		 && meta && (meta->XY2Wgs(x,y,lat,lon)) )
+	{
+		wpt.SetLatitude(lat);
+		wpt.SetLongitude(lon);
+		wpt.SetElevation(0);
+	}
+	dialog = new QWayPointTabsDialog(wpt,this);
     dialog->setModal(true);
     dialog->show();
 }
@@ -268,7 +273,7 @@ void QMapWidget::StartTrack() // name doesn't cover the load, should be renamed
 
 void QMapWidget::TrackStarted(QString n, int t, int d)
 {
-    LOG( "QMapWidget::TrackStarted()\n"; )
+    LOG( "QMapWidget::TrackStarted()"; )
     if (recordtrack) return;
     
 	recordtrack = new Track;
@@ -283,14 +288,14 @@ void QMapWidget::TrackStarted(QString n, int t, int d)
 
 void QMapWidget::TrackUpdated(QString n, int t, int d)
 {
-    LOG( "QMapWidget::TrackUpdated()\n"; )
+    LOG( "QMapWidget::TrackUpdated()"; )
 	updatetime = t;
 	updatedistance = d;
 }
 
 void QMapWidget::TrackStopped(const QString& name)
 {
-    LOG( "QMapWidget::TrackStopped()\n"; )
+    LOG( "QMapWidget::TrackStopped()"; )
 	if (!recordtrack) return;
 	
 	recordtrack->disconnect(SIGNAL(updated(WayPoint&)));
@@ -304,7 +309,7 @@ void QMapWidget::TrackStopped(const QString& name)
 
 void QMapWidget::TrackDeleted(const QString& name)
 {
-    LOG( "QMapWidget::TrackDeleted()\n"; )
+    LOG( "QMapWidget::TrackDeleted()"; )
     		
 	QString filename = name + ".gpx";
     QDir dir = QDir(TRACKDIR);
@@ -327,7 +332,7 @@ void QMapWidget::paintTrack(Track* t)
 
 void QMapWidget::ShowTrack(Track* t)
 {
-    LOG( "QMapWidget::ShowTrack()\n"; )
+    LOG( "QMapWidget::ShowTrack()"; )
 	//tracks[t->Name()]=t;
     paintTrack(t);
     connect(t, SIGNAL(updated(WayPoint&)), this, SLOT(ShowTrackPoint(WayPoint&)));
@@ -335,11 +340,11 @@ void QMapWidget::ShowTrack(Track* t)
 
 void QMapWidget::HideTrack(QString name)
 {
-    LOG( "QMapWidget::HideTrack()\n"; )
+    LOG( "QMapWidget::HideTrack()"; )
 
 	if (!ismapdirty)
 	{
-	    LOG( "QMapWidget::HideTrack() map not dirty so reload\n"; )
+	    LOG( "QMapWidget::HideTrack() map not dirty so reload"; )
 		delete mapimage;
 		mapimage = new QImage();
 		meta = &MapList::Instance().GetItem(mapname);
@@ -364,7 +369,7 @@ void QMapWidget::HideTrack(QString name)
 
 void QMapWidget::ShowTrackPoint(WayPoint& w)
 {
-    LOG( "QMapWidget::ShowTrackPoint()\n"; )
+    LOG2( "QMapWidget::ShowTrackPoint()"; )
     if (!mapimage) return;
     if (!meta) return;
     if (!meta->IsPositionOnMap(w.Latitude(),w.Longitude())) return;
@@ -379,7 +384,7 @@ void QMapWidget::ShowTrackPoint(WayPoint& w)
 
 void QMapWidget::TrackLoad(const QString& name)
 {
-    LOG( "QMapWidget::TrackLoad()" << name.toStdString() << "\n"; )
+    LOG( "QMapWidget::TrackLoad()" << name; )
 		
     QString filename = TRACKDIR + name + ".gpx";
     GpxIO::Instance()->ImportGpxFile(filename);
@@ -387,14 +392,16 @@ void QMapWidget::TrackLoad(const QString& name)
 
 void QMapWidget::TrackUnload(const QString& name)
 {
-    LOG( "QMapWidget::TrackUnload()" << name.toStdString() << "\n"; )
+    LOG( "QMapWidget::TrackUnload()" << name; )
     TrackList::Instance()->RemoveTrack(name);
 }
 
 void QMapWidget::SelectMap()
 {
-	WayPoint w = WayPoint(latitude,longitude);
-	QMapTabsDialog *dialog = new QMapTabsDialog(&w);
+	if (!meta) return;
+	
+	RefPoint r = RefPoint(x,y,latitude,longitude);
+	QMapTabsDialog *dialog = new QMapTabsDialog(this,meta,&r);
     connect(dialog,SIGNAL(loadmap(QString)),this,SLOT(MapSelected(QString)));
 	dialog->setModal(true);
 	dialog->show();
@@ -402,7 +409,7 @@ void QMapWidget::SelectMap()
 
 void QMapWidget::updatePosition(const QGeoCoordinate& pos)
 {
-    //LOG( "QMapWidget::updatePosition()\n"; )
+    //LOG( "QMapWidget::updatePosition()"; )
     latitude = pos.latitude();
     longitude = pos.longitude();
     altitude = pos.altitude();
@@ -464,7 +471,7 @@ void QMapWidget::moveMap(int dx, int dy)
 
 void QMapWidget::FollowGPS()
 {
-    LOG( "QMapWidget::FollowGPS()\n"; )
+    LOG( "QMapWidget::FollowGPS()"; )
 
     if (IsPositionOnMap())
     {   // OnMap
@@ -568,7 +575,7 @@ void QMapWidget::paintMap(QPainter& painter)
 {
 	if (ismapdirty)
     {
-	    LOG( "QMapWidget::paintMap() map dirty so repaint tracks.\n"; )
+	    LOG( "QMapWidget::paintMap() map dirty so repaint tracks."; )
 		QStringList keys=TrackList::Instance()->Keys();
 		for (int i=0; i<keys.length(); i++)
 			paintTrack(&TrackList::Instance()->GetItem(keys[i]));
@@ -590,25 +597,25 @@ void QMapWidget::paintMap(QPainter& painter)
 
 bool QMapWidget::IsPositionOnScreen(WayPoint& wpt)
 {
-    LOG( "QMapWidget::IsPositionOnScreen()\n"; )
+    LOG( "QMapWidget::IsPositionOnScreen()"; )
 	double px,py;
     double w = width();
     double h = height();
     double z = zoomlevels[zoom];
-    LOG( "QMapWidget::IsPositionOnScreen()  XY: " << x << "," << y << "\n"; )
-    LOG( "QMapWidget::IsPositionOnScreen() WHZ: " << w << "," << h << "," << z << "\n"; )
+    LOG( "QMapWidget::IsPositionOnScreen()  XY: " << x << "," << y; )
+    LOG( "QMapWidget::IsPositionOnScreen() WHZ: " << w << "," << h << "," << z; )
     
 	if (!meta) return false;
 	if (!meta->IsPositionOnMap(wpt.Latitude(),wpt.Longitude())) return false;
 	if (!meta->Wgs2XY(wpt.Latitude(),wpt.Longitude(),px,py)) return false;
-    LOG( "QMapWidget::IsPositionOnScreen() PXY: " << px << "," << py << "\n"; )
+    LOG( "QMapWidget::IsPositionOnScreen() PXY: " << px << "," << py; )
 	
 	// now x,y are on the map
 	if (px > w*z/2 + x) return false;
 	if (px < w*z/-2 + x) return false;
 	if (py > h*z/2 + y) return false;
 	if (py < w*z/-2 + y) return false;
-    LOG( "QMapWidget::IsPositionOnScreen(): Yes!\n"; )
+    LOG( "QMapWidget::IsPositionOnScreen(): Yes!"; )
 	return true;
 }
 
@@ -628,13 +635,13 @@ ScreenPos QMapWidget::PositionOnScreen(WayPoint& wpt)
 void QMapWidget::paintWaypoints(QPainter& painter)
 {
 	WayPointList& wl = WayPointList::Instance();
-	QList<QString> keys = wl.WptNames();
+	QList<QString> keys = wl.VisibleKeys();
 	for (int i=0; i<keys.length(); i++)
 	{
         if (IsPositionOnScreen(wl.GetItem(keys[i])))
 		{
 	        ScreenPos p = PositionOnScreen(wl.GetItem(keys[i]));
-	        LOG( "QMapWidget::paintWaypoints(): " << keys[i].toStdString() << ", " << p.x << "," << p.y << "\n"; )
+	        LOG( "QMapWidget::paintWaypoints(): " << keys[i] << ", " << p.x << "," << p.y; )
 	        paintDot(painter,p.x,p.y,Qt::blue);
 		}
 	}

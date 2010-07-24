@@ -14,10 +14,22 @@ RouteList*    RouteList::instance = 0;
 TrackList*    TrackList::instance = 0;
 MapList*      MapList::instance = 0;
 
-#include <iostream>
-//#define LOG( a ) std::cout << a
-#define LOG2( a ) std::cout << a
-#define LOG( a )
+#include <QDebug>
+#define LOG( a )  qDebug() << a
+#define LOG2( a ) 
+#define LOG3( a ) 
+
+QString UniqueName(QString prefix)
+{
+	QDateTime curtime = QDateTime::currentDateTime().toUTC();
+    return prefix + curtime.toString("-yyyyMMdd-hhmmss");
+}
+
+QString GeoTime()
+{
+	QDateTime curtime = QDateTime::currentDateTime().toUTC();
+	return curtime.toString("yyyy-MM-ddThh:mm:ssZ");
+}
 
 const float PI = 3.14159265358979323846f;
 
@@ -83,21 +95,23 @@ WayPointList::WayPointList()
 	int length = settings.beginReadArray("wpt/list");
 	for (int i=0; i<length; i++)
 	{
-		WayPoint* w = new WayPoint();
 		settings.setArrayIndex(i);
+		WayPoint* w = new WayPoint();
 		w->SetName      (settings.value("name").toString());
 		w->SetLatitude  (settings.value("latitude").toDouble());
 		w->SetLongitude (settings.value("longitude").toDouble());
 		w->SetElevation (settings.value("elevation").toDouble());
 		w->SetTime      (settings.value("time").toString());
 		AddWayPoint(w);
+		if (settings.value("visible","false").toBool())
+			visiblekeys.append(w->Name());
 	}
 	settings.endArray();
 };
 
 void WayPointList::SaveSettings()
 { 
-	QStringList names = WptNames();
+	QStringList names = Keys();
 	settings.beginWriteArray("wpt/list",names.length());
 	for (int i=0; i<names.length(); i++)
 	{
@@ -108,10 +122,14 @@ void WayPointList::SaveSettings()
 		settings.setValue("longitude", w.Longitude());
 		settings.setValue("elevation", w.Elevation());
 		settings.setValue("time",      w.Time());
+		if (visiblekeys.contains(names[i]))
+			settings.setValue("visible", true);
+		else
+			settings.setValue("visible", false);
 	}
 	settings.endArray();
 	settings.sync();
-} 
+}
 
 TrackList::TrackList()
 : settings("karpeer.net","qTracker",this) 
@@ -122,7 +140,7 @@ TrackList::TrackList()
 	{
 		settings.setArrayIndex(i);
 	    QString filename = GetDrive() + TRACKDIR + settings.value("name").toString() + ".gpx";
-	    LOG( "TrackList::TrackList():" << filename.toStdString() <<  "\n"; )
+	    LOG( "TrackList::TrackList():" << filename; )
 	    GpxIO::Instance()->ImportGpxFile(filename);
 	}
 	settings.endArray();
@@ -143,7 +161,7 @@ void TrackList::SaveSettings()
 
 void TrackList::RemoveTrack(QString name)         
 { 
-    LOG( "TrackList::RemoveTrack()\n"; )
+    LOG( "TrackList::RemoveTrack()"; )
 	Track* t = map[name]; 
 	map.remove(name); 
 	delete t; 
@@ -153,7 +171,7 @@ void TrackList::RemoveTrack(QString name)
 
 MapList::MapList()
 {
-    LOG( "MapList::MapList()\n"; )
+    LOG( "MapList::MapList()"; )
 	instance = this;
     QStringList files;
 
@@ -162,11 +180,11 @@ MapList::MapList()
     files = directory.entryList(QStringList(QString("*.xml")),
                                  QDir::Files | QDir::NoSymLinks);
 
-    LOG( "MapList::MapList() #xml: " << files.size() << "\n"; )
+    LOG( "MapList::MapList() #xml: " << files.size(); )
     for (int i = 0; i < files.size(); ++i)
     {
         QString base = files[i].left(files[i].length()-4);
-        LOG( "MapList::MapList(): Found " << files[i].toStdString() << "\n"; )
+        LOG( "MapList::MapList(): Found " << files[i]; )
         map[base] = GpxIO::Instance()->ReadMapMetaFile(GetDrive() + QString(MAPDIR) + files[i]);
         map[base]->SetName(base);
     }
@@ -174,13 +192,13 @@ MapList::MapList()
     files = directory.entryList(QStringList(QString("*.jpg")),
                                  QDir::Files | QDir::NoSymLinks);
 
-    LOG( "MapList::MapList() #jpg: " << files.size() << "\n"; )
+    LOG( "MapList::MapList() #jpg: " << files.size(); )
     for (int i = 0; i < files.size(); ++i)
     {
         QString base = files[i].left(files[i].length()-4);
         if (!map.keys().contains(base))
         {
-            LOG( "MapList::MapList(): Found " << files[i].toStdString() << "\n"; )
+            LOG( "MapList::MapList(): Found " << files[i]; )
             map[base] = new MapMetaData();
             map[base]->SetName(base);
             GpxIO::Instance()->WriteMapMetaFile(*map[base]);
@@ -190,7 +208,7 @@ MapList::MapList()
 
 QStringList MapList::FindMapsForPosition(const WayPoint& w)
 {
-	LOG( "QMapList::FindMapsForPosition()\n"; )
+	LOG( "QMapList::FindMapsForPosition()"; )
 
 	QStringList result;
 	QStringList keys = MapNames();
@@ -198,7 +216,7 @@ QStringList MapList::FindMapsForPosition(const WayPoint& w)
 	{
 		if (map[keys[i]]->IsPositionOnMap(w))
 		{
-			LOG( "QMapList::FindMapsForPosition(): " << keys[i].toStdString() << "\n"; )
+			LOG( "QMapList::FindMapsForPosition(): " << keys[i]; )
 			result.append(keys[i]);
 		}
 	}
@@ -208,7 +226,7 @@ QStringList MapList::FindMapsForPosition(const WayPoint& w)
 bool MapMetaData::WgsArea(double& lat1, double& lon1, double& lat2, double& lon2)
 {
     if (!iscalibrated) return false;
-    //LOG( "MapMetaData::WgsArea(): " << width << " " << height << "\n"; )
+    //LOG( "MapMetaData::WgsArea(): " << width << " " << height; )
 
     XY2Wgs(0,0,lat1,lon1);
     XY2Wgs(resolution.Width(),resolution.Height(),lat2,lon2);
@@ -239,7 +257,7 @@ bool MapMetaData::IsPositionOnMap(double alat, double alon)
 {
     double lat1,lat2,lon1,lon2;
     
-    LOG( "MapMetaData::IsPositionOnMap(" << alat << "," << alon << ")\n"; )
+    LOG( "MapMetaData::IsPositionOnMap(" << alat << "," << alon << ")"; )
     if (!iscalibrated)                   return false;
     if (resolution.Width() == 0)         return false;
     if (resolution.Height() == 0)        return false;
@@ -247,13 +265,13 @@ bool MapMetaData::IsPositionOnMap(double alat, double alon)
     if (!IsValueInRange(alat,lat1,lat2)) return false;
     if (!IsValueInRange(alon,lon1,lon2)) return false;
 
-    LOG( "MapMetaData::IsPositionOnMap(): Yes!\n"; )
+    LOG( "MapMetaData::IsPositionOnMap(): Yes!"; )
     return true;
 }
 
 void MapMetaData::Calibrate()
 {
-	LOG( "MapMetaData::Calibrate()\n"; )
+	LOG( "MapMetaData::Calibrate()"; )
 	iscalibrated = false;
 	if (refpoints.length() < 2) return;
 	
@@ -277,14 +295,14 @@ void MapMetaData::Calibrate()
 
 void MapMetaData::CalculateIndexesFromRefpoints(int i, int j)
 {
-    LOG( "MapMetaData::CalculateIndexesFromRefpoints(" << i << "," << j << ")\n"; )
-    LOG( "MapMetaData::CalculateIndexesFromRefpoints(): " << refpoints[i].X() << " " << refpoints[i].Y() << " " << refpoints[i].Latitude() << " " << refpoints[i].Longitude() << "\n"; )
-    LOG( "MapMetaData::CalculateIndexesFromRefpoints(): " << refpoints[j].X() << " " << refpoints[j].Y() << " " << refpoints[j].Latitude() << " " << refpoints[j].Longitude() << "\n"; )
+    LOG2( "MapMetaData::CalculateIndexesFromRefpoints(" << i << "," << j << ")"; )
+    LOG2( "MapMetaData::CalculateIndexesFromRefpoints(): " << refpoints[i].X() << " " << refpoints[i].Y() << " " << refpoints[i].Latitude() << " " << refpoints[i].Longitude(); )
+    LOG2( "MapMetaData::CalculateIndexesFromRefpoints(): " << refpoints[j].X() << " " << refpoints[j].Y() << " " << refpoints[j].Latitude() << " " << refpoints[j].Longitude(); )
     int dx = refpoints[j].X() - refpoints[i].X();
     int dy = refpoints[j].Y() - refpoints[i].Y();
     double dlon = refpoints[j].Longitude() - refpoints[i].Longitude();
     double dlat = refpoints[j].Latitude() - refpoints[i].Latitude();
-    LOG( "MapMetaData::CalculateIndexesFromRefpoints(): " << dx << " " << dy << " " << dlon << " " << dlat << "\n"; )
+    LOG( "MapMetaData::CalculateIndexesFromRefpoints(): " << dx << " " << dy << " " << dlon << " " << dlat; )
     // 20 -40 -0.00181667 0.00203333
     
     double theta = (atan2(dy,dx) * 180 / PI) + 90;
@@ -310,17 +328,17 @@ void MapMetaData::CalculateIndexesFromRefpoints(int i, int j)
     lon2x = dx/dlon;
     lat2y = dy/dlat;
     iscalibrated = true;
-    LOG( "MapMetaData::CalculateIndexesFromRefpoints(): " << x << " " << y << " " << lat << " " << lon << "\n"; )
+    LOG2( "MapMetaData::CalculateIndexesFromRefpoints(): " << x << " " << y << " " << lat << " " << lon <<; )
     // 796 1012 61.4516 23.8541
     
-    LOG( "MapMetaData::CalculateIndexesFromRefpoints(): " << x2lon << " " << y2lat << " " << lat2y << " " << lon2x << "\n"; )
+    LOG2( "MapMetaData::CalculateIndexesFromRefpoints(): " << x2lon << " " << y2lat << " " << lat2y << " " << lon2x; )
     // -9.08333e-5 -5.08333e-5 -19672.1 -11009.2
 }
 
 bool MapMetaData::IsValidRefpointPair(int i, int j)
 {
     if (i == j) return false;
-    LOG( "MapMetaData::IsValidRefpointPair(" << i << "," << j << ")\n"; )
+    LOG( "MapMetaData::IsValidRefpointPair(" << i << "," << j << ")"; )
 
     if ((refpoints[i].X() != refpoints[j].X()) &&
         (refpoints[i].Y() != refpoints[j].Y()) &&
@@ -328,6 +346,6 @@ bool MapMetaData::IsValidRefpointPair(int i, int j)
         (refpoints[i].Longitude() != refpoints[j].Longitude()))
         return true;
 
-    LOG( "MapMetaData::IsValidRefpointPair(): No!\n"; )
+    LOG( "MapMetaData::IsValidRefpointPair(): No!"; )
     return false;
 }

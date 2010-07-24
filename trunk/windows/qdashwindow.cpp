@@ -27,6 +27,11 @@
 
 using namespace QtMobility;
 
+//#include <QDebug>
+//#define LOG( a ) qDebug() << a
+#define LOG( a ) 
+
+
 const float PI = 3.14159265358979323846f;
 
 #ifdef Q_OS_SYMBIAN
