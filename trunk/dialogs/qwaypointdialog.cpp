@@ -63,11 +63,15 @@ QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const 
 	QString prefix = w.Name();
 	if (prefix!="<new>")
 	{
+		orgname = w.Name();
+		editmode = true;
 		name->setText(prefix);
 		tab->addTab(this,"Edit");
 	}
 	else
 	{
+		editmode = false;
+		orgname = "";
 		name->setText(UniqueName("wpt"));
         tab->addTab(this,"New" );
 	}
@@ -126,12 +130,17 @@ QEditWayPointTab::~QEditWayPointTab()
 void QEditWayPointTab::accept() 
 {
     WayPoint w = Position();
-    WayPointList::Instance().AddWayPoint(w);
+    if (editmode)
+        WayPointList::Instance().UpdateWayPoint(orgname,w);
+    else
+        WayPointList::Instance().AddWayPoint(w);
 }
 
 void QEditWayPointTab::select(const QString& n)
 {
 	const WayPoint& w = WayPointList::Instance().GetItem(n);
+	orgname = w.Name();
+	editmode = true;
 	tab->setTabText(0,"Edit");
 	tab->setCurrentIndex(0);
     name->setText(w.Name());

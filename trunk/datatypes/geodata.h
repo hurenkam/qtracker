@@ -95,17 +95,17 @@ class WayPointList : public QObject
     Q_OBJECT
 signals:
     void added(const QString&);
-    void updated(const QString&);
+    void updated(const QString&, const QString&);
     void removed(const QString&);
     void visible(const QString&);
     void invisible(const QString&);
     
 public:
-    static WayPointList& Instance() { if (!instance) instance = new WayPointList(); return *instance; }
+    static WayPointList& Instance();
 private:
     static WayPointList* instance;
     WayPointList();
-    ~WayPointList() { }
+    ~WayPointList();
 protected:
     QSettings settings;
     QStringList visiblekeys;
@@ -113,20 +113,20 @@ protected:
 	
 public:
 	void SaveSettings();
-	// Todo: handle case if name already exists
-	void AddWayPoint(WayPoint* w)         { map[w->Name()]=w; visiblekeys.append(w->Name()); emit added(w->Name()); }
-	void AddWayPoint(const WayPoint& w)   { AddWayPoint(new WayPoint(w)); }
-	void RemoveWayPoint(const QString& s) { map.remove(s); visiblekeys.removeAll(s); emit removed(s); }
-	QStringList Keys()                    { return map.keys(); }
-	void Hide(const QString& key)         { if (visiblekeys.contains(key)) { visiblekeys.removeAll(key); emit invisible(key); } }
-	void Show(const QString& key)         { if (map.keys().contains(key)) { visiblekeys.append(key); emit visible(key); } }
-	QStringList VisibleKeys()             { return visiblekeys; }
-	QStringList HiddenKeys()              { QStringList l = map.keys();  for (int i=0; i<l.length(); i++) if (visiblekeys.contains(l[i])) l.removeAll(l[i]); return l; }
-	QStringList AreaKeys(Bounds a)        { QStringList l = map.keys();  for (int i=0; i<l.length(); i++) if (a.Contains(*map[l[i]]))     l.removeAll(l[i]); return l; }
-	QStringList VisibleAreaKeys(Bounds a) { QStringList l = AreaKeys(a); for (int i=0; i<l.length(); i++) if (visiblekeys.contains(l[i])) l.removeAll(l[i]); return l; }
-	bool IsVisible(const QString& k)      { return visiblekeys.contains(k); }
-	const WayPoint& GetItem(const QString& n)   { return *map[n]; }
-	QString FileName()                    { return QString(GetDrive() + QString(WAYPOINTDIR) + "waypoints.gpx"); }
+	void AddWayPoint(WayPoint* w);
+	void AddWayPoint(const WayPoint& w);
+	void UpdateWayPoint(const QString& orgname, const WayPoint& w);
+	void RemoveWayPoint(const QString& s);
+	QStringList Keys();
+	void Hide(const QString& key);
+	void Show(const QString& key);
+	QStringList VisibleKeys();
+	QStringList HiddenKeys();
+	QStringList AreaKeys(Bounds a);
+	QStringList VisibleAreaKeys(Bounds a);
+	bool IsVisible(const QString& k);
+	const WayPoint& GetItem(const QString& n);
+	QString FileName();
 };
 
 class Resolution

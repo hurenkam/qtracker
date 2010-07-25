@@ -88,6 +88,13 @@ static bool IsValueInRange(double v, double r1, double r2)
     return true;
 }
 
+WayPointList& WayPointList::Instance() 
+{ 
+	if (!instance) 
+		instance = new WayPointList(); 
+	return *instance; 
+}
+
 WayPointList::WayPointList()
 : settings("karpeer.net","qTracker",this) 
 { 
@@ -109,6 +116,10 @@ WayPointList::WayPointList()
 	settings.endArray();
 };
 
+WayPointList::~WayPointList() 
+{ 
+}
+
 void WayPointList::SaveSettings()
 { 
 	QStringList names = Keys();
@@ -129,6 +140,110 @@ void WayPointList::SaveSettings()
 	}
 	settings.endArray();
 	settings.sync();
+}
+
+void WayPointList::AddWayPoint(WayPoint* w)         
+{ 
+	map[w->Name()]=w; 
+	visiblekeys.append(w->Name()); 
+	emit added(w->Name()); 
+}
+
+void WayPointList::AddWayPoint(const WayPoint& w)   
+{ 
+	if (map.keys().contains(w.Name()))
+        UpdateWayPoint(w.Name(),w);
+    else
+	    AddWayPoint(new WayPoint(w)); 
+}
+
+void WayPointList::UpdateWayPoint(const QString& orgname, const WayPoint& w)   
+{
+	map.remove(orgname);
+	map[w.Name()]=new WayPoint(w);		
+	if (visiblekeys.contains(orgname)) 
+	{
+		visiblekeys.removeAll(orgname);
+		visiblekeys.append(w.Name());
+	}
+	emit updated(orgname,w.Name());
+}
+
+void WayPointList::RemoveWayPoint(const QString& s) 
+{ 
+	map.remove(s); 
+	visiblekeys.removeAll(s); 
+	emit removed(s); 
+}
+
+QStringList WayPointList::Keys()                    
+{ 
+	return map.keys(); 
+}
+
+void WayPointList::Hide(const QString& key)         
+{ 
+	if (visiblekeys.contains(key)) 
+	{ 
+		visiblekeys.removeAll(key); 
+		emit invisible(key); 
+	} 
+}
+
+void WayPointList::Show(const QString& key)         
+{ 
+	if (map.keys().contains(key)) 
+	{ 
+		visiblekeys.append(key); 
+		emit visible(key); 
+	} 
+}
+
+QStringList WayPointList::VisibleKeys()             
+{ 
+	return visiblekeys; 
+}
+
+QStringList WayPointList::HiddenKeys()              
+{ 
+	QStringList l = map.keys();  
+	for (int i=0; i<l.length(); i++) 
+		if (visiblekeys.contains(l[i])) 
+			l.removeAll(l[i]); 
+	return l; 
+}
+
+QStringList WayPointList::AreaKeys(Bounds a)        
+{ 
+	QStringList l = map.keys();  
+	for (int i=0; i<l.length(); i++) 
+		if (a.Contains(*map[l[i]]))     
+			l.removeAll(l[i]); 
+	return l; 
+}
+
+QStringList WayPointList::VisibleAreaKeys(Bounds a) 
+{ 
+	QStringList l = AreaKeys(a); 
+	for (int i=0; i<l.length(); i++) 
+		if (visiblekeys.contains(l[i])) 
+			l.removeAll(l[i]); 
+	return l; 
+}
+
+bool WayPointList::IsVisible(const QString& k)      
+{ 
+	return visiblekeys.contains(k); 
+}
+
+const WayPoint& WayPointList::GetItem(const QString& n)   
+{ 
+	return *map[n]; 
+}
+
+QString WayPointList::FileName()                    
+{ 
+	return QString(GetDrive() + QString(WAYPOINTDIR) + "waypoints.gpx"); 
 }
 
 TrackList::TrackList()

@@ -73,6 +73,8 @@ public slots:
 private:
 	QWayPointTabsDialog* dialog;
 	QTabWidget*          tab;
+	bool				 editmode;
+	QString 			 orgname;
 
 	QLineEdit*           name;
 	QLineEdit*           time;
