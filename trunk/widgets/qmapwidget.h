@@ -117,6 +117,9 @@ private:
     QImage* svgFlag;
     QImage* svgHiker;
     QImage* svgBar;
+    QImage* svgLocator;
+    QImage* svgWptGreen;
+    bool onmap;
     MapMetaData *meta;
     int zooming;
     QTimer zoomtimer;

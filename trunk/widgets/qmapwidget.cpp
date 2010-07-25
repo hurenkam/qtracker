@@ -50,6 +50,9 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
 	, svgFlag       (new QImage(MAPRCDIR "flag.svg"))
 	, svgHiker      (new QImage(MAPRCDIR "hiker.svg"))
 	, svgBar        (new QImage(MAPRCDIR "statusbar.svg"))
+    , svgLocator    (new QImage(MAPRCDIR "locator_red.svg"))
+    , onmap			(false)
+    , svgWptGreen   (new QImage(MAPRCDIR "wpt_green.svg"))
     , zooming       (0)
     , mapname       ("<no map loaded>")
     , recordtrack   (0)
@@ -463,6 +466,8 @@ void QMapWidget::moveMap(int dx, int dy)
     if (state == StFollowGPS)
         state = StScrolling;
     
+    svgLocator->load(MAPRCDIR "locator_red.svg");
+    onmap = false;
     settings.setValue("map/x",x);
     settings.setValue("map/y",y);
     settings.setValue("map/state",state);
@@ -475,6 +480,9 @@ void QMapWidget::FollowGPS()
 
     if (IsPositionOnMap())
     {   // OnMap
+    	if (!onmap)
+    	    svgLocator->load(MAPRCDIR "locator_green.svg");
+    	onmap = true;
         SetCursorToCurrentPosition();
         state = StFollowGPS;
         settings.setValue("map/x",x);
@@ -642,7 +650,11 @@ void QMapWidget::paintWaypoints(QPainter& painter)
 		{
 	        ScreenPos p = PositionOnScreen(wl.GetItem(keys[i]));
 	        LOG( "QMapWidget::paintWaypoints(): " << keys[i] << ", " << p.x << "," << p.y; )
-	        paintDot(painter,p.x,p.y,Qt::blue);
+	        //paintDot(painter,p.x,p.y,Qt::blue);
+
+	        QRectF source = QRectF(0,0,48,48);
+	        QRectF target = QRectF(p.x-7,p.y-60,64,64);
+	        painter.drawImage(target, *svgWptGreen, source);
 		}
 	}
 }
@@ -665,6 +677,8 @@ void QMapWidget::paintWidgets(QPainter& painter)
     painter.drawImage(target, *svgFlag, source);
     target = QRectF(w/-2+60,h/-2,48,48);
     painter.drawImage(target, *svgHiker, source);
+    target = QRectF(-16.0,-16.0,32,32);
+    painter.drawImage(target, *svgLocator, source);
 }
 
 void QMapWidget::paintDot(QPainter& painter,int x,int y,QColor c)
@@ -693,7 +707,7 @@ void QMapWidget::paintBar(QPainter& painter)
 
     if ((state == StScrolling) || (!IsPositionOnMap()))
     {
-        paintDot(painter,0,0,Qt::red);
+        //paintDot(painter,0,0,Qt::red);
 		painter.setPen(QPen(Qt::black));
         double lat, lon;
         if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
@@ -703,7 +717,7 @@ void QMapWidget::paintBar(QPainter& painter)
     }
     else
     {
-        paintDot(painter,0,0,Qt::green);
+        //paintDot(painter,0,0,Qt::green);
         painter.setPen(QPen(Qt::blue));
         sprintf(buf,"%08.5fN %08.5fE",latitude,longitude);
     }

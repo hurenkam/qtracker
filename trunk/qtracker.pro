@@ -64,10 +64,13 @@ symbian {
         images/delete.svg \
         images/edit.svg \
         images/visible.svg \
-        images/invisible.svg
+        images/invisible.svg \
+        images/locator_red.svg \
+        images/locator_green.svg \
+        images/wpt_green.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.192
+    VERSION = 0.8.195
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
