@@ -26,8 +26,8 @@ public:
     QMapWidget(QSettings& s, QWidget *parent = 0);
     ~QMapWidget();
     bool IsPositionOnMap() { return (meta && meta->IsPositionOnMap(latitude,longitude)); }
-    bool IsPositionOnScreen(WayPoint& wpt);
-    ScreenPos PositionOnScreen(WayPoint& wpt);
+    bool IsPositionOnScreen(const WayPoint& wpt);
+    ScreenPos PositionOnScreen(const WayPoint& wpt);
 
 signals:
     void zoomin();

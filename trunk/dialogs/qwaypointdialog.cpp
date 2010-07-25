@@ -29,9 +29,12 @@ QWayPointTabsDialog::QWayPointTabsDialog(const WayPoint& w, QWidget *p)
     file.close();
     setStyleSheet(styleSheet);
 
-    new QEditWayPointTab(this,tabs,w);
-    tabs->addTab(new QWayPointListTab(this),tr("List"));
-    tabs->addTab(new QWidget(this), tr("Options"));
+    QEditWayPointTab* edit = new QEditWayPointTab(this,tabs,w);
+    QWayPointListTab* list = new QWayPointListTab(this);
+    tabs->addTab(list,tr("List"));
+    //tabs->addTab(new QWidget(this), tr("Options"));
+    
+    //connect(list,SIGNAL(editwaypoint(const WayPoint&)),edit,SLOT(setvalue(const WayPoint&)));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);
@@ -112,6 +115,8 @@ QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const 
     connect(cancel,SIGNAL(clicked()),d,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
     connect(confirm,SIGNAL(clicked()),d,SLOT(accept()));
+    
+    connect(d,SIGNAL(editwaypoint(const QString&)), this,SLOT(select(const QString&)));
 }
 
 QEditWayPointTab::~QEditWayPointTab()
@@ -124,8 +129,11 @@ void QEditWayPointTab::accept()
     WayPointList::Instance().AddWayPoint(w);
 }
 
-void QEditWayPointTab::setvalue(const WayPoint& w)
+void QEditWayPointTab::select(const QString& n)
 {
+	const WayPoint& w = WayPointList::Instance().GetItem(n);
+	tab->setTabText(0,"Edit");
+	tab->setCurrentIndex(0);
     name->setText(w.Name());
     time->setText(w.Time());
     latitude->setNumber(w.Latitude());
@@ -211,13 +219,13 @@ void QWayPointListWidget::DeleteWayPoint(const QString& name)
 	center->removeItem(item);
 	items.remove(name);
 	delete item;
-	//emit deletewaypoint(name);
 	WayPointList::Instance().RemoveWayPoint(name);
 }
 
 void QWayPointListWidget::EditWayPoint(const QString& name)
 {
 	LOG( "QWayPointListWidget::EditWayPoint(): " << name; )
+	emit editwaypoint(name);
 }
 
 void QWayPointListWidget::ToggleWayPoint(const QString& name)
@@ -257,6 +265,7 @@ QWayPointListTab::QWayPointListTab(QWayPointTabsDialog *parent)
     connect(list,SIGNAL(deletewaypoint(const QString&)),parent,SIGNAL(deletewaypoint(const QString&)));
     connect(list,SIGNAL(showwaypoint(const QString&)),  parent,SIGNAL(showwaypoint(const QString&)));
     connect(list,SIGNAL(hidewaypoint(const QString&)),  parent,SIGNAL(hidewaypoint(const QString&)));
+    connect(list,SIGNAL(editwaypoint(const QString&)),  parent,SIGNAL(editwaypoint(const QString&)));
     connect(exit,SIGNAL(clicked()),parent,SLOT(reject()));
 }
 

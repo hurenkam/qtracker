@@ -115,7 +115,7 @@ void WayPointList::SaveSettings()
 	settings.beginWriteArray("wpt/list",names.length());
 	for (int i=0; i<names.length(); i++)
 	{
-		WayPoint& w = GetItem(names[i]);
+		const WayPoint& w = GetItem(names[i]);
 		settings.setArrayIndex(i);
 		settings.setValue("name",      w.Name());
 		settings.setValue("latitude",  w.Latitude());

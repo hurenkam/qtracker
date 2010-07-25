@@ -125,7 +125,7 @@ public:
 	QStringList AreaKeys(Bounds a)        { QStringList l = map.keys();  for (int i=0; i<l.length(); i++) if (a.Contains(*map[l[i]]))     l.removeAll(l[i]); return l; }
 	QStringList VisibleAreaKeys(Bounds a) { QStringList l = AreaKeys(a); for (int i=0; i<l.length(); i++) if (visiblekeys.contains(l[i])) l.removeAll(l[i]); return l; }
 	bool IsVisible(const QString& k)      { return visiblekeys.contains(k); }
-	WayPoint& GetItem(QString n)          { return *map[n]; }
+	const WayPoint& GetItem(const QString& n)   { return *map[n]; }
 	QString FileName()                    { return QString(GetDrive() + QString(WAYPOINTDIR) + "waypoints.gpx"); }
 };
 

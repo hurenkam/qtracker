@@ -595,7 +595,7 @@ void QMapWidget::paintMap(QPainter& painter)
     }
 }
 
-bool QMapWidget::IsPositionOnScreen(WayPoint& wpt)
+bool QMapWidget::IsPositionOnScreen(const WayPoint& wpt)
 {
     LOG( "QMapWidget::IsPositionOnScreen()"; )
 	double px,py;
@@ -619,7 +619,7 @@ bool QMapWidget::IsPositionOnScreen(WayPoint& wpt)
 	return true;
 }
 
-ScreenPos QMapWidget::PositionOnScreen(WayPoint& wpt)
+ScreenPos QMapWidget::PositionOnScreen(const WayPoint& wpt)
 {
 	ScreenPos p;
 	double px,py;

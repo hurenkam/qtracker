@@ -40,7 +40,8 @@ signals:
 	void hidewaypoint(const QString&);
     void updatewaypoint(const QString&);
     void newwaypoint(QString, double, double);
-    
+	void editwaypoint(const QString&);
+
     void newwaypoint(const WayPoint&);
     void newrefpoint(const RefPoint&);
 
@@ -67,7 +68,7 @@ public:
 
 public slots:
     void accept();
-    void setvalue(const WayPoint& w);
+    void select(const QString& n);
     
 private:
 	QWayPointTabsDialog* dialog;
@@ -107,6 +108,7 @@ signals:
 	void deletewaypoint(const QString&);
 	void showwaypoint(const QString&);
 	void hidewaypoint(const QString&);
+	void editwaypoint(const QString&);
 
 public slots:
     void EditWayPoint(const QString& name);
