@@ -136,10 +136,23 @@ QCurrentTrackTab::QCurrentTrackTab(QTrackTabsDialog* d, QTabWidget* t, Track* tr
     connect(typedist,SIGNAL(clicked()),this,SLOT(selectdistance()));
     connect(timebuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatetime(int)));
     connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(updatedistance(int)));
+}
 
-    connect(this,SIGNAL(newtrack(QString,int,int)),   dialog,SIGNAL(newtrack(QString,int,int)));
-    connect(this,SIGNAL(updatetrack(QString,int,int)),dialog,SIGNAL(updatetrack(QString,int,int)));
-    connect(this,SIGNAL(stoptrack(QString)),          dialog,SIGNAL(stoptrack(QString)));
+void QCurrentTrackTab::emitnewtrack()           
+{ 
+	TrackList::Instance()->Start(trackname,dist,time);
+	SwitchToCurrent(); 
+}
+
+void QCurrentTrackTab::emitupdatetrack()        
+{ 
+	TrackList::Instance()->UpdateInterval(dist,time);
+}
+
+void QCurrentTrackTab::emitstoptrack()          
+{ 
+	TrackList::Instance()->Stop();
+	SwitchToNew(); 
 }
 
 void QCurrentTrackTab::SetTrackName(QString name)
@@ -227,7 +240,6 @@ QCurrentTrackTab::~QCurrentTrackTab()
 }
 
 
-
 QTrackListWidget::QTrackListWidget(QTrackListTab* parent)  
 : QWidget(parent)
 {
@@ -235,38 +247,17 @@ QTrackListWidget::QTrackListWidget(QTrackListTab* parent)
 	togglemapper = new QSignalMapper(this);
 	deletemapper = new QSignalMapper(this);
 
-	QStringList files = TrackFiles();
-	for (int i=0; i<files.length(); i++)
-	{
-		QHBoxLayout* item = new QHBoxLayout();
-		QToolButton* togglebutton = new QToolButton();
-		QToolButton* delbutton = new QToolButton();
-		QWidget*     filler = new QWidget();
-		delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
-		filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		
-		QStringList  keys = TrackList::Instance()->Keys();
-		if (keys.contains(files[i]))
-			togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
-		else
-			togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
-		
-		item->addWidget(delbutton);
-		item->addWidget(togglebutton);
-		item->addWidget(new QLabel(files[i]));
-		item->addWidget(filler);
-		center->addLayout(item);
-		items[files[i]]=item;
-		
-		connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
-		connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
-		deletemapper->setMapping(delbutton,files[i]);
-		togglemapper->setMapping(togglebutton,files[i]);
-	}
+	QStringList allkeys = TrackList::Instance()->Keys();
+	QStringList visiblekeys = TrackList::Instance()->VisibleKeys();
+	for (int i=0; i<allkeys.length(); i++)
+		NewItem(allkeys[i],visiblekeys.contains(allkeys[i]));
+
 	connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteTrack(const QString &)));
 	connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleTrack(const QString &)));
-	connect(TrackList::Instance(),SIGNAL(added(QString)),this,SLOT(TrackAdded(QString)));
-	connect(TrackList::Instance(),SIGNAL(removed(QString)),this,SLOT(TrackRemoved(QString)));
+	connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(TrackVisible(const QString&)));
+	connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(TrackInvisible(const QString&)));
+	connect(TrackList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(TrackDeleted(const QString&)));
+	connect(TrackList::Instance(),SIGNAL(added(const QString&)),this,SLOT(TrackAdded(const QString&)));
 
 	QWidget* filler = new QWidget();
 	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -276,7 +267,50 @@ QTrackListWidget::QTrackListWidget(QTrackListTab* parent)
 	setLayout(center);
 }
 
-void QTrackListWidget::TrackRemoved(QString name)
+QHBoxLayout* QTrackListWidget::NewItem(const QString& name, bool visible)
+{
+	QHBoxLayout* item = new QHBoxLayout();
+	QToolButton* togglebutton = new QToolButton();
+	QToolButton* delbutton = new QToolButton();
+	QWidget*     filler = new QWidget();
+	delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
+	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	
+	if (visible)
+		togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+	else
+		togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+	
+	item->addWidget(delbutton);
+	item->addWidget(togglebutton);
+	item->addWidget(new QLabel(name));
+	item->addWidget(filler);
+	center->addLayout(item);
+	items[name]=item;
+	
+	connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
+	connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
+	deletemapper->setMapping(delbutton,name);
+	togglemapper->setMapping(togglebutton,name);
+}
+
+void QTrackListWidget::DeleteTrack(const QString& name)
+{
+	LOG( "QTrackListWidget::DeleteTrack(): " << name.toStdString() << "\n"; )
+    TrackList::Instance()->Delete(name);
+}
+
+void QTrackListWidget::ToggleTrack(const QString& name)
+{
+	LOG( "QTrackListWidget::ToggleTrack(): " << name.toStdString() << "\n"; )
+	QStringList  keys = TrackList::Instance()->VisibleKeys();
+	if (keys.contains(name))
+		TrackList::Instance()->Hide(name);
+	else
+		TrackList::Instance()->Show(name);
+}
+
+void QTrackListWidget::TrackInvisible(const QString& name)
 {
 	LOG( "QTrackListTab::TrackRemoved(): " << name.toStdString() << "\n"; )
 	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
@@ -284,7 +318,7 @@ void QTrackListWidget::TrackRemoved(QString name)
 	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
 }
 
-void QTrackListWidget::TrackAdded(QString name)
+void QTrackListWidget::TrackVisible(const QString& name)
 {
 	LOG( "QTrackListTab::TrackAdded(): " << name.toStdString() << "\n"; )
 	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
@@ -292,38 +326,22 @@ void QTrackListWidget::TrackAdded(QString name)
 	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
 }
 
-QStringList QTrackListWidget::TrackFiles()
+void QTrackListWidget::TrackDeleted(const QString& name)
 {
-	QDir directory = QDir(GetDrive() + QString(TRACKDIR));
-	QStringList files = directory.entryList(QStringList(QString("*.gpx")),
-															 QDir::Files | QDir::NoSymLinks);
-
-	LOG( "QTrackListTab::TrackFiles() #gpx: " << files.size() << "\n"; )
-	for (int i = 0; i < files.length(); ++i)
-	{
-			files[i] = files[i].left(files[i].length()-4);
-	}
-	return files;
-}
-
-void QTrackListWidget::DeleteTrack(const QString& name)
-{
-	LOG( "QTrackListWidget::DeleteTrack(): " << name.toStdString() << "\n"; )
-    QHBoxLayout* item = items[name];
+	QHBoxLayout* item = items[name];
+	if (!item) return;
+	
 	center->removeItem(item);
 	items.remove(name);
 	delete item;
-	emit deletetrack(name);
+	updateGeometry();
 }
 
-void QTrackListWidget::ToggleTrack(const QString& name)
+void QTrackListWidget::TrackAdded(const QString& name)
 {
-	LOG( "QTrackListWidget::ToggleTrack(): " << name.toStdString() << "\n"; )
-	QStringList  keys = TrackList::Instance()->Keys();
-	if (keys.contains(name))
-		emit hidetrack(name);
-	else
-		emit showtrack(name);
+	QStringList visiblekeys = TrackList::Instance()->VisibleKeys();
+    NewItem(name,visiblekeys.contains(name));
+	updateGeometry();
 }
 
 
@@ -351,9 +369,6 @@ QTrackListTab::QTrackListTab(QTrackTabsDialog *parent)
     exit->show();
     setAttribute(Qt::WA_DeleteOnClose);
 
-    connect(list,SIGNAL(deletetrack(const QString&)),parent,SIGNAL(deletetrack(const QString&)));
-    connect(list,SIGNAL(showtrack(const QString&)),  parent,SIGNAL(showtrack(const QString&)));
-    connect(list,SIGNAL(hidetrack(const QString&)),  parent,SIGNAL(hidetrack(const QString&)));
     connect(exit,SIGNAL(clicked()),parent,SLOT(reject()));
 }
 
@@ -374,7 +389,11 @@ QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
     file.close();
     setStyleSheet(styleSheet);
 
-    new QCurrentTrackTab(this,tabs,track);
+    if (TrackList::Instance()->IsRecording())
+        new QCurrentTrackTab(this,tabs,&TrackList::Instance()->RecordingTrack());
+    else
+        new QCurrentTrackTab(this,tabs);
+    
     tabs->addTab(new QTrackListTab(this),tr("List"));
     tabs->addTab(new QWidget(this), tr("Options"));
 

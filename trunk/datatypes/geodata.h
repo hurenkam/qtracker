@@ -11,6 +11,9 @@
 #include <QString>
 #include <QList>
 #include <QMap>
+#include <QGeoPositionInfo>
+#include <QGeoPositionInfoSource>
+#include <QGeoCoordinate>
 #include "ui.h"
 
 #ifdef Q_OS_SYMBIAN
@@ -28,6 +31,8 @@
 extern QString UniqueName(QString prefix);
 extern QString GeoTime();
 
+using namespace QtMobility;
+
 class WayPoint
 {
 protected:
@@ -37,9 +42,6 @@ protected:
 	double elevation;
 	QString time;
 public:
-	//WayPoint()
-	//	: latitude(0), longitude(0), elevation(0), name(UniqueName("wpt")), time(GeoTime()) {}
-	
 	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
 	    : latitude(lat), longitude(lon), elevation(ele), time(t), name(n) {}
 	
@@ -110,16 +112,18 @@ protected:
     QSettings settings;
     QStringList visiblekeys;
 	QMap<QString, WayPoint*> map;
-	
-public:
+
+public slots:
 	void SaveSettings();
-	void AddWayPoint(WayPoint* w);
 	void AddWayPoint(const WayPoint& w);
-	void UpdateWayPoint(const QString& orgname, const WayPoint& w);
 	void RemoveWayPoint(const QString& s);
-	QStringList Keys();
 	void Hide(const QString& key);
 	void Show(const QString& key);
+	
+public:
+	void AddWayPoint(WayPoint* w,bool visible=true);
+	void UpdateWayPoint(const QString& orgname, const WayPoint& w);
+	QStringList Keys();
 	QStringList VisibleKeys();
 	QStringList HiddenKeys();
 	QStringList AreaKeys(Bounds a);
@@ -221,7 +225,7 @@ class Track: public QObject
 {
     Q_OBJECT
 signals:
-    void updated(WayPoint& w);
+    void updated(const WayPoint& w);
 protected:
 	QString name;
 	QList<WayPoint*> list;
@@ -240,10 +244,13 @@ public:
 class TrackList: public QObject
 {
     Q_OBJECT
+    
 signals:
-    void added(Track*);
     void added(const QString&);
-    void removed(QString);
+    void updated(const QString&, const QString&);
+    void deleted(const QString&);
+    void visible(const QString&);
+    void invisible(const QString&);
     
 public:
     static TrackList* Instance() { if (!instance) new TrackList(); return instance; }
@@ -251,19 +258,45 @@ public:
 private:
     static TrackList* instance;
     TrackList();
-    ~TrackList() {}
+    ~TrackList();
+    QStringList FindFiles();
 protected:
     QSettings settings;
 	QMap<QString, Track*> map;
+	QStringList trackfiles;
+	QGeoCoordinate prevpos;
+	QDateTime prevtime;
+	Track* recordtrack;
+	bool isrecording;
+	int timeinterval;
+	int distinterval;
+	QGeoPositionInfoSource* possource;
+
+public slots:
+	void SaveSettings();
+	void Hide(const QString& key);
+	void Show(const QString& key);
+	void Delete(const QString& key);
+	void Start(const QString& key, int d, int t);
+	void UpdateInterval(int d, int t);
+	void Stop();
+	void UpdatePosition(const QGeoPositionInfo& info);
+	//void AddTrack(const Track& t)          { AddTrack(new Track(t); }
+	//void UpdateTrack(const QString& orgname, const Track& t) {}
 	
 public:
 	// Todo: handle case if name already exists
-    void SaveSettings();
-	void AddTrack(Track* t)                { map[t->Name()]=t; emit added(t); emit added(t->Name()); }
-	void RemoveTrack(QString name);
-	void AddMetaData(AreaMetaData* m)      { }
-	QList<QString> Keys()                  { return map.keys(); }
-	Track& GetItem(QString k) const        { return *map[k]; }
+	void AddTrack(Track* t);
+	void AddMetaData(AreaMetaData* m);
+	QStringList Keys();
+	QStringList VisibleKeys();
+	QStringList HiddenKeys();
+	QStringList AreaKeys(Bounds a);
+	QStringList VisibleAreaKeys(Bounds a);
+	bool IsVisible(const QString& k);
+	bool IsRecording() { return isrecording; }
+	Track& RecordingTrack() { if (!recordtrack) qFatal("recording not available"); return *recordtrack; }
+	Track& GetItem(const QString& k) const;
 };
 
 class Route: public QObject

@@ -47,9 +47,9 @@ signals:
 	void stoptrack(QString);
 
 public slots:
-    void emitnewtrack()           { emit newtrack(trackname,time,dist); SwitchToCurrent(); }
-    void emitupdatetrack()        { emit updatetrack(trackname,time,dist); }
-    void emitstoptrack()          { emit stoptrack(trackname); SwitchToNew(); }
+    void emitnewtrack();
+    void emitupdatetrack();
+    void emitstoptrack();
     void selectdistance();
     void selecttime();
     void selectall();
@@ -109,11 +109,14 @@ signals:
 public slots:
     void DeleteTrack(const QString& name);
     void ToggleTrack(const QString& name);
-    void TrackAdded(QString name);
-    void TrackRemoved(QString name);
+    void TrackVisible(const QString& name);
+    void TrackInvisible(const QString& name);
+    void TrackDeleted(const QString& name);
+    void TrackAdded(const QString& name);
     
 protected:
     QStringList TrackFiles();
+    QHBoxLayout* NewItem(const QString& name, bool visible);
 };
 
 #endif // QWAYPOINTDIALOG_H

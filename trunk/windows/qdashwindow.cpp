@@ -335,7 +335,7 @@ void QDashWindow::clearSatellites()
 
 void QDashWindow::updatePosition(const QGeoPositionInfo &info)
 {	
-	qDebug() << "Position updated:" << info;
+	LOG( "Position updated:" << info; )
 	double lat = info.coordinate().latitude();
 	double lon = info.coordinate().longitude();
 	double ele = info.coordinate().altitude();

@@ -51,15 +51,15 @@ public slots:
     void FollowGPS();
     
     void StartTrack();
-    void TrackStarted(QString n, int t, int d);
-    void TrackUpdated(QString n, int t, int d);
-    void TrackStopped(const QString& name);
-    void TrackDeleted(const QString& name);
-    void TrackUnload(const QString& name);
-    void TrackLoad(const QString& name);
-    void ShowTrack(Track* t);
-    void HideTrack(QString name);
-    void ShowTrackPoint(WayPoint& w);
+    //void TrackStarted(QString n, int t, int d);
+    //void TrackUpdated(QString n, int t, int d);
+    //void TrackStopped(const QString& name);
+    //void TrackDeleted(const QString& name);
+    //void TrackUnload(const QString& name);
+    //void TrackLoad(const QString& name);
+    void ShowTrack(const QString& name);
+    void HideTrack(const QString& name);
+    void ShowTrackPoint(const WayPoint& w);
 
 private slots:
     void zoomRepeat();
@@ -105,10 +105,10 @@ private:
     double latitude;
     double longitude;
     double altitude;
-    WayPoint *prevpos;
-    int updatetime;
-    int updatedistance;
-    QDateTime prevtime;
+    //WayPoint *prevpos;
+    //int updatetime;
+    //int updatedistance;
+    //QDateTime prevtime;
     QImage* mapimage;
     QImage* bgimage;
     QImage* svgZoomIn;
@@ -125,7 +125,7 @@ private:
     QTimer zoomtimer;
     QString mapname;
     bool ismapdirty;
-    Track* recordtrack;
+    //Track* recordtrack;
     QSettings& settings;
 };
 

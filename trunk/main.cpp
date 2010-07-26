@@ -35,34 +35,18 @@ static QTextStream out(&file);
 
 void debugOutput(QtMsgType type, const char *msg)
  {
-/*
-     switch (type) 
-     {
-         case QtDebugMsg:
-        	 out << "[LOG]   ";
-        	 break;
-         case QtWarningMsg:
-        	 out << "[WARN]  ";
-        	 break;
-         case QtCriticalMsg:
-        	 out << "[ERR]   ";
-        	 break;
-         case QtFatalMsg:
-        	 out << "[FATAL] ";
-        	 break;
-     }			
-*/	    
 	out << msg << "\n";
 	file.flush();
 }
 
 int main(int argc, char *argv[])
 {
-	if (file.open(QIODevice::Append | QIODevice::Text))
-		qInstallMsgHandler(debugOutput);
+	bool fileopen = file.open(QIODevice::Append | QIODevice::Truncate | QIODevice::Text);
+	if (fileopen) qInstallMsgHandler(debugOutput);
 
     qTracker a(argc, argv);
     int result = a.exec();
-    file.close();
+    
+    if (fileopen) file.close();
     return result;
 }
