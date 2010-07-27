@@ -10,8 +10,9 @@
 #include <QPushButton>
 #include <QGroupBox>
 //#include <QLineEdit>
-#include "geodata.h"
 #include "qdoubleedit.h"
+#include "maplist.h"
+
 
 /*
 class QDoubleEdit : public QLineEdit

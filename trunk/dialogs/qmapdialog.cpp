@@ -16,13 +16,14 @@
 #include <QList>
 #include <QListWidgetItem>
 #include "qmapdialog.h"
-#include "geodata.h"
+#include "maplist.h"
 #include "gpxio.h"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
 #define LOG2( a ) 
 
+using namespace geodata;
 
 QCurrentMapTab::QCurrentMapTab(QMapTabsDialog* d, QTabWidget* t)
     : QWidget(d), dialog(d), tab(t), center(0)

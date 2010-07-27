@@ -2,6 +2,10 @@
 #include <QXmlStreamReader>
 #include <QString>
 #include "gpxio.h"
+#include "waypointlist.h"
+#include "routelist.h"
+#include "tracklist.h"
+#include "maplist.h"
 
 #include <QDebug>
 #include <iostream>
@@ -12,6 +16,14 @@
 //========================================================================
 
 GpxIO* GpxIO::instance = 0;
+
+GpxIO::GpxIO()
+: wptlist(WayPointList::Instance())
+, rtelist(*RouteList::Instance())
+, trklist(*TrackList::Instance())
+, maplist(MapList::Instance())
+{ 
+}
 
 void GpxIO::ImportGpxFile(QString filename)
 {

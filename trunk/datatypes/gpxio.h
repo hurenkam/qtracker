@@ -8,6 +8,17 @@
 #include <QXmlStreamWriter>
 #include "geodata.h"
 
+class WayPointList;
+class RouteList;
+class TrackList;
+class MapList;
+class WayPoint;
+class RefPoint;
+class Resolution;
+class Route;
+class Track;
+class MapMetaData;
+
 class XmlIO
 {
 protected:
@@ -29,13 +40,7 @@ public:
     static GpxIO* Instance() { if (!instance) instance = new GpxIO(); return instance; }
 private:
     static GpxIO* instance;
-	GpxIO()
-    : wptlist(WayPointList::Instance())
-    , rtelist(*RouteList::Instance())
-    , trklist(*TrackList::Instance())
-    , maplist(MapList::Instance())
-	{ 
-	}
+	GpxIO();
 
 protected:
     WayPointList& wptlist;

@@ -1,15 +1,20 @@
 #ifndef QMAPWIDGET_H
 #define QMAPWIDGET_H
 
-#include <QWidget>
-#include <QPushButton>
-#include <QGeoPositionInfo>
-#include <QGeoCoordinate>
 #include <QSystemDeviceInfo>
 #include "qgaugewidget.h"
-#include "geodata.h"
 
+namespace QtMobility
+{
+    class QGeoCoordinate;
+}
 using namespace QtMobility;
+
+class QWidget;
+class QSettings;
+class WayPoint;
+class MapMetaData;
+class Track;
 
 class ScreenPos
 {
@@ -25,7 +30,7 @@ class QMapWidget : public QGaugeWidget
 public:
     QMapWidget(QSettings& s, QWidget *parent = 0);
     ~QMapWidget();
-    bool IsPositionOnMap() { return (meta && meta->IsPositionOnMap(latitude,longitude)); }
+    bool IsPositionOnMap();
     bool IsPositionOnScreen(const WayPoint& wpt);
     ScreenPos PositionOnScreen(const WayPoint& wpt);
 
@@ -38,25 +43,15 @@ signals:
     void datum();
 
 public slots:
-    //void updatePosition(double lat, double lon, double ele=0.0);
     void updatePosition(const QGeoCoordinate& pos);
     void moveMap(int x, int y);
     void SelectMap();
     void SelectWayPoint();
-    //void SelectMapForCurrentPosition();
     void MapSelected(QString map);
-    //void WaypointSelected(QString name, double lat, double lon);
-    //void WaypointSelected(const WayPoint& w);
     void RefpointSelected(QString name, double lat, double lon);
     void FollowGPS();
     
     void StartTrack();
-    //void TrackStarted(QString n, int t, int d);
-    //void TrackUpdated(QString n, int t, int d);
-    //void TrackStopped(const QString& name);
-    //void TrackDeleted(const QString& name);
-    //void TrackUnload(const QString& name);
-    //void TrackLoad(const QString& name);
     void ShowTrack(const QString& name);
     void HideTrack(const QString& name);
     void ShowTrackPoint(const WayPoint& w);
@@ -71,14 +66,7 @@ protected:
     void FindMapsForCurrentPosition(QStringList& found);
     bool LoadMap(QString filename);
     bool SelectBestMapForCurrentPosition();
-    bool SetCursorToCurrentPosition()
-    {
-        if (meta)
-            return meta->Wgs2XY(latitude,longitude,x,y);
-        else
-        	return false;
-    }
-    
+    bool SetCursorToCurrentPosition();
     virtual void paintTrack(Track* t);
     virtual void paintBackground(QPainter& painter);
     virtual void paintMap(QPainter& painter);
@@ -105,10 +93,6 @@ private:
     double latitude;
     double longitude;
     double altitude;
-    //WayPoint *prevpos;
-    //int updatetime;
-    //int updatedistance;
-    //QDateTime prevtime;
     QImage* mapimage;
     QImage* bgimage;
     QImage* svgZoomIn;
@@ -125,7 +109,6 @@ private:
     QTimer zoomtimer;
     QString mapname;
     bool ismapdirty;
-    //Track* recordtrack;
     QSettings& settings;
 };
 

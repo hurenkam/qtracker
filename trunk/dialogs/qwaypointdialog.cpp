@@ -11,13 +11,13 @@
 #include <QFile>
 #include "qwaypointdialog.h"
 #include "ui.h"
-#include "geodata.h"
+#include "waypointlist.h"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
 #define LOG2( a ) 
 
-
+using namespace geodata;
 
 QWayPointTabsDialog::QWayPointTabsDialog(const WayPoint& w, QWidget *p)
 {

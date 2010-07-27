@@ -36,7 +36,8 @@
 #include "QDashWindow.h"
 #include "ui.h"
 #include "qtracker.h"
-#include "geodata.h"
+#include "waypointlist.h"
+#include "tracklist.h"
 
 #ifdef Q_OS_SYMBIAN
 #include <QSymbianEvent>

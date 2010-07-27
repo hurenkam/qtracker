@@ -9,6 +9,7 @@
 #include "qwaypointdialog.h"
 #include "qtrackdialog.h"
 #include "gpxio.h"
+#include "waypointlist.h"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -33,6 +34,8 @@ const int     zoommax = 6;
 #define MAPDIR "/Users/hurenkam/workspace/qtracker/maps/"
 #endif
 
+using namespace geodata;
+
 QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     : QGaugeWidget(parent)
     , state         (StNoMap)
@@ -55,13 +58,10 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     , svgWptGreen   (new QImage(MAPRCDIR "wpt_green.svg"))
     , zooming       (0)
     , mapname       ("<no map loaded>")
-    //, recordtrack   (0)
-    //, prevpos       (0)
     , ismapdirty    (false)
     , settings(s)
     , devinfo(this)
 {
-    //prevtime = QDateTime::fromTime_t(0);
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMap()));
@@ -147,6 +147,14 @@ bool QMapWidget::SelectBestMapForCurrentPosition()
     }
 
     return false;
+}
+
+bool QMapWidget::SetCursorToCurrentPosition()
+{
+    if (meta)
+        return meta->Wgs2XY(latitude,longitude,x,y);
+    else
+    	return false;
 }
 
 void QMapWidget::FindMapsForCurrentPosition(QStringList &found)
@@ -494,6 +502,11 @@ void QMapWidget::paintMap(QPainter& painter)
         painter.drawImage(target, *mapimage, source);
         painter.setWindow(-w/2,-h/2,w,h);
     }
+}
+
+bool QMapWidget::IsPositionOnMap() 
+{ 
+	return (meta && meta->IsPositionOnMap(latitude,longitude)); 
 }
 
 bool QMapWidget::IsPositionOnScreen(const WayPoint& wpt)

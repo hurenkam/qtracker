@@ -10,7 +10,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QLineEdit>
-#include "geodata.h"
+#include "tracklist.h"
 
 class QTrackTabsDialog : public QDialog
 {
