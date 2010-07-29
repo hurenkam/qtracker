@@ -1,10 +1,3 @@
-/*
- * QDatumInterface.h
- *
- *  Created on: 29-okt-2009
- *      Author: nly99036
- */
-
 #ifndef QDATUMINTERFACE_H_
 #define QDATUMINTERFACE_H_
 

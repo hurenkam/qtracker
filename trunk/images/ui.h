@@ -20,6 +20,7 @@ extern QImage svgLong;
 extern QImage svgShort;
 extern QImage svgSecond;
 extern QImage svgCompassNeedle;
+extern QImage svgCompassRing;
 extern QImage svgSpeedNeedle;
 
 #ifdef Q_OS_SYMBIAN

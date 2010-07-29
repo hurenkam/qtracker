@@ -14,6 +14,7 @@ HEADERS += \
     dialogs/qtrackdialog.h \
     dialogs/qwaypointdialog.h \
     dialogs/qmapdialog.h \
+    dialogs/qcompassdialog.h \
     datatypes/geodata.h \
     datatypes/gpxio.h \
     datatypes/waypointlist.h \
@@ -72,7 +73,8 @@ symbian {
         images/invisible.svg \
         images/locator_red.svg \
         images/locator_green.svg \
-        images/wpt_green.svg
+        images/wpt_green.svg \
+        images/compassring.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
     VERSION = 0.8.197
@@ -93,6 +95,7 @@ SOURCES += \
     datatypes/maplist.cpp \
     dialogs/qwaypointdialog.cpp \
     dialogs/qmapdialog.cpp \
+    dialogs/qcompassdialog.cpp \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
     images/ui.cpp \

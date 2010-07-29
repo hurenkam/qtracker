@@ -1,10 +1,3 @@
-/*
- * QDatumWgs84.cpp
- *
- *  Created on: 30-okt-2009
- *      Author: nly99036
- */
-
 #include <QWidget>
 #include <QPainter>
 #include <QPen>

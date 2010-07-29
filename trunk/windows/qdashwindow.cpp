@@ -347,8 +347,8 @@ void QDashWindow::updatePosition(const QGeoPositionInfo &info)
     altitude->SetAltitude(ele);
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
         speed->SetSpeed(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
-    if (info.hasAttribute(QGeoPositionInfo::Direction))
-        heading->SetDial(360.0-info.attribute(QGeoPositionInfo::Direction));
+    //if (info.hasAttribute(QGeoPositionInfo::Direction))
+    //    heading->SetDial(360.0-info.attribute(QGeoPositionInfo::Direction));
     
 	// Exit if map is not visible
     if (zoomgauge != 0) return;

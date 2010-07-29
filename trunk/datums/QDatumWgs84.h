@@ -1,10 +1,3 @@
-/*
- * QDatumWgs84.h
- *
- *  Created on: 30-okt-2009
- *      Author: nly99036
- */
-
 #ifndef QDATUMWGS84_H_
 #define QDATUMWGS84_H_
 

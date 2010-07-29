@@ -8,6 +8,7 @@
 #include "ui.h"
 
 QImage svgClock;
+QImage svgCompassRing;
 QImage svgAltitude;
 QImage svgHeading;
 QImage svgSatView;
@@ -44,6 +45,7 @@ QString GetDrive()
 void LoadImages()
 {
     svgClock.load(DASHRCDIR "clock.svg");
+    svgCompassRing.load(DASHRCDIR "compassring.svg");
     svgAltitude.load(DASHRCDIR "speed10.svg");
     svgHeading.load(DASHRCDIR "compass.svg");
     svgSatView.load(DASHRCDIR "satview.svg");

@@ -37,7 +37,7 @@ QPushButton {
 }
 
 QRadioButton {
-    font: bold 20px;
+    font: 18px;
 }
 
 QLineEdit {
@@ -51,9 +51,17 @@ QLabel {
 
 QGroupBox {
     background: transparent;
-    border: 0px solid gray;
-    font: bold 20px;
-    color: #C0C0D0;
+    border: 1px solid gray;
+	margin-top: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 5px;
 }
 
 QTabWidget::pane { /* The tab widget frame */

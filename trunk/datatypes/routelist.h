@@ -50,6 +50,7 @@ public:
 	// Todo: handle case if name already exists
 	void AddRoute(Route* r)            { map[r->Name()]=r; emit updated(r->Name()); }
 	void AddMetaData(AreaMetaData* m)  { }
+	QStringList Keys()                 { return map.keys(); } 
 };
 
 #endif /* ROUTELIST_H_ */
