@@ -6,8 +6,12 @@
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
 #include <QGeoCoordinate>
+#include <QCompass>
 #include "qgaugewidget.h"
 #include "waypointlist.h"
+
+const int STEPS = 3;
+const int TIMER = 330;
 
 using namespace QtMobility;
 
@@ -25,6 +29,10 @@ public slots:
     void timerStep();
     void SelectOptions();
 	void UpdatePosition(const QGeoPositionInfo& info);
+	void UpdateHeading();
+	void UpdateHeading(double h);
+	void UpdateAzimuth(double a);
+	void UpdateDials();
 	void ReadSettings();
 
 protected:
@@ -35,6 +43,10 @@ private:
 	WayPoint monitor;
 	QGeoPositionInfoSource* possource;
     QTimer *timer;
+    QCompass *compass;
+    QCompassReading* reading;
+    double heading;
+    double azimuth;
     double setdial;
     double curdial;
     double deltadial;

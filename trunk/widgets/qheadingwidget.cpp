@@ -1,4 +1,5 @@
 #include <QWidget>
+#include <QCompass>
 #include "qheadingwidget.h"
 #include "qgaugewidget.h"
 #include "ui.h"
@@ -25,7 +26,12 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
 	, curring(0.0)
 	, deltaring(0.0)
 	, stepsring(0)
+	, compass(0)
+	, reading(0)
+	, heading(0)
+	, azimuth(0)
 {
+    LOG( "QHeadingWidget::QHeadingWidget()"; )
 	ReadSettings();
     timer = new QTimer(this);
     
@@ -35,6 +41,36 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
         possource->setUpdateInterval(500);
         connect(possource, SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(UpdatePosition(QGeoPositionInfo)));
         possource->startUpdates();
+    }
+    else
+    {
+        LOG( "QHeadingWidget::QHeadingWidget(): No possource"; )
+    }
+    
+    compass = new QCompass();
+    if (compass)
+    {
+    	if (!compass->start())
+    	{
+            LOG( "QHeadingWidget::QHeadingWidget(): Not started"; )
+    	}
+    	else
+    	{
+			reading = compass->reading();
+			if (reading)
+			{
+				UpdateHeading();
+				connect(compass, SIGNAL(readingChanged()), this, SLOT(UpdateHeading()));
+			}
+			else
+			{
+				LOG( "QHeadingWidget::QHeadingWidget(): No reading"; )
+			}
+    	}
+    }
+    else
+    {
+        LOG( "QHeadingWidget::QHeadingWidget(): No compass"; )
     }
     
     connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
@@ -50,6 +86,7 @@ void QHeadingWidget::ReadSettings()
 	wptname = settings.value("monitor/waypoint","").toString();
 	rtename = settings.value("monitor/route","").toString();
 	trkname = settings.value("monitor/track","").toString();
+    LOG( "QHeadingWidget::ReadSettings()  Source: " << source << "  View: " << view << "  Type: " << montype << "  Wpt: " << wptname; )
 	
 	switch (montype)
 	{
@@ -65,47 +102,72 @@ void QHeadingWidget::ReadSettings()
 
 void QHeadingWidget::SelectOptions()
 {
+    LOG( "QHeadingWidget::SelectOptions()"; )
 	QCompassDialog *dialog;
 	dialog = new QCompassDialog(this);
 	dialog->setModal(true);
+	connect(dialog,SIGNAL(accepted()),this,SLOT(ReadSettings()));
 	dialog->show();
-	ReadSettings();
 }
 
 void QHeadingWidget::UpdatePosition(const QGeoPositionInfo& info)
 {
-    LOG( "QHeadingWidget::UpdatePosition()"; )
+    LOG( "QHeadingWidget::UpdatePosition(" << info << ")"; )
 	
-    if (info.hasAttribute(QGeoPositionInfo::Direction))
-    {
-    	double heading = info.attribute(QGeoPositionInfo::Direction);
-    	double azimuth = 0;
-    	if (montype==1)
-    	{
-    		WayPoint wpt(info.coordinate().latitude(),info.coordinate().longitude());
-    		azimuth = wpt.bearing(&monitor);
-    	}
-    	
-    	if (view==1) // Heading up
-		{
-		    SetDial(360.0-heading);
-    	    SetNeedle(0);
-    	    if (montype==1)
-		        SetRing(azimuth-heading);
-		}
-    	else // North up
-    	{
-		    SetDial(0);
-    	    SetNeedle(heading);
-    	    if (montype==1)
-		        SetRing(azimuth);
-    	}
-    }
+    if ((source==1) && (info.hasAttribute(QGeoPositionInfo::Direction)))
+    	UpdateHeading(info.attribute(QGeoPositionInfo::Direction));
+    
+	if (montype==1)
+	{
+		WayPoint wpt(info.coordinate().latitude(),info.coordinate().longitude());
+		UpdateAzimuth(wpt.bearing(&monitor));
+	}
+}
+
+void QHeadingWidget::UpdateHeading()
+{
+	if (source!=0) return;
+	if (!reading) return;
+	
+    LOG( "QHeadingWidget::UpdateHeading()"; )
+    UpdateHeading(reading->azimuth());
+}
+
+void QHeadingWidget::UpdateHeading(double h)
+{
+    LOG( "QHeadingWidget::UpdateHeading(" << h << ")"; )
+	heading = h;
+	UpdateDials();
+}
+
+void QHeadingWidget::UpdateAzimuth(double a)
+{
+    LOG( "QHeadingWidget::UpdateAzimuth(" << a << ")"; )
+	azimuth = a;
+	UpdateDials();
+}
+
+void QHeadingWidget::UpdateDials()
+{
+	if (view==1) // Heading up
+	{
+	    LOG( "QHeadingWidget::UpdateDials(): Heading up"; )
+	    SetDial(360.0-heading);
+	    SetNeedle(0);
+        SetRing(azimuth-heading);
+	}
+	else // North up
+	{
+	    LOG( "QHeadingWidget::UpdateDials(): North up"; )
+	    SetDial(0);
+	    SetNeedle(heading);
+        SetRing(azimuth);
+	}
 }
 
 void QHeadingWidget::timerStep()
 {
-    if ((stepsdial == 0) && (stepsneedle==0))
+    if ((stepsdial == 0) && (stepsneedle==0) && (stepsring==0))
     {
         timer->stop();
         return;
@@ -155,6 +217,7 @@ void QHeadingWidget::paintEvent(QPaintEvent *)
 
 void QHeadingWidget::SetDial(double v)
 {
+    LOG( "QHeadingWidget::SetDial(" << v << ")"; )
     timer->stop();
 
     double delta = setdial - curdial;
@@ -162,14 +225,15 @@ void QHeadingWidget::SetDial(double v)
     if (delta < -180) delta += 360;
 
     setdial = v;
-    stepsdial = 6;
+    stepsdial = STEPS;
     deltadial = delta / stepsdial;
 
-    timer->start(330);
+    timer->start(TIMER);
 }
 
 void QHeadingWidget::SetNeedle(double v)
 {
+    LOG( "QHeadingWidget::SetNeedle(" << v << ")"; )
     timer->stop();
 
     double delta = setneedle - curneedle;
@@ -177,14 +241,15 @@ void QHeadingWidget::SetNeedle(double v)
     if (delta < -180) delta += 360;
 
     setneedle = v;
-    stepsneedle = 6;
+    stepsneedle = STEPS;
     deltaneedle = delta / stepsneedle;
 
-    timer->start(330);
+    timer->start(TIMER);
 }
 
 void QHeadingWidget::SetRing(double v)
 {
+    LOG( "QHeadingWidget::SetRing(" << v << ")"; )
     timer->stop();
 
     double delta = setring - curring;
@@ -192,8 +257,8 @@ void QHeadingWidget::SetRing(double v)
     if (delta < -180) delta += 360;
 
     setring = v;
-    stepsring = 6;
+    stepsring = STEPS;
     deltaring = delta / stepsring;
 
-    timer->start(330);
+    timer->start(TIMER);
 }
