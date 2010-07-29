@@ -34,6 +34,8 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
 
 * Screenshots *
 
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000058.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000060.jpg" height="180" width="320" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/screenshot-124-1.jpg" height="180" width="320" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000040.jpg" height="180" width="320" border="0" />
 <br>
@@ -42,5 +44,3 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
 <br>
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="180" width="320" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="180" width="320" border="0" /><br>
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000058.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000060.jpg" height="180" width="320" border="0" />
