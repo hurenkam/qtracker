@@ -50,6 +50,7 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
     compass = new QCompass();
     if (compass)
     {
+    	compass->setDataRate(1);
     	if (!compass->start())
     	{
             LOG( "QHeadingWidget::QHeadingWidget(): Not started"; )
@@ -136,6 +137,8 @@ void QHeadingWidget::UpdateHeading()
 void QHeadingWidget::UpdateHeading(double h)
 {
     LOG( "QHeadingWidget::UpdateHeading(" << h << ")"; )
+    if (h==heading) return;
+    
 	heading = h;
 	UpdateDials();
 }
@@ -143,12 +146,16 @@ void QHeadingWidget::UpdateHeading(double h)
 void QHeadingWidget::UpdateAzimuth(double a)
 {
     LOG( "QHeadingWidget::UpdateAzimuth(" << a << ")"; )
+    if (a==azimuth) return;
+    
 	azimuth = a;
 	UpdateDials();
 }
 
 void QHeadingWidget::UpdateDials()
 {
+    LOG( "QHeadingWidget::UpdateDials()"; )
+    		
 	if (view==1) // Heading up
 	{
 	    LOG( "QHeadingWidget::UpdateDials(): Heading up"; )
