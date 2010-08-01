@@ -9,10 +9,20 @@
 #define DATAMONITOR_H_
 
 #include <QObject>
+#include <QWidget>
+#include <QSettings>
 #include <QGeoCoordinate>
 class QDateTime;
 class QSettings;
 class WayPoint;
+class QGroupBox;
+class QButtonGroup;
+class QListWidget;
+class QComboBox;
+class QWidget;
+class QRadioButton;
+class QHeadingWidget;
+class QBoxLayout;
 
 
 namespace QtMobility
@@ -23,6 +33,44 @@ namespace QtMobility
     class QCompassReading;
 }
 using namespace QtMobility;
+
+class QMonitorOptions: public QWidget
+{
+	Q_OBJECT
+
+signals:
+	void changed();
+	
+public:
+    QMonitorOptions(QDialog* d);
+    ~QMonitorOptions();
+    
+protected:
+    virtual void resizeEvent(QResizeEvent * event);
+
+public slots:
+    void noneselected();
+    void waypointselected();
+    void routeselected();
+    void trackselected();
+    
+    void apply();
+    
+private:
+    QSettings settings;
+	QBoxLayout* center;
+    QGroupBox* typegroup;
+    QButtonGroup* typebuttons;
+    QListWidget* wptcombo;
+    QListWidget* trkcombo;
+    QListWidget* rtecombo;
+    QWidget* filler;
+    QStringList list;
+    QString wptname;
+    QString trkname;
+    QString rtename;
+    int montype;
+};
 
 class MonitorStrategy: public QObject
 {

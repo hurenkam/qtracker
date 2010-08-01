@@ -34,29 +34,30 @@ protected:
     virtual void resizeEvent(QResizeEvent * event);
 
 public slots:
+/*
     void noneselected();
     void waypointselected();
     void routeselected();
     void trackselected();
-    
+*/    
     void apply();
     
 private:
     QSettings settings;
 	QBoxLayout* center;
-    QGroupBox* typegroup;
+//    QGroupBox* typegroup;
     QButtonGroup* sourcebuttons;
     QButtonGroup* viewbuttons;
-    QButtonGroup* typebuttons;
-    QComboBox* wptcombo;
-    QComboBox* trkcombo;
-    QComboBox* rtecombo;
+//    QButtonGroup* typebuttons;
+//    QComboBox* wptcombo;
+//    QComboBox* trkcombo;
+//    QComboBox* rtecombo;
     QWidget* filler;
-    QStringList list;
-    QString wptname;
-    QString trkname;
-    QString rtename;
-    int montype;
+//    QStringList list;
+//    QString wptname;
+//    QString trkname;
+//    QString rtename;
+//    int montype;
     int source;
     int view;
 };

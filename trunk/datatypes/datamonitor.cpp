@@ -12,11 +12,197 @@
 #include <QCompassReading>
 #include "datamonitor.h"
 #include "waypointlist.h"
+#include "routelist.h"
+#include "tracklist.h"
 
 #include <QDebug>
 #define LOG( a )  qDebug() << a
 #define LOG2( a ) 
 #define LOG3( a ) 
+
+QMonitorOptions::QMonitorOptions(QDialog* d)
+: QWidget(d)
+, settings("karpeer.net","qTracker",this)
+{
+	montype = settings.value("monitor/type",0).toInt();
+	wptname = settings.value("monitor/waypoint","").toString();
+	rtename = settings.value("monitor/route","").toString();
+	trkname = settings.value("monitor/track","").toString();
+	
+	QVBoxLayout *main = new QVBoxLayout();
+
+	typegroup = new QGroupBox("Monitor");
+	typebuttons = new QButtonGroup(typegroup);
+	QRadioButton* none =     new QRadioButton(tr("None"));
+	QRadioButton* waypoint = new QRadioButton(tr("Waypoint"));
+	QRadioButton* route =    new QRadioButton(tr("Route"));
+	QRadioButton* track =    new QRadioButton(tr("Track"));
+	typebuttons->addButton(none,0);
+	typebuttons->addButton(waypoint, 1);
+	typebuttons->addButton(route,    2);
+	typebuttons->addButton(track,    3);
+	QVBoxLayout *typebox = new QVBoxLayout();
+	typebox->addWidget(none);
+	typebox->addWidget(waypoint);
+	typebox->addWidget(route);
+	typebox->addWidget(track);
+	typegroup->setLayout(typebox);
+	typegroup->show();
+
+	filler = new QWidget;
+	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	
+	QStringList wptlist = WayPointList::Instance().Keys();
+	wptcombo = new QListWidget();
+	wptcombo->addItems(wptlist);
+    if ((wptlist.length()>0) && (wptlist.contains(wptname)))
+        wptcombo->setCurrentRow(wptlist.indexOf(wptname));
+    
+	QStringList rtelist = RouteList::Instance()->Keys();
+	rtecombo = new QListWidget();
+	rtecombo->addItems(rtelist);
+    if ((rtelist.length()>0) && (rtelist.contains(wptname)))
+        rtecombo->setCurrentRow(rtelist.indexOf(wptname));
+	
+	QStringList trklist = TrackList::Instance()->Keys();
+	trkcombo = new QListWidget();
+	trkcombo->addItems(trklist);
+    if ((trklist.length()>0) && (trklist.contains(trkname)))
+        trkcombo->setCurrentRow(trklist.indexOf(trkname));
+	
+	switch (montype)
+	{
+		default:
+		case 0:
+			none->setChecked(true);
+			noneselected();
+			break;
+		case 1: 
+			waypoint->setChecked(true);
+			waypointselected();
+			break;
+		case 2: 
+			route->setChecked(true);
+			routeselected();
+			break;
+		case 3: 
+			track->setChecked(true);
+			trackselected();
+			break;
+	}
+
+	QPushButton* apply =  new QPushButton(tr("Apply"));
+	QPushButton* cancel =  new QPushButton(tr("Cancel"));
+	QHBoxLayout* buttonbox =  new QHBoxLayout();
+	buttonbox->addWidget(apply);
+	buttonbox->addWidget(cancel);
+	
+	QVBoxLayout* topleft = new QVBoxLayout();
+	QVBoxLayout* bottomright = new QVBoxLayout();
+    center = new QBoxLayout(QBoxLayout::LeftToRight);
+	
+	topleft->addWidget(typegroup);
+	topleft->addWidget(filler);
+	bottomright->addWidget(wptcombo);
+	bottomright->addWidget(rtecombo);
+	bottomright->addWidget(trkcombo);
+	//main->addWidget(filler);
+	center->addLayout(topleft);
+	center->addLayout(bottomright);
+	main->addLayout(center);
+	main->addLayout(buttonbox);
+
+    connect(none,    SIGNAL(clicked()),this,SLOT(noneselected()));
+    connect(waypoint,SIGNAL(clicked()),this,SLOT(waypointselected()));
+    connect(route,   SIGNAL(clicked()),this,SLOT(routeselected()));
+    connect(track,   SIGNAL(clicked()),this,SLOT(trackselected()));
+
+	connect(apply,   SIGNAL(clicked()),this,SLOT(apply()));
+	connect(cancel,  SIGNAL(clicked()),d,SLOT(reject()));
+	setLayout(main);
+}
+
+QMonitorOptions::~QMonitorOptions()
+{
+}
+
+void QMonitorOptions::resizeEvent( QResizeEvent * event )
+{
+    LOG( "QMonitorOptions::resizeEvent()"; )
+    if (!center) return;
+    
+    if (event->size().width() < event->size().height())
+        center->setDirection(QBoxLayout::TopToBottom);
+    else
+        center->setDirection(QBoxLayout::LeftToRight);
+
+    QWidget::resizeEvent(event);
+    updateGeometry();
+}
+
+
+void QMonitorOptions::apply()
+{
+	montype = typebuttons->checkedId();
+	switch (montype)
+	{
+		case 1:
+			wptname = wptcombo->currentItem()->text();
+			break;
+		case 2:
+			rtename = rtecombo->currentItem()->text();
+			break;
+		case 3:
+			trkname = trkcombo->currentItem()->text();
+			break;
+		default:
+			break;
+	}
+	settings.setValue("monitor/type",montype);
+	settings.setValue("monitor/waypoint",wptname);
+	settings.setValue("monitor/route",rtename);
+	settings.setValue("monitor/track",trkname);
+	settings.sync();
+	emit changed();
+}
+
+void QMonitorOptions::noneselected()
+{
+    LOG( "QMonitorOptions::noneselected()"; )
+	wptcombo->hide();
+	rtecombo->hide();
+	trkcombo->hide();
+	update();
+}
+
+void QMonitorOptions::waypointselected()
+{
+    LOG( "QMonitorOptions::waypointselected()"; )
+	wptcombo->show();
+	rtecombo->hide();
+	trkcombo->hide();
+	update();
+}
+
+void QMonitorOptions::routeselected()
+{
+    LOG( "QMonitorOptions::routeselected()"; )
+	wptcombo->hide();
+	rtecombo->show();
+	trkcombo->hide();
+	update();
+}
+
+void QMonitorOptions::trackselected()
+{
+    LOG( "QMonitorOptions::trackselected()"; )
+	wptcombo->hide();
+	rtecombo->hide();
+	trkcombo->show();
+	update();
+}
+
+
 
 DataMonitor* DataMonitor::instance = 0;
 DataMonitor& DataMonitor::Instance() 
