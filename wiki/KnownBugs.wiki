@@ -10,7 +10,7 @@ WishList | KnownBugs | RoadMap
 ----
 
 === Release 0.8.206 ===
- * Probably also in 200 already: In North-up mode, the compass points the wrong way (mirrored over north-south). Should be easy to fix.
+ * Waypoint/Route/Track lists still don't behave entirely properly when hide/show/delete is selected.
 
 === Release 0.8.200 ===
  * Unreliable compass, strangely, it works fine if another compass application is running. Turns out it has to do with the datarate, which i did not set. Newer versions have it explicitly set at 1 per second, which seems to fix the problem.
