@@ -12,6 +12,7 @@ HEADERS += \
     application/qtracker.h \
     dialogs/qdoubleedit.h \
     dialogs/qtrackdialog.h \
+    dialogs/qroutedialog.h \
     dialogs/qwaypointdialog.h \
     dialogs/qmapdialog.h \
     dialogs/qcompassdialog.h \
@@ -21,6 +22,7 @@ HEADERS += \
     datatypes/routelist.h \
     datatypes/tracklist.h \
     datatypes/maplist.h \
+    datatypes/datamonitor.h \
     images/ui.h \
     widgets/qaltitudewidget.h \
     widgets/qclockwidget.h \
@@ -45,7 +47,7 @@ symbian {
         -lefsrv \
         -leikcore \
         -lcone
-    TARGET.CAPABILITY = Location LocalServices UserEnvironment NetworkServices ReadUserData WriteUserData SwEvent SurroundingsDD ProtServ PowerMgmt ReadDeviceData TrustedUI
+    TARGET.CAPABILITY = Location ReadDeviceData
     ICON = images/icon.svg
     UiFiles.sources += images/clock.svg \
         images/compass.svg \
@@ -77,7 +79,7 @@ symbian {
         images/compassring.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.200
+    VERSION = 0.8.204
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
@@ -85,7 +87,6 @@ symbian {
     TARGET.EPOCSTACKSIZE += 0x14000
 }
 SOURCES += \
-    dialogs/qtrackdialog.cpp \
     application/qtracker.cpp \
     datatypes/geodata.cpp \
     datatypes/gpxio.cpp \
@@ -93,9 +94,12 @@ SOURCES += \
     datatypes/routelist.cpp \
     datatypes/tracklist.cpp \
     datatypes/maplist.cpp \
+    datatypes/datamonitor.cpp \
     dialogs/qwaypointdialog.cpp \
     dialogs/qmapdialog.cpp \
     dialogs/qcompassdialog.cpp \
+    dialogs/qtrackdialog.cpp \
+    dialogs/qroutedialog.cpp \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
     images/ui.cpp \

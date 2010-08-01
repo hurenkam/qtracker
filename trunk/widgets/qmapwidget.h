@@ -15,6 +15,7 @@ class QSettings;
 class WayPoint;
 class MapMetaData;
 class Track;
+class Route;
 
 class ScreenPos
 {
@@ -51,10 +52,15 @@ public slots:
     void RefpointSelected(QString name, double lat, double lon);
     void FollowGPS();
     
-    void StartTrack();
+    void ShowTrackDialog();
     void ShowTrack(const QString& name);
     void HideTrack(const QString& name);
     void ShowTrackPoint(const WayPoint& w);
+    
+    void ShowRouteDialog();
+    void ShowRoute(const QString& name);
+    void HideRoute(const QString& name);
+    void ShowRouteSegment(const WayPoint& from, const WayPoint& to);
 
 private slots:
     void zoomRepeat();
@@ -68,6 +74,7 @@ protected:
     bool SelectBestMapForCurrentPosition();
     bool SetCursorToCurrentPosition();
     virtual void paintTrack(Track* t);
+    virtual void paintRoute(Route* r);
     virtual void paintBackground(QPainter& painter);
     virtual void paintMap(QPainter& painter);
     virtual void paintWaypoints(QPainter& painter);

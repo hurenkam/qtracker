@@ -8,8 +8,10 @@
 #include "qmapdialog.h"
 #include "qwaypointdialog.h"
 #include "qtrackdialog.h"
+#include "qroutedialog.h"
 #include "gpxio.h"
 #include "waypointlist.h"
+#include "routelist.h"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -70,14 +72,16 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     zoomtimer.setInterval(150);
     connect(this, SIGNAL(zoomin()), this, SLOT(zoomIn()));
     connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
-    connect(this, SIGNAL(options()), this, SLOT(SelectMap()));  // to be menu
+    connect(this, SIGNAL(options()), this, SLOT(ShowRouteDialog()));  // to be menu
     connect(this, SIGNAL(datum()), this, SLOT(SelectMap()));  // to be menu
     connect(this, SIGNAL(waypoint()), this, SLOT(SelectWayPoint()));
-    connect(this, SIGNAL(track()), this, SLOT(StartTrack()));
+    connect(this, SIGNAL(track()), this, SLOT(ShowTrackDialog()));
     connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowTrack(const QString&)));
 	connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideTrack(const QString&)));
     //connect(WayPointList::Instance(),SIGNAL(added(const WayPoint&)),this,SLOT(ShowWayPoint(const WayPoint&)));
     //connect(WayPointList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(HideWayPoint(const QString&)));
+    connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowRoute(const QString&)));
+	connect(RouteList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideRoute(const QString&)));
 	connect(&devinfo, SIGNAL(batteryStatusChanged(QSystemDeviceInfo::BatteryStatus)),this,SLOT(batteryStatusChanged(QSystemDeviceInfo::BatteryStatus)));
 	
 	if (settings.contains("map/name"))
@@ -262,7 +266,21 @@ void QMapWidget::SelectWayPoint()
 }
 
 // Todo: name doesn't cover the load, should be renamed
-void QMapWidget::StartTrack() 
+void QMapWidget::ShowRouteDialog() 
+{
+	QRouteTabsDialog *dialog;
+	dialog = new QRouteTabsDialog(0);
+	RouteList* list = RouteList::Instance();
+
+	connect(dialog,SIGNAL(showroute(const QString&)),list,SLOT(Show(const QString&)));
+	connect(dialog,SIGNAL(hideroute(const QString&)),list,SLOT(Hide(const QString&)));
+
+	dialog->setModal(true);
+	dialog->show();
+}
+
+// Todo: name doesn't cover the load, should be renamed
+void QMapWidget::ShowTrackDialog() 
 {
 	QTrackTabsDialog *dialog;
 	dialog = new QTrackTabsDialog(0);
@@ -332,6 +350,73 @@ void QMapWidget::ShowTrackPoint(const WayPoint& w)
     painter.setPen(Qt::yellow);
     painter.setBrush(Qt::yellow);
     painter.drawEllipse(tx-2,ty-2,4,4);
+}
+
+void QMapWidget::paintRoute(Route* r)
+{
+    LOG( "QMapWidget::paintRoute()"; )
+	if (!r) return;
+	
+	for (int i=0; i < r->Length()-1; i++)
+		ShowRouteSegment(r->GetItem(i),r->GetItem(i+1));
+}
+
+void QMapWidget::ShowRoute(const QString& name)
+{
+    LOG( "QMapWidget::ShowRoute()"; )
+    paintRoute(&RouteList::Instance()->GetItem(name));
+}
+
+void QMapWidget::HideRoute(const QString& name)
+{
+    LOG( "QMapWidget::HideRoute()"; )
+
+	if (!ismapdirty)
+	{
+	    LOG( "QMapWidget::HideRoute() map not dirty so reload"; )
+		delete mapimage;
+		mapimage = new QImage();
+		meta = &MapList::Instance().GetItem(mapname);
+		bool result = mapimage->load(meta->GetImageFilename());
+		if (!result)
+		{
+			if (mapimage)
+				delete mapimage;
+			
+			QMessageBox msg;
+			msg.setText(QString("Unable to load map ") + mapname);
+			msg.setIcon(QMessageBox::Warning);
+			msg.setStandardButtons(QMessageBox::Ok);
+			msg.exec();
+			mapname = QString("<no map loaded>");
+			mapimage = 0;
+			meta = 0;
+		}
+		ismapdirty = true;
+	}
+}
+
+void QMapWidget::ShowRouteSegment(const WayPoint& from, const WayPoint& to)
+{
+    LOG2( "QMapWidget::ShowRouteSegment()"; )
+    if (!mapimage) return;
+    if (!meta) return;
+    if (meta->IsPositionOnMap(from.Latitude(),from.Longitude()) || meta->IsPositionOnMap(to.Latitude(),to.Longitude()))
+    {
+		double fromx, fromy;
+		double tox, toy;
+		meta->Wgs2XY(from.Latitude(), from.Longitude(), fromx, fromy);
+		meta->Wgs2XY(to.Latitude(),   to.Longitude(),   tox,   toy);
+		
+		QPainter painter(mapimage);
+		QPen pen(painter.pen());
+		pen.setColor(Qt::cyan);
+		pen.setWidth(2);
+		painter.setPen(pen);
+		//painter.setBrush(Qt::cyan);
+		//painter.drawEllipse(tx-2,ty-2,4,4);
+		painter.drawLine(fromx,fromy,tox,toy);
+    }
 }
 
 void QMapWidget::SelectMap()
@@ -485,9 +570,15 @@ void QMapWidget::paintMap(QPainter& painter)
 	if (ismapdirty)
     {
 	    LOG( "QMapWidget::paintMap() map dirty so repaint tracks."; )
-		QStringList keys=TrackList::Instance()->VisibleKeys();
+		QStringList keys;
+	    
+	    keys = TrackList::Instance()->VisibleKeys();
 		for (int i=0; i<keys.length(); i++)
 			paintTrack(&TrackList::Instance()->GetItem(keys[i]));
+
+		keys = RouteList::Instance()->VisibleKeys();
+		for (int i=0; i<keys.length(); i++)
+			paintRoute(&RouteList::Instance()->GetItem(keys[i]));
 		ismapdirty = false;
     }
 	

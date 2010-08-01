@@ -26,31 +26,58 @@ protected:
 	QString name;
 	QList<WayPoint*> list;
 public:
-	const QString Name() const        { return name; }
-	const QString FileName() const    { return QString(GetDrive() + QString(TRACKDIR) + name + ".gpx"); }
-	void SetName(QString n)           { name = n; }
-	void AddPoint(WayPoint* w)        { list.append(w); emit updated(*w); }
+	QString Name() const             { return name; }
+	QString FileName() const         { return QString(GetDrive() + QString(ROUTEDIR) + name + ".gpx"); }
+	void SetName(QString n)          { name = n; }
+	void AddPoint(WayPoint* w)       { list.append(w); emit updated(*w); }
+	WayPoint& GetItem(int i) const   { return *list[i]; }
+	int Length() const               { return list.length(); }
 };
 
 class RouteList: public QObject
 {
     Q_OBJECT
+    
 signals:
-    void updated(QString n);
+	void added(const QString&);
+	void updated(const QString&, const QString&);
+	void deleted(const QString&);
+	void visible(const QString&);
+	void invisible(const QString&);
+
 public:
     static RouteList* Instance() { if (!instance) instance = new RouteList(); return instance; }
+
 private:
     static RouteList* instance;
-    RouteList() {};
+    RouteList();
+    ~RouteList();
+    QStringList FindFiles();
 
 protected:
 	QMap<QString, Route*> map;
+    QSettings settings;
+	QStringList routefiles;
+	
+public slots:
+	void SaveSettings();
+	void Hide(const QString& key);
+	void Show(const QString& key);
+	void Delete(const QString& key);
+	//void AddRoute(const Route& t)          { AddRoute(new Route(t); }
+	//void UpdateRoute(const QString& orgname, const Route& t) {}
 	
 public:
-	// Todo: handle case if name already exists
-	void AddRoute(Route* r)            { map[r->Name()]=r; emit updated(r->Name()); }
-	void AddMetaData(AreaMetaData* m)  { }
-	QStringList Keys()                 { return map.keys(); } 
+	void AddRoute(Route* t);
+	void AddMetaData(AreaMetaData* m);
+	QStringList Keys();
+	QStringList VisibleKeys();
+	QStringList HiddenKeys();
+	QStringList AreaKeys(Bounds a);
+	QStringList VisibleAreaKeys(Bounds a);
+	bool IsVisible(const QString& k);
+	Route& GetItem(const QString& k) const;
 };
+
 
 #endif /* ROUTELIST_H_ */
