@@ -9,6 +9,12 @@ WishList | KnownBugs | RoadMap
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
+=== Release 0.8.206 ===
+ * Probably also in 200 already: In North-up mode, the compass points the wrong way (mirrored over north-south). Should be easy to fix.
+
+=== Release 0.8.200 ===
+ * Unreliable compass, strangely, it works fine if another compass application is running. Turns out it has to do with the datarate, which i did not set. Newer versions have it explicitly set at 1 per second, which seems to fix the problem.
+
 === Release 0.8.184 ===
  * Found what looks like a bug in the set refpoint code, it is possible that calibration of new maps doesn't work. Existing maps (e.g. from tracker-py) should work fine. I've fixed the problem in svn, will do some tests before uploading the new version. 
  * When deleting a track, the tracklist is not always properly updated, parts of the previous line may remain.
