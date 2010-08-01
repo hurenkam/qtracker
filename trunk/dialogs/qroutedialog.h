@@ -23,60 +23,9 @@ signals:
 	void deleteroute(const QString&);
 	void showroute(const QString&);
 	void hideroute(const QString&);
-    void updateroute(QString, int, int);
-    void newroute(QString, int, int);
-    void stoproute(QString);
-    void changeoptions(bool, int, int);
 
 public slots:
     virtual void accept();
-};
-
-class QCurrentRouteTab: public QWidget
-{
-    Q_OBJECT
-
-public:
-    QCurrentRouteTab(QRouteTabsDialog *d, QTabWidget* t, Route* route=0);
-    ~QCurrentRouteTab();
-    void SetRouteName(QString name);
-
-signals:
-    void newroute(QString, int, int);
-    void updateroute(QString, int, int);
-	void stoproute(QString);
-
-public slots:
-    void emitnewroute();
-    void emitupdateroute();
-    void emitstoproute();
-    void selectdistance();
-    void selecttime();
-    void selectall();
-    void updatetime(int id);
-    void updatedistance(int id);
-    
-protected:
-    virtual void resizeEvent(QResizeEvent * event);
-    void SwitchToNew();
-    void SwitchToCurrent();
-    void NewRouteName();
-
-private:
-	QRouteTabsDialog *dialog;
-	QTabWidget* tab;
-	QString routename;
-    int time;
-    int dist;
-	QLineEdit*    trkname;
-	QPushButton*  stop;
-	QPushButton*  upd;
-	QPushButton*  start;
-	QBoxLayout   *center;
-	QGroupBox    *distgroup;
-	QButtonGroup *distbuttons;
-	QGroupBox    *timegroup;
-	QButtonGroup *timebuttons;
 };
 
 class QRouteListTab: public QWidget
