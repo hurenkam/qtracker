@@ -12,6 +12,7 @@
 #include "gpxio.h"
 #include "waypointlist.h"
 #include "routelist.h"
+#include "datamonitor.h"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -82,8 +83,9 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     //connect(WayPointList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(HideWayPoint(const QString&)));
     connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowRoute(const QString&)));
 	connect(RouteList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideRoute(const QString&)));
+	connect(&DataMonitor::Instance(), SIGNAL(PositionUpdated(QGeoPositionInfo)), this, SLOT(UpdatePosition(QGeoPositionInfo)));
 	connect(&devinfo, SIGNAL(batteryStatusChanged(QSystemDeviceInfo::BatteryStatus)),this,SLOT(batteryStatusChanged(QSystemDeviceInfo::BatteryStatus)));
-	
+
 	if (settings.contains("map/name"))
 	{
         if (LoadMap(settings.value("map/name").toString()) && (settings.contains("map/x") && (settings.contains("map/y"))))
@@ -411,10 +413,8 @@ void QMapWidget::ShowRouteSegment(const WayPoint& from, const WayPoint& to)
 		QPainter painter(mapimage);
 		QPen pen(painter.pen());
 		pen.setColor(Qt::cyan);
-		pen.setWidth(2);
+		pen.setWidth(3);
 		painter.setPen(pen);
-		//painter.setBrush(Qt::cyan);
-		//painter.drawEllipse(tx-2,ty-2,4,4);
 		painter.drawLine(fromx,fromy,tox,toy);
     }
 }
@@ -428,6 +428,11 @@ void QMapWidget::SelectMap()
     connect(dialog,SIGNAL(loadmap(QString)),this,SLOT(MapSelected(QString)));
 	dialog->setModal(true);
 	dialog->show();
+}
+
+void QMapWidget::UpdatePosition(const QGeoPositionInfo& info)
+{
+	updatePosition(info.coordinate());
 }
 
 void QMapWidget::updatePosition(const QGeoCoordinate& pos)

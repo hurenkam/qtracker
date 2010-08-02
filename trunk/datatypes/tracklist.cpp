@@ -9,6 +9,7 @@
 #include "ui.h"
 #include "waypointlist.h"
 #include "tracklist.h"
+#include "datamonitor.h"
 
 #include <QDebug>
 #define LOG( a )  qDebug() << a
@@ -36,13 +37,7 @@ TrackList::TrackList()
     prevtime = QDateTime::fromTime_t(0).toUTC();
     prevpos = QGeoCoordinate(-200,-200);
 
-    possource = QGeoPositionInfoSource::createDefaultSource(this);
-    if (possource) {
-        possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
-        possource->setUpdateInterval(500);
-        connect(possource, SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(UpdatePosition(QGeoPositionInfo)));
-        possource->startUpdates();
-    }
+	connect(&DataMonitor::Instance(), SIGNAL(PositionUpdated(QGeoPositionInfo)), this, SLOT(UpdatePosition(QGeoPositionInfo)));
 };
 
 TrackList::~TrackList()

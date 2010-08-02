@@ -39,23 +39,14 @@ public:
 
 public slots:
     void timeChanged();
-    void updateHeading();
-    void updatePosition(const QGeoPositionInfo &info);
-    void updateSatellitesInView(const QList<QGeoSatelliteInfo> &info);
-    void updateSatellitesInUse(const QList<QGeoSatelliteInfo> &info);
     void ZoomTimerExpired();
     void ZoomToGauge(int i);
-    void GaugeOptions(int i);
-    void resetDistance();
     void resetTimer();
     void ToggleMap();
-    void clearSatellites();
 
 protected:
     void InitWidgets();
     void StartTransition(int to);
-    void updateSatelliteList();
-    void updateDistance(double lat,double lon);
 
     virtual void resizeEvent(QResizeEvent * event);
     void Setup();
@@ -71,10 +62,6 @@ private:
     QMapWidget *map;
     QSignalMapper *mapper;
     QWidget* gauges[6];
-    QGeoPositionInfoSource *possource;
-    QGeoSatelliteInfoSource *satsource;
-    QList<QGeoSatelliteInfo> inUse;
-    QList<QGeoSatelliteInfo> inView;
 
     QSensor *compass;
     QCompassReading *reading;
@@ -84,19 +71,9 @@ private:
     int zoomgauge;
     int tozoom;
     bool landscape;
-
     QTime starttime;
-
     int   count;
-
-    double prevlat;
-    double prevlon;
-    double distance;
-
     bool timevalid;
-    bool posvalid;
-
-    //bool showmap;
     bool mapzoomed;
 };
 

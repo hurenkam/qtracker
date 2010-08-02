@@ -4,7 +4,8 @@
 #include "qgaugewidget.h"
 #include "ui.h"
 #include "qcompassdialog.h"
-#include "waypointlist.h"
+#include "datamonitor.h"
+
 
 #include <QDebug>
 #define LOG( a )  qDebug() << a
@@ -26,15 +27,15 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
 	, curring(0.0)
 	, deltaring(0.0)
 	, stepsring(0)
-	, compass(0)
-	, reading(0)
+	//, compass(0)
+	//, reading(0)
 	, heading(0)
 	, azimuth(0)
 {
     LOG( "QHeadingWidget::QHeadingWidget()"; )
 	ReadSettings();
     timer = new QTimer(this);
-    
+/*    
     possource = QGeoPositionInfoSource::createDefaultSource(this);
     if (possource) {
         possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
@@ -73,7 +74,9 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
     {
         LOG( "QHeadingWidget::QHeadingWidget(): No compass"; )
     }
-    
+*/
+    connect(&DataMonitor::Instance(), SIGNAL(HeadingUpdated(double)), this, SLOT(UpdateHeading(double)));
+    connect(&DataMonitor::Instance(), SIGNAL(BearingUpdated(double)), this, SLOT(UpdateAzimuth(double)));
     connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(SelectOptions()));
 }
@@ -81,14 +84,15 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
 void QHeadingWidget::ReadSettings()
 {
 	settings.sync();
-	source  = settings.value("compass/source",0).toInt();
+	//source  = settings.value("compass/source",0).toInt();
 	view    = settings.value("compass/view",0).toInt();
-	montype = settings.value("monitor/type",0).toInt();
-	wptname = settings.value("monitor/waypoint","").toString();
-	rtename = settings.value("monitor/route","").toString();
-	trkname = settings.value("monitor/track","").toString();
-    LOG( "QHeadingWidget::ReadSettings()  Source: " << source << "  View: " << view << "  Type: " << montype << "  Wpt: " << wptname; )
-	
+	//montype = settings.value("monitor/type",0).toInt();
+	//wptname = settings.value("monitor/waypoint","").toString();
+	//rtename = settings.value("monitor/route","").toString();
+	//trkname = settings.value("monitor/track","").toString();
+    //LOG( "QHeadingWidget::ReadSettings()  Source: " << source << "  View: " << view << "  Type: " << montype << "  Wpt: " << wptname; )
+    LOG( "QHeadingWidget::ReadSettings()  View: " << view; )
+	/*
 	switch (montype)
 	{
 		default:
@@ -99,6 +103,7 @@ void QHeadingWidget::ReadSettings()
 			    monitor = WayPointList::Instance().GetItem(wptname);
 			break;
 	}
+	*/
 }
 
 void QHeadingWidget::SelectOptions()
@@ -110,7 +115,7 @@ void QHeadingWidget::SelectOptions()
 	connect(dialog,SIGNAL(accepted()),this,SLOT(ReadSettings()));
 	dialog->show();
 }
-
+/*
 void QHeadingWidget::UpdatePosition(const QGeoPositionInfo& info)
 {
     LOG( "QHeadingWidget::UpdatePosition(" << info << ")"; )
@@ -133,7 +138,7 @@ void QHeadingWidget::UpdateHeading()
     LOG( "QHeadingWidget::UpdateHeading()"; )
     UpdateHeading(reading->azimuth());
 }
-
+*/
 void QHeadingWidget::UpdateHeading(double h)
 {
     LOG( "QHeadingWidget::UpdateHeading(" << h << ")"; )

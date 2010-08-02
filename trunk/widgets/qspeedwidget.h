@@ -4,6 +4,13 @@
 #include <QWidget>
 #include "qgaugewidget.h"
 
+namespace QtMobility
+{
+    class QGeoPositionInfo;
+    class QGeoCoordinate;
+}
+using namespace QtMobility;
+
 class QSpeedWidget : public QGaugeWidget
 {
     Q_OBJECT
@@ -15,11 +22,14 @@ public:
 
 public slots:
     void timerStep();
+    void Reset();
+	void UpdatePosition(const QGeoPositionInfo& info);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
+    QGeoCoordinate* prevpos;
     QTimer *timer;
     int scale;
     int steps;
@@ -28,6 +38,7 @@ private:
     double curspeed;
     double setspeed;
     double distance;
+    double mindist;
 };
 
 #endif // QSPEEDWIDGET_H

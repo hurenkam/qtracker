@@ -8,6 +8,8 @@
 #include <QDateTime>
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
+#include <QGeoSatelliteInfo>
+#include <QGeoSatelliteInfoSource>
 #include <QCompass>
 #include <QCompassReading>
 #include "datamonitor.h"
@@ -24,10 +26,12 @@ QMonitorOptions::QMonitorOptions(QDialog* d)
 : QWidget(d)
 , settings("karpeer.net","qTracker",this)
 {
-	montype = settings.value("monitor/type",0).toInt();
-	wptname = settings.value("monitor/waypoint","").toString();
-	rtename = settings.value("monitor/route","").toString();
-	trkname = settings.value("monitor/track","").toString();
+    LOG( "QMonitorOptions::QMonitorOptions()"; )
+    		
+	montype       = settings.value("monitor/type",0).toInt();
+	wptname       = settings.value("monitor/waypoint","").toString();
+	rtename       = settings.value("monitor/route","").toString();
+	trkname       = settings.value("monitor/track","").toString();
 	
 	QVBoxLayout *main = new QVBoxLayout();
 
@@ -124,6 +128,7 @@ QMonitorOptions::QMonitorOptions(QDialog* d)
 
 QMonitorOptions::~QMonitorOptions()
 {
+    LOG( "QMonitorOptions::~QMonitorOptions()"; )
 }
 
 void QMonitorOptions::resizeEvent( QResizeEvent * event )
@@ -143,6 +148,7 @@ void QMonitorOptions::resizeEvent( QResizeEvent * event )
 
 void QMonitorOptions::apply()
 {
+    LOG( "QMonitorOptions::apply()"; )
 	montype = typebuttons->checkedId();
 	switch (montype)
 	{
@@ -214,7 +220,9 @@ DataMonitor& DataMonitor::Instance()
 
 DataMonitor::DataMonitor()
 : strategy(0)
+, settings("karpeer.net","qTracker",this)
 {
+    LOG( "DataMonitor::DataMonitor()"; )
     possource = QGeoPositionInfoSource::createDefaultSource(this);
     if (possource) {
         possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
@@ -225,6 +233,15 @@ DataMonitor::DataMonitor()
     else
     {
         LOG( "DataMonitor::DataMonitor(): No possource"; )
+    }
+    
+    satsource = QGeoSatelliteInfoSource::createDefaultSource(this);
+    if (satsource) {
+        connect(satsource, SIGNAL(satellitesInViewUpdated(QList<QGeoSatelliteInfo>)),
+                this, SLOT(UpdateSatsInView(QList<QGeoSatelliteInfo>)));
+        connect(satsource, SIGNAL(satellitesInUseUpdated(QList<QGeoSatelliteInfo>)),
+                this, SLOT(UpdateSatsInUse(QList<QGeoSatelliteInfo>)));
+        satsource->startUpdates();
     }
     
     compass = new QCompass();
@@ -257,16 +274,26 @@ DataMonitor::DataMonitor()
 
 DataMonitor::~DataMonitor()
 {
+    LOG( "DataMonitor::~DataMonitor()"; )
 }
 
 void DataMonitor::OnPositionUpdate(const QGeoPositionInfo& info)
 {
+    LOG( "DataMonitor::PositionUpdate()"; )
+    		
 	emit PositionUpdated(info);
+	emit AltitudeUpdated(info.coordinate().altitude());
+	
+    if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
+        emit SpeedUpdated(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
+    
 	if (strategy) strategy->OnPositionUpdate(info);
 }
 
 void DataMonitor::OnHeadingUpdate()
 {
+    LOG( "DataMonitor::OnHeadingUpdate()"; )
+    		
 	int a = reading->azimuth();
     emit HeadingUpdated(a);
 	if (strategy) strategy->OnHeadingUpdate(a);
@@ -274,6 +301,8 @@ void DataMonitor::OnHeadingUpdate()
 
 void DataMonitor::OnTimeUpdate()
 {
+    LOG( "DataMonitor::OnTimeUpdate()"; )
+    		
 	QDateTime time = QDateTime::currentDateTime().toUTC();
     //emit TimeUpdated(time);
 	if (strategy) strategy->OnTimeUpdate(time);
@@ -281,6 +310,8 @@ void DataMonitor::OnTimeUpdate()
 
 void DataMonitor::SetStrategy(MonitorStrategy *s)
 {
+    LOG( "DataMonitor::SetStrategy()"; )
+    		
 	if (strategy) delete strategy;
 	strategy = s;
 	connect(strategy,SIGNAL(BearingUpdated(double)),this,SIGNAL(BearingUpdated(double)));
@@ -291,6 +322,7 @@ void DataMonitor::SetStrategy(MonitorStrategy *s)
 
 
 WayPointStrategy::WayPointStrategy(const WayPoint& wpt)
+: MonitorStrategy(1)
 {
 	name = wpt.Name();
 	targetposition.setLatitude(wpt.Latitude());
@@ -298,6 +330,7 @@ WayPointStrategy::WayPointStrategy(const WayPoint& wpt)
 }
 
 WayPointStrategy::WayPointStrategy(const QString& wpt)
+: MonitorStrategy(1)
 {
 	name = wpt;
 	targetposition.setLatitude(WayPointList::Instance().GetItem(wpt).Latitude());

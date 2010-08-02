@@ -12,6 +12,7 @@
 #include <QWidget>
 #include <QSettings>
 #include <QGeoCoordinate>
+#include <QGeoSatelliteInfo>
 class QDateTime;
 class QSettings;
 class WayPoint;
@@ -29,6 +30,8 @@ namespace QtMobility
 {
     class QGeoPositionInfo;
     class QGeoPositionInfoSource;
+    //class QGeoSatelliteInfo;
+    class QGeoSatelliteInfoSource;
     class QCompass;
     class QCompassReading;
 }
@@ -82,9 +85,16 @@ signals:
 	void TimeUpdated(const QDateTime&);
 
 public:
+	MonitorStrategy(int type=0);
 	virtual void OnPositionUpdate(const QGeoPositionInfo& info) {}
 	virtual void OnTimeUpdate(const QDateTime& time) {}
 	virtual void OnHeadingUpdate(int heading) {}
+	int Type() { return type; }
+	
+protected:
+	void SetType(int t) { type = t; }
+private:
+	int type;
 };
 
 class WayPointStrategy: public MonitorStrategy
@@ -106,7 +116,12 @@ class DataMonitor: public QObject
 	
 signals:
 	void PositionUpdated(const QGeoPositionInfo&);
+	void SatellitesInViewUpdated(const QList<QGeoSatelliteInfo>&);
+	void SatellitesInUseUpdated(const QList<QGeoSatelliteInfo>&);
+	
 	void HeadingUpdated(double);
+	void SpeedUpdated(double);
+	void AltitudeUpdated(double);
 	
 	void BearingUpdated(double);
 	void DistanceUpdated(double);
@@ -117,21 +132,28 @@ public slots:
 	void OnHeadingUpdate();
 	void OnTimeUpdate();
 	void SetStrategy(MonitorStrategy *s);
+	void UpdateSatsInUse(const QList<QGeoSatelliteInfo>& inuse)   { satsinuse = inuse;   emit SatellitesInUseUpdated(inuse); } 
+	void UpdateSatsInView(const QList<QGeoSatelliteInfo>& inview) { satsinview = inview; emit SatellitesInViewUpdated(inview); } 
 	
 public:
     static DataMonitor& Instance();
 	virtual ~DataMonitor();
+	const QList<QGeoSatelliteInfo>& SatsInUse() { return satsinuse; }
+	const QList<QGeoSatelliteInfo>& SatsInView() { return satsinview; }
 	
 private:
     static DataMonitor* instance;
 	DataMonitor();
 	
 private:
-    QSettings* settings;
+	MonitorStrategy* strategy;
+    QSettings settings;
 	QGeoPositionInfoSource* possource;
-    QCompass *compass;
+    QGeoSatelliteInfoSource* satsource;
+    QList<QGeoSatelliteInfo> satsinuse;
+    QList<QGeoSatelliteInfo> satsinview;
+    QCompass* compass;
     QCompassReading* reading;
-    MonitorStrategy* strategy;
-};
+}; 
 
 #endif /* DATAMONITOR_H_ */

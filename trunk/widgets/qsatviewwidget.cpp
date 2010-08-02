@@ -1,12 +1,19 @@
 #include "qgaugewidget.h"
 #include "qsatviewwidget.h"
+#include "datamonitor.h"
 #include "ui.h"
 #include <QtGui>
+#include <QGeoSatelliteInfo>
+
+#include <QDebug>
+#define LOG( a ) qDebug() << a
+#define LOG2( a ) 
+#define LOG3( a ) 
 
 QSatViewWidget::QSatViewWidget(QWidget *parent)
     : QGaugeWidget(parent)
 {
-    ClearSatInfo(-1);
+    LOG( "QSatViewWidget::QSatViewWidget()"; )
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerExpired()));
     timer->start(5000);
@@ -14,58 +21,41 @@ QSatViewWidget::QSatViewWidget(QWidget *parent)
 
 void QSatViewWidget::timerExpired()
 {
-    ClearSatInfo(-1);
+    LOG( "QSatViewWidget::timerExpired()"; )
+	update();
 }
 
-void QSatViewWidget::ClearSatInfo(int id)
+void QSatViewWidget::paintSatInfo(QPainter &painter, const QGeoSatelliteInfo& info, bool inuse)
 {
-    if ((id < -1) || (id > 31)) return;
-
-    if (id == -1)
-    {
-        for (id = 0; id < 31; id++)
-                strength[id] = -1;
-    }
-    else
-        strength[id] = -1;
-}
-
-void QSatViewWidget::SetSatInfo(int i, int s, double a, double e, bool u)
-{
-    if ((i <0) || (i>31)) return;
-
-    inuse[i] = u;
-    strength[i] = s;
-    azimuth[i] = a;
-    elevation[i] = e;
-}
-
-void QSatViewWidget::paintSatInfo(QPainter &painter, int id)
-{
+    LOG3( "QSatViewWidget::paintSatInfo()"; )
     double h = height();
     double s = h / 36;
+    double strength = info.signalStrength();
+    double azimuth = info.attribute(QGeoSatelliteInfo::Azimuth);
+    double elevation = info.attribute(QGeoSatelliteInfo::Elevation);
 
-    if (inuse[id])
+    if (inuse)
     {
         painter.setPen(Qt::green);
         painter.setBrush(Qt::green);
     }
     else
     {
-    int c = (2 * (int(strength[id]/96.0 * 0x7f) % 128)) & 0xff;
+		int c = (2 * (int(strength/96.0 * 0x7f) % 128)) & 0xff;
             painter.setPen(QColor(c,c,0));
             painter.setBrush(QColor(c,c,0));
     }
 
     painter.save();
-    painter.rotate(azimuth[id]-180);
-    painter.translate(0,(90.0 - elevation[id])/90 * h/2);
+    painter.rotate(azimuth-180);
+    painter.translate(0,(90.0 - elevation)/90 * h/2);
     painter.drawEllipse(s/-2,s/-2,s,s);
     painter.restore();
 }
 
 void QSatViewWidget::paintEvent(QPaintEvent *)
 {
+    LOG2( "QSatViewWidget::paintEvent()"; )
     double w = width();
     double x = w/2;
     double h = height();
@@ -77,7 +67,13 @@ void QSatViewWidget::paintEvent(QPaintEvent *)
 
     painter.translate(x,y);
     painter.drawImage(target, svgSatView, source);
+    
+    const QList<QGeoSatelliteInfo>& inview = DataMonitor::Instance().SatsInView();
+    const QList<QGeoSatelliteInfo>& inuse = DataMonitor::Instance().SatsInUse();
 
-    for (int i=0; i < 31; i++)
-        paintSatInfo(painter, i);
+    for (int i=0; i < inview.length(); i++)
+        paintSatInfo(painter, inview[i],false);
+    
+    for (int i=0; i < inuse.length(); i++)
+        paintSatInfo(painter, inuse[i],true);
 }

@@ -7,6 +7,7 @@
 namespace QtMobility
 {
     class QGeoCoordinate;
+    class QGeoPositionInfo;
 }
 using namespace QtMobility;
 
@@ -44,6 +45,7 @@ signals:
     void datum();
 
 public slots:
+    void UpdatePosition(const QGeoPositionInfo& info);
     void updatePosition(const QGeoCoordinate& pos);
     void moveMap(int x, int y);
     void SelectMap();

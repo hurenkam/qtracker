@@ -6,6 +6,7 @@
  */
 
 #include <QtGui>
+#include <QSplashScreen>
 #include "QDashWindow.h"
 #include "QClockWidget.h"
 #include "QSpeedWidget.h"
@@ -14,25 +15,12 @@
 #include "QHeadingWidget.h"
 #include "QMapWidget.h"
 #include "QSignalMapper.h"
-#include <QSplashScreen>
-#include <QCompass>
-#include <QCompassReading>
-#include <QGeoPositionInfo>
-#include <QGeoPositionInfoSource>
-#include <QGeoSatelliteInfo>
-#include <QGeoSatelliteInfoSource>
 #include "ui.h"
-#include "math.h"
-#include <stdio.h>
-
-using namespace QtMobility;
 
 //#include <QDebug>
 //#define LOG( a ) qDebug() << a
 #define LOG( a ) 
 
-
-const float PI = 3.14159265358979323846f;
 
 #ifdef Q_OS_SYMBIAN
 const int STEPCOUNT = 3;
@@ -123,34 +111,6 @@ static QRect GetRect(bool landscape,int gauge,int zoom)
             );
 }
 
-static void CalculateDistanceAndBearing(
-                double fromlat,
-                double fromlon,
-                double tolat,
-                double tolon,
-                double &distance,
-                double &bearing)
-{
-    double earths_radius = (6378137.0 + 6356752.3141) / 2.0;
-
-    double from_theta = float(fromlat) / 360.0 * 2.0 * PI;
-    double from_landa = float(fromlon) / 360.0 * 2.0 * PI;
-    double to_theta = float(tolat)     / 360.0 * 2.0 * PI;
-    double to_landa = float(tolon)     / 360.0 * 2.0 * PI;
-
-    distance = acos(
-            sin(from_theta) * sin(to_theta) +
-            cos(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
-                ) * earths_radius;
-
-    bearing = atan2(
-                sin(to_landa-from_landa) * cos(to_theta),
-                cos(from_theta) * sin(to_theta) -
-                sin(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
-            );
-    bearing = bearing / 2.0 / PI * 360.0;
-}
-
 QDashWindow::QDashWindow(QSettings& s, QWidget *parent)
         : QMainWindow(parent)
         , zoomstep    (0)
@@ -158,10 +118,7 @@ QDashWindow::QDashWindow(QSettings& s, QWidget *parent)
         , tozoom      (0)
         , landscape   (true)
         , starttime   (s.value("dash/starttime",(0,0,0)).toTime())
-        , distance    (s.value("dash/distance",0).toDouble())
         , timevalid   (s.value("dash/timevalid",false).toBool())
-        , posvalid(false)
-        //, showmap     (s.value("dash/showmap",true).toBool())
         , mapzoomed   (s.value("dash/mapzoomed",false).toBool())
         , settings(s)
 {
@@ -175,63 +132,12 @@ void QDashWindow::Init(QSplashScreen *splash)
     InitWidgets();
     splash->showMessage("Setting up main screen...",Qt::AlignLeft);
     showFullScreen();
-    clearSatellites();
 
     zoomtimer = new QTimer(this);
     connect(zoomtimer, SIGNAL(timeout()), this, SLOT(ZoomTimerExpired()));
 
     QTimer *t = new QTimer(this);
     connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
-/*
-    //compass = new QCompass();
-    compass = new QSensor("QCompass");
-    if (compass)
-    {
-        reading = static_cast<QCompassReading *>(compass->reading());
-        if (reading)
-        {
-            updateHeading();
-            connect(compass, SIGNAL(readingChanged()), this, SLOT(updateHeading()));
-        }
-        else
-        {
-        	heading->SetDial(-90);
-        }
-    }
-    else
-	{
-        heading->SetDial(-45);
-	}
-*/
-    possource = QGeoPositionInfoSource::createDefaultSource(this);
-    if (possource) {
-        possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
-        possource->setUpdateInterval(500);
-        connect(possource, SIGNAL(positionUpdated(QGeoPositionInfo)),
-                this, SLOT(updatePosition(QGeoPositionInfo)));
-        possource->startUpdates();
-        //possource->requestUpdate();
-    }
-    else
-	{
-        heading->SetDial(45);
-	}
-    
-    satsource = QGeoSatelliteInfoSource::createDefaultSource(this);
-    if (satsource) {
-        connect(satsource, SIGNAL(satellitesInViewUpdated(QList<QGeoSatelliteInfo>)),
-                this, SLOT(updateSatellitesInView(QList<QGeoSatelliteInfo>)));
-        connect(satsource, SIGNAL(satellitesInUseUpdated(QList<QGeoSatelliteInfo>)),
-                this, SLOT(updateSatellitesInUse(QList<QGeoSatelliteInfo>)));
-        satsource->startUpdates();
-        //satsource->requestUpdate();
-    }
-    //else
-	//{
-		//heading->SetNeedle(180);
-	//}
-    
-    connect(speed, SIGNAL(longTap()), this, SLOT(resetDistance()));
     connect(timer, SIGNAL(longTap()), this, SLOT(resetTimer()));
     connect(map, SIGNAL(longTap()), this, SLOT(ToggleMap()));
 
@@ -324,131 +230,6 @@ void QDashWindow::timeChanged()
         settings.setValue("dash/timevalid",timevalid);
         settings.setValue("dash/starttime",starttime);
     }
-}
-
-void QDashWindow::clearSatellites()
-{
-    inView.clear();
-    inUse.clear();
-    updateSatelliteList();
-}
-
-void QDashWindow::updatePosition(const QGeoPositionInfo &info)
-{	
-	LOG( "Position updated:" << info; )
-	double lat = info.coordinate().latitude();
-	double lon = info.coordinate().longitude();
-	double ele = info.coordinate().altitude();
-	
-	// Exit if animation in progress
-    if (zoomstep != 0) return;
-
-    updateDistance(lat,lon);
-    altitude->SetAltitude(ele);
-    if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
-        speed->SetSpeed(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
-    //if (info.hasAttribute(QGeoPositionInfo::Direction))
-    //    heading->SetDial(360.0-info.attribute(QGeoPositionInfo::Direction));
-    
-	// Exit if map is not visible
-    if (zoomgauge != 0) return;
-    
-    map->updatePosition(info.coordinate());
-}
-
-bool sortByPrn(const QGeoSatelliteInfo &s1, const QGeoSatelliteInfo &s2)
-{
-    return s1.prnNumber() < s2.prnNumber();
-}
-
-void QDashWindow::updateSatellitesInView(const QList<QGeoSatelliteInfo> &info)
-{	
-	inView = info;
-	qSort(inView.begin(), inView.end(), sortByPrn);
-	updateSatelliteList();
-}
-
-void QDashWindow::updateSatellitesInUse(const QList<QGeoSatelliteInfo> &info)
-{	
-	inUse = info;
-	qSort(inUse.begin(), inUse.end(), sortByPrn);
-	updateSatelliteList();
-}
-
-void QDashWindow::updateSatelliteList()
-{
-    if (zoomstep != 0) return;
-    
-	int strength = 0;
-	double azimuth = 0;
-	double elevation = 0;
-	
-    int useSize = inUse.size();
-    int viewSize = inView.size();
-
-    if ((useSize == 0) && (viewSize == 0)) {
-        return;
-    }
-
-  	satview->ClearSatInfo(-1);
-  	int i=0;
-  	for (; i < viewSize; ++i) 
-    {
-        strength = inView.at(i).signalStrength();
-        azimuth = inView.at(i).attribute(QGeoSatelliteInfo::Azimuth);
-        elevation = inView.at(i).attribute(QGeoSatelliteInfo::Elevation);
-        
-      	satview->SetSatInfo(i,strength,azimuth,elevation,false);
-    }
-    for (int j=0; j < useSize; ++j) 
-    {
-        strength = inUse.at(j).signalStrength();
-        azimuth = inUse.at(j).attribute(QGeoSatelliteInfo::Azimuth);
-        elevation = inUse.at(j).attribute(QGeoSatelliteInfo::Elevation);
-        
-      	satview->SetSatInfo(j+i+1,strength,azimuth,elevation,true);
-    }
-  	satview->update();
-}
-
-void QDashWindow::resetDistance()
-{
-    distance = 0;
-    settings.setValue("dash/distance",distance);
-    speed->SetDistance(distance);
-}
-
-void QDashWindow::updateDistance(double lat, double lon)
-{
-    if (zoomstep != 0) return;
-
-    if (posvalid)
-    {
-        double d = 0;
-        double b = 0;
-        CalculateDistanceAndBearing(prevlat,prevlon,lat,lon,d,b);
-        if (d > 25)
-        {
-            distance += d/1000.0;
-            settings.setValue("dash/distance",distance);
-            prevlat = lat;
-            prevlon = lon;
-            speed->SetDistance(distance);
-        }
-    }
-    else
-    {
-        posvalid = true;
-        prevlat = lat;
-        prevlon = lon;
-    }
-}
-
-void QDashWindow::updateHeading()
-{
-    if (zoomstep != 0) return;
-
-    //heading->SetDial(360.0-reading->azimuth());
 }
 
 void QDashWindow::ToggleMap()
@@ -546,12 +327,6 @@ void QDashWindow::ZoomToGauge(int i)
     // return if in transition
     if (zoomstep > 0) return;
     StartTransition(i);
-}
-
-void QDashWindow::GaugeOptions(int /*i*/)
-{
-    // return if in transition
-    if (zoomstep > 0) return;
 }
 
 void QDashWindow::ZoomTimerExpired()

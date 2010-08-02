@@ -25,10 +25,7 @@ signals:
 protected:
 	QString name;
 	QList<WayPoint*> list;
-	//int updatetime;
-	//int updatedistance;
 public:
-	//Track(QString n="", int t=0, int d=0): name(n), updatetime(t), updatedistance(d) {}
 	QString Name() const             { return name; }
 	QString FileName() const         { return QString(GetDrive() + QString(TRACKDIR) + name + ".gpx"); }
 	void SetName(QString n)          { name = n; }
@@ -66,7 +63,6 @@ protected:
 	bool isrecording;
 	int timeinterval;
 	int distinterval;
-	QGeoPositionInfoSource* possource;
 
 public slots:
 	void SaveSettings();
@@ -77,8 +73,6 @@ public slots:
 	void UpdateInterval(int d, int t);
 	void Stop();
 	void UpdatePosition(const QGeoPositionInfo& info);
-	//void AddTrack(const Track& t)          { AddTrack(new Track(t); }
-	//void UpdateTrack(const QString& orgname, const Track& t) {}
 	
 public:
 	// Todo: handle case if name already exists

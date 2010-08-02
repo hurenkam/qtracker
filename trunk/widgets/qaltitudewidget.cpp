@@ -1,7 +1,17 @@
 #include <QtGui>
+#include <QGeoCoordinate>
+#include <QGeoPositionInfo>
 #include "qgaugewidget.h"
 #include "qaltitudewidget.h"
+#include "datamonitor.h"
 #include "ui.h"
+
+#include <QDebug>
+#define LOG( a )  qDebug() << a
+#define LOG2( a ) 
+#define LOG3( a ) 
+
+using namespace QtMobility;
 
 QAltitudeWidget::QAltitudeWidget(QWidget *parent)
     : QGaugeWidget(parent)
@@ -16,37 +26,38 @@ QAltitudeWidget::QAltitudeWidget(QWidget *parent)
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
     connect(this, SIGNAL(longTap()), this, SLOT(reset()));
+	connect(&DataMonitor::Instance(), SIGNAL(AltitudeUpdated(double)), this, SLOT(SetAltitude(double)));
 }
 
 void QAltitudeWidget::timerStep()
 {
-        if (steps == 0)
-        {
-                if (min > max)
-                {
-                        min = current;
-                        max = current;
-                        update();
-                }
-                if (current < min)
-                {
-                        min = current;
-                        update();
-                }
-                if (current > max)
-                {
-                        max = current;
-                        update();
-                }
+	if (steps == 0)
+	{
+		if (min > max)
+		{
+			min = current;
+			max = current;
+			update();
+		}
+		if (current < min)
+		{
+			min = current;
+			update();
+		}
+		if (current > max)
+		{
+			max = current;
+			update();
+		}
         timer->stop();
-        }
-        else if (steps > 0)
-        {
-                current += delta;
-                steps -= 1;
+	}
+	else if (steps > 0)
+	{
+		current += delta;
+		steps -= 1;
 
-                update();
-        }
+		update();
+	}
 }
 
 void QAltitudeWidget::reset()
@@ -59,8 +70,8 @@ void QAltitudeWidget::reset()
 
 void QAltitudeWidget::SetAltitude(double alt)
 {
-        if (set == alt) return;
-        timer->stop();
+	if (set == alt) return;
+	timer->stop();
 
     set = alt;
     steps = 6;

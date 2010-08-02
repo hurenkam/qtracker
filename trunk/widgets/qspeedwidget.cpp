@@ -1,7 +1,14 @@
+#include <QtGui>
+#include <QGeoPositionInfo>
+#include "datamonitor.h"
 #include "qgaugewidget.h"
 #include "qspeedwidget.h"
 #include "ui.h"
-#include <QtGui>
+
+#include <QDebug>
+#define LOG( a )  qDebug() << a
+#define LOG2( a ) 
+#define LOG3( a ) 
 
 QSpeedWidget::QSpeedWidget(QWidget *parent)
     : QGaugeWidget(parent)
@@ -12,9 +19,43 @@ QSpeedWidget::QSpeedWidget(QWidget *parent)
     , curspeed(0.0)
     , setspeed(0.0)
     , distance(0.0)
+    , prevpos(0)
+    , mindist(25)
 {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
+	connect(&DataMonitor::Instance(), SIGNAL(PositionUpdated(QGeoPositionInfo)), this, SLOT(UpdatePosition(QGeoPositionInfo)));
+    connect(this, SIGNAL(longTap()), this, SLOT(Reset()));
+}
+
+void QSpeedWidget::Reset()
+{
+    SetDistance(0);
+}
+
+void QSpeedWidget::UpdatePosition(const QGeoPositionInfo& info)
+{
+    LOG( "QAltitudeWidget::UpdatePosition()"; )
+    QGeoCoordinate curpos = info.coordinate();
+    
+    if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
+        SetSpeed(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
+    
+	if (prevpos)
+	{
+		double delta = prevpos->distanceTo(curpos);
+		if (delta > mindist)
+		{
+			distance += delta/1000.0;
+			prevpos->setLatitude(curpos.latitude());
+			prevpos->setLongitude(curpos.longitude());
+		}
+	}
+	else
+	{
+		prevpos = new QGeoCoordinate(info.coordinate());
+	}
+	QGeoCoordinate pos = info.coordinate();
 }
 
 void QSpeedWidget::SetSpeed(double s)
@@ -28,14 +69,14 @@ void QSpeedWidget::SetSpeed(double s)
 
 void QSpeedWidget::timerStep()
 {
-        if (steps == 0)
-        {
-                timer->stop();
-                return;
-        }
+	if (steps == 0)
+	{
+		timer->stop();
+		return;
+	}
 
-        curspeed += delta;
-        steps -= 1;
+	curspeed += delta;
+	steps -= 1;
 
     if (curspeed > 9)
         scale = 200;

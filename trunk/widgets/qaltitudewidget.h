@@ -4,16 +4,22 @@
 #include <QWidget>
 #include "qgaugewidget.h"
 
+namespace QtMobility
+{
+	class QGeoPositionInfo;
+}
+using namespace QtMobility;
+
 class QAltitudeWidget : public QGaugeWidget
 {
     Q_OBJECT
 public:
     QAltitudeWidget(QWidget *parent);
-    void SetAltitude(double a);
 
 public slots:
-        void timerStep();
-        void reset();
+	void timerStep();
+	void reset();
+    void SetAltitude(double a);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);

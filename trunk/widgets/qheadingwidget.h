@@ -28,8 +28,8 @@ public:
 public slots:
     void timerStep();
     void SelectOptions();
-	void UpdatePosition(const QGeoPositionInfo& info);
-	void UpdateHeading();
+	//void UpdatePosition(const QGeoPositionInfo& info);
+	//void UpdateHeading();
 	void UpdateHeading(double h);
 	void UpdateAzimuth(double a);
 	void UpdateDials();
@@ -40,11 +40,11 @@ protected:
 
 private:
     QSettings settings;
-	WayPoint monitor;
-	QGeoPositionInfoSource* possource;
+	//WayPoint monitor;
+	//QGeoPositionInfoSource* possource;
     QTimer *timer;
-    QCompass *compass;
-    QCompassReading* reading;
+    //QCompass *compass;
+    //QCompassReading* reading;
     double heading;
     double azimuth;
     double setdial;
@@ -59,11 +59,11 @@ private:
     double curring;
     double deltaring;
     int    stepsring;
-    QString wptname;
-    QString trkname;
-    QString rtename;
-    int montype;
-    int source;
+    //QString wptname;
+    //QString trkname;
+    //QString rtename;
+    //int montype;
+    //int source;
     int view;
 };
 
