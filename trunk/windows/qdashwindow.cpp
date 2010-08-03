@@ -117,8 +117,6 @@ QDashWindow::QDashWindow(QSettings& s, QWidget *parent)
         , zoomgauge   (s.value("dash/zoomgauge",0).toInt())
         , tozoom      (0)
         , landscape   (true)
-        , starttime   (s.value("dash/starttime",(0,0,0)).toTime())
-        , timevalid   (s.value("dash/timevalid",false).toBool())
         , mapzoomed   (s.value("dash/mapzoomed",false).toBool())
         , settings(s)
 {
@@ -135,14 +133,9 @@ void QDashWindow::Init(QSplashScreen *splash)
 
     zoomtimer = new QTimer(this);
     connect(zoomtimer, SIGNAL(timeout()), this, SLOT(ZoomTimerExpired()));
-
-    QTimer *t = new QTimer(this);
-    connect(t, SIGNAL(timeout()), this, SLOT(timeChanged()));
-    connect(timer, SIGNAL(longTap()), this, SLOT(resetTimer()));
+    //connect(timer, SIGNAL(longTap()), this, SLOT(resetTimer()));
     connect(map, SIGNAL(longTap()), this, SLOT(ToggleMap()));
-
-    t->start(1000);
-
+    
     QFile file(SPLASHRCDIR "style.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
@@ -190,48 +183,6 @@ void QDashWindow::InitWidgets()
     connect(mapper,SIGNAL(mapped(const int &)),this,SLOT(ZoomToGauge(const int &)));
 }
 
-void QDashWindow::resetTimer()
-{
-    timevalid = false;
-    timeChanged();
-}
-
-void QDashWindow::timeChanged()
-{
-    if (zoomstep != 0) return;
-
-    QTime time = QTime::currentTime();
-    int second = time.second();
-    int minute = time.minute();
-    int hour = time.hour();
-    clock->SetTime(hour,minute,second);
-
-    if (timevalid)
-    {
-        hour   -= starttime.hour();
-        minute -= starttime.minute();
-        second -= starttime.second();
-        if (second < 0)
-        {
-            second += 60;
-            minute -= 1;
-        }
-        if (minute < 0)
-        {
-            minute += 60;
-            hour -= 1;
-        }
-        timer->SetTime(hour,minute,second);
-    }
-    else
-    {
-        timevalid = true;
-        starttime = time;
-        settings.setValue("dash/timevalid",timevalid);
-        settings.setValue("dash/starttime",starttime);
-    }
-}
-
 void QDashWindow::ToggleMap()
 {
     mapzoomed = !mapzoomed;
@@ -273,7 +224,6 @@ void QDashWindow::Setup()
     if ( zoomstep == 0)             // No transition
     {
         if (zoomgauge != 0)         // Gauge zoomed
-            //map->setGeometry(0,0,0,0);
             map->hide();
         else                        // Map visibile
         {

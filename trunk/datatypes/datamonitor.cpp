@@ -5,7 +5,7 @@
  *      Author: Mark Hurenkamp
  */
 
-#include <QDateTime>
+#include <QTime>
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
 #include <QGeoSatelliteInfo>
@@ -270,6 +270,11 @@ DataMonitor::DataMonitor()
     {
         LOG( "DataMonitor::DataMonitor(): No compass"; )
     }
+    
+	int montype       = settings.value("monitor/type",0).toInt();
+	QString wptname   = settings.value("monitor/waypoint","").toString();
+	if (montype==1)
+		SetStrategy(new WayPointStrategy(wptname));
 }
 
 DataMonitor::~DataMonitor()
@@ -303,7 +308,7 @@ void DataMonitor::OnTimeUpdate()
 {
     LOG( "DataMonitor::OnTimeUpdate()"; )
     		
-	QDateTime time = QDateTime::currentDateTime().toUTC();
+	QTime time = QTime::currentTime();
     //emit TimeUpdated(time);
 	if (strategy) strategy->OnTimeUpdate(time);
 }
@@ -316,7 +321,7 @@ void DataMonitor::SetStrategy(MonitorStrategy *s)
 	strategy = s;
 	connect(strategy,SIGNAL(BearingUpdated(double)),this,SIGNAL(BearingUpdated(double)));
 	connect(strategy,SIGNAL(DistanceUpdated(double)),this,SIGNAL(DistanceUpdated(double)));
-	connect(strategy,SIGNAL(TimeUpdated(const QDateTime&)),this,SIGNAL(TimeUpdated(const QDateTime&)));
+	connect(strategy,SIGNAL(TimeUpdated(const QTime&)),this,SIGNAL(TimeUpdated(const QTime&)));
 }
 
 
@@ -340,6 +345,15 @@ WayPointStrategy::WayPointStrategy(const QString& wpt)
 void WayPointStrategy::OnPositionUpdate(const QGeoPositionInfo& info)
 {
 	currentposition = info.coordinate();
+	double distance = currentposition.distanceTo(targetposition);
 	emit BearingUpdated(currentposition.azimuthTo(targetposition));
-	emit DistanceUpdated(currentposition.distanceTo(targetposition));
+	emit DistanceUpdated(distance);
+    if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
+    {
+        double speed = info.attribute(QGeoPositionInfo::GroundSpeed);
+        LOG( "WayPointStrategy::OnPositionUpdate() Distance: " << distance << " Speed: " << speed << " Distance/Speed: " << distance/speed; )
+        QTime time = QTime::currentTime().addSecs(distance/speed);
+        emit TimeUpdated(time);
+    }
+	
 }

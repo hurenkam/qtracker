@@ -38,10 +38,8 @@ public:
 	void Init(QSplashScreen *s=0);
 
 public slots:
-    void timeChanged();
     void ZoomTimerExpired();
     void ZoomToGauge(int i);
-    void resetTimer();
     void ToggleMap();
 
 protected:
@@ -71,9 +69,7 @@ private:
     int zoomgauge;
     int tozoom;
     bool landscape;
-    QTime starttime;
     int   count;
-    bool timevalid;
     bool mapzoomed;
 };
 

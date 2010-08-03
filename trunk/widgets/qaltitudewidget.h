@@ -18,7 +18,7 @@ public:
 
 public slots:
 	void timerStep();
-	void reset();
+	void Reset();
     void SetAltitude(double a);
 
 protected:

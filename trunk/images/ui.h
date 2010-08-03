@@ -24,10 +24,10 @@ extern QImage svgCompassRing;
 extern QImage svgSpeedNeedle;
 
 #ifdef Q_OS_SYMBIAN
-#define TEXTDIVIDER 36
+#define TEXTDIVIDER 38
 #else
 #define UIDIR "/Users/hurenkam/workspace/qtracker/images/"
-#define TEXTDIVIDER 12
+#define TEXTDIVIDER 14
 #endif
 
 #ifdef USE_QT_RESOURCES

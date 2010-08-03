@@ -25,7 +25,7 @@ QAltitudeWidget::QAltitudeWidget(QWidget *parent)
 {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));
-    connect(this, SIGNAL(longTap()), this, SLOT(reset()));
+    connect(this, SIGNAL(longTap()), this, SLOT(Reset()));
 	connect(&DataMonitor::Instance(), SIGNAL(AltitudeUpdated(double)), this, SLOT(SetAltitude(double)));
 }
 
@@ -60,7 +60,7 @@ void QAltitudeWidget::timerStep()
 	}
 }
 
-void QAltitudeWidget::reset()
+void QAltitudeWidget::Reset()
 {
     min = 0.2;
     max = 0.1;
@@ -97,20 +97,20 @@ void QAltitudeWidget::paintEvent(QPaintEvent *)
 
     painter.setFont(QFont("Courier", h/TEXTDIVIDER));
     sprintf(buf,"%5.5i",int(min));
-    QRect r = painter.boundingRect(w/-4,h/3,w/2,h/12, Qt::AlignCenter, buf);
+    QRect r = painter.boundingRect(w/-4,h/3.5,w/2,h/12, Qt::AlignCenter, buf);
     painter.setPen(QPen(Qt::black));
     painter.setBrush(Qt::black);
     painter.drawRect(r);
     painter.setPen(QPen(Qt::white));
-    painter.drawText(w/-4,h/3,w/2,h/12, Qt::AlignCenter, buf);
+    painter.drawText(w/-4,h/3.5,w/2,h/12, Qt::AlignCenter, buf);
 
     sprintf(buf,"%5.5i",int(max));
-    r = painter.boundingRect(w/-4,h/5.5,w/2,h/12, Qt::AlignCenter, buf);
+    r = painter.boundingRect(w/-4,h/6,w/2,h/12, Qt::AlignCenter, buf);
     painter.setPen(QPen(Qt::black));
     painter.setBrush(Qt::black);
     painter.drawRect(r);
     painter.setPen(QPen(Qt::white));
-    painter.drawText(w/-4,h/5.5,w/2,h/12, Qt::AlignCenter, buf);
+    painter.drawText(w/-4,h/6,w/2,h/12, Qt::AlignCenter, buf);
 
     double s = current / 1000;
     double l = current - int(s)*1000;

@@ -82,12 +82,12 @@ class MonitorStrategy: public QObject
 signals:
 	void BearingUpdated(double);
 	void DistanceUpdated(double);
-	void TimeUpdated(const QDateTime&);
+	void TimeUpdated(const QTime&);
 
 public:
-	MonitorStrategy(int type=0);
+	MonitorStrategy(int t=0) : type(t) {}
 	virtual void OnPositionUpdate(const QGeoPositionInfo& info) {}
-	virtual void OnTimeUpdate(const QDateTime& time) {}
+	virtual void OnTimeUpdate(const QTime& time) {}
 	virtual void OnHeadingUpdate(int heading) {}
 	int Type() { return type; }
 	
@@ -125,7 +125,7 @@ signals:
 	
 	void BearingUpdated(double);
 	void DistanceUpdated(double);
-	void TimeUpdated(const QDateTime&);
+	void TimeUpdated(const QTime&);
 	
 public slots:
     void OnPositionUpdate(const QGeoPositionInfo& info);
