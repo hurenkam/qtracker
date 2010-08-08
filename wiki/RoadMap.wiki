@@ -8,7 +8,8 @@ WishList | KnownBugs | RoadMap
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
-* Already done
+
+* Already done *
  * Use magnetic north sensor
  * Waypoint monitor
  * Track display & recording (use server backend)
