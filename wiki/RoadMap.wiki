@@ -15,7 +15,7 @@ WishList | KnownBugs | RoadMap
  * Track display & recording (use server backend)
  * Route display
 
-* Short-term todo
+* Short-term todo *
  * Edit/Save Routes
  * Gpx import
  * Gauge options (Clock, Altitude, Speed)
