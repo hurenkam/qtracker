@@ -31,7 +31,8 @@ HEADERS += \
     widgets/qspeedwidget.h \
     windows/qdashwindow.h \
     widgets/qgaugewidget.h \
-    widgets/qmapwidget.h
+    widgets/qmapwidget.h \
+    widgets/qlevelwidget.h
 INCLUDEPATH += dialogs \
     datatypes \
     widgets \
@@ -76,10 +77,12 @@ symbian {
         images/locator_red.svg \
         images/locator_green.svg \
         images/wpt_green.svg \
-        images/compassring.svg
+        images/compassring.svg \
+        images/level.svg \
+        images/leveltop.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.211
+    VERSION = 0.8.214
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
@@ -102,6 +105,7 @@ SOURCES += \
     dialogs/qroutedialog.cpp \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
+    widgets/qlevelwidget.cpp \
     images/ui.cpp \
     widgets/qaltitudewidget.cpp \
     widgets/qclockwidget.cpp \
