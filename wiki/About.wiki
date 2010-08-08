@@ -24,13 +24,18 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * Map zoom
  * Installation works on C: and E: (F: is untested, but should work)
  * Calibrate map
- * Track record/show/hide/delete
+ * Show/Hide/Record/Delete Tracks
+ * Show/Hide/Edit/Save/Delete Waypoints
+ * Show/Delete routes
+ * Persistent settings (current map, zoom mode, many others)
 
 * Todo before 2nd alpha: *
- * Load/Save/Delete/Edit waypoints
- * Load/Save/Delete/Edit routes
+ * Edit/Save Routes
  * Gpx import
- * Persistent settings (current map, zoom mode)
+ * Clock options
+ * Altitude options
+ * Speed options
+ * UTM datum support
 
 * Screenshots *
 
