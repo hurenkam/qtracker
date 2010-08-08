@@ -8,15 +8,25 @@ WishList | KnownBugs | RoadMap
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
-
-* Planned features: *
+* Already done
  * Use magnetic north sensor
- * Screensaver disable & autodisable
  * Waypoint monitor
  * Track display & recording (use server backend)
- * Route display & editing
+ * Route display
+
+* Short-term todo
+ * Edit/Save Routes
+ * Gpx import
+ * Gauge options (Clock, Altitude, Speed)
+ * Multiple datum support: RD, UTM, others (see Proj.4)
+ * Better handling of 'bad-weather' scenarios (duplicate names, bad settings, etc)
+
+* Planned features: *
+ * Screensaver disable & autodisable
+ * Route editing
  * Route & Track monitoring
- * Gauge options & more gauge info (average speed, descent/ascent distance, select units)
+ * Monitor alarms (ETA too late, out/in range track/route/waypoint, over/under altitude, gaining/losing speed/altitude)
 
 * Future: *
+ * Implement client-server model (data handling & track recording in server, rest in client)
  * Create a plugin architecture to enable 3rd party widgets/layouts/events
