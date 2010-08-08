@@ -2,7 +2,6 @@
 #define QCLOCKWIDGET_H
 
 #include <QWidget>
-#include <QSettings>
 #include <QDateTime>
 #include <QTimer>
 #include "qgaugewidget.h"
@@ -27,7 +26,6 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-    QSettings settings;
     QTime starttime;
     QTime analog;
     QTime top;

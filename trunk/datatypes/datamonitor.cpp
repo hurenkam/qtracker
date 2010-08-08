@@ -221,6 +221,8 @@ DataMonitor& DataMonitor::Instance()
 DataMonitor::DataMonitor()
 : strategy(0)
 , settings("karpeer.net","qTracker",this)
+, compass(0)
+, reading(0)
 {
     LOG( "DataMonitor::DataMonitor()"; )
     possource = QGeoPositionInfoSource::createDefaultSource(this);
@@ -243,7 +245,8 @@ DataMonitor::DataMonitor()
                 this, SLOT(UpdateSatsInUse(QList<QGeoSatelliteInfo>)));
         satsource->startUpdates();
     }
-    
+
+#ifndef DISABLE_COMPASS    
     compass = new QCompass();
     if (compass)
     {
@@ -267,6 +270,7 @@ DataMonitor::DataMonitor()
     	}
     }
     else
+#endif
     {
         LOG( "DataMonitor::DataMonitor(): No compass"; )
     }
@@ -292,6 +296,16 @@ void DataMonitor::OnPositionUpdate(const QGeoPositionInfo& info)
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
         emit SpeedUpdated(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
     
+    if ( IsUsingGPSCompass() ) 
+	{
+        if (info.hasAttribute(QGeoPositionInfo::Direction))
+        {
+        	double a = info.attribute(QGeoPositionInfo::Direction);
+        	emit HeadingUpdated(a);
+    	    if (strategy) strategy->OnHeadingUpdate(a);
+        }
+	}
+    		
 	if (strategy) strategy->OnPositionUpdate(info);
 }
 
@@ -299,6 +313,8 @@ void DataMonitor::OnHeadingUpdate()
 {
     LOG( "DataMonitor::OnHeadingUpdate()"; )
     		
+	if ( IsUsingGPSCompass() ) return;
+    
 	int a = reading->azimuth();
     emit HeadingUpdated(a);
 	if (strategy) strategy->OnHeadingUpdate(a);
@@ -342,18 +358,24 @@ WayPointStrategy::WayPointStrategy(const QString& wpt)
 	targetposition.setLongitude(WayPointList::Instance().GetItem(wpt).Longitude());
 }
 
+void WayPointStrategy::OnTimeUpdate(const QTime& time)
+{
+    if (currentinfo.hasAttribute(QGeoPositionInfo::GroundSpeed))
+    {
+        double speed = currentinfo.attribute(QGeoPositionInfo::GroundSpeed);
+    	double distance = currentposition.distanceTo(targetposition);
+        LOG( "WayPointStrategy::OnPositionUpdate() Distance: " << distance << " Speed: " << speed << " Distance/Speed: " << distance/speed; )
+        QTime newtime = time.addSecs(distance/speed);
+        emit TimeUpdated(newtime);
+    }
+}
+
 void WayPointStrategy::OnPositionUpdate(const QGeoPositionInfo& info)
 {
+	currentinfo = info;
 	currentposition = info.coordinate();
 	double distance = currentposition.distanceTo(targetposition);
 	emit BearingUpdated(currentposition.azimuthTo(targetposition));
 	emit DistanceUpdated(distance);
-    if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
-    {
-        double speed = info.attribute(QGeoPositionInfo::GroundSpeed);
-        LOG( "WayPointStrategy::OnPositionUpdate() Distance: " << distance << " Speed: " << speed << " Distance/Speed: " << distance/speed; )
-        QTime time = QTime::currentTime().addSecs(distance/speed);
-        emit TimeUpdated(time);
-    }
-	
+	OnTimeUpdate(QTime::currentTime());
 }

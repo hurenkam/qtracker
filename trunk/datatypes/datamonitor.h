@@ -13,6 +13,8 @@
 #include <QSettings>
 #include <QGeoCoordinate>
 #include <QGeoSatelliteInfo>
+#include <QGeoPositionInfo>
+#include <QCompassReading>
 class QDateTime;
 class QSettings;
 class WayPoint;
@@ -28,12 +30,12 @@ class QBoxLayout;
 
 namespace QtMobility
 {
-    class QGeoPositionInfo;
+    //class QGeoPositionInfo;
     class QGeoPositionInfoSource;
     //class QGeoSatelliteInfo;
     class QGeoSatelliteInfoSource;
     class QCompass;
-    class QCompassReading;
+    //class QCompassReading;
 }
 using namespace QtMobility;
 
@@ -56,7 +58,7 @@ public slots:
     void waypointselected();
     void routeselected();
     void trackselected();
-    
+
     void apply();
     
 private:
@@ -102,10 +104,12 @@ class WayPointStrategy: public MonitorStrategy
 public:
 	WayPointStrategy(const WayPoint& wpt);
 	WayPointStrategy(const QString& wpt);
+	virtual void OnTimeUpdate(const QTime& time);
 	
 	virtual void OnPositionUpdate(const QGeoPositionInfo& info);
 private:
 	QString name;
+	QGeoPositionInfo currentinfo;
 	QGeoCoordinate currentposition;
 	QGeoCoordinate targetposition;
 };
@@ -138,6 +142,10 @@ public slots:
 public:
     static DataMonitor& Instance();
 	virtual ~DataMonitor();
+	int  HeadingSource()        { settings.sync(); return settings.value("compass/source",0).toInt(); }
+	double CompassCalibration() { if (HasCompassSensor()) return reading->calibrationLevel(); else return 0; }
+	bool HasCompassSensor()     { return ((compass != 0) && (reading != 0)); }
+	bool IsUsingGPSCompass()    { return ((HeadingSource()==1) || (!HasCompassSensor())); }
 	const QList<QGeoSatelliteInfo>& SatsInUse() { return satsinuse; }
 	const QList<QGeoSatelliteInfo>& SatsInView() { return satsinview; }
 	

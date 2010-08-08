@@ -19,6 +19,7 @@ const char* states[] = {
 
 QGaugeWidget::QGaugeWidget(QWidget *parent)
     : QWidget(parent)
+    , settings  ("karpeer.net","qTracker",this)
     , state(StIdle)
     , minx(25)
     , miny(25)
@@ -29,6 +30,11 @@ QGaugeWidget::QGaugeWidget(QWidget *parent)
     longtaptimer.setSingleShot(true);
     longtaptimer.setInterval(1000);
     connect(&longtaptimer,SIGNAL(timeout()),this,SLOT(longTapTimeout()));
+}
+
+void QGaugeWidget::SaveSettings()
+{
+	settings.sync();
 }
 
 QGaugeWidget::~QGaugeWidget()

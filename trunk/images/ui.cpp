@@ -9,6 +9,8 @@
 
 QImage svgClock;
 QImage svgCompassRing;
+QImage svgLevel;
+QImage svgLevelTop;
 QImage svgAltitude;
 QImage svgHeading;
 QImage svgSatView;
@@ -32,8 +34,8 @@ QString GetDrive()
         TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
         TPtrC drive = appparser.Drive();
         //if (!inemulator)
-        //return QString::fromUtf16(drive.Ptr(),drive.Length());
-        return QString("C:");
+        return QString::fromUtf16(drive.Ptr(),drive.Length());
+        //return QString("C:");
 }
 #else
 QString GetDrive()
@@ -46,6 +48,8 @@ void LoadImages()
 {
     svgClock.load(DASHRCDIR "clock.svg");
     svgCompassRing.load(DASHRCDIR "compassring.svg");
+    svgLevel.load(DASHRCDIR "level.svg");
+    svgLevelTop.load(DASHRCDIR "leveltop.svg");
     svgAltitude.load(DASHRCDIR "speed10.svg");
     svgHeading.load(DASHRCDIR "compass.svg");
     svgSatView.load(DASHRCDIR "satview.svg");

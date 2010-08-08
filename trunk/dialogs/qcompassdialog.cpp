@@ -50,12 +50,15 @@ QCompassOptions::QCompassOptions(QDialog* d)
 	sourcebox->addWidget(gpsbutton);
 	sourcegroup->setLayout(sourcebox);
 	sourcegroup->show();
-	sensorbutton->setChecked(true);
-	if (source==0)
-	    sensorbutton->setChecked(true);
-	else
-	    gpsbutton->setChecked(true);
 	
+	if ( DataMonitor::Instance().IsUsingGPSCompass() )
+        gpsbutton->setChecked(true);
+	else
+        sensorbutton->setChecked(true);
+
+	if ( !DataMonitor::Instance().HasCompassSensor() )
+		sensorbutton->setDisabled(true);
+
 	QGroupBox*    viewgroup =     new QGroupBox("View");
 	viewbuttons =   new QButtonGroup(viewgroup);
 	QRadioButton* northupbutton = new QRadioButton("North up");

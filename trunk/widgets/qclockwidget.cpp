@@ -6,7 +6,6 @@
 
 QClockWidget::QClockWidget(QWidget *parent)
 : QGaugeWidget(parent)
-, settings  ("karpeer.net","qTracker",this)
 , starttime (settings.value("dash/starttime",(0,0,0)).toTime())
 {
 	connect(&timer, SIGNAL(timeout()), this, SLOT(TimeChanged()));
@@ -32,6 +31,8 @@ void QClockWidget::TimeChanged()
 void QClockWidget::Reset()
 {
 	starttime = QTime::currentTime();
+	settings.setValue("dash/starttime",starttime);
+	settings.sync();
     TimeChanged();
 }
 

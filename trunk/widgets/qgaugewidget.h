@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QSettings>
 
 class QGaugeWidget : public QWidget
 {
@@ -11,6 +12,7 @@ public:
     QGaugeWidget(QWidget *parent = 0);
     ~QGaugeWidget();
     void SetDragMin(int aminx, int aminy) { minx=aminx; miny=aminy; }
+    virtual void SaveSettings();
 
 signals:
     void singleTap();
@@ -34,6 +36,9 @@ protected:
     //void QGaugeWidget::startLongMoveTimer();
     //void QGaugeWidget::cancelLongMoveTimer();
 
+protected:
+    QSettings settings;
+    
 private:
     static const int StIdle = 0;
     static const int StInitialTouch = 1;

@@ -23,6 +23,7 @@ class QSatViewWidget;
 class QHeadingWidget;
 class QMapWidget;
 class QSplashScreen;
+class QLevelWidget;
 
 using namespace QtMobility;
 
@@ -53,7 +54,8 @@ private:
     QSettings& settings;
     QClockWidget *clock;
     QSpeedWidget *speed;
-    QClockWidget *timer;
+    //QClockWidget *timer;
+    QLevelWidget *level;
     QAltitudeWidget *altitude;
     QSatViewWidget *satview;
     QHeadingWidget *heading;
