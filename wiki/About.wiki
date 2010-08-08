@@ -28,6 +28,7 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * Show/Hide/Edit/Save/Delete Waypoints
  * Show/Delete routes
  * Persistent settings (current map, zoom mode, many others)
+ * Compass using magnetic north sensor
 
 * Todo before 2nd alpha: *
  * Edit/Save Routes
