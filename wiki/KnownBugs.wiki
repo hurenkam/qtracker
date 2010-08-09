@@ -10,6 +10,9 @@ WishList | KnownBugs | RoadMap
 ----
 
 
+=== Release 0.8.226 ===
+Scrolling has improved, but still is not as good as i would like.
+
 === Release 0.8.214 ===
 * New *
  * Map scrolling is not very smooth anymore... perhaps widgets are updating themselves too often now, have to look into this, perhaps disable/lower frequency of updates while scrolling (Issue 2).
