@@ -12,7 +12,11 @@ WishList | KnownBugs | RoadMap
 = Introduction =
 
 === Dependencies ===
-As of version 0.8.200, qtracker depends on Qt version 4.7.0-beta2 and QtMobility version 1.0.2.
+As of version 0.8.200, qtracker depends on Qt version 4.7.0-beta2 and QtMobility version 1.0.2. These need to be preinstalled on your device. You can download the necessary packages here:
+ * Qt 4.7.0-beta2: http://qt.nokia.com/developer/qt-qtcreator-prerelease#download
+ * QtMobility 1.0.2: http://qt.nokia.com/products/appdev/add-on-products/catalog/4/new-qt-apis/mobility
+
+Questions with respect to installing these packages are best asked on nokia's discussion forums (please search first, before you ask): http://discussion.forum.nokia.com/forum/forumdisplay.php?196-Qt-for-Symbian
 
 === Upgrading ===
 If you're upgrading from an earlier version of qTracker, then please remove the following files (if they exist):
