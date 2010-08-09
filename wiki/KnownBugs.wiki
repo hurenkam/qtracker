@@ -11,15 +11,25 @@ WishList | KnownBugs | RoadMap
 
 
 === Release 0.8.214 ===
+* New *
  * Map scrolling is not very smooth anymore... perhaps widgets are updating themselves too often now, have to look into this, perhaps disable/lower frequency of updates while scrolling.
 
 === Release 0.8.206 ===
+* New *
  * Waypoint/Route/Track lists still don't behave entirely properly when hide/show/delete is selected.
 
+* Solved *
+ * Compass problems
+
 === Release 0.8.200 ===
+* New *
  * Unreliable compass, strangely, it works fine if another compass application is running. Turns out it has to do with the datarate, which i did not set. Newer versions have it explicitly set at 1 per second, which seems to fix the problem.
 
+* Solved *
+ * Refpoint problem
+
 === Release 0.8.184 ===
+* New *
  * Found what looks like a bug in the set refpoint code, it is possible that calibration of new maps doesn't work. Existing maps (e.g. from tracker-py) should work fine. I've fixed the problem in svn, will do some tests before uploading the new version. 
  * When deleting a track, the tracklist is not always properly updated, parts of the previous line may remain.
  * Because i now use QXmlStreamReader to read all Xml based config files, some historic metadata files from tracker-py with the 'missing =' bug won't read properly, causing qTracker to hang during startup. Fixing the metadata by putting the '=' sign after the version attribute in the xml tag on the first line of the file solves this. I'll look into a generic solution to fix the hangup, since even bad data should not cause the app to stall.
