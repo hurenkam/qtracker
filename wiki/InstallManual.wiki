@@ -28,4 +28,4 @@ This will give you a clean start. If there are still problems, please take a loo
 === Installing ===
 Once you've taken the above steps, you are ready to install the qTracker-x.x.xxx.sis file on your phone. I usually copy it over via bluetooth and install it from the phone file manager, but installing from OVI should work fine as well. My preference is to install it on the E: drive, leaving the precious free Ram space as big as possible.
 
-Questions? Feel free to contact me at mark.hurenkamp <at> xs4all.nl
+Questions? Feel free to contact me at mark.hurenkamp at xs4all.nl
