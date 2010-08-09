@@ -16,6 +16,7 @@ HEADERS += \
     dialogs/qwaypointdialog.h \
     dialogs/qmapdialog.h \
     dialogs/qcompassdialog.h \
+    dialogs/qclockdialog.h \
     datatypes/geodata.h \
     datatypes/gpxio.h \
     datatypes/waypointlist.h \
@@ -48,7 +49,7 @@ symbian {
         -lefsrv \
         -leikcore \
         -lcone
-    TARGET.CAPABILITY = Location ReadDeviceData
+    TARGET.CAPABILITY = Location 
     ICON = images/icon.svg
     UiFiles.sources += images/clock.svg \
         images/compass.svg \
@@ -82,7 +83,7 @@ symbian {
         images/leveltop.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.214
+    VERSION = 0.8.226
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
@@ -101,6 +102,7 @@ SOURCES += \
     dialogs/qwaypointdialog.cpp \
     dialogs/qmapdialog.cpp \
     dialogs/qcompassdialog.cpp \
+    dialogs/qclockdialog.cpp \
     dialogs/qtrackdialog.cpp \
     dialogs/qroutedialog.cpp \
     widgets/qgaugewidget.cpp \

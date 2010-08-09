@@ -13,10 +13,20 @@ class QClockWidget : public QGaugeWidget
 public:
     QClockWidget(QWidget *parent = 0);
 
+    enum Type
+	{
+        CurrentTime = 0,
+        TripTime,
+        ArrivalTime,
+        RemainingTime
+	};
+    
 public slots:
-    void TimeChanged();
     void Reset();
-    void SetTime(const QTime& time);
+    void SetStartTime     (const QDateTime& time) { starttime = time; } 
+    void SetRemainingTime (long seconds)          { remainingtime = seconds; } 
+    void SelectOptions();
+    void ReadSettings();
     
 protected:
     virtual void paintPlate(QPainter& painter);
@@ -24,12 +34,15 @@ protected:
     virtual void paintTop(QPainter& painter);
     virtual void paintBottom(QPainter& painter);
     virtual void paintEvent(QPaintEvent *event);
+    
+    QTime GetTime(Type t);
 
 private:
-    QTime starttime;
-    QTime analog;
-    QTime top;
-    QTime bottom;
+    QDateTime starttime;
+    long   remainingtime;
+    Type   analog;
+    Type   top;
+    Type   bottom;
     QTimer timer;
 };
 

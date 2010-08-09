@@ -32,21 +32,38 @@
 
 static QFile file("C:\\Data\\qTracker\\debug.txt");
 static QTextStream out(&file);
+static bool fileopen = false;
 
 void debugOutput(QtMsgType type, const char *msg)
- {
+{
 	out << msg << "\n";
 	file.flush();
 }
 
+void debugOpen()
+{
+	if (file.exists())
+	    fileopen = file.open(QIODevice::Append | QIODevice::Truncate | QIODevice::Text);
+	else
+		fileopen = false;
+	
+	if (fileopen)
+		qInstallMsgHandler(debugOutput);
+}
+
+void debugClose()
+{
+    if (fileopen) 
+    	file.close();
+}
+
 int main(int argc, char *argv[])
 {
-	bool fileopen = file.open(QIODevice::Append | QIODevice::Truncate | QIODevice::Text);
-	if (fileopen) qInstallMsgHandler(debugOutput);
-
+	debugOpen();
+	
     qTracker a(argc, argv);
     int result = a.exec();
     
-    if (fileopen) file.close();
+    debugClose();
     return result;
 }

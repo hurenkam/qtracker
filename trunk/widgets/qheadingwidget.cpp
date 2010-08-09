@@ -35,46 +35,7 @@ QHeadingWidget::QHeadingWidget(QWidget *parent)
     LOG( "QHeadingWidget::QHeadingWidget()"; )
 	ReadSettings();
     timer = new QTimer(this);
-/*    
-    possource = QGeoPositionInfoSource::createDefaultSource(this);
-    if (possource) {
-        possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
-        possource->setUpdateInterval(500);
-        connect(possource, SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(UpdatePosition(QGeoPositionInfo)));
-        possource->startUpdates();
-    }
-    else
-    {
-        LOG( "QHeadingWidget::QHeadingWidget(): No possource"; )
-    }
     
-    compass = new QCompass();
-    if (compass)
-    {
-    	compass->setDataRate(1);
-    	if (!compass->start())
-    	{
-            LOG( "QHeadingWidget::QHeadingWidget(): Not started"; )
-    	}
-    	else
-    	{
-			reading = compass->reading();
-			if (reading)
-			{
-				UpdateHeading();
-				connect(compass, SIGNAL(readingChanged()), this, SLOT(UpdateHeading()));
-			}
-			else
-			{
-				LOG( "QHeadingWidget::QHeadingWidget(): No reading"; )
-			}
-    	}
-    }
-    else
-    {
-        LOG( "QHeadingWidget::QHeadingWidget(): No compass"; )
-    }
-*/
     connect(&DataMonitor::Instance(), SIGNAL(HeadingUpdated(double)), this, SLOT(UpdateHeading(double)));
     connect(&DataMonitor::Instance(), SIGNAL(BearingUpdated(double)), this, SLOT(UpdateAzimuth(double)));
     connect(timer, SIGNAL(timeout()), this, SLOT(timerStep()));

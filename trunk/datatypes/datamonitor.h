@@ -15,6 +15,7 @@
 #include <QGeoSatelliteInfo>
 #include <QGeoPositionInfo>
 #include <QCompassReading>
+#include <QSystemNetworkInfo>
 class QDateTime;
 class QSettings;
 class WayPoint;
@@ -36,6 +37,7 @@ namespace QtMobility
     class QGeoSatelliteInfoSource;
     class QCompass;
     //class QCompassReading;
+    //class QSystemNetworkInfo;
 }
 using namespace QtMobility;
 
@@ -84,7 +86,7 @@ class MonitorStrategy: public QObject
 signals:
 	void BearingUpdated(double);
 	void DistanceUpdated(double);
-	void TimeUpdated(const QTime&);
+	void TimeUpdated(long);
 
 public:
 	MonitorStrategy(int t=0) : type(t) {}
@@ -129,7 +131,7 @@ signals:
 	
 	void BearingUpdated(double);
 	void DistanceUpdated(double);
-	void TimeUpdated(const QTime&);
+	void TimeUpdated(long seconds);
 	
 public slots:
     void OnPositionUpdate(const QGeoPositionInfo& info);
@@ -142,10 +144,11 @@ public slots:
 public:
     static DataMonitor& Instance();
 	virtual ~DataMonitor();
-	int  HeadingSource()        { settings.sync(); return settings.value("compass/source",0).toInt(); }
-	double CompassCalibration() { if (HasCompassSensor()) return reading->calibrationLevel(); else return 0; }
-	bool HasCompassSensor()     { return ((compass != 0) && (reading != 0)); }
-	bool IsUsingGPSCompass()    { return ((HeadingSource()==1) || (!HasCompassSensor())); }
+	int  HeadingSource()           { settings.sync(); return settings.value("compass/source",0).toInt(); }
+	double CompassCalibration()    { if (HasCompassSensor()) return reading->calibrationLevel(); else return 0; }
+	double NetworkSignalStrength() { if (netinfo) return netinfo->networkSignalStrength(QSystemNetworkInfo::GsmMode); else return 0; }
+	bool HasCompassSensor()        { return ((compass != 0) && (reading != 0)); }
+	bool IsUsingGPSCompass()       { return ((HeadingSource()==1) || (!HasCompassSensor())); }
 	const QList<QGeoSatelliteInfo>& SatsInUse() { return satsinuse; }
 	const QList<QGeoSatelliteInfo>& SatsInView() { return satsinview; }
 	
@@ -162,6 +165,7 @@ private:
     QList<QGeoSatelliteInfo> satsinview;
     QCompass* compass;
     QCompassReading* reading;
+    QSystemNetworkInfo* netinfo;
 }; 
 
 #endif /* DATAMONITOR_H_ */

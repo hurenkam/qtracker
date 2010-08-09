@@ -12,7 +12,8 @@ QLevelWidget::QLevelWidget(QWidget *parent)
 {
     SetRange(0,0,1.0);
     SetRange(1,0,100.0);
-    SetRange(2,0,10.0);
+    //SetRange(2,0,10.0);
+    SetRange(2,0,100.0);
 
     connect(this, SIGNAL(longTap()), this, SLOT(Reset()));
 	connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -102,7 +103,8 @@ void QLevelWidget::paintEvent(QPaintEvent *)
     QSystemDeviceInfo info;
     current[0] = DataMonitor::Instance().CompassCalibration();
     current[1] = info.batteryLevel();
-    current[2] = DataMonitor::Instance().SatsInUse().length();
+//    current[2] = DataMonitor::Instance().SatsInUse().length();
+    current[2] = DataMonitor::Instance().NetworkSignalStrength();
     
     for (int i=0; i<3; i++)
         paintLevel(i,painter);

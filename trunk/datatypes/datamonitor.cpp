@@ -223,6 +223,7 @@ DataMonitor::DataMonitor()
 , settings("karpeer.net","qTracker",this)
 , compass(0)
 , reading(0)
+, netinfo(0)
 {
     LOG( "DataMonitor::DataMonitor()"; )
     possource = QGeoPositionInfoSource::createDefaultSource(this);
@@ -279,6 +280,8 @@ DataMonitor::DataMonitor()
 	QString wptname   = settings.value("monitor/waypoint","").toString();
 	if (montype==1)
 		SetStrategy(new WayPointStrategy(wptname));
+	
+	netinfo = new QSystemNetworkInfo(this);
 }
 
 DataMonitor::~DataMonitor()
@@ -337,7 +340,7 @@ void DataMonitor::SetStrategy(MonitorStrategy *s)
 	strategy = s;
 	connect(strategy,SIGNAL(BearingUpdated(double)),this,SIGNAL(BearingUpdated(double)));
 	connect(strategy,SIGNAL(DistanceUpdated(double)),this,SIGNAL(DistanceUpdated(double)));
-	connect(strategy,SIGNAL(TimeUpdated(const QTime&)),this,SIGNAL(TimeUpdated(const QTime&)));
+	connect(strategy,SIGNAL(TimeUpdated(long)),this,SIGNAL(TimeUpdated(long)));
 }
 
 
@@ -365,8 +368,7 @@ void WayPointStrategy::OnTimeUpdate(const QTime& time)
         double speed = currentinfo.attribute(QGeoPositionInfo::GroundSpeed);
     	double distance = currentposition.distanceTo(targetposition);
         LOG( "WayPointStrategy::OnPositionUpdate() Distance: " << distance << " Speed: " << speed << " Distance/Speed: " << distance/speed; )
-        QTime newtime = time.addSecs(distance/speed);
-        emit TimeUpdated(newtime);
+        emit TimeUpdated(distance/speed);
     }
 }
 
