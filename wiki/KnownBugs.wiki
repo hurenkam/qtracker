@@ -9,6 +9,10 @@ WishList | KnownBugs | RoadMap
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
+
+=== Release 0.8.214 ===
+ * Map scrolling is not very smooth anymore... perhaps widgets are updating themselves too often now, have to look into this, perhaps disable/lower frequency of updates while scrolling.
+
 === Release 0.8.206 ===
  * Waypoint/Route/Track lists still don't behave entirely properly when hide/show/delete is selected.
 
