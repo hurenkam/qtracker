@@ -16,14 +16,14 @@ WishList | KnownBugs | RoadMap
 
 === Release 0.8.206 ===
 * Solved *
- * Compass problems
+ * Compass problems (Issue 5)
 
 === Release 0.8.200 ===
 * New *
  * Unreliable compass, strangely, it works fine if another compass application is running. Turns out it has to do with the datarate, which i did not set. Newer versions have it explicitly set at 1 per second, which seems to fix the problem (Issue 5).
 
 * Solved *
- * Refpoint problem
+ * Refpoint problem (Issue 4)
 
 === Release 0.8.184 ===
 * New *
