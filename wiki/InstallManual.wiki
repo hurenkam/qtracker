@@ -10,3 +10,16 @@ WishList | KnownBugs | RoadMap
 ----
 
 = Introduction =
+
+=== Dependencies ===
+As of version 0.8.200, qtracker depends on Qt version 4.7.0-beta2 and QtMobility version 1.0.2.
+
+=== Upgrading ===
+If you're upgrading from an earlier version of qTracker, then please remove the following files (if they exist):
+ * Default settings file: c:/Data/.config/karpeer.net/qTracker.conf
+ * Debug log file: c:/Data/qTracker/debug.txt
+
+This will give you a clean start. If there are still problems, please take a look at Issue 3 in the issues list.
+
+=== Installing ===
+Once you've taken the above steps, you are ready to install the qTracker-x.x.xxx.sis file on your phone. I usually copy it over via bluetooth and install it from the phone file manager, but installing from OVI should work fine as well. My preference is to install it on the E: drive, leaving the precious free Ram space as big as possible.
