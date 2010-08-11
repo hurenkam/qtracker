@@ -33,9 +33,11 @@ QString GetDrive()
 {
         TParsePtrC appparser(CEikonEnv::Static()->EikAppUi()->Application()->AppFullName());
         TPtrC drive = appparser.Drive();
-        //if (!inemulator)
+#ifdef EMULATOR
+        return QString("C:");
+#else
         return QString::fromUtf16(drive.Ptr(),drive.Length());
-        //return QString("C:");
+#endif
 }
 #else
 QString GetDrive()
