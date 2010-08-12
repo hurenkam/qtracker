@@ -12,8 +12,8 @@ QLevelWidget::QLevelWidget(QWidget *parent)
 {
     SetRange(0,0,1.0);
     SetRange(1,0,100.0);
-    //SetRange(2,0,10.0);
-    SetRange(2,0,100.0);
+    SetRange(2,0,200.0);
+    SetRange(3,0,200.0);
 
     connect(this, SIGNAL(longTap()), this, SLOT(Reset()));
 	connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -57,9 +57,6 @@ void QLevelWidget::paintLevel(int id, QPainter& painter)
     double angle = (current[id]-min[id])/(max[id]-min[id]) * 70;
     //double angle=60;
     
-    if ((id==2) || (id==3))
-    	angle = 70-angle;
-    
     QRectF source(0, 0, 360, 180);
     QRectF target(-1*x, -1*y, w, h/2);
 
@@ -101,12 +98,13 @@ void QLevelWidget::paintEvent(QPaintEvent *)
     paintPlate(painter);
     
     QSystemDeviceInfo info;
-    current[0] = DataMonitor::Instance().CompassCalibration();
-    current[1] = info.batteryLevel();
-//    current[2] = DataMonitor::Instance().SatsInUse().length();
-    current[2] = DataMonitor::Instance().NetworkSignalStrength();
+    UpdateLevel(0,DataMonitor::Instance().CompassCalibration());
+    UpdateLevel(1,info.batteryLevel());
+    UpdateLevel(2,DataMonitor::Instance().Vertical());
+    UpdateLevel(3,DataMonitor::Instance().Horizontal());
     
-    for (int i=0; i<3; i++)
+    for (int i=0; i<4; i++)
         paintLevel(i,painter);
+    
     paintTop(painter);
 }

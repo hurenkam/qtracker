@@ -31,13 +31,9 @@ class QBoxLayout;
 
 namespace QtMobility
 {
-    //class QGeoPositionInfo;
     class QGeoPositionInfoSource;
-    //class QGeoSatelliteInfo;
     class QGeoSatelliteInfoSource;
     class QCompass;
-    //class QCompassReading;
-    //class QSystemNetworkInfo;
 }
 using namespace QtMobility;
 
@@ -116,6 +112,90 @@ private:
 	QGeoCoordinate targetposition;
 };
 
+class Filter: public QObject
+{
+	Q_OBJECT
+signals:
+	void ValueUpdated(double);
+	
+public slots:
+	virtual void NewValue(double v) {}
+	virtual bool IsValid() { return true; }
+};
+
+class AverageFilter: public Filter
+{
+protected:
+    int length;
+    QList<double> values;
+
+public:
+	AverageFilter(int l) { SetLength(l); }
+    virtual double Value() 
+    { 
+    	if (values.length()<=0) return 0;
+    	
+        double r=0; 
+        for (int i=0; i<values.length(); i++) 
+        	r += values[i]; 
+        return r/values.length(); 
+    }
+	
+    virtual void NewValue(double v)
+    {
+        values.append(v);
+        
+        if (values.length() > length)
+        	values.removeFirst();
+        
+        emit ValueUpdated(Value());
+    }
+    
+    void SetLength(int l)
+    {
+    	if (l > 0)
+            length = l;
+    	else
+    		length = 1;
+    	
+    	while (length < values.length())
+    		values.removeFirst();
+    }
+    
+    virtual bool IsValid()
+	{
+        return (values.length()>0);
+	}
+};
+
+class HeadingFilter: public AverageFilter
+{
+public:
+	HeadingFilter(int l) : AverageFilter(l) {}
+    virtual double Value() 
+    { 
+    	if (values.length()<=0) return 0;
+    	if (values.length()==1) return values[0];
+    	
+        double start = values[0];
+        QList<double> deltas;
+        
+        for (int i=1; i<values.length(); i++)
+        {
+            double delta = values[i] - start;
+            if (delta < -180) delta += 360;
+            if (delta > 180)  delta -= 360;
+            deltas.append(delta);
+        }
+        double avg = 0.0;
+        for (int j=0; j<deltas.length(); j++)
+            avg += deltas[j];
+        
+        avg = avg/deltas.length();
+        return fmod((start + avg),360);
+    }
+};
+
 class DataMonitor: public QObject
 {
 	Q_OBJECT
@@ -128,6 +208,8 @@ signals:
 	void HeadingUpdated(double);
 	void SpeedUpdated(double);
 	void AltitudeUpdated(double);
+	void HorizontalUpdated(double);
+	void VerticalUpdated(double);
 	
 	void BearingUpdated(double);
 	void DistanceUpdated(double);
@@ -146,11 +228,16 @@ public:
 	virtual ~DataMonitor();
 	int  HeadingSource()           { settings.sync(); return settings.value("compass/source",0).toInt(); }
 	double CompassCalibration()    { if (HasCompassSensor()) return reading->calibrationLevel(); else return 0; }
-	double NetworkSignalStrength() { if (netinfo) return netinfo->networkSignalStrength(QSystemNetworkInfo::GsmMode); else return 0; }
 	bool HasCompassSensor()        { return ((compass != 0) && (reading != 0)); }
 	bool IsUsingGPSCompass()       { return ((HeadingSource()==1) || (!HasCompassSensor())); }
 	const QList<QGeoSatelliteInfo>& SatsInUse() { return satsinuse; }
 	const QList<QGeoSatelliteInfo>& SatsInView() { return satsinview; }
+	
+	double Speed()                 { return speed->Value();    }
+	double Heading()               { return heading->Value();  }
+	double Altitude()              { return altitude->Value(); }
+	double Horizontal()            { if (horizontal->IsValid()) return horizontal->Value(); else return 10000; }
+	double Vertical()              { if (vertical->IsValid())   return vertical->Value();   else return 10000; }
 	
 private:
     static DataMonitor* instance;
@@ -165,7 +252,12 @@ private:
     QList<QGeoSatelliteInfo> satsinview;
     QCompass* compass;
     QCompassReading* reading;
-    QSystemNetworkInfo* netinfo;
+
+    HeadingFilter* heading;
+    AverageFilter* speed;
+    AverageFilter* altitude;
+    AverageFilter* horizontal;
+    AverageFilter* vertical;
 }; 
 
 #endif /* DATAMONITOR_H_ */

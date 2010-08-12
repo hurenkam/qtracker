@@ -223,9 +223,14 @@ DataMonitor::DataMonitor()
 , settings("karpeer.net","qTracker",this)
 , compass(0)
 , reading(0)
-, netinfo(0)
 {
     LOG( "DataMonitor::DataMonitor()"; )
+	heading    = new HeadingFilter(1);
+	speed      = new AverageFilter(5);
+	altitude   = new AverageFilter(10);
+	horizontal = new AverageFilter(5);
+	vertical   = new AverageFilter(5);
+	
     possource = QGeoPositionInfoSource::createDefaultSource(this);
     if (possource) {
         possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
@@ -281,7 +286,11 @@ DataMonitor::DataMonitor()
 	if (montype==1)
 		SetStrategy(new WayPointStrategy(wptname));
 	
-	netinfo = new QSystemNetworkInfo(this);
+	connect(heading,    SIGNAL(ValueUpdated(double)), this, SIGNAL(HeadingUpdated(double)));
+	connect(speed,      SIGNAL(ValueUpdated(double)), this, SIGNAL(SpeedUpdated(double)));
+	connect(altitude,   SIGNAL(ValueUpdated(double)), this, SIGNAL(AltitudeUpdated(double)));
+	connect(horizontal, SIGNAL(ValueUpdated(double)), this, SIGNAL(HorizontalUpdated(double)));
+	connect(vertical,   SIGNAL(ValueUpdated(double)), this, SIGNAL(VerticalUpdated(double)));
 }
 
 DataMonitor::~DataMonitor()
@@ -297,14 +306,16 @@ void DataMonitor::OnPositionUpdate(const QGeoPositionInfo& info)
 	emit AltitudeUpdated(info.coordinate().altitude());
 	
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
-        emit SpeedUpdated(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
+    	speed->NewValue(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
+        //emit SpeedUpdated(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
     
     if ( IsUsingGPSCompass() ) 
 	{
         if (info.hasAttribute(QGeoPositionInfo::Direction))
         {
         	double a = info.attribute(QGeoPositionInfo::Direction);
-        	emit HeadingUpdated(a);
+        	//emit HeadingUpdated(a);
+        	heading->NewValue(a);
     	    if (strategy) strategy->OnHeadingUpdate(a);
         }
 	}
@@ -319,7 +330,8 @@ void DataMonitor::OnHeadingUpdate()
 	if ( IsUsingGPSCompass() ) return;
     
 	int a = reading->azimuth();
-    emit HeadingUpdated(a);
+	heading->NewValue(a);
+    //emit HeadingUpdated(a);
 	if (strategy) strategy->OnHeadingUpdate(a);
 }
 
@@ -365,7 +377,7 @@ void WayPointStrategy::OnTimeUpdate(const QTime& time)
 {
     if (currentinfo.hasAttribute(QGeoPositionInfo::GroundSpeed))
     {
-        double speed = currentinfo.attribute(QGeoPositionInfo::GroundSpeed);
+        double speed = DataMonitor::Instance().Speed();
     	double distance = currentposition.distanceTo(targetposition);
         LOG( "WayPointStrategy::OnPositionUpdate() Distance: " << distance << " Speed: " << speed << " Distance/Speed: " << distance/speed; )
         emit TimeUpdated(distance/speed);
