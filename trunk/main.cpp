@@ -30,7 +30,7 @@
 
 #include "qtracker.h"
 
-static QFile file("C:\\Data\\qTracker\\debug.txt");
+static QFile file;
 static QTextStream out(&file);
 static bool fileopen = false;
 
@@ -42,6 +42,7 @@ void debugOutput(QtMsgType type, const char *msg)
 
 void debugOpen()
 {
+	file.setFileName("C:/Data/qTracker/debug.txt");
 	if (file.exists())
 	    fileopen = file.open(QIODevice::Append | QIODevice::Truncate | QIODevice::Text);
 	else

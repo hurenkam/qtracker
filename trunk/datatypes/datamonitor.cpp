@@ -307,14 +307,18 @@ void DataMonitor::OnPositionUpdate(const QGeoPositionInfo& info)
 	
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
     	speed->NewValue(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
-        //emit SpeedUpdated(info.attribute(QGeoPositionInfo::GroundSpeed)*3.6);
+    
+    if (info.hasAttribute(QGeoPositionInfo::HorizontalAccuracy))
+    	horizontal->NewValue(info.attribute(QGeoPositionInfo::HorizontalAccuracy));
+    
+    if (info.hasAttribute(QGeoPositionInfo::VerticalAccuracy))
+    	vertical->NewValue(info.attribute(QGeoPositionInfo::HorizontalAccuracy));
     
     if ( IsUsingGPSCompass() ) 
 	{
         if (info.hasAttribute(QGeoPositionInfo::Direction))
         {
         	double a = info.attribute(QGeoPositionInfo::Direction);
-        	//emit HeadingUpdated(a);
         	heading->NewValue(a);
     	    if (strategy) strategy->OnHeadingUpdate(a);
         }
@@ -331,7 +335,6 @@ void DataMonitor::OnHeadingUpdate()
     
 	int a = reading->azimuth();
 	heading->NewValue(a);
-    //emit HeadingUpdated(a);
 	if (strategy) strategy->OnHeadingUpdate(a);
 }
 

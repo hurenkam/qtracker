@@ -49,7 +49,8 @@ symbian {
         -lefsrv \
         -leikcore \
         -lcone
-    TARGET.CAPABILITY = Location 
+    TARGET.CAPABILITY = Location
+    DEFINES += LOCATION
     ICON = images/icon.svg
     UiFiles.sources += images/clock.svg \
         images/compass.svg \
@@ -83,7 +84,7 @@ symbian {
         images/leveltop.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.226
+    VERSION = 0.8.234
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
