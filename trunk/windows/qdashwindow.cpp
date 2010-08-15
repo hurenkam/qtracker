@@ -7,15 +7,15 @@
 
 #include <QtGui>
 #include <QSplashScreen>
-#include "QDashWindow.h"
-#include "QClockWidget.h"
-#include "QLevelWidget.h"
-#include "QSpeedWidget.h"
-#include "QAltitudeWidget.h"
-#include "QSatViewWidget.h"
-#include "QHeadingWidget.h"
-#include "QMapWidget.h"
-#include "QSignalMapper.h"
+#include "qdashwindow.h"
+#include "qclockwidget.h"
+#include "qlevelwidget.h"
+#include "qspeedwidget.h"
+#include "qaltitudewidget.h"
+#include "qsatviewwidget.h"
+#include "qheadingwidget.h"
+#include "qmapwidget.h"
+#include "qsignalmapper.h"
 #include "ui.h"
 
 //#include <QDebug>
