@@ -3,7 +3,7 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QWaitCondition>
-#include "QDashWindow.h"
+#include "qdashwindow.h"
 #include "ui.h"
 #include "qtracker.h"
 #include "waypointlist.h"

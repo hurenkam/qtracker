@@ -5,7 +5,7 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QWaitCondition>
-#include "QDashWindow.h"
+#include "qdashwindow.h"
 
 #ifdef Q_OS_SYMBIAN
 #include <QSymbianEvent>
