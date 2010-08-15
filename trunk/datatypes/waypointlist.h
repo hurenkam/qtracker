@@ -27,14 +27,15 @@ protected:
 	QString time;
 public:
 	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
-	    : latitude(lat), longitude(lon), elevation(ele), time(t), name(n) {}
+            : name(n), latitude(lat), longitude(lon), elevation(ele), time(t) {}
 	
 	WayPoint(const WayPoint& w)
-	    : latitude(w.Latitude())
+            : name(w.Name())
+            , latitude(w.Latitude())
 	    , longitude(w.Longitude())
 	    , elevation(w.Elevation())
 	    , time(w.Time())
-	    , name(w.Name()) {}
+        {}
 
 	QString Name() const               { return name; }
 	double Latitude() const            { return latitude; }
