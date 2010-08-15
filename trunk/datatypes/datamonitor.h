@@ -16,6 +16,7 @@
 #include <QGeoPositionInfo>
 #include <QCompassReading>
 #include <QSystemNetworkInfo>
+#include <math.h>
 class QDateTime;
 class QSettings;
 class WayPoint;
@@ -86,9 +87,9 @@ signals:
 
 public:
 	MonitorStrategy(int t=0) : type(t) {}
-	virtual void OnPositionUpdate(const QGeoPositionInfo& info) {}
-	virtual void OnTimeUpdate(const QTime& time) {}
-	virtual void OnHeadingUpdate(int heading) {}
+        virtual void OnPositionUpdate(const QGeoPositionInfo&) {}
+        virtual void OnTimeUpdate(const QTime&) {}
+        virtual void OnHeadingUpdate(int) {}
 	int Type() { return type; }
 	
 protected:
@@ -119,7 +120,7 @@ signals:
 	void ValueUpdated(double);
 	
 public slots:
-	virtual void NewValue(double v) {}
+        virtual void NewValue(double) {}
 	virtual bool IsValid() { return true; }
 };
 

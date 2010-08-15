@@ -376,7 +376,7 @@ WayPointStrategy::WayPointStrategy(const QString& wpt)
 	targetposition.setLongitude(WayPointList::Instance().GetItem(wpt).Longitude());
 }
 
-void WayPointStrategy::OnTimeUpdate(const QTime& time)
+void WayPointStrategy::OnTimeUpdate(const QTime&)
 {
     if (currentinfo.hasAttribute(QGeoPositionInfo::GroundSpeed))
     {
