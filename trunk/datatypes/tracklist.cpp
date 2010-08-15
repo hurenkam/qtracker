@@ -20,9 +20,9 @@ TrackList* TrackList::instance = 0;
 
 TrackList::TrackList()
 : settings("karpeer.net","qTracker",this)
-, isrecording(false)
 , recordtrack(0)
-{ 
+, isrecording(false)
+{
 	instance = this;
 	int length = settings.beginReadArray("trk/list");
 	for (int i=0; i<length; i++)
@@ -63,7 +63,7 @@ void TrackList::AddTrack(Track* t)
 	emit added(t->Name()); 
 }
 
-void TrackList::AddMetaData(AreaMetaData* m)      
+void TrackList::AddMetaData(AreaMetaData*)
 { 
 }
 
