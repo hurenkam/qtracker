@@ -151,10 +151,7 @@ void QDashWindow::InitWidgets()
     speed = new QSpeedWidget(this);
     speed->setObjectName(QString::fromUtf8("speed"));
     speed->setGeometry(QRect(5, 185, 170, 170));
-/*  timer = new QClockWidget(this);
-    timer->setObjectName(QString::fromUtf8("timer"));
-    timer->setGeometry(QRect(525, 5, 110, 110));
-*/  altitude = new QAltitudeWidget(this);
+    altitude = new QAltitudeWidget(this);
     altitude->setObjectName(QString::fromUtf8("altitude"));
     altitude->setGeometry(QRect(525, 125, 110, 110));
     satview = new QSatViewWidget(this);
@@ -168,14 +165,13 @@ void QDashWindow::InitWidgets()
     level->setGeometry(QRect(170, 5, 350, 350));
 
     map = new QMapWidget(settings,this);
-    map->setObjectName(QString::fromUtf8("heading"));
+    map->setObjectName(QString::fromUtf8("map"));
     map->setGeometry(QRect(120, 0, 400, 360));
 
     gauges[0] = heading;
     gauges[1] = clock;
     gauges[2] = speed;
     gauges[3] = satview;
-    //gauges[4] = timer;
     gauges[4] = level;
     gauges[5] = altitude;
 
