@@ -33,14 +33,32 @@ HEADERS += \
     windows/qdashwindow.h \
     widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
-    widgets/qlevelwidget.h
+    widgets/qlevelwidget.h \
+    geographiclib/azimuthalequidistant.hpp \
+    geographiclib/cassinisoldner.hpp \
+    geographiclib/constants.hpp \
+    geographiclib/dms.hpp \
+    geographiclib/ellipticfunction.hpp \
+    geographiclib/geocentric.hpp \
+    geographiclib/geocoords.hpp \
+    geographiclib/geodesic.hpp \
+    geographiclib/geoid.hpp \
+    geographiclib/gnomonic.hpp \
+    geographiclib/lambertconformalconic.hpp \
+    geographiclib/localcartesian.hpp \
+    geographiclib/mgrs.hpp \
+    geographiclib/polarstereographic.hpp \
+    geographiclib/transversemercator.hpp \
+    geographiclib/transversemercatorexact.hpp \
+    geographiclib/utmups.hpp 
 INCLUDEPATH += dialogs \
     datatypes \
     widgets \
     images \
     mobility \
     windows \
-    application
+    application \
+    geographiclib
 FORMS += 
 RESOURCES += 
 symbian { 
@@ -84,7 +102,7 @@ symbian {
         images/leveltop.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.234
+    VERSION = 0.8.247
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
@@ -116,4 +134,20 @@ SOURCES += \
     widgets/qsatviewwidget.cpp \
     widgets/qspeedwidget.cpp \
     windows/qdashwindow.cpp \
+    geographiclib/azimuthalequidistant.cpp \
+    geographiclib/cassinisoldner.cpp \
+    geographiclib/dms.cpp \
+    geographiclib/ellipticfunction.cpp \
+    geographiclib/geocentric.cpp \
+    geographiclib/geocoords.cpp \
+    geographiclib/geodesic.cpp \
+    geographiclib/geoid.cpp \
+    geographiclib/gnomonic.cpp \
+    geographiclib/lambertconformalconic.cpp \
+    geographiclib/localcartesian.cpp \
+    geographiclib/mgrs.cpp \
+    geographiclib/polarstereographic.cpp \
+    geographiclib/transversemercator.cpp \
+    geographiclib/transversemercatorexact.cpp \
+    geographiclib/utmups.cpp \
     main.cpp

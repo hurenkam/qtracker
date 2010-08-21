@@ -27,7 +27,6 @@ qTracker::qTracker(int argc, char* argv[])
 {
 	LOG( "qTracker::qTracker()"; )
 	instance = this;
-	//settings.clear();
 	
 	QPixmap pixmap(SPLASHRCDIR "splash.png");
 	QSplashScreen splash(pixmap);

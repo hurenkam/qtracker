@@ -13,6 +13,7 @@
 #include "waypointlist.h"
 #include "routelist.h"
 #include "datamonitor.h"
+#include "geocoords.hpp"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -421,8 +422,6 @@ void QMapWidget::ShowRouteSegment(const WayPoint& from, const WayPoint& to)
 
 void QMapWidget::SelectMap()
 {
-	if (!meta) return;
-	
 	RefPoint r = RefPoint(x,y,latitude,longitude);
 	QMapTabsDialog *dialog = new QMapTabsDialog(this,meta,&r);
     connect(dialog,SIGNAL(loadmap(QString)),this,SLOT(MapSelected(QString)));
@@ -712,14 +711,22 @@ void QMapWidget::paintBar(QPainter& painter)
 		painter.setPen(QPen(Qt::black));
         double lat, lon;
         if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
-            sprintf(buf,"%08.5fN %08.5fE",lat,lon);
+        {
+            GeographicLib::GeoCoords p(lat,lon);
+            //sprintf(buf,"%08.5fN %08.5fE",lat,lon);
+        	//sprintf(buf,"%s",p.UTMUPSRepresentation());
+        	sprintf(buf,"%s",p.GeoRepresentation());
+        }
         else
             sprintf(buf,"%04.0f,%04.0f",x,y);
     }
     else
     {
+        GeographicLib::GeoCoords p(latitude,longitude);
         painter.setPen(QPen(Qt::blue));
-        sprintf(buf,"%08.5fN %08.5fE",latitude,longitude);
+        //sprintf(buf,"%08.5fN %08.5fE",latitude,longitude);
+    	//sprintf(buf,"%s",p.UTMUPSRepresentation());
+    	sprintf(buf,"%s",p.GeoRepresentation());
     }
 
     r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, buf);

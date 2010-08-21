@@ -77,6 +77,14 @@ namespace geodata
 		double &bearing );
 	
 	extern bool IsValueInRange(double v, double r1, double r2);
+	
+    enum Datum
+	{
+        Wgs84_Geo = 0,
+        Wgs84_DMS,
+        UTM_UTP,
+        MGRS
+	};
 }
 
 #endif /* GEODATA_H_ */
