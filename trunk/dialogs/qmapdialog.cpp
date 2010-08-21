@@ -194,6 +194,17 @@ QEditRefPointTab::~QEditRefPointTab()
 void QEditRefPointTab::accept() 
 {
     LOG( "QEditRefPointTab::accept()"; )
+    if (!meta)
+    {
+        QMessageBox msg;
+        msg.setText(tr("Unable to save refpoint."));
+        msg.setIcon(QMessageBox::Warning);
+        msg.setStandardButtons(QMessageBox::Ok);
+        msg.exec();
+        
+        return;
+    }
+    
     RefPoint r = RefPoint(x->number(),y->number(),latitude->number(),longitude->number());
     meta->AddRefPoint(r);
     GpxIO::Instance()->WriteMapMetaFile(*meta);
