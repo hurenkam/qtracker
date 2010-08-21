@@ -1,5 +1,6 @@
 #include <QtGui>
 #include "qgaugewidget.h"
+#include "ui.h"
 
 #include <iostream>
 using namespace std;
