@@ -53,7 +53,9 @@ void QWayPointTabsDialog::accept()
 
 QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const WayPoint& w)
 : QWidget(d), dialog(d), tab(t), name(0), time(0), latitude(0), longitude(0), elevation(0)
+, settings("karpeer.net","qTracker",this)
 {
+	//geodata::Datum datum = settings.value("map/datum",(int) geodata::Wgs84_Geo).toInt();
 	QVBoxLayout* main = new QVBoxLayout();
 	QGridLayout* gridbox = new QGridLayout();
 	

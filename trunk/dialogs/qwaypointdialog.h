@@ -9,6 +9,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QGroupBox>
+#include <QSettings>
 #include "qdoubleedit.h"
 #include "waypointlist.h"
 
@@ -59,6 +60,7 @@ public slots:
     void select(const QString& n);
     
 private:
+    QSettings			 settings;
 	QWayPointTabsDialog* dialog;
 	QTabWidget*          tab;
 	bool				 editmode;
