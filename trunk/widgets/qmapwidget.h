@@ -77,7 +77,7 @@ protected:
     bool LoadMap(QString filename);
     bool SelectBestMapForCurrentPosition();
     bool SetCursorToCurrentPosition();
-    std::string getRepresentation(double lat, double lon);
+    QString getRepresentation(double lat, double lon);
     virtual void paintTrack(Track* t);
     virtual void paintRoute(Route* r);
     virtual void paintBackground(QPainter& painter);

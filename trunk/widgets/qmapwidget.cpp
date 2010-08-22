@@ -688,18 +688,20 @@ void QMapWidget::paintDot(QPainter& painter,int x,int y,QColor c)
     painter.drawEllipse(s/-2+x,s/-2+y,s,s);
 }
 
-std::string QMapWidget::getRepresentation(double lat, double lon)
+QString QMapWidget::getRepresentation(double lat, double lon)
 {
 	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     GeographicLib::GeoCoords p(lat,lon);
+    std::string pos;
     switch (datum)
     {
     	default:
-    	case geodata::Wgs84_Geo: return p.GeoRepresentation();
-    	case geodata::Wgs84_DMS: return p.DMSRepresentation();
-    	case geodata::UTMUPS:    return p.UTMUPSRepresentation();
-    	case geodata::MGRS:      return p.MGRSRepresentation();
+    	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
+    	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
+    	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
+    	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
     }
+    return QString::fromStdString(pos);
 }
 
 void QMapWidget::paintBar(QPainter& painter)
@@ -710,30 +712,33 @@ void QMapWidget::paintBar(QPainter& painter)
     QRectF source = QRectF(0,0,300,48);
     QRectF target = QRectF(w/-2,h/2-48,300,48);
     painter.drawImage(target, *svgBar, source);
-    char buf[25];
-    sprintf(buf,"%s",mapname.toStdString().c_str());
+    //char buf[25];
+    //sprintf(buf,"%s",mapname.toStdString().c_str());
     painter.setFont(QFont("Courier", 168/TEXTDIVIDER));
-    QRect r = painter.boundingRect(w/-2+58,h/2-38,260,28, Qt::AlignLeft, buf);
+    QRect r = painter.boundingRect(w/-2+58,h/2-38,260,28, Qt::AlignLeft, mapname);
     painter.setPen(QPen(Qt::blue));
-    painter.drawText(r, Qt::AlignLeft, buf);
+    painter.drawText(r, Qt::AlignLeft, mapname);
 
+    QString position = getRepresentation(latitude,longitude);
     if ((state == StScrolling) || (!IsPositionOnMap()))
     {
 		painter.setPen(QPen(Qt::black));
         double lat, lon;
         if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
-        	sprintf(buf,"%s",getRepresentation(lat,lon));
+            position = getRepresentation(lat,lon);
+        	//sprintf(buf,"%s",getRepresentation(lat,lon));
         else
-            sprintf(buf,"%04.0f,%04.0f",x,y);
+            //sprintf(buf,"%04.0f,%04.0f",x,y);
+        	position = QString::number(x) + " " + QString::number(y);
     }
     else
     {
         painter.setPen(QPen(Qt::blue));
-    	sprintf(buf,"%s",getRepresentation(latitude,longitude));
+    	//sprintf(buf,"%s",getRepresentation(latitude,longitude));
     }
 
-    r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, buf);
-    painter.drawText(r, Qt::AlignLeft, buf);
+    r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, position);
+    painter.drawText(r, Qt::AlignLeft, position);
 }
 
 void QMapWidget::paintEvent(QPaintEvent *event)

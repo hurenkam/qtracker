@@ -102,7 +102,7 @@ symbian {
         images/leveltop.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.247
+    VERSION = 0.8.250
 	VERSTR = '\\"$${VERSION}\\"'    
 	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
