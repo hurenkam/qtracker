@@ -89,7 +89,7 @@ QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const 
     	default:
     	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
     	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
-    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
     	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
     }
 	position = new QLineEdit(QString::fromStdString(pos));
@@ -168,7 +168,7 @@ void QEditWayPointTab::select(const QString& n)
     	default:
     	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
     	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
-    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
     	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
     }
     position->setText(QString::fromStdString(pos));

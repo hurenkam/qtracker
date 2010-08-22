@@ -697,7 +697,7 @@ std::string QMapWidget::getRepresentation(double lat, double lon)
     	default:
     	case geodata::Wgs84_Geo: return p.GeoRepresentation();
     	case geodata::Wgs84_DMS: return p.DMSRepresentation();
-    	case geodata::UTM_UTP:   return p.UTMUPSRepresentation();
+    	case geodata::UTMUPS:    return p.UTMUPSRepresentation();
     	case geodata::MGRS:      return p.MGRSRepresentation();
     }
 }

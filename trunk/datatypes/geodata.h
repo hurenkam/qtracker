@@ -82,7 +82,7 @@ namespace geodata
 	{
         Wgs84_Geo = 0,
         Wgs84_DMS,
-        UTM_UTP,
+        UTMUPS,
         MGRS
 	};
 }

@@ -155,7 +155,7 @@ QEditRefPointTab::QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData
     	default:
     	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
     	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
-    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
     	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
     }
 	position = new QLineEdit(QString::fromStdString(pos));
@@ -241,7 +241,7 @@ void QEditRefPointTab::setvalue(const RefPoint& r)
     	default:
     	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
     	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
-    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
     	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
     }
     position->setText(QString::fromStdString(pos));
@@ -257,12 +257,32 @@ void QEditRefPointTab::setvalue(const RefPoint& r)
 
 QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
 : QWidget(d), dialog(d), tab(t)
+, settings("karpeer.net","qTracker",this)
 {
 	QVBoxLayout* main = new QVBoxLayout();
-	//QGridLayout* gridbox = new QGridLayout();
-	
+	//QGridLayout* gridbox = new QGridLayout();	
 	tab->addTab(this,"Datum");
 	
+    QGroupBox* distgroup = new QGroupBox();
+    distbuttons = new QButtonGroup(distgroup);
+    QRadioButton *geo  = new QRadioButton(tr("Wgs84-Geo"));
+    QRadioButton *dms  = new QRadioButton(tr("Wgs84-DMS"));
+    QRadioButton *utm  = new QRadioButton(tr("UTM/UPS"));
+    QRadioButton *mgrs = new QRadioButton(tr("MGRS"));
+    distbuttons->addButton(geo,  geodata::Wgs84_Geo);
+    distbuttons->addButton(dms,  geodata::Wgs84_DMS);
+    distbuttons->addButton(utm,  geodata::UTMUPS);
+    distbuttons->addButton(mgrs, geodata::MGRS);
+    QVBoxLayout *distbox = new QVBoxLayout();
+    distbox->addWidget(geo);
+    distbox->addWidget(dms);
+    distbox->addWidget(utm);
+    distbox->addWidget(mgrs);
+    //distbox->addStretch(1);
+    distgroup->setLayout(distbox);
+	setvalue(settings.value("map/datum",geodata::Wgs84_Geo).toInt());
+    connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(setvalue(int)));
+    
 	// Filler ======================================
     QWidget *filler = new QWidget;
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -276,6 +296,7 @@ QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
 
 	// Layout ======================================
     //main->addLayout(gridbox);
+    main->addWidget(distgroup);
     main->addWidget(filler);
     main->addLayout(buttonbox);
     setLayout(main);
@@ -293,10 +314,14 @@ QDatumTab::~QDatumTab()
 void QDatumTab::accept() 
 {
     LOG( "QDatumTab::accept()"; )
+	settings.setValue("map/datum",(int) datum);
+    settings.sync();
 }
 
-void QDatumTab::setvalue(geodata::Datum v)
+void QDatumTab::setvalue(int v)
 {
+	distbuttons->button(v)->setChecked(true);
+	datum = (geodata::Datum) v;
 }
 
 

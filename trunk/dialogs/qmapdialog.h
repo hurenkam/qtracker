@@ -117,15 +117,18 @@ public:
     QDatumTab(QMapTabsDialog *d, QTabWidget* t);
     ~QDatumTab();
 
-    geodata::Datum Value();
+    geodata::Datum Value() { return datum; }
 
 public slots:
     void accept();
-    void setvalue(geodata::Datum v);
+    void setvalue(int v);
     
 private:
+    QSettings			 settings;
 	QMapTabsDialog*      dialog;
 	QTabWidget*          tab;
+	QButtonGroup*        distbuttons;
+	geodata::Datum       datum;
 };
 
 #endif // QMAPDIALOG_H
