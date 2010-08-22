@@ -12,6 +12,7 @@
 #include "qwaypointdialog.h"
 #include "ui.h"
 #include "waypointlist.h"
+#include "geocoords.hpp"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -52,10 +53,9 @@ void QWayPointTabsDialog::accept()
 
 
 QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const WayPoint& w)
-: QWidget(d), dialog(d), tab(t), name(0), time(0), latitude(0), longitude(0), elevation(0)
+: QWidget(d), dialog(d), tab(t), name(0), time(0), position(0), /*latitude(0), longitude(0),*/ elevation(0)
 , settings("karpeer.net","qTracker",this)
 {
-	//geodata::Datum datum = settings.value("map/datum",(int) geodata::Wgs84_Geo).toInt();
 	QVBoxLayout* main = new QVBoxLayout();
 	QGridLayout* gridbox = new QGridLayout();
 	
@@ -80,16 +80,22 @@ QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const 
 	gridbox->addWidget(new QLabel(tr("Name:")),0,0);
 	gridbox->addWidget(name,0,1);
 
-	// Latitude ======================================
-    latitude = new QDoubleEdit(w.Latitude(),this);
-	gridbox->addWidget(new QLabel(tr("Latitude:")),1,0);
-    gridbox->addWidget(latitude,1,1);
-    
-	// Longitude ======================================
-    longitude = new QDoubleEdit(w.Longitude(),this);
-	gridbox->addWidget(new QLabel(tr("Longitude:")),2,0);
-    gridbox->addWidget(longitude,2,1);
-    
+	// Position =======================================
+	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    GeographicLib::GeoCoords p(w.Latitude(),w.Longitude());
+    std::string pos;
+    switch (datum)
+    {
+    	default:
+    	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
+    	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
+    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
+    }
+	position = new QLineEdit(QString::fromStdString(pos));
+	gridbox->addWidget(new QLabel(tr("Position:")),1,0);
+	gridbox->addWidget(position,1,1);
+	
 	// Elevation ======================================
     elevation = new QDoubleEdit(w.Elevation(),this);
 	gridbox->addWidget(new QLabel(tr("Altitude:")),3,0);
@@ -138,17 +144,41 @@ void QEditWayPointTab::accept()
         WayPointList::Instance().AddWayPoint(w);
 }
 
+double QEditWayPointTab::Latitude()
+{
+    GeographicLib::GeoCoords p(position->text().toStdString());
+    return p.Latitude();
+}
+
+double QEditWayPointTab::Longitude()
+{
+    GeographicLib::GeoCoords p(position->text().toStdString());
+    return p.Longitude();
+}
+
 void QEditWayPointTab::select(const QString& n)
 {
 	const WayPoint& w = WayPointList::Instance().GetItem(n);
+
+	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    GeographicLib::GeoCoords p(w.Latitude(),w.Longitude());
+    std::string pos;
+    switch (datum)
+    {
+    	default:
+    	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
+    	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
+    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
+    }
+    position->setText(QString::fromStdString(pos));
+	
 	orgname = w.Name();
 	editmode = true;
 	tab->setTabText(0,"Edit");
 	tab->setCurrentIndex(0);
     name->setText(w.Name());
     time->setText(w.Time());
-    latitude->setNumber(w.Latitude());
-    longitude->setNumber(w.Longitude());
     elevation->setNumber(w.Elevation());
 }
 

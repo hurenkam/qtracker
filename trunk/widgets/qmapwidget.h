@@ -2,6 +2,7 @@
 #define QMAPWIDGET_H
 
 #include <QSystemDeviceInfo>
+#include <string>
 #include "qgaugewidget.h"
 
 namespace QtMobility
@@ -48,11 +49,12 @@ public slots:
     void UpdatePosition(const QGeoPositionInfo& info);
     void updatePosition(const QGeoCoordinate& pos);
     void moveMap(int x, int y);
-    void SelectMap();
-    void SelectWayPoint();
     void MapSelected(QString map);
     void RefpointSelected(QString name, double lat, double lon);
     void FollowGPS();
+
+    void ShowMapDialog();
+    void ShowWaypointDialog();
     
     void ShowTrackDialog();
     void ShowTrack(const QString& name);
@@ -75,6 +77,7 @@ protected:
     bool LoadMap(QString filename);
     bool SelectBestMapForCurrentPosition();
     bool SetCursorToCurrentPosition();
+    std::string getRepresentation(double lat, double lon);
     virtual void paintTrack(Track* t);
     virtual void paintRoute(Route* r);
     virtual void paintBackground(QPainter& painter);

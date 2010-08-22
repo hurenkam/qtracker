@@ -49,8 +49,8 @@ public:
     
     QString  Name()      { return name->text(); }
     QString  Time()      { return time->text(); }
-    double   Latitude()  { return latitude->number(); }
-    double   Longitude() { return longitude->number(); }
+    double   Latitude();
+    double   Longitude();
     double   Elevation() { return elevation->number(); }
     WayPoint Position()  
         { return WayPoint(Latitude(),Longitude(),Elevation(),Time(),Name()); }
@@ -68,8 +68,7 @@ private:
 
 	QLineEdit*           name;
 	QLineEdit*           time;
-    QDoubleEdit*		 latitude;
-    QDoubleEdit*         longitude;
+    QLineEdit*           position;
     QDoubleEdit*         elevation;
 };
 

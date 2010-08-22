@@ -85,7 +85,7 @@ QTabBar::tab {
     border-bottom-color: #0050c0; /* same as the pane color */
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    min-width: 8ex;
+    min-width: 4ex;
     padding: 2px;
     min-height: 30px;
     font: bold 18px;

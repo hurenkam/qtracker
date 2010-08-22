@@ -14,6 +14,7 @@
 #include "routelist.h"
 #include "datamonitor.h"
 #include "geocoords.hpp"
+#include "geodata.h"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -68,20 +69,18 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
 {
     connect(this, SIGNAL(drag(int,int)), this, SLOT(moveMap(int,int)));
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
-    connect(this, SIGNAL(doubleTap()), this, SLOT(SelectMap()));
+    connect(this, SIGNAL(doubleTap()), this, SLOT(ShowMapDialog()));
     CreateMapList();
     connect(&zoomtimer,SIGNAL(timeout()),this,SLOT(zoomRepeat()));
     zoomtimer.setInterval(150);
     connect(this, SIGNAL(zoomin()), this, SLOT(zoomIn()));
     connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
     connect(this, SIGNAL(options()), this, SLOT(ShowRouteDialog()));  // to be menu
-    connect(this, SIGNAL(datum()), this, SLOT(SelectMap()));  // to be menu
-    connect(this, SIGNAL(waypoint()), this, SLOT(SelectWayPoint()));
+    connect(this, SIGNAL(datum()), this, SLOT(ShowMapDialog()));
+    connect(this, SIGNAL(waypoint()), this, SLOT(ShowWaypointDialog()));
     connect(this, SIGNAL(track()), this, SLOT(ShowTrackDialog()));
     connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowTrack(const QString&)));
 	connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideTrack(const QString&)));
-    //connect(WayPointList::Instance(),SIGNAL(added(const WayPoint&)),this,SLOT(ShowWayPoint(const WayPoint&)));
-    //connect(WayPointList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(HideWayPoint(const QString&)));
     connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowRoute(const QString&)));
 	connect(RouteList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideRoute(const QString&)));
 	connect(&DataMonitor::Instance(), SIGNAL(PositionUpdated(QGeoPositionInfo)), this, SLOT(UpdatePosition(QGeoPositionInfo)));
@@ -250,7 +249,7 @@ void QMapWidget::RefpointSelected(QString name, double lat, double lon)
     msg.exec();
 }
 
-void QMapWidget::SelectWayPoint()
+void QMapWidget::ShowWaypointDialog()
 {
 	QWayPointTabsDialog *dialog;
 
@@ -268,7 +267,6 @@ void QMapWidget::SelectWayPoint()
     dialog->show();
 }
 
-// Todo: name doesn't cover the load, should be renamed
 void QMapWidget::ShowRouteDialog() 
 {
 	QRouteTabsDialog *dialog;
@@ -282,7 +280,6 @@ void QMapWidget::ShowRouteDialog()
 	dialog->show();
 }
 
-// Todo: name doesn't cover the load, should be renamed
 void QMapWidget::ShowTrackDialog() 
 {
 	QTrackTabsDialog *dialog;
@@ -420,7 +417,7 @@ void QMapWidget::ShowRouteSegment(const WayPoint& from, const WayPoint& to)
     }
 }
 
-void QMapWidget::SelectMap()
+void QMapWidget::ShowMapDialog()
 {
 	RefPoint r = RefPoint(x,y,latitude,longitude);
 	QMapTabsDialog *dialog = new QMapTabsDialog(this,meta,&r);
@@ -691,6 +688,20 @@ void QMapWidget::paintDot(QPainter& painter,int x,int y,QColor c)
     painter.drawEllipse(s/-2+x,s/-2+y,s,s);
 }
 
+std::string QMapWidget::getRepresentation(double lat, double lon)
+{
+	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    GeographicLib::GeoCoords p(lat,lon);
+    switch (datum)
+    {
+    	default:
+    	case geodata::Wgs84_Geo: return p.GeoRepresentation();
+    	case geodata::Wgs84_DMS: return p.DMSRepresentation();
+    	case geodata::UTM_UTP:   return p.UTMUPSRepresentation();
+    	case geodata::MGRS:      return p.MGRSRepresentation();
+    }
+}
+
 void QMapWidget::paintBar(QPainter& painter)
 {
     double w = width();
@@ -711,22 +722,14 @@ void QMapWidget::paintBar(QPainter& painter)
 		painter.setPen(QPen(Qt::black));
         double lat, lon;
         if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
-        {
-            GeographicLib::GeoCoords p(lat,lon);
-            //sprintf(buf,"%08.5fN %08.5fE",lat,lon);
-        	//sprintf(buf,"%s",p.UTMUPSRepresentation());
-        	sprintf(buf,"%s",p.GeoRepresentation());
-        }
+        	sprintf(buf,"%s",getRepresentation(lat,lon));
         else
             sprintf(buf,"%04.0f,%04.0f",x,y);
     }
     else
     {
-        GeographicLib::GeoCoords p(latitude,longitude);
         painter.setPen(QPen(Qt::blue));
-        //sprintf(buf,"%08.5fN %08.5fE",latitude,longitude);
-    	//sprintf(buf,"%s",p.UTMUPSRepresentation());
-    	sprintf(buf,"%s",p.GeoRepresentation());
+    	sprintf(buf,"%s",getRepresentation(latitude,longitude));
     }
 
     r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, buf);

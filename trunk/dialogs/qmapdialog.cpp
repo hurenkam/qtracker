@@ -18,6 +18,7 @@
 #include "qmapdialog.h"
 #include "maplist.h"
 #include "gpxio.h"
+#include "geocoords.hpp"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -122,7 +123,8 @@ QMapListTab::~QMapListTab()
 
 
 QEditRefPointTab::QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData* m, RefPoint* r)
-: QWidget(d), dialog(d), tab(t), name(0), latitude(0), longitude(0), x(0), y(0), meta(m)
+: QWidget(d), dialog(d), tab(t), name(0), position(0), x(0), y(0), meta(m)
+, settings("karpeer.net","qTracker",this)
 {
 	QVBoxLayout* main = new QVBoxLayout();
 	QGridLayout* gridbox = new QGridLayout();
@@ -144,16 +146,22 @@ QEditRefPointTab::QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData
 	gridbox->addWidget(new QLabel(tr("Name:")),0,0);
 	gridbox->addWidget(name,0,1);
 
-	// Latitude ======================================
-    latitude = new QDoubleEdit(r->Latitude(),this);
-	gridbox->addWidget(new QLabel(tr("Latitude:")),1,0);
-    gridbox->addWidget(latitude,1,1);
-    
-	// Longitude ======================================
-    longitude = new QDoubleEdit(r->Longitude(),this);
-	gridbox->addWidget(new QLabel(tr("Longitude:")),2,0);
-    gridbox->addWidget(longitude,2,1);
-    
+	// Position =======================================
+	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    GeographicLib::GeoCoords p(r->Latitude(),r->Longitude());
+    std::string pos;
+    switch (datum)
+    {
+    	default:
+    	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
+    	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
+    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
+    }
+	position = new QLineEdit(QString::fromStdString(pos));
+	gridbox->addWidget(new QLabel(tr("Position:")),1,0);
+	gridbox->addWidget(position,1,1);
+	
 	// Elevation ======================================
     x = new QDoubleEdit(r->X(),this);
 	gridbox->addWidget(new QLabel(tr("X:")),3,0);
@@ -205,21 +213,93 @@ void QEditRefPointTab::accept()
         return;
     }
     
-    RefPoint r = RefPoint(x->number(),y->number(),latitude->number(),longitude->number());
+    GeographicLib::GeoCoords p(position->text().toStdString());
+    RefPoint r = RefPoint(x->number(),y->number(),p.Latitude(),p.Longitude());
     meta->AddRefPoint(r);
     GpxIO::Instance()->WriteMapMetaFile(*meta);
 }
 
+double QEditRefPointTab::Latitude()
+{
+    GeographicLib::GeoCoords p(position->text().toStdString());
+    return p.Latitude();
+}
+
+double QEditRefPointTab::Longitude()
+{
+    GeographicLib::GeoCoords p(position->text().toStdString());
+    return p.Longitude();
+}
+
 void QEditRefPointTab::setvalue(const RefPoint& r)
 {
+	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    GeographicLib::GeoCoords p(r.Latitude(),r.Longitude());
+    std::string pos;
+    switch (datum)
+    {
+    	default:
+    	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
+    	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
+    	case geodata::UTM_UTP:   pos = p.UTMUPSRepresentation(); break;
+    	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
+    }
+    position->setText(QString::fromStdString(pos));
+	
     name->setText(r.Name());
-    latitude->setNumber(r.Latitude());
-    longitude->setNumber(r.Longitude());
     double ax = r.X();
     double ay = r.Y();
     x->setNumber(ax);
     y->setNumber(ay);
 }
+
+
+
+QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
+: QWidget(d), dialog(d), tab(t)
+{
+	QVBoxLayout* main = new QVBoxLayout();
+	//QGridLayout* gridbox = new QGridLayout();
+	
+	tab->addTab(this,"Datum");
+	
+	// Filler ======================================
+    QWidget *filler = new QWidget;
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+	// Buttons ======================================
+	QPushButton* confirm =  new QPushButton(tr("Save"));
+	QPushButton* cancel  =  new QPushButton(tr("Cancel"));
+	QHBoxLayout* buttonbox =  new QHBoxLayout();
+	buttonbox->addWidget(confirm);
+	buttonbox->addWidget(cancel);
+
+	// Layout ======================================
+    //main->addLayout(gridbox);
+    main->addWidget(filler);
+    main->addLayout(buttonbox);
+    setLayout(main);
+
+	// Signals ======================================
+    connect(cancel,SIGNAL(clicked()),d,SLOT(reject()));
+    connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
+    connect(confirm,SIGNAL(clicked()),d,SLOT(accept()));
+}
+
+QDatumTab::~QDatumTab()
+{
+}
+
+void QDatumTab::accept() 
+{
+    LOG( "QDatumTab::accept()"; )
+}
+
+void QDatumTab::setvalue(geodata::Datum v)
+{
+}
+
+
 
 QMapTabsDialog::QMapTabsDialog(QWidget *p, MapMetaData* m, RefPoint* r)
     : QDialog(p)
@@ -237,6 +317,7 @@ QMapTabsDialog::QMapTabsDialog(QWidget *p, MapMetaData* m, RefPoint* r)
         tabs->addTab(new QMapListTab(this,QMapListTab::CurrentMaps,r),tr("Local"));
     tabs->addTab(new QMapListTab(this,QMapListTab::AllMaps),tr("All"));
     new QEditRefPointTab(this,tabs,m,r);
+    new QDatumTab(this,tabs);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);

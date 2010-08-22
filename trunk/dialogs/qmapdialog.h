@@ -9,23 +9,9 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QGroupBox>
-//#include <QLineEdit>
 #include "qdoubleedit.h"
 #include "maplist.h"
-
-
-/*
-class QDoubleEdit : public QLineEdit
-{
-public:
-    QDoubleEdit(const double input, QWidget *parent) : QLineEdit(QVariant(input).toString(), parent)
-    {
-        setValidator(new QDoubleValidator(this));
-    }
-    double number()                    { return text().toDouble(); }
-    void setNumber(const double value) { setText(QVariant(value).toString()); }
-};
-*/
+#include "geodata.h"
 
 class QMapTabsDialog : public QDialog
 {
@@ -36,8 +22,6 @@ public:
 
 signals:
     void loadmap(QString);
-	//void deletemap(QString);
-    //void updatemap(QString);
 
 public slots:
     virtual void accept();
@@ -103,8 +87,8 @@ public:
     ~QEditRefPointTab();
     
     QString  Name()      { return name->text(); }
-    double   Latitude()  { return latitude->number(); }
-    double   Longitude() { return longitude->number(); }
+    double   Latitude();
+    double   Longitude();
     int      X()         { return x->number(); }
     int      Y()         { return y->number(); }
     RefPoint Value()     { return RefPoint(Latitude(),Longitude(),X(),Y()); }
@@ -114,15 +98,34 @@ public slots:
     void setvalue(const RefPoint& r);
     
 private:
+    QSettings			 settings;
 	QMapTabsDialog*      dialog;
 	QTabWidget*          tab;
 	MapMetaData*		 meta;
 
 	QLineEdit*           name;
-    QDoubleEdit*		 latitude;
-    QDoubleEdit*         longitude;
+    QLineEdit*           position;
     QDoubleEdit*		 x;
     QDoubleEdit*		 y;
+};
+
+class QDatumTab: public QWidget
+{
+    Q_OBJECT
+
+public:
+    QDatumTab(QMapTabsDialog *d, QTabWidget* t);
+    ~QDatumTab();
+
+    geodata::Datum Value();
+
+public slots:
+    void accept();
+    void setvalue(geodata::Datum v);
+    
+private:
+	QMapTabsDialog*      dialog;
+	QTabWidget*          tab;
 };
 
 #endif // QMAPDIALOG_H
