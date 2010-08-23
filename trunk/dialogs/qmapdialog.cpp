@@ -29,12 +29,12 @@ using namespace geodata;
 QCurrentMapTab::QCurrentMapTab(QMapTabsDialog* d, QTabWidget* t)
     : QWidget(d), dialog(d), tab(t), center(0)
 {
-	QVBoxLayout* main = new QVBoxLayout();
-	QHBoxLayout* namebox = new QHBoxLayout();
-	namebox->addWidget(new QLabel(tr("Name:")));
-	name = new QLineEdit(this);
-	namebox->addWidget(name);
-	QPushButton* cancel =  new QPushButton(tr("Cancel"));
+    QVBoxLayout* main = new QVBoxLayout();
+    QHBoxLayout* namebox = new QHBoxLayout();
+    namebox->addWidget(new QLabel(tr("Name:")));
+    name = new QLineEdit(this);
+    namebox->addWidget(name);
+    QPushButton* cancel =  new QPushButton(tr("Cancel"));
     QHBoxLayout* buttonbox =  new QHBoxLayout();
     buttonbox->addWidget(cancel);
     tab->addTab(this,"Map");
@@ -126,28 +126,28 @@ QEditRefPointTab::QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData
 : QWidget(d), dialog(d), tab(t), name(0), position(0), x(0), y(0), meta(m)
 , settings("karpeer.net","qTracker",this)
 {
-	QVBoxLayout* main = new QVBoxLayout();
-	QGridLayout* gridbox = new QGridLayout();
-	
-	// Name ======================================
-	name = new QLineEdit(this);
-	
-	QString prefix = r->Name();
-	if (prefix!="ref")
-	{
-		name->setText(prefix);
-		tab->addTab(this,"Edit");
-	}
-	else
-	{
-		name->setText(UniqueName(prefix));
-		tab->addTab(this,"New" );
-	}
-	gridbox->addWidget(new QLabel(tr("Name:")),0,0);
-	gridbox->addWidget(name,0,1);
+    QVBoxLayout* main = new QVBoxLayout();
+    QGridLayout* gridbox = new QGridLayout();
 
-	// Position =======================================
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    // Name ======================================
+    name = new QLineEdit(this);
+
+    QString prefix = r->Name();
+    if (prefix!="ref")
+    {
+        name->setText(prefix);
+        tab->addTab(this,"Edit");
+    }
+    else
+    {
+        name->setText(UniqueName(prefix));
+        tab->addTab(this,"New" );
+    }
+    gridbox->addWidget(new QLabel(tr("Name:")),0,0);
+    gridbox->addWidget(name,0,1);
+
+    // Position =======================================
+    geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     GeographicLib::GeoCoords p(r->Latitude(),r->Longitude());
     std::string pos;
     switch (datum)
@@ -158,38 +158,38 @@ QEditRefPointTab::QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData
     	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
     	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
     }
-	position = new QLineEdit(QString::fromStdString(pos));
-	gridbox->addWidget(new QLabel(tr("Position:")),1,0);
-	gridbox->addWidget(position,1,1);
+    position = new QLineEdit(QString::fromStdString(pos));
+    gridbox->addWidget(new QLabel(tr("Position:")),1,0);
+    gridbox->addWidget(position,1,1);
 	
-	// Elevation ======================================
+    // Elevation ======================================
     x = new QDoubleEdit(r->X(),this);
-	gridbox->addWidget(new QLabel(tr("X:")),3,0);
+    gridbox->addWidget(new QLabel(tr("X:")),3,0);
     gridbox->addWidget(x,3,1);
     
-	// Time ======================================
+    // Time ======================================
     y = new QDoubleEdit(r->Y(),this);
-	gridbox->addWidget(new QLabel(tr("Y:")),4,0);
+    gridbox->addWidget(new QLabel(tr("Y:")),4,0);
     gridbox->addWidget(y,4,1);
     
-	// Filler ======================================
+    // Filler ======================================
     QWidget *filler = new QWidget;
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     
-	// Buttons ======================================
-	QPushButton* confirm =  new QPushButton(tr("Save"));
-	QPushButton* cancel  =  new QPushButton(tr("Cancel"));
-	QHBoxLayout* buttonbox =  new QHBoxLayout();
-	buttonbox->addWidget(confirm);
-	buttonbox->addWidget(cancel);
+    // Buttons ======================================
+    QPushButton* confirm =  new QPushButton(tr("Save"));
+    QPushButton* cancel  =  new QPushButton(tr("Cancel"));
+    QHBoxLayout* buttonbox =  new QHBoxLayout();
+    buttonbox->addWidget(confirm);
+    buttonbox->addWidget(cancel);
 
-	// Layout ======================================
+    // Layout ======================================
     main->addLayout(gridbox);
     main->addWidget(filler);
     main->addLayout(buttonbox);
     setLayout(main);
 
-	// Signals ======================================
+    // Signals ======================================
     connect(cancel,SIGNAL(clicked()),d,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
     connect(confirm,SIGNAL(clicked()),d,SLOT(accept()));
@@ -233,7 +233,7 @@ double QEditRefPointTab::Longitude()
 
 void QEditRefPointTab::setvalue(const RefPoint& r)
 {
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     GeographicLib::GeoCoords p(r.Latitude(),r.Longitude());
     std::string pos;
     switch (datum)
@@ -259,9 +259,8 @@ QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
 : QWidget(d), dialog(d), tab(t)
 , settings("karpeer.net","qTracker",this)
 {
-	QVBoxLayout* main = new QVBoxLayout();
-	//QGridLayout* gridbox = new QGridLayout();	
-	tab->addTab(this,"Datum");
+    QVBoxLayout* main = new QVBoxLayout();
+    tab->addTab(this,"Datum");
 	
     QGroupBox* distgroup = new QGroupBox();
     distbuttons = new QButtonGroup(distgroup);
@@ -278,30 +277,28 @@ QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
     distbox->addWidget(dms);
     distbox->addWidget(utm);
     distbox->addWidget(mgrs);
-    //distbox->addStretch(1);
     distgroup->setLayout(distbox);
-	setvalue(settings.value("map/datum",geodata::Wgs84_Geo).toInt());
+    setvalue(settings.value("map/datum",geodata::Wgs84_Geo).toInt());
     connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(setvalue(int)));
     
-	// Filler ======================================
+    // Filler ======================================
     QWidget *filler = new QWidget;
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     
-	// Buttons ======================================
-	QPushButton* confirm =  new QPushButton(tr("Save"));
-	QPushButton* cancel  =  new QPushButton(tr("Cancel"));
-	QHBoxLayout* buttonbox =  new QHBoxLayout();
-	buttonbox->addWidget(confirm);
-	buttonbox->addWidget(cancel);
+    // Buttons ======================================
+    QPushButton* confirm =  new QPushButton(tr("Save"));
+    QPushButton* cancel  =  new QPushButton(tr("Cancel"));
+    QHBoxLayout* buttonbox =  new QHBoxLayout();
+    buttonbox->addWidget(confirm);
+    buttonbox->addWidget(cancel);
 
-	// Layout ======================================
-    //main->addLayout(gridbox);
+    // Layout ======================================
     main->addWidget(distgroup);
     main->addWidget(filler);
     main->addLayout(buttonbox);
     setLayout(main);
 
-	// Signals ======================================
+    // Signals ======================================
     connect(cancel,SIGNAL(clicked()),d,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
     connect(confirm,SIGNAL(clicked()),d,SLOT(accept()));
@@ -314,14 +311,14 @@ QDatumTab::~QDatumTab()
 void QDatumTab::accept() 
 {
     LOG( "QDatumTab::accept()"; )
-	settings.setValue("map/datum",(int) datum);
+    settings.setValue("map/datum",(int) datum);
     settings.sync();
 }
 
 void QDatumTab::setvalue(int v)
 {
-	distbuttons->button(v)->setChecked(true);
-	datum = (geodata::Datum) v;
+    distbuttons->button(v)->setChecked(true);
+    datum = (geodata::Datum) v;
 }
 
 

@@ -34,72 +34,72 @@ QCompassOptions::QCompassOptions(QDialog* d)
 : QWidget(d)
 , settings("karpeer.net","qTracker",this)
 {
-	source  = settings.value("compass/source",0).toInt();
-	view    = settings.value("compass/view",0).toInt();
+    source  = settings.value("compass/source",0).toInt();
+    view    = settings.value("compass/view",0).toInt();
 
-	QVBoxLayout *main = new QVBoxLayout();
-	
-	QGroupBox*    sourcegroup =   new QGroupBox("Source");
-	sourcebuttons = new QButtonGroup(sourcegroup);
-	QRadioButton* sensorbutton =  new QRadioButton("Sensor");
-	QRadioButton* gpsbutton =     new QRadioButton("GPS");
-	QVBoxLayout*  sourcebox =     new QVBoxLayout();
-	sourcebuttons->addButton(sensorbutton,0);
-	sourcebuttons->addButton(gpsbutton,1);
-	sourcebox->addWidget(sensorbutton);
-	sourcebox->addWidget(gpsbutton);
-	sourcegroup->setLayout(sourcebox);
-	sourcegroup->show();
-	
-	if ( DataMonitor::Instance().IsUsingGPSCompass() )
-        gpsbutton->setChecked(true);
-	else
-        sensorbutton->setChecked(true);
+    QVBoxLayout *main = new QVBoxLayout();
 
-	if ( !DataMonitor::Instance().HasCompassSensor() )
-		sensorbutton->setDisabled(true);
+    QGroupBox*    sourcegroup =   new QGroupBox("Source");
+    sourcebuttons = new QButtonGroup(sourcegroup);
+    QRadioButton* sensorbutton =  new QRadioButton("Sensor");
+    QRadioButton* gpsbutton =     new QRadioButton("GPS");
+    QVBoxLayout*  sourcebox =     new QVBoxLayout();
+    sourcebuttons->addButton(sensorbutton,0);
+    sourcebuttons->addButton(gpsbutton,1);
+    sourcebox->addWidget(sensorbutton);
+    sourcebox->addWidget(gpsbutton);
+    sourcegroup->setLayout(sourcebox);
+    //sourcegroup->show();
 
-	QGroupBox*    viewgroup =     new QGroupBox("View");
-	viewbuttons =   new QButtonGroup(viewgroup);
-	QRadioButton* northupbutton = new QRadioButton("North up");
-	QRadioButton* headupbutton =  new QRadioButton("Heading up");
-	QVBoxLayout*  viewbox =       new QVBoxLayout();
-	viewbuttons->addButton(northupbutton,0);
-	viewbuttons->addButton(headupbutton,1);
-	viewbox->addWidget(northupbutton);
-	viewbox->addWidget(headupbutton);
-	viewgroup->setLayout(viewbox);
-	viewgroup->show();
-	headupbutton->setChecked(true);
-	if (view==0)
-	    northupbutton->setChecked(true);
-	else
-	    headupbutton->setChecked(true);
+    if ( DataMonitor::Instance().IsUsingGPSCompass() )
+    gpsbutton->setChecked(true);
+    else
+    sensorbutton->setChecked(true);
 
-	filler = new QWidget;
-	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    if ( !DataMonitor::Instance().HasCompassSensor() )
+            sensorbutton->setDisabled(true);
 
-	QPushButton* apply =  new QPushButton(tr("Apply"));
-	QPushButton* cancel =  new QPushButton(tr("Cancel"));
-	QHBoxLayout* buttonbox =  new QHBoxLayout();
-	buttonbox->addWidget(apply);
-	buttonbox->addWidget(cancel);
-	
-	QVBoxLayout* topleft = new QVBoxLayout();
-	QVBoxLayout* bottomright = new QVBoxLayout();
+    QGroupBox*    viewgroup =     new QGroupBox("View");
+    viewbuttons =   new QButtonGroup(viewgroup);
+    QRadioButton* northupbutton = new QRadioButton("North up");
+    QRadioButton* headupbutton =  new QRadioButton("Heading up");
+    QVBoxLayout*  viewbox =       new QVBoxLayout();
+    viewbuttons->addButton(northupbutton,0);
+    viewbuttons->addButton(headupbutton,1);
+    viewbox->addWidget(northupbutton);
+    viewbox->addWidget(headupbutton);
+    viewgroup->setLayout(viewbox);
+    //viewgroup->show();
+    headupbutton->setChecked(true);
+    if (view==0)
+        northupbutton->setChecked(true);
+    else
+        headupbutton->setChecked(true);
+
+    filler = new QWidget;
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QPushButton* apply =  new QPushButton(tr("Apply"));
+    QPushButton* cancel =  new QPushButton(tr("Cancel"));
+    QHBoxLayout* buttonbox =  new QHBoxLayout();
+    buttonbox->addWidget(apply);
+    buttonbox->addWidget(cancel);
+
+    QVBoxLayout* topleft = new QVBoxLayout();
+    QVBoxLayout* bottomright = new QVBoxLayout();
     center = new QBoxLayout(QBoxLayout::TopToBottom);
 	
-	topleft->addWidget(sourcegroup);
-	topleft->addWidget(viewgroup);
-	bottomright->addWidget(filler);
-	center->addLayout(topleft);
-	center->addLayout(bottomright);
-	main->addLayout(center);
-	main->addLayout(buttonbox);
+    topleft->addWidget(sourcegroup);
+    topleft->addWidget(viewgroup);
+    bottomright->addWidget(filler);
+    center->addLayout(topleft);
+    center->addLayout(bottomright);
+    main->addLayout(center);
+    main->addLayout(buttonbox);
 
-	connect(apply,   SIGNAL(clicked()),this,SLOT(apply()));
-	connect(cancel,  SIGNAL(clicked()),d,SLOT(reject()));
-	setLayout(main);
+    connect(apply,   SIGNAL(clicked()),this,SLOT(apply()));
+    connect(cancel,  SIGNAL(clicked()),d,SLOT(reject()));
+    setLayout(main);
 }
 
 QCompassOptions::~QCompassOptions()
@@ -122,14 +122,14 @@ void QCompassOptions::resizeEvent( QResizeEvent * event )
 
 void QCompassOptions::apply()
 {
-	source  = sourcebuttons->checkedId();
-	view    = viewbuttons->checkedId();
+    source  = sourcebuttons->checkedId();
+    view    = viewbuttons->checkedId();
 
-	settings.setValue("compass/source",source);
-	settings.setValue("compass/view",view);
+    settings.setValue("compass/source",source);
+    settings.setValue("compass/view",view);
 
-	settings.sync();
-	emit changed();
+    settings.sync();
+    emit changed();
 }
 
 QCompassDialog::QCompassDialog(QHeadingWidget *parent)
@@ -150,8 +150,8 @@ QCompassDialog::QCompassDialog(QHeadingWidget *parent)
     QVBoxLayout *main = new QVBoxLayout;
     main->addWidget(tabs);
 
-	connect(options, SIGNAL(changed()),this,SLOT(accept()));
-	connect(monitor, SIGNAL(changed()),this,SLOT(accept()));
+    connect(options, SIGNAL(changed()),this,SLOT(accept()));
+    connect(monitor, SIGNAL(changed()),this,SLOT(accept()));
     
     setLayout(main);
     showFullScreen();

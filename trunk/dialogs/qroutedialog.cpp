@@ -23,105 +23,105 @@
 QRouteListWidget::QRouteListWidget(QRouteListTab* parent)  
 : QWidget(parent)
 {
-	center = new QVBoxLayout();
-	togglemapper = new QSignalMapper(this);
-	deletemapper = new QSignalMapper(this);
+    center = new QVBoxLayout();
+    togglemapper = new QSignalMapper(this);
+    deletemapper = new QSignalMapper(this);
 
-	QStringList allkeys = RouteList::Instance()->Keys();
-	QStringList visiblekeys = RouteList::Instance()->VisibleKeys();
-	for (int i=0; i<allkeys.length(); i++)
-		NewItem(allkeys[i],visiblekeys.contains(allkeys[i]));
+    QStringList allkeys = RouteList::Instance()->Keys();
+    QStringList visiblekeys = RouteList::Instance()->VisibleKeys();
+    for (int i=0; i<allkeys.length(); i++)
+        NewItem(allkeys[i],visiblekeys.contains(allkeys[i]));
 
-	connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteRoute(const QString &)));
-	connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleRoute(const QString &)));
-	connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(RouteVisible(const QString&)));
-	connect(RouteList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(RouteInvisible(const QString&)));
-	connect(RouteList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(RouteDeleted(const QString&)));
-	connect(RouteList::Instance(),SIGNAL(added(const QString&)),this,SLOT(RouteAdded(const QString&)));
+    connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteRoute(const QString &)));
+    connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleRoute(const QString &)));
+    connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(RouteVisible(const QString&)));
+    connect(RouteList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(RouteInvisible(const QString&)));
+    connect(RouteList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(RouteDeleted(const QString&)));
+    connect(RouteList::Instance(),SIGNAL(added(const QString&)),this,SLOT(RouteAdded(const QString&)));
 
-	QWidget* filler = new QWidget();
-	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	center->addWidget(filler);
-	
-	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	setLayout(center);
+    QWidget* filler = new QWidget();
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    center->addWidget(filler);
+
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setLayout(center);
 }
 
 QHBoxLayout* QRouteListWidget::NewItem(const QString& name, bool visible)
 {
-	QHBoxLayout* item = new QHBoxLayout();
-	QToolButton* togglebutton = new QToolButton();
-	QToolButton* delbutton = new QToolButton();
-	QWidget*     filler = new QWidget();
-	delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
-	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	
-	if (visible)
-		togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
-	else
-		togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
-	
-	item->addWidget(delbutton);
-	item->addWidget(togglebutton);
-	item->addWidget(new QLabel(name));
-	item->addWidget(filler);
-	center->addLayout(item);
-	items[name]=item;
-	
-	connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
-	connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
-	deletemapper->setMapping(delbutton,name);
-	togglemapper->setMapping(togglebutton,name);
+    QHBoxLayout* item = new QHBoxLayout();
+    QToolButton* togglebutton = new QToolButton();
+    QToolButton* delbutton = new QToolButton();
+    QWidget*     filler = new QWidget();
+    delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    if (visible)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+    else
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+
+    item->addWidget(delbutton);
+    item->addWidget(togglebutton);
+    item->addWidget(new QLabel(name));
+    item->addWidget(filler);
+    center->addLayout(item);
+    items[name]=item;
+
+    connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
+    connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
+    deletemapper->setMapping(delbutton,name);
+    togglemapper->setMapping(togglebutton,name);
 }
 
 void QRouteListWidget::DeleteRoute(const QString& name)
 {
-	LOG( "QRouteListWidget::DeleteRoute(): " << name; )
+    LOG( "QRouteListWidget::DeleteRoute(): " << name; )
     RouteList::Instance()->Delete(name);
 }
 
 void QRouteListWidget::ToggleRoute(const QString& name)
 {
-	LOG( "QRouteListWidget::ToggleRoute(): " << name; )
-	QStringList  keys = RouteList::Instance()->VisibleKeys();
-	if (keys.contains(name))
-		RouteList::Instance()->Hide(name);
-	else
-		RouteList::Instance()->Show(name);
+    LOG( "QRouteListWidget::ToggleRoute(): " << name; )
+    QStringList  keys = RouteList::Instance()->VisibleKeys();
+    if (keys.contains(name))
+        RouteList::Instance()->Hide(name);
+    else
+        RouteList::Instance()->Show(name);
 }
 
 void QRouteListWidget::RouteInvisible(const QString& name)
 {
-	LOG( "QRouteListTab::RouteRemoved(): " << name; )
-	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	if (togglebutton)
-	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+    LOG( "QRouteListTab::RouteRemoved(): " << name; )
+    QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+    if (togglebutton)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
 }
 
 void QRouteListWidget::RouteVisible(const QString& name)
 {
-	LOG( "QRouteListTab::RouteAdded(): " << name; )
-	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	if (togglebutton)
-	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+    LOG( "QRouteListTab::RouteAdded(): " << name; )
+    QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+    if (togglebutton)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
 }
 
 void QRouteListWidget::RouteDeleted(const QString& name)
 {
-	QHBoxLayout* item = items[name];
-	if (!item) return;
+    QHBoxLayout* item = items[name];
+    if (!item) return;
 	
-	center->removeItem(item);
-	items.remove(name);
-	delete item;
-	updateGeometry();
+    center->removeItem(item);
+    items.remove(name);
+    delete item;
+    updateGeometry();
 }
 
 void QRouteListWidget::RouteAdded(const QString& name)
 {
-	QStringList visiblekeys = RouteList::Instance()->VisibleKeys();
+    QStringList visiblekeys = RouteList::Instance()->VisibleKeys();
     NewItem(name,visiblekeys.contains(name));
-	updateGeometry();
+    updateGeometry();
 }
 
 

@@ -24,23 +24,23 @@
 QCurrentTrackTab::QCurrentTrackTab(QTrackTabsDialog* d, QTabWidget* t, Track* track)
     : QWidget(d), dialog(d), tab(t), time(0), dist(30), center(0)
 {
-	QVBoxLayout* main = new QVBoxLayout();
-	QHBoxLayout* namebox = new QHBoxLayout();
-	namebox->addWidget(new QLabel(tr("Name:")));
-	trkname = new QLineEdit(this);
-	
-	if (track)
-		SetTrackName(track->Name());
-	else
-		NewTrackName();
-	
-	namebox->addWidget(trkname);
+    QVBoxLayout* main = new QVBoxLayout();
+    QHBoxLayout* namebox = new QHBoxLayout();
+    namebox->addWidget(new QLabel(tr("Name:")));
+    trkname = new QLineEdit(this);
 
-	stop = new QPushButton(tr("Stop"));
-	upd = new QPushButton(tr("Update"));
-	start =  new QPushButton(tr("Start"));
-	QPushButton* cancel =  new QPushButton(tr("Cancel"));
-	
+    if (track)
+        SetTrackName(track->Name());
+    else
+        NewTrackName();
+
+    namebox->addWidget(trkname);
+
+    stop = new QPushButton(tr("Stop"));
+    upd = new QPushButton(tr("Update"));
+    start =  new QPushButton(tr("Start"));
+    QPushButton* cancel =  new QPushButton(tr("Cancel"));
+
     QHBoxLayout* buttonbox =  new QHBoxLayout();
     buttonbox->addWidget(start);
     buttonbox->addWidget(stop);
@@ -49,9 +49,9 @@ QCurrentTrackTab::QCurrentTrackTab(QTrackTabsDialog* d, QTabWidget* t, Track* tr
     
     tab->addTab(this,"");
     if (track)
-		SwitchToCurrent();
+        SwitchToCurrent();
     else
-		SwitchToNew();
+        SwitchToNew();
 
     QGroupBox *typegroup = new QGroupBox();
     QRadioButton *typeall  = new QRadioButton(tr("All"));
@@ -140,37 +140,37 @@ QCurrentTrackTab::QCurrentTrackTab(QTrackTabsDialog* d, QTabWidget* t, Track* tr
 
 void QCurrentTrackTab::emitnewtrack()           
 { 
-	TrackList::Instance()->Start(trackname,dist,time);
-	SwitchToCurrent(); 
+    TrackList::Instance()->Start(trackname,dist,time);
+    SwitchToCurrent();
 }
 
 void QCurrentTrackTab::emitupdatetrack()        
 { 
-	TrackList::Instance()->UpdateInterval(dist,time);
+    TrackList::Instance()->UpdateInterval(dist,time);
 }
 
 void QCurrentTrackTab::emitstoptrack()          
 { 
-	TrackList::Instance()->Stop();
-	SwitchToNew(); 
+    TrackList::Instance()->Stop();
+    SwitchToNew();
 }
 
 void QCurrentTrackTab::SetTrackName(QString name)
 {
-	trackname = name;
-	trkname->setText(trackname);
+    trackname = name;
+    trkname->setText(trackname);
 }
 
 void QCurrentTrackTab::NewTrackName()
 {
-	QDateTime curtime = QDateTime::currentDateTime().toUTC();
+    QDateTime curtime = QDateTime::currentDateTime().toUTC();
     SetTrackName(curtime.toString("trk-yyyyMMdd-hhmmss"));
 }
 
 void QCurrentTrackTab::SwitchToNew()
 {
-	NewTrackName();
-	tab->setTabText(0,tr("New"));
+    NewTrackName();
+    tab->setTabText(0,tr("New"));
     stop->hide();
     upd->hide();
     start->show();
@@ -179,7 +179,7 @@ void QCurrentTrackTab::SwitchToNew()
 
 void QCurrentTrackTab::SwitchToCurrent()
 {
-	tab->setTabText(0,tr("Current"));
+    tab->setTabText(0,tr("Current"));
     start->hide();
     stop->show();
     upd->show();
@@ -243,105 +243,105 @@ QCurrentTrackTab::~QCurrentTrackTab()
 QTrackListWidget::QTrackListWidget(QTrackListTab* parent)  
 : QWidget(parent)
 {
-	center = new QVBoxLayout();
-	togglemapper = new QSignalMapper(this);
-	deletemapper = new QSignalMapper(this);
+    center = new QVBoxLayout();
+    togglemapper = new QSignalMapper(this);
+    deletemapper = new QSignalMapper(this);
 
-	QStringList allkeys = TrackList::Instance()->Keys();
-	QStringList visiblekeys = TrackList::Instance()->VisibleKeys();
-	for (int i=0; i<allkeys.length(); i++)
-		NewItem(allkeys[i],visiblekeys.contains(allkeys[i]));
+    QStringList allkeys = TrackList::Instance()->Keys();
+    QStringList visiblekeys = TrackList::Instance()->VisibleKeys();
+    for (int i=0; i<allkeys.length(); i++)
+        NewItem(allkeys[i],visiblekeys.contains(allkeys[i]));
 
-	connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteTrack(const QString &)));
-	connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleTrack(const QString &)));
-	connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(TrackVisible(const QString&)));
-	connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(TrackInvisible(const QString&)));
-	connect(TrackList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(TrackDeleted(const QString&)));
-	connect(TrackList::Instance(),SIGNAL(added(const QString&)),this,SLOT(TrackAdded(const QString&)));
+    connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteTrack(const QString &)));
+    connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleTrack(const QString &)));
+    connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(TrackVisible(const QString&)));
+    connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(TrackInvisible(const QString&)));
+    connect(TrackList::Instance(),SIGNAL(deleted(const QString&)),this,SLOT(TrackDeleted(const QString&)));
+    connect(TrackList::Instance(),SIGNAL(added(const QString&)),this,SLOT(TrackAdded(const QString&)));
 
-	QWidget* filler = new QWidget();
-	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	center->addWidget(filler);
-	
-	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	setLayout(center);
+    QWidget* filler = new QWidget();
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    center->addWidget(filler);
+
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setLayout(center);
 }
 
 QHBoxLayout* QTrackListWidget::NewItem(const QString& name, bool visible)
 {
-	QHBoxLayout* item = new QHBoxLayout();
-	QToolButton* togglebutton = new QToolButton();
-	QToolButton* delbutton = new QToolButton();
-	QWidget*     filler = new QWidget();
-	delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
-	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	
-	if (visible)
-		togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
-	else
-		togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
-	
-	item->addWidget(delbutton);
-	item->addWidget(togglebutton);
-	item->addWidget(new QLabel(name));
-	item->addWidget(filler);
-	center->addLayout(item);
-	items[name]=item;
-	
-	connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
-	connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
-	deletemapper->setMapping(delbutton,name);
-	togglemapper->setMapping(togglebutton,name);
+    QHBoxLayout* item = new QHBoxLayout();
+    QToolButton* togglebutton = new QToolButton();
+    QToolButton* delbutton = new QToolButton();
+    QWidget*     filler = new QWidget();
+    delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    if (visible)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+    else
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+
+    item->addWidget(delbutton);
+    item->addWidget(togglebutton);
+    item->addWidget(new QLabel(name));
+    item->addWidget(filler);
+    center->addLayout(item);
+    items[name]=item;
+
+    connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
+    connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
+    deletemapper->setMapping(delbutton,name);
+    togglemapper->setMapping(togglebutton,name);
 }
 
 void QTrackListWidget::DeleteTrack(const QString& name)
 {
-	LOG( "QTrackListWidget::DeleteTrack(): " << name.toStdString() << "\n"; )
+    LOG( "QTrackListWidget::DeleteTrack(): " << name.toStdString() << "\n"; )
     TrackList::Instance()->Delete(name);
 }
 
 void QTrackListWidget::ToggleTrack(const QString& name)
 {
-	LOG( "QTrackListWidget::ToggleTrack(): " << name.toStdString() << "\n"; )
-	QStringList  keys = TrackList::Instance()->VisibleKeys();
-	if (keys.contains(name))
-		TrackList::Instance()->Hide(name);
-	else
-		TrackList::Instance()->Show(name);
+    LOG( "QTrackListWidget::ToggleTrack(): " << name.toStdString() << "\n"; )
+    QStringList  keys = TrackList::Instance()->VisibleKeys();
+    if (keys.contains(name))
+        TrackList::Instance()->Hide(name);
+    else
+        TrackList::Instance()->Show(name);
 }
 
 void QTrackListWidget::TrackInvisible(const QString& name)
 {
-	LOG( "QTrackListTab::TrackRemoved(): " << name.toStdString() << "\n"; )
-	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	if (togglebutton)
-	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+    LOG( "QTrackListTab::TrackRemoved(): " << name.toStdString() << "\n"; )
+    QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+    if (togglebutton)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
 }
 
 void QTrackListWidget::TrackVisible(const QString& name)
 {
-	LOG( "QTrackListTab::TrackAdded(): " << name.toStdString() << "\n"; )
-	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	if (togglebutton)
-	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+    LOG( "QTrackListTab::TrackAdded(): " << name.toStdString() << "\n"; )
+    QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+    if (togglebutton)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
 }
 
 void QTrackListWidget::TrackDeleted(const QString& name)
 {
-	QHBoxLayout* item = items[name];
-	if (!item) return;
-	
-	center->removeItem(item);
-	items.remove(name);
-	delete item;
-	updateGeometry();
+    QHBoxLayout* item = items[name];
+    if (!item) return;
+
+    center->removeItem(item);
+    items.remove(name);
+    delete item;
+    updateGeometry();
 }
 
 void QTrackListWidget::TrackAdded(const QString& name)
 {
-	QStringList visiblekeys = TrackList::Instance()->VisibleKeys();
+    QStringList visiblekeys = TrackList::Instance()->VisibleKeys();
     NewItem(name,visiblekeys.contains(name));
-	updateGeometry();
+    updateGeometry();
 }
 
 
