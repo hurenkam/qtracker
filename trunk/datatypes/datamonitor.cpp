@@ -51,7 +51,7 @@ QMonitorOptions::QMonitorOptions(QDialog* d)
 	typebox->addWidget(route);
 	typebox->addWidget(track);
 	typegroup->setLayout(typebox);
-	typegroup->show();
+        //typegroup->show();
 
 	filler = new QWidget;
 	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

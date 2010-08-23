@@ -22,10 +22,10 @@
 #define TRACKDIR    "/data/qtracker/tracks/"
 #define WAYPOINTDIR "/data/qtracker/"
 #else
-#define MAPDIR      "/Users/hurenkam/workspace/qtracker/maps/"
-#define ROUTEDIR    "/Users/hurenkam/workspace/qtracker/routes/"
-#define TRACKDIR    "/Users/hurenkam/workspace/qtracker/tracks/"
-#define WAYPOINTDIR "/Users/hurenkam/workspace/qtracker/"
+#define MAPDIR      "/home/hurenkam/Workspace/qtracker/maps/"
+#define ROUTEDIR    "/home/hurenkam/Workspace/qtracker/routes/"
+#define TRACKDIR    "/home/hurenkam/Workspace/qtracker/tracks/"
+#define WAYPOINTDIR "/home/hurenkam/Workspace/qtracker/"
 #endif
 
 using namespace QtMobility;

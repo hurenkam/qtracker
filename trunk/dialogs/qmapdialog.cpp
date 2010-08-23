@@ -18,7 +18,7 @@
 #include "qmapdialog.h"
 #include "maplist.h"
 #include "gpxio.h"
-#include "geocoords.hpp"
+#include "GeoCoords.hpp"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a

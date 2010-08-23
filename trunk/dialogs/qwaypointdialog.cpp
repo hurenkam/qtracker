@@ -12,7 +12,7 @@
 #include "qwaypointdialog.h"
 #include "ui.h"
 #include "waypointlist.h"
-#include "geocoords.hpp"
+#include "GeoCoords.hpp"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a

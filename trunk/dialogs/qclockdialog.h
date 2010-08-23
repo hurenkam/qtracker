@@ -40,8 +40,8 @@ public slots:
     void apply();
     
 private:
-    QSettings settings;
-	QBoxLayout* center;
+    //QSettings settings;
+    QBoxLayout* center;
     QButtonGroup* analogbuttons;
     QButtonGroup* topbuttons;
     QButtonGroup* bottombuttons;
