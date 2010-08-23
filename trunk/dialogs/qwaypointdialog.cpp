@@ -56,32 +56,32 @@ QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const 
 : QWidget(d), dialog(d), tab(t), name(0), time(0), position(0), /*latitude(0), longitude(0),*/ elevation(0)
 , settings("karpeer.net","qTracker",this)
 {
-	QVBoxLayout* main = new QVBoxLayout();
-	QGridLayout* gridbox = new QGridLayout();
-	
-	// Name ======================================
-	name = new QLineEdit(this);
-	
-	QString prefix = w.Name();
-	if (prefix!="<new>")
-	{
-		orgname = w.Name();
-		editmode = true;
-		name->setText(prefix);
-		tab->addTab(this,"Edit");
-	}
-	else
-	{
-		editmode = false;
-		orgname = "";
-		name->setText(UniqueName("wpt"));
-        tab->addTab(this,"New" );
-	}
-	gridbox->addWidget(new QLabel(tr("Name:")),0,0);
-	gridbox->addWidget(name,0,1);
+    QVBoxLayout* main = new QVBoxLayout();
+    QGridLayout* gridbox = new QGridLayout();
 
-	// Position =======================================
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    // Name ======================================
+    name = new QLineEdit(this);
+
+    QString prefix = w.Name();
+    if (prefix!="<new>")
+    {
+        orgname = w.Name();
+        editmode = true;
+        name->setText(prefix);
+        tab->addTab(this,"Edit");
+    }
+    else
+    {
+        editmode = false;
+        orgname = "";
+        name->setText(UniqueName("wpt"));
+        tab->addTab(this,"New" );
+    }
+    gridbox->addWidget(new QLabel(tr("Name:")),0,0);
+    gridbox->addWidget(name,0,1);
+
+    // Position =======================================
+    geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     GeographicLib::GeoCoords p(w.Latitude(),w.Longitude());
     std::string pos;
     switch (datum)
@@ -92,38 +92,38 @@ QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const 
     	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
     	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
     }
-	position = new QLineEdit(QString::fromStdString(pos));
-	gridbox->addWidget(new QLabel(tr("Position:")),1,0);
-	gridbox->addWidget(position,1,1);
+    position = new QLineEdit(QString::fromStdString(pos));
+    gridbox->addWidget(new QLabel(tr("Position:")),1,0);
+    gridbox->addWidget(position,1,1);
 	
-	// Elevation ======================================
+    // Elevation ======================================
     elevation = new QDoubleEdit(w.Elevation(),this);
-	gridbox->addWidget(new QLabel(tr("Altitude:")),3,0);
+    gridbox->addWidget(new QLabel(tr("Altitude:")),3,0);
     gridbox->addWidget(elevation,3,1);
     
-	// Time ======================================
+    // Time ======================================
     time = new QLineEdit(w.Time(),this);
-	gridbox->addWidget(new QLabel(tr("Time:")),4,0);
+    gridbox->addWidget(new QLabel(tr("Time:")),4,0);
     gridbox->addWidget(time,4,1);
     
-	// Filler ======================================
+    // Filler ======================================
     QWidget *filler = new QWidget;
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     
-	// Buttons ======================================
-	QPushButton* confirm =  new QPushButton(tr("Save"));
-	QPushButton* cancel  =  new QPushButton(tr("Cancel"));
-	QHBoxLayout* buttonbox =  new QHBoxLayout();
-	buttonbox->addWidget(confirm);
-	buttonbox->addWidget(cancel);
+    // Buttons ======================================
+    QPushButton* confirm =  new QPushButton(tr("Save"));
+    QPushButton* cancel  =  new QPushButton(tr("Cancel"));
+    QHBoxLayout* buttonbox =  new QHBoxLayout();
+    buttonbox->addWidget(confirm);
+    buttonbox->addWidget(cancel);
 
-	// Layout ======================================
+    // Layout ======================================
     main->addLayout(gridbox);
     main->addWidget(filler);
     main->addLayout(buttonbox);
     setLayout(main);
 
-	// Signals ======================================
+    // Signals ======================================
     connect(cancel,SIGNAL(clicked()),d,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
     connect(confirm,SIGNAL(clicked()),d,SLOT(accept()));
@@ -158,9 +158,9 @@ double QEditWayPointTab::Longitude()
 
 void QEditWayPointTab::select(const QString& n)
 {
-	const WayPoint& w = WayPointList::Instance().GetItem(n);
+    const WayPoint& w = WayPointList::Instance().GetItem(n);
 
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     GeographicLib::GeoCoords p(w.Latitude(),w.Longitude());
     std::string pos;
     switch (datum)
@@ -173,10 +173,10 @@ void QEditWayPointTab::select(const QString& n)
     }
     position->setText(QString::fromStdString(pos));
 	
-	orgname = w.Name();
-	editmode = true;
-	tab->setTabText(0,"Edit");
-	tab->setCurrentIndex(0);
+    orgname = w.Name();
+    editmode = true;
+    tab->setTabText(0,"Edit");
+    tab->setCurrentIndex(0);
     name->setText(w.Name());
     time->setText(w.Time());
     elevation->setNumber(w.Elevation());
@@ -186,96 +186,96 @@ void QEditWayPointTab::select(const QString& n)
 QWayPointListWidget::QWayPointListWidget(QWayPointListTab* parent)  
 : QWidget(parent)
 {
-	center = new QVBoxLayout();
-	togglemapper = new QSignalMapper(this);
-	editmapper = new QSignalMapper(this);
-	deletemapper = new QSignalMapper(this);
+    center = new QVBoxLayout();
+    togglemapper = new QSignalMapper(this);
+    editmapper = new QSignalMapper(this);
+    deletemapper = new QSignalMapper(this);
 
-	QStringList names = WayPointList::Instance().Keys();
-	QStringList visible = WayPointList::Instance().VisibleKeys();
-	for (int i=0; i<names.length(); i++)
-	{
-		QHBoxLayout* item = new QHBoxLayout();
-		QToolButton* togglebutton = new QToolButton();
-		QToolButton* delbutton = new QToolButton();
-		QToolButton* editbutton = new QToolButton();
-		QWidget*     filler = new QWidget();
-		delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
-		editbutton->setIcon(QIcon(QPixmap(DASHRCDIR   "edit.svg")));
-		if (visible.contains(names[i]))
+    QStringList names = WayPointList::Instance().Keys();
+    QStringList visible = WayPointList::Instance().VisibleKeys();
+    for (int i=0; i<names.length(); i++)
+    {
+        QHBoxLayout* item = new QHBoxLayout();
+        QToolButton* togglebutton = new QToolButton();
+        QToolButton* delbutton = new QToolButton();
+        QToolButton* editbutton = new QToolButton();
+        QWidget*     filler = new QWidget();
+        delbutton->setIcon(QIcon(QPixmap(DASHRCDIR    "delete.svg")));
+        editbutton->setIcon(QIcon(QPixmap(DASHRCDIR   "edit.svg")));
+        if (visible.contains(names[i]))
             togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
-		else
+        else
             togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
-		filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		
-		item->addWidget(delbutton);
-		item->addWidget(editbutton);
-		item->addWidget(togglebutton);
-		item->addWidget(new QLabel(names[i]));
-		item->addWidget(filler);
-		center->addLayout(item);
-		items[names[i]]=item;
-		
-		connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
-		connect(editbutton,SIGNAL(clicked()),editmapper,SLOT(map()));
-		connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
-		deletemapper->setMapping(delbutton,names[i]);
-		editmapper->setMapping(editbutton,names[i]);
-		togglemapper->setMapping(togglebutton,names[i]);
-	}
-	connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteWayPoint(const QString &)));
-	connect(editmapper,SIGNAL(mapped(const QString&)),this,SLOT(EditWayPoint(const QString &)));
-	connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleWayPoint(const QString &)));
-	connect(&WayPointList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(WayPointHidden(const QString&)));
-	connect(&WayPointList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(WayPointVisible(const QString&)));
+        item->addWidget(delbutton);
+        item->addWidget(editbutton);
+        item->addWidget(togglebutton);
+        item->addWidget(new QLabel(names[i]));
+        item->addWidget(filler);
+        center->addLayout(item);
+        items[names[i]]=item;
 
-	QWidget* filler = new QWidget();
-	filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	center->addWidget(filler);
-	
-	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	setLayout(center);
+        connect(delbutton,SIGNAL(clicked()),deletemapper,SLOT(map()));
+        connect(editbutton,SIGNAL(clicked()),editmapper,SLOT(map()));
+        connect(togglebutton,SIGNAL(clicked()),togglemapper,SLOT(map()));
+        deletemapper->setMapping(delbutton,names[i]);
+        editmapper->setMapping(editbutton,names[i]);
+        togglemapper->setMapping(togglebutton,names[i]);
+    }
+    connect(deletemapper,SIGNAL(mapped(const QString&)),this,SLOT(DeleteWayPoint(const QString &)));
+    connect(editmapper,SIGNAL(mapped(const QString&)),this,SLOT(EditWayPoint(const QString &)));
+    connect(togglemapper,SIGNAL(mapped(const QString&)),this,SLOT(ToggleWayPoint(const QString &)));
+    connect(&WayPointList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(WayPointHidden(const QString&)));
+    connect(&WayPointList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(WayPointVisible(const QString&)));
+
+    QWidget* filler = new QWidget();
+    filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    center->addWidget(filler);
+
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setLayout(center);
 }
 
 void QWayPointListWidget::WayPointHidden(const QString& name)
 {
-	LOG( "QWayPointListTab::WayPointHidden(): " << name; )
-	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	if (togglebutton)
-	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
+    LOG( "QWayPointListTab::WayPointHidden(): " << name; )
+    QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+    if (togglebutton)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "invisible.svg")));
 }
 
 void QWayPointListWidget::WayPointVisible(const QString& name)
 {
-	LOG( "QWayPointListWidget::WayPointVisible(): " << name; )
-	QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
-	if (togglebutton)
-	    togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
+    LOG( "QWayPointListWidget::WayPointVisible(): " << name; )
+    QToolButton* togglebutton = (QToolButton*) togglemapper->mapping(name);
+    if (togglebutton)
+        togglebutton->setIcon(QIcon(QPixmap(DASHRCDIR "visible.svg")));
 }
 
 void QWayPointListWidget::DeleteWayPoint(const QString& name)
 {
-	LOG( "QWayPointListWidget::DeleteWayPoint(): " << name; )
+    LOG( "QWayPointListWidget::DeleteWayPoint(): " << name; )
     QHBoxLayout* item = items[name];
-	center->removeItem(item);
-	items.remove(name);
-	delete item;
-	WayPointList::Instance().RemoveWayPoint(name);
+    center->removeItem(item);
+    items.remove(name);
+    delete item;
+    WayPointList::Instance().RemoveWayPoint(name);
 }
 
 void QWayPointListWidget::EditWayPoint(const QString& name)
 {
-	LOG( "QWayPointListWidget::EditWayPoint(): " << name; )
-	emit editwaypoint(name);
+    LOG( "QWayPointListWidget::EditWayPoint(): " << name; )
+    emit editwaypoint(name);
 }
 
 void QWayPointListWidget::ToggleWayPoint(const QString& name)
 {
-	LOG( "QWayPointListWidget::ToggleWayPoint(): " << name; )
-	if (WayPointList::Instance().IsVisible(name))
-		WayPointList::Instance().Hide(name);
-	else
-		WayPointList::Instance().Show(name);
+    LOG( "QWayPointListWidget::ToggleWayPoint(): " << name; )
+    if (WayPointList::Instance().IsVisible(name))
+        WayPointList::Instance().Hide(name);
+    else
+        WayPointList::Instance().Show(name);
 }
 
 
