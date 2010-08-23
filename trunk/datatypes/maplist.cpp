@@ -29,7 +29,7 @@ MapList::MapList()
     files = directory.entryList(QStringList(QString("*.xml")),
                                  QDir::Files | QDir::NoSymLinks);
 
-    LOG( "MapList::MapList() #xml: " << files.size(); )
+    LOG( "MapList::MapList() #xml: " << files.size() << " in dir: " << directory.dirName(); )
     for (int i = 0; i < files.size(); ++i)
     {
         QString base = files[i].left(files[i].length()-4);
