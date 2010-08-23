@@ -34,23 +34,23 @@ HEADERS += \
     widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
     widgets/qlevelwidget.h \
-    geographiclib/AzimuthalEquidistant.hpp \
-    geographiclib/cassinisoldner.hpp \
-    geographiclib/constants.hpp \
-    geographiclib/dms.hpp \
-    geographiclib/ellipticfunction.hpp \
-    geographiclib/geocentric.hpp \
-    geographiclib/geocoords.hpp \
-    geographiclib/geodesic.hpp \
-    geographiclib/geoid.hpp \
-    geographiclib/gnomonic.hpp \
-    geographiclib/lambertconformalconic.hpp \
-    geographiclib/localcartesian.hpp \
-    geographiclib/mgrs.hpp \
-    geographiclib/polarstereographic.hpp \
-    geographiclib/transversemercator.hpp \
-    geographiclib/transversemercatorexact.hpp \
-    geographiclib/utmups.hpp 
+    GeographicLib/AzimuthalEquidistant.hpp \
+    GeographicLib/Cassinisoldner.hpp \
+    GeographicLib/Constants.hpp \
+    GeographicLib/DMS.hpp \
+    GeographicLib/EllipticFunction.hpp \
+    GeographicLib/Geocentric.hpp \
+    GeographicLib/GeoCoords.hpp \
+    GeographicLib/Geodesic.hpp \
+    GeographicLib/Geoid.hpp \
+    GeographicLib/Gnomonic.hpp \
+    GeographicLib/LambertConformalConic.hpp \
+    GeographicLib/LocalCartesian.hpp \
+    GeographicLib/MGRS.hpp \
+    GeographicLib/PolarStereographic.hpp \
+    GeographicLib/TransverseMercator.hpp \
+    GeographicLib/TransverseMercatorExact.hpp \
+    GeographicLib/UTMUPS.hpp
 INCLUDEPATH += dialogs \
     datatypes \
     widgets \
@@ -58,7 +58,7 @@ INCLUDEPATH += dialogs \
     mobility \
     windows \
     application \
-    geographiclib
+    GeographicLib
 FORMS += 
 RESOURCES += 
 VERSION = 0.8.234
@@ -137,20 +137,20 @@ SOURCES += \
     widgets/qsatviewwidget.cpp \
     widgets/qspeedwidget.cpp \
     windows/qdashwindow.cpp \
-    geographiclib/AzimuthalEquidistant.cpp \
-    geographiclib/CassiniSoldner.cpp \
-    geographiclib/DMS.cpp \
-    geographiclib/EllipticFunction.cpp \
-    geographiclib/Geocentric.cpp \
-    geographiclib/GeoCoords.cpp \
-    geographiclib/Geodesic.cpp \
-    geographiclib/Geoid.cpp \
-    geographiclib/Gnomonic.cpp \
-    geographiclib/LambertConformalConic.cpp \
-    geographiclib/LocalCartesian.cpp \
-    geographiclib/MGRS.cpp \
-    geographiclib/PolarStereographic.cpp \
-    geographiclib/TransverseMercator.cpp \
-    geographiclib/TransverseMercatorExact.cpp \
-    geographiclib/UTMUPS.cpp \
+    GeographicLib/AzimuthalEquidistant.cpp \
+    GeographicLib/CassiniSoldner.cpp \
+    GeographicLib/DMS.cpp \
+    GeographicLib/EllipticFunction.cpp \
+    GeographicLib/Geocentric.cpp \
+    GeographicLib/GeoCoords.cpp \
+    GeographicLib/Geodesic.cpp \
+    GeographicLib/Geoid.cpp \
+    GeographicLib/Gnomonic.cpp \
+    GeographicLib/LambertConformalConic.cpp \
+    GeographicLib/LocalCartesian.cpp \
+    GeographicLib/MGRS.cpp \
+    GeographicLib/PolarStereographic.cpp \
+    GeographicLib/TransverseMercator.cpp \
+    GeographicLib/TransverseMercatorExact.cpp \
+    GeographicLib/UTMUPS.cpp \
     main.cpp
