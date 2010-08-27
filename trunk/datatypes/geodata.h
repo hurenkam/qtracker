@@ -83,7 +83,8 @@ namespace geodata
         Wgs84_Geo = 0,
         Wgs84_DMS,
         UTMUPS,
-        MGRS
+        MGRS,
+        RD
 	};
 }
 

@@ -55,9 +55,11 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     , svgZoomIn     (new QImage(MAPRCDIR "zoom-in.svg"))
     , svgZoomOut    (new QImage(MAPRCDIR "zoom-out.svg"))
     , svgOptions    (new QImage(MAPRCDIR "options.svg"))
+    , svgExit       (new QImage(MAPRCDIR "exit.svg"))
     , svgFlag       (new QImage(MAPRCDIR "flag.svg"))
     , svgHiker      (new QImage(MAPRCDIR "hiker.svg"))
     , svgBar        (new QImage(MAPRCDIR "statusbar.svg"))
+    , svgRoute      (new QImage(MAPRCDIR "route.svg"))
     , svgLocator    (new QImage(MAPRCDIR "locator_red.svg"))
     , onmap         (false)
     , svgWptGreen   (new QImage(MAPRCDIR "wpt_green.svg"))
@@ -75,10 +77,12 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     zoomtimer.setInterval(150);
     connect(this, SIGNAL(zoomin()), this, SLOT(zoomIn()));
     connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
-    connect(this, SIGNAL(options()), this, SLOT(ShowRouteDialog()));  // to be menu
+    connect(this, SIGNAL(options()), this, SLOT(ShowMenuDialog()));
     connect(this, SIGNAL(datum()), this, SLOT(ShowMapDialog()));
     connect(this, SIGNAL(waypoint()), this, SLOT(ShowWaypointDialog()));
     connect(this, SIGNAL(track()), this, SLOT(ShowTrackDialog()));
+    connect(this, SIGNAL(route()), this, SLOT(ShowRouteDialog()));
+    connect(this, SIGNAL(exit()), this->parent(), SLOT(close()));
     connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowTrack(const QString&)));
     connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideTrack(const QString&)));
     connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowRoute(const QString&)));
@@ -530,11 +534,13 @@ void QMapWidget::zoomOut()
 void QMapWidget::mousePressEvent(QMouseEvent *event)
 {
     if ((event->pos().x() > width()-60) && (event->pos().y() < 60)) emit zoomin();
-    else if ((event->pos().x() > width()-60) && (event->pos().y() > height()-60)) emit zoomout();
-    else if ((event->pos().x() < 50) && (event->pos().y() < 60)) emit waypoint();
-    else if ((event->pos().x() > 60) && (event->pos().x() < 120) && (event->pos().y() < 60)) emit track();
-    else if ((event->pos().x() < 60) && (event->pos().y() > height()-60)) emit options();
-    else if ((event->pos().x() > 60) && (event->pos().x() < 260) && (event->pos().y() > height()-50)) emit datum();
+    else if ((event->pos().x() > width()-60) && (event->pos().y() > 60) && (event->pos().y() < 120)) emit zoomout();
+    else if ((event->pos().x() > width()-60) && (event->pos().y() > height()-60)) emit exit();
+    else if ((event->pos().x() < 50)  && (event->pos().y() < 60)) emit waypoint();
+    else if ((event->pos().x() > 60)  && (event->pos().x() < 120) && (event->pos().y() < 60)) emit track();
+    else if ((event->pos().x() > 120) && (event->pos().x() < 180) && (event->pos().y() < 60)) emit route();
+    else if ((event->pos().x() < 60)  && (event->pos().y() > height()-60)) emit options();
+    else if ((event->pos().x() > 60)  && (event->pos().x() < 260) && (event->pos().y() > height()-50)) emit datum();
     else
         QGaugeWidget::mousePressEvent(event);
 }
@@ -664,17 +670,21 @@ void QMapWidget::paintWidgets(QPainter& painter)
     double w = width();
     double h = height();
     source = QRectF(0,0,48,48);
-    target = QRectF(w/2-48,h/-2,48,48);
     painter.setViewport(12,12,w-24,h-24);
+    target = QRectF(w/2-48,h/-2,48,48);
     painter.drawImage(target, *svgZoomIn, source);
-    target = QRectF(w/2-48,h/2-48,48,48);
+    target = QRectF(w/2-48,h/-2+60,48,48);
     painter.drawImage(target, *svgZoomOut, source);
     target = QRectF(w/-2,h/2-48,48,48);
     painter.drawImage(target, *svgOptions, source);
+    target = QRectF(w/2-48,h/2-48,48,48);
+    painter.drawImage(target, *svgExit, source);
     target = QRectF(w/-2,h/-2,48,48);
     painter.drawImage(target, *svgFlag, source);
     target = QRectF(w/-2+60,h/-2,48,48);
     painter.drawImage(target, *svgHiker, source);
+    target = QRectF(w/-2+120,h/-2,48,48);
+    painter.drawImage(target, *svgRoute, source);
     target = QRectF(-16.0,-16.0,32,32);
     painter.drawImage(target, *svgLocator, source);
 }
@@ -691,17 +701,8 @@ void QMapWidget::paintDot(QPainter& painter,int x,int y,QColor c)
 QString QMapWidget::getRepresentation(double lat, double lon)
 {
     geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
-    GeographicLib::GeoCoords p(lat,lon);
-    std::string pos;
-    switch (datum)
-    {
-    	default:
-    	case geodata::Wgs84_Geo: pos = p.GeoRepresentation();    break;
-    	case geodata::Wgs84_DMS: pos = p.DMSRepresentation();    break;
-    	case geodata::UTMUPS:    pos = p.UTMUPSRepresentation(); break;
-    	case geodata::MGRS:      pos = p.MGRSRepresentation();   break;
-    }
-    return QString::fromStdString(pos);
+    WayPoint w(lat,lon);
+    return w.Representation(datum);
 }
 
 void QMapWidget::paintBar(QPainter& painter)
@@ -712,29 +713,22 @@ void QMapWidget::paintBar(QPainter& painter)
     QRectF source = QRectF(0,0,300,48);
     QRectF target = QRectF(w/-2,h/2-48,300,48);
     painter.drawImage(target, *svgBar, source);
-    //char buf[25];
-    //sprintf(buf,"%s",mapname.toStdString().c_str());
     painter.setFont(QFont("Courier", 168/TEXTDIVIDER));
     QRect r = painter.boundingRect(w/-2+58,h/2-38,260,28, Qt::AlignLeft, mapname);
     painter.setPen(QPen(Qt::blue));
     painter.drawText(r, Qt::AlignLeft, mapname);
 
     QString position = getRepresentation(latitude,longitude);
-    if ((state == StScrolling) || (!IsPositionOnMap()))
+    painter.setPen(QPen(Qt::blue));
+    
+    if ((state == StScrolling) || ((mapimage) && (!IsPositionOnMap())))
     {
         painter.setPen(QPen(Qt::black));
         double lat, lon;
         if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
             position = getRepresentation(lat,lon);
-            //sprintf(buf,"%s",getRepresentation(lat,lon));
         else
-            //sprintf(buf,"%04.0f,%04.0f",x,y);
-            position = QString::number(x) + " " + QString::number(y);
-    }
-    else
-    {
-        painter.setPen(QPen(Qt::blue));
-    	//sprintf(buf,"%s",getRepresentation(latitude,longitude));
+            position = "<" + QString::number(x) + " " + QString::number(y) + ">";
     }
 
     r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, position);

@@ -61,9 +61,9 @@ INCLUDEPATH += dialogs \
     GeographicLib
 FORMS += 
 RESOURCES += 
-VERSION = 0.8.234
-    VERSTR = '\\"$${VERSION}\\"'
-    DEFINES += VER=\"$${VERSTR}\"
+VERSION = 0.8.260
+VERSTR = '\\"$${VERSION}\\"'
+DEFINES += VER=\"$${VERSTR}\"
 symbian {
     TARGET.UID3 = 0xEA82CEF3
     LIBS += -llbs \
@@ -93,6 +93,8 @@ symbian {
         images/statusbar.svg \
         images/flag.svg \
         images/hiker.svg \
+        images/route.svg \
+        images/exit.svg \
         images/delete.svg \
         images/edit.svg \
         images/visible.svg \
@@ -105,9 +107,6 @@ symbian {
         images/leveltop.svg
     UiFiles.path = ./ui
     DEPLOYMENT += UiFiles
-    VERSION = 0.8.250
-	VERSTR = '\\"$${VERSION}\\"'    
-	DEFINES += VER=\"$${VERSTR}\"
     TARGET.EPOCHEAPSIZE = 0x30000 \
         0x3000000
     TARGET.EPOCSTACKSIZE += 0x14000

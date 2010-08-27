@@ -42,8 +42,10 @@ signals:
     void zoomout();
     void waypoint();
     void track();
+    void route();
     void options();
     void datum();
+    void exit();
 
 public slots:
     void UpdatePosition(const QGeoPositionInfo& info);
@@ -110,8 +112,10 @@ private:
     QImage* svgZoomIn;
     QImage* svgZoomOut;
     QImage* svgOptions;
+    QImage* svgExit;
     QImage* svgFlag;
     QImage* svgHiker;
+    QImage* svgRoute;
     QImage* svgBar;
     QImage* svgLocator;
     QImage* svgWptGreen;

@@ -43,6 +43,9 @@ public:
 	RefPoint(int ax, int ay, double lat, double lon)
 	    : WayPoint(lat,lon,0,"","ref"), x(ax), y(ay) {}
 	
+	RefPoint(int ax, int ay, QString pos)
+	    : WayPoint(pos,"ref"), x(ax), y(ay) { }
+	
     int X() const     { return x; }
     int Y() const     { return y; }
     void SetX(int ax) { x = ax; }

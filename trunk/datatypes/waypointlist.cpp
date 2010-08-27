@@ -8,6 +8,8 @@
 #include "gpxio.h"
 #include "ui.h"
 #include "waypointlist.h"
+#include "GeoCoords.hpp"
+#include "TransverseMercator.hpp"
 
 #include <QDebug>
 #define LOG( a )  qDebug() << a
@@ -16,20 +18,106 @@
 
 WayPointList* WayPointList::instance = 0;
 
-using namespace geodata;
+using namespace GeographicLib;
+/*
+static const double rd_a    = 6377397.155;
+static const double rd_b    = 299.1528128;
+static const double rd_r    = rd_a/(rd_a-rd_b);
+static const double rd_k0   = 0.9999079;
+static const double rd_lat0 = 52.15616055555555;
+static const double rd_lon0 = 5.38763888888889;
+static const double rd_fe   = 155000;
+static const double rd_fn   = 463000;
+
+class RijksDriehoek
+{
+public:
+	RijksDriehoek()
+	: OSGB(rd_a, rd_r, rd_k0)
+	{
+		double gamma, k;
+		OSGB.Forward(rd_lon0, rd_lat0, rd_lon0, x0, y0, gamma, k);
+		x0 -= rd_fe;
+		y0 -= rd_fn;
+	}
+	void Forward(double lat, double lon, double& x, double& y)
+    {
+		double gamma, k;
+		OSGB.Forward(rd_lon0,lat,lon,x,y,gamma,k);
+        x -= x0;
+        y -= y0;
+    }
+	void Reverse(double x, double y, double& lat, double& lon)
+    {
+		double gamma, k;
+        x += x0;
+        y += y0;
+        OSGB.Reverse(rd_lon0, x, y, lat, lon, gamma, k);
+    }
+    void Forward(const WayPoint& w, QString& pos)
+    {
+    	double x,y;
+    	Forward(w.Latitude(),w.Longitude(),x,y);
+    	pos = "RD " + QString::number(x) + " " + QString::number(y);
+    }
+    bool Reverse(const QString& pos, WayPoint& result)
+    {
+    	QStringList list = pos.split(" ", QString::SkipEmptyParts);
+    	if ((list.length()!=3) || (list[0]!="RD"))
+    		return false;
+    	
+		result.SetLatitude(list[1].toDouble());
+		result.SetLongitude(list[2].toDouble());
+		return true;
+    }
+	
+private:
+	TransverseMercator OSGB;
+	double x0, y0;
+};
+static RijksDriehoek RD;
+*/
+
+WayPoint::WayPoint(QString s, QString n)
+: elevation(0), time(""), name(n)
+{
+	//if (!RD.Reverse(s,*this))
+	{
+		GeographicLib::GeoCoords p(s.toStdString());
+		latitude = p.Latitude();
+		longitude = p.Longitude();
+	}
+}
 
 double WayPoint::distance(WayPoint* to)
 {
 	double d, b;
-	CalculateDistanceAndBearing(Latitude(),Longitude(),to->Latitude(),to->Longitude(),d,b);
+	geodata::CalculateDistanceAndBearing(Latitude(),Longitude(),to->Latitude(),to->Longitude(),d,b);
 	return d;
 }
 
 double WayPoint::bearing(WayPoint* to)
 {
 	double d, b;
-	CalculateDistanceAndBearing(Latitude(),Longitude(),to->Latitude(),to->Longitude(),d,b);
+	geodata::CalculateDistanceAndBearing(Latitude(),Longitude(),to->Latitude(),to->Longitude(),d,b);
 	return b;
+}
+
+QString WayPoint::Representation(geodata::Datum datum) const
+{
+    GeographicLib::GeoCoords p(Latitude(),Longitude());
+    //std::string pos;
+    QString pos;
+    switch (datum)
+    {
+    	default:
+    	case geodata::Wgs84_Geo: pos = QString::fromStdString(p.GeoRepresentation());    break;
+    	case geodata::Wgs84_DMS: pos = QString::fromStdString(p.DMSRepresentation());    break;
+    	case geodata::UTMUPS:    pos = QString::fromStdString(p.UTMUPSRepresentation()); break;
+    	case geodata::MGRS:      pos = QString::fromStdString(p.MGRSRepresentation());   break;
+    	//case geodata::RD:        RD.Forward(*this, pos);                                 break;
+    }
+	return pos;
 }
 
 WayPointList& WayPointList::Instance() 

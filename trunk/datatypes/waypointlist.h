@@ -26,6 +26,8 @@ protected:
 	double elevation;
 	QString time;
 public:
+	WayPoint(QString s, QString n="");
+	
 	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
             : name(n), latitude(lat), longitude(lon), elevation(ele), time(t) {}
 	
@@ -48,7 +50,8 @@ public:
 	void SetLongitude(double l)        { longitude = l; }
 	void SetElevation(double e)        { elevation = e; }
 	void SetTime(QString t)            { time = t; }
-	
+	QString Representation(geodata::Datum datum) const;
+
 	double distance(WayPoint *to);
 	double bearing(WayPoint *to);
 };
