@@ -10,7 +10,6 @@
 #include <QDoubleValidator>
 #include <QResizeEvent>
 #include <QDateTime>
-#include <QSvgWidget>
 #include <QToolButton>
 #include <QIcon>
 #include "qtrackdialog.h"
@@ -399,6 +398,7 @@ QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);
+    move(0,0);
     setLayout(mainLayout);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);

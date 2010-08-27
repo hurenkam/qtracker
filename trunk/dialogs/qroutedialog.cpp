@@ -10,7 +10,6 @@
 #include <QDoubleValidator>
 #include <QResizeEvent>
 #include <QDateTime>
-#include <QSvgWidget>
 #include <QToolButton>
 #include <QIcon>
 #include "qroutedialog.h"
@@ -174,6 +173,7 @@ QRouteTabsDialog::QRouteTabsDialog(Route* route, QWidget *parent)
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);
+    move(0,0);
     setLayout(mainLayout);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);

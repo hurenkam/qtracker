@@ -7,7 +7,7 @@ TARGET = qTracker
 QT += core \
     gui \
     xml \
-    svg
+    network
 HEADERS += \
     application/qtracker.h \
     dialogs/qdoubleedit.h \
@@ -61,7 +61,7 @@ INCLUDEPATH += dialogs \
     GeographicLib
 FORMS += 
 RESOURCES += 
-VERSION = 0.8.260
+VERSION = 0.8.261
 VERSTR = '\\"$${VERSION}\\"'
 DEFINES += VER=\"$${VERSTR}\"
 symbian {

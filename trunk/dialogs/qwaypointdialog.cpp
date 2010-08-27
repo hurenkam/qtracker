@@ -39,6 +39,7 @@ QWayPointTabsDialog::QWayPointTabsDialog(const WayPoint& w, QWidget *p)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);
     setLayout(mainLayout);
+    move(0,0);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);
 }

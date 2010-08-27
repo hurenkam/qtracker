@@ -274,7 +274,7 @@ void QMapWidget::ShowWaypointDialog()
 void QMapWidget::ShowRouteDialog() 
 {
     QRouteTabsDialog *dialog;
-    dialog = new QRouteTabsDialog(0);
+    dialog = new QRouteTabsDialog(0,this);
     RouteList* list = RouteList::Instance();
 
     connect(dialog,SIGNAL(showroute(const QString&)),list,SLOT(Show(const QString&)));
@@ -287,7 +287,7 @@ void QMapWidget::ShowRouteDialog()
 void QMapWidget::ShowTrackDialog() 
 {
     QTrackTabsDialog *dialog;
-    dialog = new QTrackTabsDialog(0);
+    dialog = new QTrackTabsDialog(0,this);
     TrackList* list = TrackList::Instance();
 
     connect(dialog,SIGNAL(showtrack(const QString&)),list,SLOT(Show(const QString&)));

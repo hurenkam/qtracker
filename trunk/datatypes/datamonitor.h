@@ -15,7 +15,7 @@
 #include <QGeoSatelliteInfo>
 #include <QGeoPositionInfo>
 #include <QCompassReading>
-#include <QSystemNetworkInfo>
+//#include <QSystemNetworkInfo>
 #include <math.h>
 class QDateTime;
 class QSettings;
