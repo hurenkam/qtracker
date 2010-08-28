@@ -15,7 +15,6 @@
 #include <QGeoSatelliteInfo>
 #include <QGeoPositionInfo>
 #include <QCompassReading>
-//#include <QSystemNetworkInfo>
 #include <math.h>
 class QDateTime;
 class QSettings;
@@ -203,6 +202,8 @@ class DataMonitor: public QObject
 	
 signals:
 	void PositionUpdated(const QGeoPositionInfo&);
+	void PositionUpdated(const WayPoint&);
+	void PositionUpdated(const QString&);
 	void SatellitesInViewUpdated(const QList<QGeoSatelliteInfo>&);
 	void SatellitesInUseUpdated(const QList<QGeoSatelliteInfo>&);
 	

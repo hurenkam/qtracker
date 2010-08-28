@@ -34,6 +34,7 @@ HEADERS += \
     widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
     widgets/qlevelwidget.h \
+    widgets/qmapstatusbar.h \
     GeographicLib/AzimuthalEquidistant.hpp \
     GeographicLib/Cassinisoldner.hpp \
     GeographicLib/Constants.hpp \
@@ -61,7 +62,7 @@ INCLUDEPATH += dialogs \
     GeographicLib
 FORMS += 
 RESOURCES += 
-VERSION = 0.8.261
+VERSION = 0.8.262
 VERSTR = '\\"$${VERSION}\\"'
 DEFINES += VER=\"$${VERSTR}\"
 symbian {
@@ -129,6 +130,7 @@ SOURCES += \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
     widgets/qlevelwidget.cpp \
+    widgets/qmapstatusbar.cpp \
     images/ui.cpp \
     widgets/qaltitudewidget.cpp \
     widgets/qclockwidget.cpp \

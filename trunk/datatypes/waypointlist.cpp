@@ -96,6 +96,20 @@ double WayPoint::distance(WayPoint* to)
 	return d;
 }
 
+QString WayPoint::distancestr(WayPoint* to)
+{
+	QString postfix("m");
+	QString result;
+    double d = distance(to);
+    if (d>9999)
+    {
+        d = d/1000;
+        postfix = "km";
+    }
+    result.sprintf("%8.1f");
+    return result % postfix;
+}
+
 double WayPoint::bearing(WayPoint* to)
 {
 	double d, b;

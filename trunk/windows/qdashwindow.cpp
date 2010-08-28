@@ -15,6 +15,7 @@
 #include "qsatviewwidget.h"
 #include "qheadingwidget.h"
 #include "qmapwidget.h"
+#include "qmapstatusbar.h"
 #include "qsignalmapper.h"
 #include "ui.h"
 
@@ -34,17 +35,7 @@ const double STEPCOUNTF = STEPCOUNT;
 const int TRANSITTIME = 150;
 const int STEPTIME = TRANSITTIME/STEPCOUNT;
 #endif
-/*
-int positions[7][6][4] = {
-    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
-    { { 170,  5,350,350 }, {   5,  5,170,170 }, {   5,185,170,170 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
-    { {   5,  5,170,170 }, { 170,  5,350,350 }, {   5,185,170,170 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
-    { {   5,  5,170,170 }, {   5,185,170,170 }, { 170,  5,350,350 }, { 525,  5,110,110 }, { 525,125,110,110 }, { 525,245,110,110 } },
-    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 120,  5,350,350 }, { 465,  5,170,170 }, { 465,185,170,170 } },
-    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 465,  5,170,170 }, { 120,  5,350,350 }, { 465,185,170,170 } },
-    { {   5,  5,110,110 }, {   5,125,110,110 }, {   5,245,110,110 }, { 465,  5,170,170 }, { 465,185,170,170 }, { 120,  5,350,350 } },
-};
-*/
+
 int positions[7][6][4] = {
     { {   0,  0,120,120 }, {   0,120,120,120 }, {   0,240,120,120 }, { 520,  0,120,120 }, { 520,120,120,120 }, { 520,240,120,120 } },
     { { 175,  0,360,360 }, {   0,  0,180,180 }, {   0,180,180,180 }, { 520,  0,120,120 }, { 540,130,100,100 }, { 520,240,120,120 } },
@@ -53,6 +44,10 @@ int positions[7][6][4] = {
     { {   0,  0,120,120 }, {   0,130,100,100 }, {   0,240,120,120 }, { 110,  0,360,360 }, { 460,  0,180,180 }, { 460,180,180,180 } },
     { {   0,  0,120,120 }, {   0,130,100,100 }, {   0,240,120,120 }, { 460,  0,180,180 }, { 110,  0,360,360 }, { 460,180,180,180 } },
     { {   0,  0,120,120 }, {   0,130,100,100 }, {   0,240,120,120 }, { 460,  0,180,180 }, { 460,180,180,180 }, { 110,  0,360,360 } },
+};
+int buttonpositions[8][2] = {
+//      waypoint      route        track       zoom-in      zoom-out      menu          exit       statusbar
+	{  10, 10 }, {  60, 10 }, { 110, 10 }, { -60, 10 }, { -60, 60 }, {  10, -60 }, { -60,-60 }, {  45,-55 }
 };
 
 int intermediate[6][4];
@@ -153,6 +148,26 @@ void QDashWindow::Init(QSplashScreen *splash)
     setStyleSheet(styleSheet);
 }
 
+QToolButton* QDashWindow::PlaceButton(QString name, QWidget* group, bool repeat)
+{    
+	//if (pos[0] < 0) pos[0] += width();
+	//if (pos[0] < 0) pos[0] += height();
+	
+    QToolButton* button = new QToolButton(group);
+    button->setGeometry(QRect(0,0, 50, 50));
+    QIcon icon;
+    icon.addFile(QString(MAPRCDIR) % name, QSize(), QIcon::Normal, QIcon::Off);
+    button->setIcon(icon);
+    button->setIconSize(QSize(50, 50));
+    if (repeat)
+	{
+        button->setAutoRepeat(true);
+        button->setAutoRepeatDelay(300);
+        button->setAutoRepeatInterval(150);
+	}
+    return button;
+}
+
 void QDashWindow::InitWidgets()
 {
     clock = new QClockWidget(this);
@@ -174,10 +189,41 @@ void QDashWindow::InitWidgets()
     level->setObjectName(QString::fromUtf8("level"));
     level->setGeometry(QRect(170, 5, 350, 350));
 
-    map = new QMapWidget(settings,this);
+    group = new QGroupBox(this);
+    group->setGeometry(QRect(120, 0, 400, 360));
+    group->setMinimumSize(QSize(400, 360));
+    group->setStyleSheet(QString::fromUtf8("QGroupBox {\n"
+		"    background: transparent;\n"
+		"    border: 0px;\n"
+		"        margin-top: 0px;\n"
+		"    font-size: 18px;\n"
+		"    font-weight: bold;\n"
+		"    color: #ffffff;\n"
+		"}\n"
+		"QToolButton \n"
+		"{\n"
+		"    background-color: transparent;\n"
+		"}\n"
+		""));
+    
+    map = new QMapWidget(settings,group);
     map->setObjectName(QString::fromUtf8("map"));
-    map->setGeometry(QRect(120, 0, 400, 360));
+    map->setGeometry(QRect(0, 0, 400, 360));
 
+    //canvas = new QWidget(group);
+    //canvas->setGeometry(QRect(0,0,400,360));
+    buttons[0] = PlaceButton("flag.svg",group);
+    buttons[1] = PlaceButton("route.svg",group);
+    buttons[2] = PlaceButton("hiker.svg",group);
+    buttons[3] = PlaceButton("zoom-in.svg",group,true);
+    buttons[4] = PlaceButton("zoom-out.svg",group,true);
+    buttons[5] = PlaceButton("options.svg",group);
+    buttons[6] = PlaceButton("exit.svg",group);
+    QMapStatusBar* statusbar = new QMapStatusBar(group);
+    buttons[7] = statusbar;
+    PositionButtons();
+    group->show();
+    
     gauges[0] = heading;
     gauges[1] = clock;
     gauges[2] = speed;
@@ -192,6 +238,47 @@ void QDashWindow::InitWidgets()
         mapper->setMapping(gauges[i], i+1);
     }
     connect(mapper,SIGNAL(mapped(const int &)),this,SLOT(ZoomToGauge(const int &)));
+
+    connect(buttons[0],SIGNAL(clicked()),map,SLOT(ShowWaypointDialog()));
+    connect(buttons[1],SIGNAL(clicked()),map,SLOT(ShowRouteDialog()));
+    connect(buttons[2],SIGNAL(clicked()),map,SLOT(ShowTrackDialog()));
+    connect(buttons[3],SIGNAL(clicked()),map,SLOT(zoomIn()));
+    connect(buttons[4],SIGNAL(clicked()),map,SLOT(zoomOut()));
+    connect(buttons[5],SIGNAL(clicked()),map,SLOT(ShowMenuDialog()));
+    connect(buttons[6],SIGNAL(clicked()),this,SLOT(close()));
+    connect(buttons[7],SIGNAL(clicked()),map,SLOT(ShowMapDialog()));
+    
+    connect(map,SIGNAL(name(QString)),statusbar,SLOT(SetTopLine(QString)));
+    connect(map,SIGNAL(position(QString)),statusbar,SLOT(SetBottomLine(QString)));
+    connect(map,SIGNAL(statuscolor(QPen)),statusbar,SLOT(SetPen(Pen)));
+    map->SendMapInfo();
+}
+
+void QDashWindow::PositionButtons()
+{
+    int x,y,w,h;
+    //w=group->width();
+    //h=group->height();
+    if (landscape)
+    	if (mapzoomed)
+    		{ w = 640; h = 360; }
+    	else
+    		{ w = 400; h = 360; }
+    else
+    	if (mapzoomed)
+    		{ w = 360; h = 640; }
+    	else
+    		{ w = 360; h = 400; }
+    	
+    for (int i=0; i<8; i++)
+	{
+	   x = buttonpositions[i][0];
+	   y = buttonpositions[i][1];
+	   if (x<0) x+= w;
+	   if (y<0) y+= h;
+	   if (buttons[i])
+       	   buttons[i]->move(x,y);
+	}
 }
 
 void QDashWindow::ToggleMap()
@@ -199,6 +286,7 @@ void QDashWindow::ToggleMap()
     mapzoomed = !mapzoomed;
     settings.setValue("dash/mapzoomed",mapzoomed);
     Setup();
+    PositionButtons();
     update();
 }
 
@@ -209,6 +297,7 @@ void QDashWindow::Setup()
         for (int i =0; i<6; i++)
             gauges[i]->hide();
 
+        group->setGeometry(0,0,width(),height());
         map->setGeometry(0,0,width(),height());
         return;
     }
@@ -235,14 +324,20 @@ void QDashWindow::Setup()
     if ( zoomstep == 0)             // No transition
     {
         if (zoomgauge != 0)         // Gauge zoomed
-            map->hide();
+            group->hide();
         else                        // Map visibile
         {
             if (landscape)          // Landscape
-                map->setGeometry(120,0,400,360);
+            {
+                group->setGeometry(120,0,400,360);
+                map->setGeometry(0,0,400,360);
+            }
             else                    // Portrait
-                map->setGeometry(0,120,360,400);
-            map->show();
+            {
+                group->setGeometry(0,120,360,400);
+                map->setGeometry(0,0,360,400);
+            }
+            group->show();
         }
     }
     else                            // In Transition
@@ -251,18 +346,30 @@ void QDashWindow::Setup()
         if (tozoom == 0)
         {
             if (landscape)
-                map->setGeometry(120,0+delta,400,360+delta);
+            {
+                group->setGeometry(120,0+delta,400,360+delta);
+                map->setGeometry(0,0,400,360+delta);
+            }
             else
-                map->setGeometry(0+delta,120,360+delta,400);
-            map->show();
+            {
+                group->setGeometry(0+delta,120,360+delta,400);
+                map->setGeometry(0,0,360+delta,400);
+            }
+            group->show();
         }
         if (zoomgauge == 0)
         {
             if (landscape)
-                map->setGeometry(120,360-delta,400,720-delta);
+            {
+                group->setGeometry(120,360-delta,400,720-delta);
+                map->setGeometry(0,0,400,720-delta);
+            }
             else
-                map->setGeometry(360-delta,120,720-delta,400);
-            map->show();
+            {
+                group->setGeometry(360-delta,120,720-delta,400);
+                map->setGeometry(0,0,720-delta,400);
+            }
+            group->show();
         }
     }
 }
@@ -312,6 +419,7 @@ void QDashWindow::resizeEvent ( QResizeEvent * event )
 {
     landscape = (width() > height());
     Setup();
+    PositionButtons();
     settings.sync();
     QMainWindow::resizeEvent(event);
 }

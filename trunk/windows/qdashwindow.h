@@ -44,6 +44,8 @@ public slots:
     void ToggleMap();
 
 protected:
+    void PositionButtons();
+    QToolButton* PlaceButton(QString name, QWidget* group, bool repeat=false);
     void InitWidgets();
     void StartTransition(int to);
 
@@ -59,9 +61,11 @@ private:
     QAltitudeWidget *altitude;
     QSatViewWidget *satview;
     QHeadingWidget *heading;
+    QGroupBox* group;
     QMapWidget *map;
     QSignalMapper *mapper;
     QWidget* gauges[6];
+    QWidget* buttons[8];
 
     QSensor *compass;
     QCompassReading *reading;

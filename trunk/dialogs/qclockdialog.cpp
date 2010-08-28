@@ -12,7 +12,6 @@
 #include <QDoubleValidator>
 #include <QResizeEvent>
 #include <QDateTime>
-#include <QSvgWidget>
 #include <QToolButton>
 #include <QIcon>
 #include <QTabWidget>
@@ -32,9 +31,9 @@
 
 QClockOptions::QClockOptions(QDialog* d)
 : QWidget()
-//, settings("karpeer.net","qTracker",this)
+, settings("karpeer.net","qTracker",this)
 {
-/*
+
     QClockWidget::Type analog = (QClockWidget::Type) settings.value("clock/analog",(int) QClockWidget::CurrentTime).toInt();
     QClockWidget::Type top    = (QClockWidget::Type) settings.value("clock/top",   (int) QClockWidget::TripTime).toInt();
     QClockWidget::Type bottom = (QClockWidget::Type) settings.value("clock/bottom",(int) QClockWidget::ArrivalTime).toInt();
@@ -53,7 +52,6 @@ QClockOptions::QClockOptions(QDialog* d)
 
     filler = new QWidget();
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-*/
 
     QPushButton* apply =  new QPushButton(tr("Apply"));
     QPushButton* cancel =  new QPushButton(tr("Cancel"));
@@ -62,14 +60,13 @@ QClockOptions::QClockOptions(QDialog* d)
     buttonbox->addWidget(cancel);
 
     QVBoxLayout *main = new QVBoxLayout(this);
-    //main->addLayout(center);
-    //main->addWidget(filler);
+    main->addLayout(center);
+    main->addWidget(filler);
     main->addLayout(buttonbox);
     setLayout(main);
-/*
+
     connect(apply,   SIGNAL(clicked()),this,SLOT(apply()));
     connect(cancel,  SIGNAL(clicked()),d,SLOT(reject()));
-*/
 }
 
 QButtonGroup* QClockOptions::ButtonGroup(QGroupBox* group, QClockWidget::Type selected)
@@ -108,19 +105,16 @@ QClockOptions::~QClockOptions()
 
 void QClockOptions::apply()
 {
-/*
     settings.setValue("clock/analog",analogbuttons->checkedId());
     settings.setValue("clock/top",   topbuttons->checkedId());
     settings.setValue("clock/bottom",bottombuttons->checkedId());
 
     settings.sync();
     emit changed();
-*/
 }
 
 void QClockOptions::resizeEvent( QResizeEvent * event )
 {
-/*
     LOG( "QClockOptions::resizeEvent()\n"; )
     if (!center) return;
     
@@ -130,7 +124,6 @@ void QClockOptions::resizeEvent( QResizeEvent * event )
         center->setDirection(QBoxLayout::LeftToRight);
 
     QWidget::resizeEvent(event);
-*/
 }
 
 QClockDialog::QClockDialog(QClockWidget *parent)
@@ -144,18 +137,19 @@ QClockDialog::QClockDialog(QClockWidget *parent)
 
     QTabWidget* tabs = new QTabWidget(this);
     QClockOptions* options = new QClockOptions(this);
-    //QMonitorOptions* monitor = new QMonitorOptions(this);
+    QMonitorOptions* monitor = new QMonitorOptions(this);
     tabs->addTab(options, tr("Clock"));
-    //tabs->addTab(monitor, tr("Monitor"));
-    //tabs->addTab(new QWidget(),tr("dummy"));
+    tabs->addTab(monitor, tr("Monitor"));
      
     QVBoxLayout *main = new QVBoxLayout();
     main->addWidget(tabs);
 
-    //connect(options, SIGNAL(changed()),this,SLOT(accept()));
-    //connect(monitor, SIGNAL(changed()),this,SLOT(accept()));
+    connect(options, SIGNAL(changed()),this,SLOT(accept()));
+    connect(monitor, SIGNAL(changed()),this,SLOT(accept()));
     
     setLayout(main);
+    move(0,0);
+    setModal(true);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);
 }

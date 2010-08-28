@@ -3,6 +3,9 @@
 #include <QIcon>
 #include <cmath>
 #include <QDir>
+#include <QGroupBox>
+#include <QToolButton>
+#include <QIcon>
 #include "ui.h"
 #include "qmapwidget.h"
 #include "qmapdialog.h"
@@ -41,6 +44,29 @@ const int     zoommax = 6;
 
 using namespace geodata;
 
+class QMapCanvas: public QWidget
+{
+public:
+	QMapCanvas(QImage*& map, int& z, QWidget* parent=0)
+	: QWidget(parent)
+	, mapimage(map)
+	, zoom(z)
+	, x(0)
+	, y(0)
+	{}
+protected:
+    virtual void paintBackground(QPainter& painter);
+    virtual void paintMap(QPainter& painter);
+    //virtual void paintWaypoints(QPainter& painter);
+    virtual void paintEvent(QPaintEvent *event);
+    
+private:
+    QImage*& mapimage;
+    int& zoom;
+    int x;
+    int y;
+};
+
 QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     : QGaugeWidget(parent)
     , state         (StNoMap)
@@ -52,6 +78,7 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     , meta          (0)
     , mapimage      (0)
     , bgimage       (new QImage(MAPRCDIR "map.svg"))
+/*    
     , svgZoomIn     (new QImage(MAPRCDIR "zoom-in.svg"))
     , svgZoomOut    (new QImage(MAPRCDIR "zoom-out.svg"))
     , svgOptions    (new QImage(MAPRCDIR "options.svg"))
@@ -60,6 +87,7 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     , svgHiker      (new QImage(MAPRCDIR "hiker.svg"))
     , svgBar        (new QImage(MAPRCDIR "statusbar.svg"))
     , svgRoute      (new QImage(MAPRCDIR "route.svg"))
+*/
     , svgLocator    (new QImage(MAPRCDIR "locator_red.svg"))
     , onmap         (false)
     , svgWptGreen   (new QImage(MAPRCDIR "wpt_green.svg"))
@@ -73,8 +101,9 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(ShowMapDialog()));
     CreateMapList();
-    connect(&zoomtimer,SIGNAL(timeout()),this,SLOT(zoomRepeat()));
+    //connect(&zoomtimer,SIGNAL(timeout()),this,SLOT(zoomRepeat()));
     zoomtimer.setInterval(150);
+/*
     connect(this, SIGNAL(zoomin()), this, SLOT(zoomIn()));
     connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
     connect(this, SIGNAL(options()), this, SLOT(ShowMenuDialog()));
@@ -83,6 +112,7 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     connect(this, SIGNAL(track()), this, SLOT(ShowTrackDialog()));
     connect(this, SIGNAL(route()), this, SLOT(ShowRouteDialog()));
     connect(this, SIGNAL(exit()), this->parent(), SLOT(close()));
+*/
     connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowTrack(const QString&)));
     connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideTrack(const QString&)));
     connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowRoute(const QString&)));
@@ -100,7 +130,18 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
         }
     }
 }
-
+/*
+QToolButton* QMapWidget::PlaceButton(int x,int y, QString name, QWidget* group)
+{    
+    QToolButton* button = new QToolButton(group);
+    button->setGeometry(QRect(x, y, 50, 50));
+    QIcon icon;
+    icon.addFile(QString(MAPRCDIR) % name, QSize(), QIcon::Normal, QIcon::Off);
+    button->setIcon(icon);
+    button->setIconSize(QSize(50, 50));
+    return button;
+}
+*/
 QMapWidget::~QMapWidget()
 {
 /*
@@ -220,6 +261,7 @@ bool QMapWidget::LoadMap(QString filename)
         settings.setValue("map/x",x);
         settings.setValue("map/y",y);
     }
+    SendMapInfo();
     update();
     return result;
 }
@@ -462,6 +504,7 @@ void QMapWidget::moveMap(int dx, int dy)
     settings.setValue("map/x",x);
     settings.setValue("map/y",y);
     settings.setValue("map/state",state);
+    SendMapInfo();
     update();
 }
 
@@ -505,6 +548,7 @@ void QMapWidget::FollowGPS()
                 state = StNoMap;
         }
     }
+    SendMapInfo();
     update();
 }
 
@@ -532,7 +576,7 @@ void QMapWidget::zoomOut()
 }
 
 void QMapWidget::mousePressEvent(QMouseEvent *event)
-{
+{/*
     if ((event->pos().x() > width()-60) && (event->pos().y() < 60)) emit zoomin();
     else if ((event->pos().x() > width()-60) && (event->pos().y() > 60) && (event->pos().y() < 120)) emit zoomout();
     else if ((event->pos().x() > width()-60) && (event->pos().y() > height()-60)) emit exit();
@@ -541,7 +585,7 @@ void QMapWidget::mousePressEvent(QMouseEvent *event)
     else if ((event->pos().x() > 120) && (event->pos().x() < 180) && (event->pos().y() < 60)) emit route();
     else if ((event->pos().x() < 60)  && (event->pos().y() > height()-60)) emit options();
     else if ((event->pos().x() > 60)  && (event->pos().x() < 260) && (event->pos().y() > height()-50)) emit datum();
-    else
+    else */
         QGaugeWidget::mousePressEvent(event);
 }
 
@@ -559,47 +603,6 @@ void QMapWidget::mouseReleaseEvent(QMouseEvent *event)
     }
     zooming = 0;
     zoomtimer.stop();
-}
-
-void QMapWidget::paintBackground(QPainter& painter)
-{
-    double w = width();
-    double h = height();
-    QRectF source(0, 0, 400, 360);
-    QRectF target(-w/2, -h/2, w, h);
-    painter.setWindow(-w/2,-h/2,w,h);
-    painter.drawImage(target, *bgimage, source);
-    painter.setViewport(20,20,w-40,h-40);
-}
-
-void QMapWidget::paintMap(QPainter& painter)
-{
-    if (ismapdirty)
-    {
-        LOG( "QMapWidget::paintMap() map dirty so repaint tracks."; )
-        QStringList keys;
-	    
-        keys = TrackList::Instance()->VisibleKeys();
-        for (int i=0; i<keys.length(); i++)
-            paintTrack(&TrackList::Instance()->GetItem(keys[i]));
-
-        keys = RouteList::Instance()->VisibleKeys();
-        for (int i=0; i<keys.length(); i++)
-            paintRoute(&RouteList::Instance()->GetItem(keys[i]));
-        ismapdirty = false;
-    }
-	
-    if (mapimage)
-    {
-        double w = width();
-        double h = height();
-        double z = zoomlevels[zoom];
-        QRectF source = QRectF(w*z/-2 + x, h*z/-2 + y, w*z, h*z);
-        QRectF target = QRectF(w*z/-2, h*z/-2, w*z, h*z);
-        painter.setWindow(-w/2*z,-h/2*z,w*z,h*z);
-        painter.drawImage(target, *mapimage, source);
-        painter.setWindow(-w/2,-h/2,w,h);
-    }
 }
 
 bool QMapWidget::IsPositionOnMap() 
@@ -644,6 +647,47 @@ ScreenPos QMapWidget::PositionOnScreen(const WayPoint& wpt)
     return p;
 }
 
+void QMapWidget::paintBackground(QPainter& painter)
+{
+    double w = width();
+    double h = height();
+    QRectF source(0, 0, 400, 360);
+    QRectF target(-w/2, -h/2, w, h);
+    painter.setWindow(-w/2,-h/2,w,h);
+    painter.drawImage(target, *bgimage, source);
+    painter.setViewport(20,20,w-40,h-40);
+}
+
+void QMapWidget::paintMap(QPainter& painter)
+{
+    if (ismapdirty)
+    {
+        LOG( "QMapWidget::paintMap() map dirty so repaint tracks."; )
+        QStringList keys;
+	    
+        keys = TrackList::Instance()->VisibleKeys();
+        for (int i=0; i<keys.length(); i++)
+            paintTrack(&TrackList::Instance()->GetItem(keys[i]));
+
+        keys = RouteList::Instance()->VisibleKeys();
+        for (int i=0; i<keys.length(); i++)
+            paintRoute(&RouteList::Instance()->GetItem(keys[i]));
+        ismapdirty = false;
+    }
+	
+    if (mapimage)
+    {
+        double w = width();
+        double h = height();
+        double z = zoomlevels[zoom];
+        QRectF source = QRectF(w*z/-2 + x, h*z/-2 + y, w*z, h*z);
+        QRectF target = QRectF(w*z/-2, h*z/-2, w*z, h*z);
+        painter.setWindow(-w/2*z,-h/2*z,w*z,h*z);
+        painter.drawImage(target, *mapimage, source);
+        painter.setWindow(-w/2,-h/2,w,h);
+    }
+}
+
 void QMapWidget::paintWaypoints(QPainter& painter)
 {
     WayPointList& wl = WayPointList::Instance();
@@ -671,20 +715,6 @@ void QMapWidget::paintWidgets(QPainter& painter)
     double h = height();
     source = QRectF(0,0,48,48);
     painter.setViewport(12,12,w-24,h-24);
-    target = QRectF(w/2-48,h/-2,48,48);
-    painter.drawImage(target, *svgZoomIn, source);
-    target = QRectF(w/2-48,h/-2+60,48,48);
-    painter.drawImage(target, *svgZoomOut, source);
-    target = QRectF(w/-2,h/2-48,48,48);
-    painter.drawImage(target, *svgOptions, source);
-    target = QRectF(w/2-48,h/2-48,48,48);
-    painter.drawImage(target, *svgExit, source);
-    target = QRectF(w/-2,h/-2,48,48);
-    painter.drawImage(target, *svgFlag, source);
-    target = QRectF(w/-2+60,h/-2,48,48);
-    painter.drawImage(target, *svgHiker, source);
-    target = QRectF(w/-2+120,h/-2,48,48);
-    painter.drawImage(target, *svgRoute, source);
     target = QRectF(-16.0,-16.0,32,32);
     painter.drawImage(target, *svgLocator, source);
 }
@@ -697,14 +727,13 @@ void QMapWidget::paintDot(QPainter& painter,int x,int y,QColor c)
     painter.setBrush(c);
     painter.drawEllipse(s/-2+x,s/-2+y,s,s);
 }
-
-QString QMapWidget::getRepresentation(double lat, double lon)
+QString QMapWidget::GetPositionRepresentation(double lat, double lon)
 {
     geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     WayPoint w(lat,lon);
     return w.Representation(datum);
 }
-
+/*
 void QMapWidget::paintBar(QPainter& painter)
 {
     double w = width();
@@ -734,6 +763,34 @@ void QMapWidget::paintBar(QPainter& painter)
     r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, position);
     painter.drawText(r, Qt::AlignLeft, position);
 }
+*/
+
+void QMapWidget::SendMapInfo()
+{
+    QString info(GetPositionRepresentation(latitude,longitude));
+    QPen pen(Qt::blue);
+    		
+	if ((state == StScrolling) || ((mapimage) && (!IsPositionOnMap())))
+	{
+		double lat, lon;
+		pen = QPen(Qt::black);
+		if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
+		{
+			//WayPoint from(latitude,longitude);
+			//WayPoint to(lat,lon);
+			//info = GetPositionRepresentation(lat,lon) % " (" % from.distancestr(&to) % ")";
+			info = GetPositionRepresentation(lat,lon);
+		}
+		else
+		{
+			info = "<" % QString::number(x) % " " % QString::number(y) % ">";
+		}
+	}
+
+	emit statuscolor(pen);
+	emit name(mapname);
+	emit position(info);
+}
 
 void QMapWidget::paintEvent(QPaintEvent *event)
 {
@@ -748,5 +805,5 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     paintMap(painter);
     paintWaypoints(painter);
     paintWidgets(painter);
-    paintBar(painter);
+    //paintBar(painter);
 }

@@ -302,7 +302,12 @@ void DataMonitor::OnPositionUpdate(const QGeoPositionInfo& info)
 {
     LOG( "DataMonitor::PositionUpdate()"; )
     		
+	WayPoint position(info.coordinate().latitude(),info.coordinate().longitude(),info.coordinate().altitude());
+    geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    
     emit PositionUpdated(info);
+    emit PositionUpdated(position);
+    emit PositionUpdated(position.Representation(datum));
     emit AltitudeUpdated(info.coordinate().altitude());
 	
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))

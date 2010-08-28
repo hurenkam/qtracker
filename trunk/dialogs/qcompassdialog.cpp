@@ -12,7 +12,6 @@
 #include <QDoubleValidator>
 #include <QResizeEvent>
 #include <QDateTime>
-#include <QSvgWidget>
 #include <QToolButton>
 #include <QIcon>
 #include <QTabWidget>
@@ -154,6 +153,8 @@ QCompassDialog::QCompassDialog(QHeadingWidget *parent)
     connect(monitor, SIGNAL(changed()),this,SLOT(accept()));
     
     setLayout(main);
+    move(0,0);
+    setModal(true);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);
 }

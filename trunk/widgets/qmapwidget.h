@@ -14,6 +14,7 @@ using namespace QtMobility;
 
 class QWidget;
 class QSettings;
+class QToolButton;
 class WayPoint;
 class MapMetaData;
 class Track;
@@ -33,9 +34,11 @@ class QMapWidget : public QGaugeWidget
 public:
     QMapWidget(QSettings& s, QWidget *parent = 0);
     ~QMapWidget();
+    QString MapName() { return mapname; }
     bool IsPositionOnMap();
     bool IsPositionOnScreen(const WayPoint& wpt);
     ScreenPos PositionOnScreen(const WayPoint& wpt);
+    void SendMapInfo();
 
 signals:
     void zoomin();
@@ -46,6 +49,9 @@ signals:
     void options();
     void datum();
     void exit();
+    void name(const QString&);
+    void position(const QString&);
+    void statuscolor(const QPen&);
 
 public slots:
     void UpdatePosition(const QGeoPositionInfo& info);
@@ -75,20 +81,24 @@ private slots:
     void batteryStatusChanged(QSystemDeviceInfo::BatteryStatus status);
     
 protected:
+    //QToolButton* PlaceButton(int x,int y, QString name, QWidget* parent);
+    
     void FindMapsForCurrentPosition(QStringList& found);
     bool LoadMap(QString filename);
     bool SelectBestMapForCurrentPosition();
     bool SetCursorToCurrentPosition();
-    QString getRepresentation(double lat, double lon);
+    QString GetPositionRepresentation(double lat, double lon);
     virtual void paintTrack(Track* t);
     virtual void paintRoute(Route* r);
+
     virtual void paintBackground(QPainter& painter);
     virtual void paintMap(QPainter& painter);
     virtual void paintWaypoints(QPainter& painter);
     virtual void paintWidgets(QPainter& painter);
     virtual void paintDot(QPainter& painter,int x,int y,QColor c);
-    virtual void paintBar(QPainter& painter);
+    //virtual void paintBar(QPainter& painter);
     virtual void paintEvent(QPaintEvent *event);
+
     void CreateMapList();
 
 private:
@@ -107,8 +117,10 @@ private:
     double latitude;
     double longitude;
     double altitude;
+    QWidget* canvas;
     QImage* mapimage;
     QImage* bgimage;
+/*
     QImage* svgZoomIn;
     QImage* svgZoomOut;
     QImage* svgOptions;
@@ -117,6 +129,7 @@ private:
     QImage* svgHiker;
     QImage* svgRoute;
     QImage* svgBar;
+*/
     QImage* svgLocator;
     QImage* svgWptGreen;
     bool onmap;

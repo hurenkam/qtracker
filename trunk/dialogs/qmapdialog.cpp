@@ -10,7 +10,6 @@
 #include <QDoubleValidator>
 #include <QResizeEvent>
 #include <QDateTime>
-#include <QSvgWidget>
 #include <QToolButton>
 #include <QIcon>
 #include <QList>
@@ -327,6 +326,8 @@ QMapTabsDialog::QMapTabsDialog(QWidget *p, MapMetaData* m, RefPoint* r)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);
     setLayout(mainLayout);
+    move(0,0);
+    setModal(true);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);
 }

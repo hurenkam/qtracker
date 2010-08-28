@@ -29,14 +29,14 @@ public:
 	WayPoint(QString s, QString n="");
 	
 	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
-            : name(n), latitude(lat), longitude(lon), elevation(ele), time(t) {}
+        : name(n), latitude(lat), longitude(lon), elevation(ele), time(t) {}
 	
 	WayPoint(const WayPoint& w)
-            : name(w.Name())
-            , latitude(w.Latitude())
-	    , longitude(w.Longitude())
-	    , elevation(w.Elevation())
-	    , time(w.Time())
+        : name(w.Name())
+        , latitude(w.Latitude())
+        , longitude(w.Longitude())
+        , elevation(w.Elevation())
+        , time(w.Time())
         {}
 
 	QString Name() const               { return name; }
@@ -53,6 +53,7 @@ public:
 	QString Representation(geodata::Datum datum) const;
 
 	double distance(WayPoint *to);
+	QString distancestr(WayPoint *to);
 	double bearing(WayPoint *to);
 };
 
