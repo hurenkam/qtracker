@@ -4,51 +4,26 @@
 #include <QStringList>
 #include "qdatuminterface.h"
 
-class QWgs84DisplayWidget: public QDatumDisplayWidget
+class DatumWgs84: public Datum
 {
-	Q_OBJECT
 public:
-	QWgs84DisplayWidget(QWidget *parent);
-	virtual void setValues(double lat, double lon, int src=0)
-		{ latitude = lat; longitude = lon; source = src; update(); }
+	DatumWgs84() 
+	: Datum("Wgs84", "Wgs84") )
+	{ attributes.append("latitude"); attributes.append("longitude"); }
 	
-protected:
-    virtual void paintEvent(QPaintEvent *event);
-    
-private:
-	double latitude;
-	double longitude;
-	int source;
+    virtual QStringList Representation(const WayPoint& w) const;
+    virtual WayPoint Position(const QStringList& attr) const;
 };
 
-class QWgs84EditWidget: public QDatumEditWidget
-{
-	Q_OBJECT
-public:
-	QWgs84EditWidget(QWidget *parent);
-	virtual void setValues(double lat, double lon, int src=0)
-		{ latitude = lat; longitude = lon; source = src; update(); }
-	virtual void values(double& lat, double& lon, int& src)
-		{ lat = latitude; lon = longitude; src = source; }
-private:
-	double latitude;
-	double longitude;
-	int source;
-};
-
-
-class QDatumWgs84
+class DatumUTM: public Datum
 {
 public:
-	QDatumWgs84() {};
-	virtual ~QDatumWgs84() {};
-
-	virtual QStringList DatumList()
-	{ QStringList list; list.append(QString("Wgs84")); return list; }
-	virtual QDatumDisplayWidget *DisplayWidget(QString datum, QWidget *parent=0, int mode=0)
-	{ return new QWgs84DisplayWidget(parent); }
-	virtual QDatumEditWidget *EditWidget(QString datum, QWidget *parent=0, int mode=0)
-	{ return new QWgs84EditWidget(parent); }
+	DatumUTM() 
+	: Datum("UTM", "UTM") )
+	{ attributes.append("latitude"); attributes.append("longitude"); }
+	
+    virtual QStringList Representation(const WayPoint& w) const;
+    virtual WayPoint Position(const QStringList& attr) const;
 };
 
 #endif /* QDATUMWGS84_H_ */

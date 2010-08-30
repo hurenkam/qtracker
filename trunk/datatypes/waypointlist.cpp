@@ -8,8 +8,8 @@
 #include "gpxio.h"
 #include "ui.h"
 #include "waypointlist.h"
-#include "GeoCoords.hpp"
-#include "TransverseMercator.hpp"
+//#include "GeoCoords.hpp"
+//#include "TransverseMercator.hpp"
 
 #include <QDebug>
 #define LOG( a )  qDebug() << a
@@ -18,7 +18,7 @@
 
 WayPointList* WayPointList::instance = 0;
 
-using namespace GeographicLib;
+//using namespace GeographicLib;
 /*
 static const double rd_a    = 6377397.155;
 static const double rd_b    = 299.1528128;
@@ -81,12 +81,14 @@ static RijksDriehoek RD;
 WayPoint::WayPoint(QString s, QString n)
 : elevation(0), time(""), name(n)
 {
+/*
 	//if (!RD.Reverse(s,*this))
 	{
 		GeographicLib::GeoCoords p(s.toStdString());
 		latitude = p.Latitude();
 		longitude = p.Longitude();
 	}
+*/
 }
 
 double WayPoint::distance(WayPoint* to)
@@ -101,12 +103,12 @@ QString WayPoint::distancestr(WayPoint* to)
 	QString postfix("m");
 	QString result;
     double d = distance(to);
-    if (d>9999)
+    if (d>999)
     {
         d = d/1000;
         postfix = "km";
     }
-    result.sprintf("%8.1f");
+    result.sprintf("%.1f",d);
     return result % postfix;
 }
 
@@ -119,6 +121,7 @@ double WayPoint::bearing(WayPoint* to)
 
 QString WayPoint::Representation(geodata::Datum datum) const
 {
+/*
     GeographicLib::GeoCoords p(Latitude(),Longitude());
     //std::string pos;
     QString pos;
@@ -132,6 +135,7 @@ QString WayPoint::Representation(geodata::Datum datum) const
     	//case geodata::RD:        RD.Forward(*this, pos);                                 break;
     }
 	return pos;
+*/
 }
 
 WayPointList& WayPointList::Instance() 

@@ -28,6 +28,8 @@ class QLevelWidget;
 using namespace QtMobility;
 
 const int historysize = 5;
+const int buttoncount = 10;
+const int gaugecount = 6;
 
 class QDashWindow: public QMainWindow
 {
@@ -64,8 +66,8 @@ private:
     QGroupBox* group;
     QMapWidget *map;
     QSignalMapper *mapper;
-    QWidget* gauges[6];
-    QWidget* buttons[8];
+    QWidget* gauges[gaugecount];
+    QWidget* buttons[buttoncount];
 
     QSensor *compass;
     QCompassReading *reading;

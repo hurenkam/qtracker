@@ -61,6 +61,9 @@ public slots:
     void RefpointSelected(QString name, double lat, double lon);
     void FollowGPS();
 
+    void ShowImportDialog();
+    void ShowExportDialog();
+    void ShowMenuDialog();
     void ShowMapDialog();
     void ShowWaypointDialog();
     
@@ -75,14 +78,12 @@ public slots:
     void ShowRouteSegment(const WayPoint& from, const WayPoint& to);
 
 private slots:
-    void zoomRepeat();
-    void zoomIn();
-    void zoomOut();
+    void Zoom(int zooming);
+    void ZoomIn();
+    void ZoomOut();
     void batteryStatusChanged(QSystemDeviceInfo::BatteryStatus status);
     
 protected:
-    //QToolButton* PlaceButton(int x,int y, QString name, QWidget* parent);
-    
     void FindMapsForCurrentPosition(QStringList& found);
     bool LoadMap(QString filename);
     bool SelectBestMapForCurrentPosition();
@@ -96,16 +97,11 @@ protected:
     virtual void paintWaypoints(QPainter& painter);
     virtual void paintWidgets(QPainter& painter);
     virtual void paintDot(QPainter& painter,int x,int y,QColor c);
-    //virtual void paintBar(QPainter& painter);
     virtual void paintEvent(QPaintEvent *event);
 
     void CreateMapList();
 
 private:
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseMoveEvent(QMouseEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
-
     QSystemDeviceInfo devinfo;
     static const int StNoMap = 0;
     static const int StScrolling = 1;
@@ -117,19 +113,8 @@ private:
     double latitude;
     double longitude;
     double altitude;
-    QWidget* canvas;
     QImage* mapimage;
     QImage* bgimage;
-/*
-    QImage* svgZoomIn;
-    QImage* svgZoomOut;
-    QImage* svgOptions;
-    QImage* svgExit;
-    QImage* svgFlag;
-    QImage* svgHiker;
-    QImage* svgRoute;
-    QImage* svgBar;
-*/
     QImage* svgLocator;
     QImage* svgWptGreen;
     bool onmap;

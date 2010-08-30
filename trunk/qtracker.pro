@@ -2,6 +2,7 @@ CONFIG += mobility
 MOBILITY += location \
     sensors \
     systeminfo
+DEFINES += EMULATOR
 TEMPLATE = app
 TARGET = qTracker
 QT += core \
@@ -34,24 +35,7 @@ HEADERS += \
     widgets/qgaugewidget.h \
     widgets/qmapwidget.h \
     widgets/qlevelwidget.h \
-    widgets/qmapstatusbar.h \
-    GeographicLib/AzimuthalEquidistant.hpp \
-    GeographicLib/Cassinisoldner.hpp \
-    GeographicLib/Constants.hpp \
-    GeographicLib/DMS.hpp \
-    GeographicLib/EllipticFunction.hpp \
-    GeographicLib/Geocentric.hpp \
-    GeographicLib/GeoCoords.hpp \
-    GeographicLib/Geodesic.hpp \
-    GeographicLib/Geoid.hpp \
-    GeographicLib/Gnomonic.hpp \
-    GeographicLib/LambertConformalConic.hpp \
-    GeographicLib/LocalCartesian.hpp \
-    GeographicLib/MGRS.hpp \
-    GeographicLib/PolarStereographic.hpp \
-    GeographicLib/TransverseMercator.hpp \
-    GeographicLib/TransverseMercatorExact.hpp \
-    GeographicLib/UTMUPS.hpp
+    widgets/qmapstatusbar.h
 INCLUDEPATH += dialogs \
     datatypes \
     widgets \
@@ -59,7 +43,7 @@ INCLUDEPATH += dialogs \
     mobility \
     windows \
     application \
-    GeographicLib
+    proj4
 FORMS += 
 RESOURCES += 
 VERSION = 0.8.262
@@ -95,6 +79,8 @@ symbian {
         images/flag.svg \
         images/hiker.svg \
         images/route.svg \
+        images/import.svg \
+        images/export.svg \
         images/exit.svg \
         images/delete.svg \
         images/edit.svg \
@@ -138,20 +124,36 @@ SOURCES += \
     widgets/qsatviewwidget.cpp \
     widgets/qspeedwidget.cpp \
     windows/qdashwindow.cpp \
-    GeographicLib/AzimuthalEquidistant.cpp \
-    GeographicLib/CassiniSoldner.cpp \
-    GeographicLib/DMS.cpp \
-    GeographicLib/EllipticFunction.cpp \
-    GeographicLib/Geocentric.cpp \
-    GeographicLib/GeoCoords.cpp \
-    GeographicLib/Geodesic.cpp \
-    GeographicLib/Geoid.cpp \
-    GeographicLib/Gnomonic.cpp \
-    GeographicLib/LambertConformalConic.cpp \
-    GeographicLib/LocalCartesian.cpp \
-    GeographicLib/MGRS.cpp \
-    GeographicLib/PolarStereographic.cpp \
-    GeographicLib/TransverseMercator.cpp \
-    GeographicLib/TransverseMercatorExact.cpp \
-    GeographicLib/UTMUPS.cpp \
+    proj4/pj_param.c \
+    proj4/adjlon.c \
+    proj4/dmstor.c \
+    proj4/geocent.c \
+    proj4/nad_cvt.c \
+    proj4/nad_init.c \
+    proj4/nad_intr.c \
+    proj4/pj_apply_gridshift.c \
+    proj4/pj_datum_set.c \
+    proj4/pj_datums.c \
+    proj4/pj_ell_set.c \
+    proj4/pj_ellps.c \
+    proj4/pj_errno.c \
+    proj4/pj_fwd.c \
+    proj4/pj_gauss.c \
+    proj4/pj_gridinfo.c \
+    proj4/pj_gridlist.c \
+    proj4/pj_init.c \
+    proj4/pj_initcache.c \
+    proj4/pj_inv.c \
+    proj4/pj_latlong.c \
+    proj4/pj_list.c \
+    proj4/pj_malloc.c \
+    proj4/pj_mlfn.c \
+    proj4/pj_mutex.c \
+    proj4/pj_open_lib.c \
+    proj4/PJ_stere.c \
+    proj4/PJ_sterea.c \
+    proj4/PJ_tmerc.c \
+    proj4/pj_transform.c \
+    proj4/pj_tsfn.c \
+    proj4/pj_units.c \
     main.cpp

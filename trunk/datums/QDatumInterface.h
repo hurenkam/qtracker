@@ -2,39 +2,42 @@
 #define QDATUMINTERFACE_H_
 
 #include <QStringList>
-#include <QWidget>
+#include "waypointlist.h"
 
-class QDatumDisplayWidget: public QWidget
-{
-	Q_OBJECT
+class Datum {
 public:
-	QDatumDisplayWidget(QWidget *parent);
-	virtual void setValues(double lat, double lon, int src=0) = 0;
-};
+	void Datum(const QString& ref, const QString& desc) 
+    : name(ref), description(desc), attributes(attr)
+    { attributes.clear(); }
+	QString Name() const           { return name; }
+	QString Description() const    { return description; }
+	QStringList Attributes() const { return attributes; } 
 
-class QDatumEditWidget: public QWidget
-{
-	Q_OBJECT
-public:
-	QDatumEditWidget(QWidget *parent);
-	virtual void setValues(double lat, double lon, int src=0) = 0;
-	virtual void values(double& lat, double& lon, int& src) = 0;
-};
-
-class QDatumInterface
-{
-public:
-	QDatumInterface();
-	virtual ~QDatumInterface();
+    virtual QStringList Representation(const WayPoint& w) const = 0;
+    virtual WayPoint Position(const QStringList& attr) const = 0;
 	
-	virtual QStringList DatumList() =0;
-	virtual QDatumDisplayWidget *DisplayWidget(QString datum, QWidget *parent=0, int mode=0) = 0;
-	virtual QDatumEditWidget *EditWidget(QString datum, QWidget *parent=0, int mode =0) = 0;
-
-public:
-    static const int cSourceUnknown = 0;
-    static const int cSourceGPS = 1;
-    static const int cSourceMap = 2;
+protected:
+	QString name;
+	QString description;
+	QStringList attributes;
 };
 
+class DatumInterface
+{
+public:
+    DatumInterface();
+    virtual ~DatumInterface();
+	
+    void RegisterDatum(const Datum& d) 
+    { list[d.Name()] = d; }
+	
+    QStringList GetRepresentation(const QString& ref, const WayPoint& w)
+    { return list[ref].Representation(w); } 
+	
+    WayPoint GetPosition(const QString& ref, const QStringList& attr)
+    { return list[ref].Position(attr); }
+	
+private:
+	QMap<QString,Datum> list;
+};
 #endif /* QDATUMINTERFACE_H_ */

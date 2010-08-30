@@ -1,6 +1,5 @@
 #include "qmapstatusbar.h"
 #include "ui.h"
-//#include "datamonitor.h"
 
 QMapStatusBar::QMapStatusBar(QWidget *parent)
     : QToolButton(parent)
@@ -13,7 +12,6 @@ QMapStatusBar::QMapStatusBar(QWidget *parent)
 	icon.addFile(QString(MAPRCDIR) % "statusbar.svg", QSize(), QIcon::Normal, QIcon::Off);
 	setIcon(icon);
 	setIconSize(QSize(250, 40));
-	//connect(&DataMonitor::Instance(),SIGNAL(PositionUpdated(const QString&)),this,SLOT(SetBottomLine(const QString&)));
 }
 
 QMapStatusBar::~QMapStatusBar()

@@ -45,9 +45,9 @@ int positions[7][6][4] = {
     { {   0,  0,120,120 }, {   0,130,100,100 }, {   0,240,120,120 }, { 460,  0,180,180 }, { 110,  0,360,360 }, { 460,180,180,180 } },
     { {   0,  0,120,120 }, {   0,130,100,100 }, {   0,240,120,120 }, { 460,  0,180,180 }, { 460,180,180,180 }, { 110,  0,360,360 } },
 };
-int buttonpositions[8][2] = {
+int buttonpositions[buttoncount][2] = {
 //      waypoint      route        track       zoom-in      zoom-out      menu          exit       statusbar
-	{  10, 10 }, {  60, 10 }, { 110, 10 }, { -60, 10 }, { -60, 60 }, {  10, -60 }, { -60,-60 }, {  45,-55 }
+	{  10, 10 }, {  60, 10 }, { 110, 10 }, { -60, 10 }, { -60, 60 }, {  10, -60 }, { -60,-60 }, {  45,-55 }, { 160, 10 }, { 210, 10 }
 };
 
 int intermediate[6][4];
@@ -150,9 +150,6 @@ void QDashWindow::Init(QSplashScreen *splash)
 
 QToolButton* QDashWindow::PlaceButton(QString name, QWidget* group, bool repeat)
 {    
-	//if (pos[0] < 0) pos[0] += width();
-	//if (pos[0] < 0) pos[0] += height();
-	
     QToolButton* button = new QToolButton(group);
     button->setGeometry(QRect(0,0, 50, 50));
     QIcon icon;
@@ -210,8 +207,6 @@ void QDashWindow::InitWidgets()
     map->setObjectName(QString::fromUtf8("map"));
     map->setGeometry(QRect(0, 0, 400, 360));
 
-    //canvas = new QWidget(group);
-    //canvas->setGeometry(QRect(0,0,400,360));
     buttons[0] = PlaceButton("flag.svg",group);
     buttons[1] = PlaceButton("route.svg",group);
     buttons[2] = PlaceButton("hiker.svg",group);
@@ -219,6 +214,8 @@ void QDashWindow::InitWidgets()
     buttons[4] = PlaceButton("zoom-out.svg",group,true);
     buttons[5] = PlaceButton("options.svg",group);
     buttons[6] = PlaceButton("exit.svg",group);
+    buttons[8] = PlaceButton("import.svg",group);
+    buttons[9] = PlaceButton("export.svg",group);
     QMapStatusBar* statusbar = new QMapStatusBar(group);
     buttons[7] = statusbar;
     PositionButtons();
@@ -242,11 +239,13 @@ void QDashWindow::InitWidgets()
     connect(buttons[0],SIGNAL(clicked()),map,SLOT(ShowWaypointDialog()));
     connect(buttons[1],SIGNAL(clicked()),map,SLOT(ShowRouteDialog()));
     connect(buttons[2],SIGNAL(clicked()),map,SLOT(ShowTrackDialog()));
-    connect(buttons[3],SIGNAL(clicked()),map,SLOT(zoomIn()));
-    connect(buttons[4],SIGNAL(clicked()),map,SLOT(zoomOut()));
+    connect(buttons[3],SIGNAL(clicked()),map,SLOT(ZoomIn()));
+    connect(buttons[4],SIGNAL(clicked()),map,SLOT(ZoomOut()));
     connect(buttons[5],SIGNAL(clicked()),map,SLOT(ShowMenuDialog()));
     connect(buttons[6],SIGNAL(clicked()),this,SLOT(close()));
     connect(buttons[7],SIGNAL(clicked()),map,SLOT(ShowMapDialog()));
+    connect(buttons[8],SIGNAL(clicked()),map,SLOT(ShowImportDialog()));
+    connect(buttons[9],SIGNAL(clicked()),map,SLOT(ShowExportDialog()));
     
     connect(map,SIGNAL(name(QString)),statusbar,SLOT(SetTopLine(QString)));
     connect(map,SIGNAL(position(QString)),statusbar,SLOT(SetBottomLine(QString)));
@@ -270,7 +269,7 @@ void QDashWindow::PositionButtons()
     	else
     		{ w = 360; h = 400; }
     	
-    for (int i=0; i<8; i++)
+    for (int i=0; i<buttoncount; i++)
 	{
 	   x = buttonpositions[i][0];
 	   y = buttonpositions[i][1];

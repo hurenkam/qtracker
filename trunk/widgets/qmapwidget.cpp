@@ -6,6 +6,7 @@
 #include <QGroupBox>
 #include <QToolButton>
 #include <QIcon>
+#include <QFileDialog>
 #include "ui.h"
 #include "qmapwidget.h"
 #include "qmapdialog.h"
@@ -16,7 +17,6 @@
 #include "waypointlist.h"
 #include "routelist.h"
 #include "datamonitor.h"
-#include "GeoCoords.hpp"
 #include "geodata.h"
 
 #include <QDebug>
@@ -38,34 +38,15 @@ const int     zoommax = 6;
 
 #ifdef Q_OS_SYMBIAN
 #define MAPDIR "/data/qtracker/maps/"
+#define IMPORTDIR "/data/"
+#define EXPORTDIR "/data/"
 #else
 #define MAPDIR "/Users/hurenkam/workspace/qtracker/maps/"
+#define IMPORTDIR "/Users/hurenkam/"
+#define EXPORTDIR "/data/"
 #endif
 
 using namespace geodata;
-
-class QMapCanvas: public QWidget
-{
-public:
-	QMapCanvas(QImage*& map, int& z, QWidget* parent=0)
-	: QWidget(parent)
-	, mapimage(map)
-	, zoom(z)
-	, x(0)
-	, y(0)
-	{}
-protected:
-    virtual void paintBackground(QPainter& painter);
-    virtual void paintMap(QPainter& painter);
-    //virtual void paintWaypoints(QPainter& painter);
-    virtual void paintEvent(QPaintEvent *event);
-    
-private:
-    QImage*& mapimage;
-    int& zoom;
-    int x;
-    int y;
-};
 
 QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     : QGaugeWidget(parent)
@@ -78,16 +59,6 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     , meta          (0)
     , mapimage      (0)
     , bgimage       (new QImage(MAPRCDIR "map.svg"))
-/*    
-    , svgZoomIn     (new QImage(MAPRCDIR "zoom-in.svg"))
-    , svgZoomOut    (new QImage(MAPRCDIR "zoom-out.svg"))
-    , svgOptions    (new QImage(MAPRCDIR "options.svg"))
-    , svgExit       (new QImage(MAPRCDIR "exit.svg"))
-    , svgFlag       (new QImage(MAPRCDIR "flag.svg"))
-    , svgHiker      (new QImage(MAPRCDIR "hiker.svg"))
-    , svgBar        (new QImage(MAPRCDIR "statusbar.svg"))
-    , svgRoute      (new QImage(MAPRCDIR "route.svg"))
-*/
     , svgLocator    (new QImage(MAPRCDIR "locator_red.svg"))
     , onmap         (false)
     , svgWptGreen   (new QImage(MAPRCDIR "wpt_green.svg"))
@@ -101,18 +72,7 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
     connect(this, SIGNAL(singleTap()), this, SLOT(FollowGPS()));
     connect(this, SIGNAL(doubleTap()), this, SLOT(ShowMapDialog()));
     CreateMapList();
-    //connect(&zoomtimer,SIGNAL(timeout()),this,SLOT(zoomRepeat()));
     zoomtimer.setInterval(150);
-/*
-    connect(this, SIGNAL(zoomin()), this, SLOT(zoomIn()));
-    connect(this, SIGNAL(zoomout()), this, SLOT(zoomOut()));
-    connect(this, SIGNAL(options()), this, SLOT(ShowMenuDialog()));
-    connect(this, SIGNAL(datum()), this, SLOT(ShowMapDialog()));
-    connect(this, SIGNAL(waypoint()), this, SLOT(ShowWaypointDialog()));
-    connect(this, SIGNAL(track()), this, SLOT(ShowTrackDialog()));
-    connect(this, SIGNAL(route()), this, SLOT(ShowRouteDialog()));
-    connect(this, SIGNAL(exit()), this->parent(), SLOT(close()));
-*/
     connect(TrackList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowTrack(const QString&)));
     connect(TrackList::Instance(),SIGNAL(invisible(const QString&)),this,SLOT(HideTrack(const QString&)));
     connect(RouteList::Instance(),SIGNAL(visible(const QString&)),this,SLOT(ShowRoute(const QString&)));
@@ -130,18 +90,7 @@ QMapWidget::QMapWidget(QSettings& s, QWidget *parent)
         }
     }
 }
-/*
-QToolButton* QMapWidget::PlaceButton(int x,int y, QString name, QWidget* group)
-{    
-    QToolButton* button = new QToolButton(group);
-    button->setGeometry(QRect(x, y, 50, 50));
-    QIcon icon;
-    icon.addFile(QString(MAPRCDIR) % name, QSize(), QIcon::Normal, QIcon::Off);
-    button->setIcon(icon);
-    button->setIconSize(QSize(50, 50));
-    return button;
-}
-*/
+
 QMapWidget::~QMapWidget()
 {
 /*
@@ -293,6 +242,28 @@ void QMapWidget::RefpointSelected(QString name, double lat, double lon)
     }
     msg.setStandardButtons(QMessageBox::Ok);
     msg.exec();
+}
+
+void QMapWidget::ShowMenuDialog() 
+{
+    QMessageBox msg;
+    msg.setText(QString("Not yet implemented."));
+    msg.setIcon(QMessageBox::Warning);
+    msg.setStandardButtons(QMessageBox::Ok);
+    msg.exec();
+}
+
+void QMapWidget::ShowImportDialog() 
+{
+	QString filename = QFileDialog::getOpenFileName(this,
+	     tr("Import"), IMPORTDIR, tr("GPX Files (*.gpx)"));
+}
+
+void QMapWidget::ShowExportDialog() 
+{
+	QString filename = QFileDialog::getSaveFileName(this, tr("Export"),
+	                            QString(EXPORTDIR "untitled.gpx"),
+	                            tr("GPX Files (*.gpx)"));
 }
 
 void QMapWidget::ShowWaypointDialog()
@@ -552,7 +523,7 @@ void QMapWidget::FollowGPS()
     update();
 }
 
-void QMapWidget::zoomRepeat()
+void QMapWidget::Zoom(int zooming)
 {
     zoom += zooming;
     if (zoom > zoommax) zoom = zoommax;
@@ -561,48 +532,14 @@ void QMapWidget::zoomRepeat()
     update();
 }
 
-void QMapWidget::zoomIn()
+void QMapWidget::ZoomIn()
 {
-    zooming = -1;
-    zoomRepeat();
-    zoomtimer.start();
+    Zoom(-1);
 }
 
-void QMapWidget::zoomOut()
+void QMapWidget::ZoomOut()
 {
-    zooming = +1;
-    zoomRepeat();
-    zoomtimer.start();
-}
-
-void QMapWidget::mousePressEvent(QMouseEvent *event)
-{/*
-    if ((event->pos().x() > width()-60) && (event->pos().y() < 60)) emit zoomin();
-    else if ((event->pos().x() > width()-60) && (event->pos().y() > 60) && (event->pos().y() < 120)) emit zoomout();
-    else if ((event->pos().x() > width()-60) && (event->pos().y() > height()-60)) emit exit();
-    else if ((event->pos().x() < 50)  && (event->pos().y() < 60)) emit waypoint();
-    else if ((event->pos().x() > 60)  && (event->pos().x() < 120) && (event->pos().y() < 60)) emit track();
-    else if ((event->pos().x() > 120) && (event->pos().x() < 180) && (event->pos().y() < 60)) emit route();
-    else if ((event->pos().x() < 60)  && (event->pos().y() > height()-60)) emit options();
-    else if ((event->pos().x() > 60)  && (event->pos().x() < 260) && (event->pos().y() > height()-50)) emit datum();
-    else */
-        QGaugeWidget::mousePressEvent(event);
-}
-
-void QMapWidget::mouseMoveEvent(QMouseEvent *event)
-{
-    if (zooming == 0)
-        QGaugeWidget::mouseMoveEvent(event);
-}
-
-void QMapWidget::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (zooming == 0)
-    {
-        QGaugeWidget::mouseReleaseEvent(event);
-    }
-    zooming = 0;
-    zoomtimer.stop();
+    Zoom(1);
 }
 
 bool QMapWidget::IsPositionOnMap() 
@@ -698,7 +635,6 @@ void QMapWidget::paintWaypoints(QPainter& painter)
         {
             ScreenPos p = PositionOnScreen(wl.GetItem(keys[i]));
             LOG( "QMapWidget::paintWaypoints(): " << keys[i] << ", " << p.x << "," << p.y; )
-            //paintDot(painter,p.x,p.y,Qt::blue);
 
             QRectF source = QRectF(0,0,48,48);
             QRectF target = QRectF(p.x-7,p.y-60,64,64);
@@ -733,37 +669,6 @@ QString QMapWidget::GetPositionRepresentation(double lat, double lon)
     WayPoint w(lat,lon);
     return w.Representation(datum);
 }
-/*
-void QMapWidget::paintBar(QPainter& painter)
-{
-    double w = width();
-    double h = height();
-    double s = h / 36;
-    QRectF source = QRectF(0,0,300,48);
-    QRectF target = QRectF(w/-2,h/2-48,300,48);
-    painter.drawImage(target, *svgBar, source);
-    painter.setFont(QFont("Courier", 168/TEXTDIVIDER));
-    QRect r = painter.boundingRect(w/-2+58,h/2-38,260,28, Qt::AlignLeft, mapname);
-    painter.setPen(QPen(Qt::blue));
-    painter.drawText(r, Qt::AlignLeft, mapname);
-
-    QString position = getRepresentation(latitude,longitude);
-    painter.setPen(QPen(Qt::blue));
-    
-    if ((state == StScrolling) || ((mapimage) && (!IsPositionOnMap())))
-    {
-        painter.setPen(QPen(Qt::black));
-        double lat, lon;
-        if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
-            position = getRepresentation(lat,lon);
-        else
-            position = "<" + QString::number(x) + " " + QString::number(y) + ">";
-    }
-
-    r = painter.boundingRect(w/-2+58,h/2-25,260,28, Qt::AlignLeft, position);
-    painter.drawText(r, Qt::AlignLeft, position);
-}
-*/
 
 void QMapWidget::SendMapInfo()
 {
@@ -776,10 +681,9 @@ void QMapWidget::SendMapInfo()
 		pen = QPen(Qt::black);
 		if ((meta) && (meta->XY2Wgs(x,y,lat,lon)))
 		{
-			//WayPoint from(latitude,longitude);
-			//WayPoint to(lat,lon);
-			//info = GetPositionRepresentation(lat,lon) % " (" % from.distancestr(&to) % ")";
-			info = GetPositionRepresentation(lat,lon);
+			WayPoint from(latitude,longitude);
+			WayPoint to(lat,lon);
+			info = GetPositionRepresentation(lat,lon) % "   (" % from.distancestr(&to) % ")";
 		}
 		else
 		{
@@ -805,5 +709,4 @@ void QMapWidget::paintEvent(QPaintEvent *event)
     paintMap(painter);
     paintWaypoints(painter);
     paintWidgets(painter);
-    //paintBar(painter);
 }
