@@ -97,7 +97,14 @@ void RouteList::Delete(const QString& key)
 
 void RouteList::AddRoute(Route* r)
 {
-	map[r->Name()]=r; 
+	if (!r) return;
+	
+	map[r->Name()]=r;
+	if (!routefiles.contains(r->Name()))
+    {
+        GpxIO::Instance()->WriteRouteFile(*r);
+        FindFiles();
+    }
 	emit added(r->Name()); 
 }
 

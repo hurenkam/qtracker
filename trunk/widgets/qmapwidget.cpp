@@ -258,6 +258,9 @@ void QMapWidget::ShowImportDialog()
 {
 	QString filename = QFileDialog::getOpenFileName(this,
 	     tr("Import"), IMPORTDIR, tr("GPX Files (*.gpx)"));
+	
+	if (!filename.isNull())
+        GpxIO::Instance()->ImportGpxFile(filename);
 }
 
 void QMapWidget::ShowExportDialog() 
@@ -265,6 +268,9 @@ void QMapWidget::ShowExportDialog()
 	QString filename = QFileDialog::getSaveFileName(this, tr("Export"),
 	                            QString(EXPORTDIR "untitled.gpx"),
 	                            tr("GPX Files (*.gpx)"));
+	
+	//if (!filename.isNull())
+    //    GpxIO::Instance()->ExportGpxFile(filename);
 }
 
 void QMapWidget::ShowWaypointDialog()

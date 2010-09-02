@@ -59,7 +59,14 @@ void TrackList::SaveSettings()
 
 void TrackList::AddTrack(Track* t)
 { 
+	if (!t) return;
+	
 	map[t->Name()]=t; 
+	if (!trackfiles.contains(t->Name()))
+    {
+        GpxIO::Instance()->WriteTrackFile(*t);
+        FindFiles();
+    }
 	emit added(t->Name()); 
 }
 
