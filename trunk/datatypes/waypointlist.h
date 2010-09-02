@@ -16,6 +16,7 @@
 #include <QGeoCoordinate>
 #include "ui.h"
 #include "geodata.h"
+//#include "datumlist.h"
 
 class WayPoint
 {
@@ -26,7 +27,7 @@ protected:
 	double elevation;
 	QString time;
 public:
-	WayPoint(QString s, QString n="");
+	//WayPoint(QString s, QString n="");
 	
 	WayPoint(double lat=0, double lon=0, double ele=0.0, QString t="", QString n="")
         : name(n), latitude(lat), longitude(lon), elevation(ele), time(t) {}
@@ -50,7 +51,7 @@ public:
 	void SetLongitude(double l)        { longitude = l; }
 	void SetElevation(double e)        { elevation = e; }
 	void SetTime(QString t)            { time = t; }
-	QString Representation(geodata::Datum datum) const;
+	//QString Representation() const;
 
 	double distance(WayPoint *to);
 	QString distancestr(WayPoint *to);

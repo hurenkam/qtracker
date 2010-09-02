@@ -154,7 +154,7 @@ void MapMetaData::CalculateIndexesFromRefpoints(int i, int j)
     LOG( "MapMetaData::CalculateIndexesFromRefpoints(): " << dx << " " << dy << " " << dlon << " " << dlat; )
     // 20 -40 -0.00181667 0.00203333
     
-    double theta = (atan2(dy,dx) * 180 / PI) + 90;
+    double theta = (atan2(dy,dx) * 180 / pi) + 90;
     if (theta > 180)
         theta -= 360;
 

@@ -117,18 +117,29 @@ public:
     QDatumTab(QMapTabsDialog *d, QTabWidget* t);
     ~QDatumTab();
 
-    geodata::Datum Value() { return datum; }
+    QString Value() { return datums[datum]; }
 
 public slots:
     void accept();
     void setvalue(int v);
     
+protected:
+    virtual void resizeEvent(QResizeEvent * event);
+
 private:
+    QBoxLayout*          center;
     QSettings			 settings;
 	QMapTabsDialog*      dialog;
 	QTabWidget*          tab;
 	QButtonGroup*        distbuttons;
-	geodata::Datum       datum;
+    QComboBox*           list;
+	QGroupBox*           towgsgroup;
+	QWidget*             filler;
+	QDoubleEdit 		 *dx,*dy,*dz,*rx,*ry,*rz,*m;
+	QStringList          datums;
+	QStringList          ellipses;
+	int                  datum;
+	int                  ellipse;
 };
 
 #endif // QMAPDIALOG_H

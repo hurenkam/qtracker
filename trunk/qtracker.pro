@@ -2,7 +2,6 @@ CONFIG += mobility
 MOBILITY += location \
     sensors \
     systeminfo
-DEFINES += EMULATOR
 TEMPLATE = app
 TARGET = qTracker
 QT += core \
@@ -18,6 +17,7 @@ HEADERS += \
     dialogs/qmapdialog.h \
     dialogs/qcompassdialog.h \
     dialogs/qclockdialog.h \
+    datums/datumlist.h \
     datatypes/geodata.h \
     datatypes/gpxio.h \
     datatypes/waypointlist.h \
@@ -46,7 +46,7 @@ INCLUDEPATH += dialogs \
     proj4
 FORMS += 
 RESOURCES += 
-VERSION = 0.8.262
+VERSION = 0.8.264
 VERSTR = '\\"$${VERSION}\\"'
 DEFINES += VER=\"$${VERSTR}\"
 symbian {
@@ -113,6 +113,7 @@ SOURCES += \
     dialogs/qclockdialog.cpp \
     dialogs/qtrackdialog.cpp \
     dialogs/qroutedialog.cpp \
+    datums/datumlist.cpp \
     widgets/qgaugewidget.cpp \
     widgets/qmapwidget.cpp \
     widgets/qlevelwidget.cpp \

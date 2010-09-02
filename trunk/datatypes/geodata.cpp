@@ -48,10 +48,10 @@ namespace geodata
 	{
 		double earths_radius = (6378137.0 + 6356752.3141) / 2.0;
 	
-		double from_theta = float(fromlat) / 360.0 * 2.0 * PI;
-		double from_landa = float(fromlon) / 360.0 * 2.0 * PI;
-		double to_theta = float(tolat)     / 360.0 * 2.0 * PI;
-		double to_landa = float(tolon)     / 360.0 * 2.0 * PI;
+		double from_theta = float(fromlat) / 360.0 * 2.0 * pi;
+		double from_landa = float(fromlon) / 360.0 * 2.0 * pi;
+		double to_theta = float(tolat)     / 360.0 * 2.0 * pi;
+		double to_landa = float(tolon)     / 360.0 * 2.0 * pi;
 	
 		distance = acos(
 				sin(from_theta) * sin(to_theta) +
@@ -63,7 +63,7 @@ namespace geodata
 				cos(from_theta) * sin(to_theta) -
 				sin(from_theta) * cos(to_theta) * cos(to_landa-from_landa)
 			);
-		bearing = bearing / 2.0 / PI * 360.0;
+		bearing = bearing / 2.0 / pi * 360.0;
 	}
 	
 	bool IsValueInRange(double v, double r1, double r2)

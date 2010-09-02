@@ -8,6 +8,7 @@
 #include "qtracker.h"
 #include "waypointlist.h"
 #include "tracklist.h"
+#include "datumlist.h"
 
 #ifdef Q_OS_SYMBIAN
 #include <QSymbianEvent>
@@ -45,6 +46,7 @@ qTracker::~qTracker()
 	LOG( "qTracker::~qTracker()"; )
 	TrackList::Instance()->SaveSettings();
 	WayPointList::Instance().SaveSettings();
+	DatumList::Instance().SaveSettings();
 	settings.sync();
 }
 

@@ -17,6 +17,7 @@
 #include "waypointlist.h"
 #include "routelist.h"
 #include "datamonitor.h"
+#include "datumlist.h"
 #include "geodata.h"
 
 #include <QDebug>
@@ -665,9 +666,9 @@ void QMapWidget::paintDot(QPainter& painter,int x,int y,QColor c)
 }
 QString QMapWidget::GetPositionRepresentation(double lat, double lon)
 {
-    geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    //geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     WayPoint w(lat,lon);
-    return w.Representation(datum);
+    return DatumList::Instance().Representation(w);
 }
 
 void QMapWidget::SendMapInfo()

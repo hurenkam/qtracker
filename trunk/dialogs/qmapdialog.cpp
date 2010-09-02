@@ -16,6 +16,7 @@
 #include <QListWidgetItem>
 #include "qmapdialog.h"
 #include "maplist.h"
+#include "datumlist.h"
 #include "gpxio.h"
 
 #include <QDebug>
@@ -145,8 +146,8 @@ QEditRefPointTab::QEditRefPointTab(QMapTabsDialog *d, QTabWidget* t, MapMetaData
 	gridbox->addWidget(name,0,1);
 
 	// Position =======================================
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
-	position = new QLineEdit(r->Representation(datum));
+	//geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+	position = new QLineEdit(DatumList::Instance().Representation(*r));
 	gridbox->addWidget(new QLabel(tr("Position:")),1,0);
 	gridbox->addWidget(position,1,1);
 	
@@ -201,27 +202,28 @@ void QEditRefPointTab::accept()
         return;
     }
     
-    RefPoint r = RefPoint(x->number(),y->number(),position->text());
+    WayPoint w = DatumList::Instance().Position(position->text());
+    RefPoint r = RefPoint(x->number(),y->number(),w.Latitude(),w.Longitude());
     meta->AddRefPoint(r);
     GpxIO::Instance()->WriteMapMetaFile(*meta);
 }
 
 double QEditRefPointTab::Latitude()
 {
-	WayPoint w(position->text());
+    WayPoint w = DatumList::Instance().Position(position->text());
 	return w.Latitude();
 }
 
 double QEditRefPointTab::Longitude()
 {
-	WayPoint w(position->text());
+    WayPoint w = DatumList::Instance().Position(position->text());
 	return w.Longitude();
 }
 
 void QEditRefPointTab::setvalue(const RefPoint& r)
 {
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
-	position->setText(r.Representation(datum));
+	//geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+	position->setText(DatumList::Instance().Representation(r));
     name->setText(r.Name());
     double ax = r.X();
     double ay = r.Y();
@@ -236,34 +238,78 @@ QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
 , settings("karpeer.net","qTracker",this)
 {
 	QVBoxLayout* main = new QVBoxLayout();
-	//QGridLayout* gridbox = new QGridLayout();	
 	tab->addTab(this,"Datum");
 	
     QGroupBox* distgroup = new QGroupBox();
+    distgroup->setTitle("Datum");
     distbuttons = new QButtonGroup(distgroup);
-    QRadioButton *geo  = new QRadioButton(tr("Wgs84-Geo"));
-    QRadioButton *dms  = new QRadioButton(tr("Wgs84-DMS"));
-    QRadioButton *utm  = new QRadioButton(tr("UTM/UPS"));
-    QRadioButton *mgrs = new QRadioButton(tr("MGRS"));
-    //QRadioButton *rd   = new QRadioButton(tr("RD"));
-    distbuttons->addButton(geo,  geodata::Wgs84_Geo);
-    distbuttons->addButton(dms,  geodata::Wgs84_DMS);
-    distbuttons->addButton(utm,  geodata::UTMUPS);
-    distbuttons->addButton(mgrs, geodata::MGRS);
-    //distbuttons->addButton(rd,   geodata::RD);
     QVBoxLayout *distbox = new QVBoxLayout();
-    distbox->addWidget(geo);
-    distbox->addWidget(dms);
-    distbox->addWidget(utm);
-    distbox->addWidget(mgrs);
-    //distbox->addWidget(rd);
-    //distbox->addStretch(1);
+    datums = DatumList::Instance().Keys();
+    datum = datums.indexOf(DatumList::Instance().GetDatum());
+    for (int i=0; i<datums.length(); i++)
+	{
+        QRadioButton *button  = new QRadioButton(datums[i]);
+        distbuttons->addButton(button,i);
+        distbox->addWidget(button);
+	}
     distgroup->setLayout(distbox);
-	setvalue(settings.value("map/datum",geodata::Wgs84_Geo).toInt());
     connect(distbuttons, SIGNAL(buttonClicked(int)),this,SLOT(setvalue(int)));
+
     
-	// Filler ======================================
-    QWidget *filler = new QWidget;
+    
+    towgsgroup = new QGroupBox();
+    towgsgroup->setTitle("UTM"); 
+	QGridLayout* towgsbox = new QGridLayout();
+	// Ellipse =======================================
+	towgsbox->addWidget(new QLabel(tr("Ellipsoid:")),1,0);
+    list = new QComboBox();
+    ellipses = DatumList::Instance().Ellipses();
+    ellipse = ellipses.indexOf(Datum::utm->GetAttribute("ellipse"));
+    list->addItems(ellipses);
+    list->setCurrentIndex(ellipse);
+    towgsbox->addWidget(list,1,1,1,3);
+	
+	// Translation ===================================
+    double parms[7] = { 0,0,0,0,0,0,0 };
+    QStringList strparms = Datum::utm->GetAttribute("towgs").split(",",QString::SkipEmptyParts);
+    for (int i=0; i<strparms.length(); i++)
+    	parms[i]=strparms[i].toDouble();
+    	
+    dx = new QDoubleEdit(parms[0],this);
+	towgsbox->addWidget(new QLabel(tr("Dx:")),2,0);
+	towgsbox->addWidget(dx,2,1);
+    
+    dy = new QDoubleEdit(parms[1],this);
+    towgsbox->addWidget(new QLabel(tr("Dy:")),3,0);
+    towgsbox->addWidget(dy,3,1);
+    
+    dz = new QDoubleEdit(parms[2],this);
+    towgsbox->addWidget(new QLabel(tr("Dz:")),4,0);
+    towgsbox->addWidget(dz,4,1);
+    
+	// Rotation ======================================
+    rx = new QDoubleEdit(parms[3],this);
+    towgsbox->addWidget(new QLabel(tr("Rx:")),2,2);
+    towgsbox->addWidget(rx,2,3);
+    
+    ry = new QDoubleEdit(parms[4],this);
+    towgsbox->addWidget(new QLabel(tr("Ry:")),3,2);
+    towgsbox->addWidget(ry,3,3);
+    
+    rz = new QDoubleEdit(parms[5],this);
+    towgsbox->addWidget(new QLabel(tr("Rz:")),4,2);
+    towgsbox->addWidget(rz,4,3);
+    
+	// Scale ======================================
+    m = new QDoubleEdit(parms[6],this);
+    towgsbox->addWidget(new QLabel(tr("M:")),5,0);
+    towgsbox->addWidget(m,5,1);
+    towgsgroup->setLayout(towgsbox);
+
+    
+    
+    // Filler ======================================
+    filler = new QWidget;
     filler->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     
 	// Buttons ======================================
@@ -274,8 +320,10 @@ QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
 	buttonbox->addWidget(cancel);
 
 	// Layout ======================================
-    //main->addLayout(gridbox);
-    main->addWidget(distgroup);
+    center = new QBoxLayout(QBoxLayout::LeftToRight);
+    center->addWidget(distgroup);
+    center->addWidget(towgsgroup);
+    main->addLayout(center);
     main->addWidget(filler);
     main->addLayout(buttonbox);
     setLayout(main);
@@ -284,23 +332,58 @@ QDatumTab::QDatumTab(QMapTabsDialog *d, QTabWidget* t)
     connect(cancel,SIGNAL(clicked()),d,SLOT(reject()));
     connect(confirm,SIGNAL(clicked()),this,SLOT(accept()));
     connect(confirm,SIGNAL(clicked()),d,SLOT(accept()));
+    
+    setvalue(datum);
+    //setellipse(ellipse);
 }
 
 QDatumTab::~QDatumTab()
 {
 }
 
+void QDatumTab::resizeEvent( QResizeEvent * event )
+{
+    if (!center) return;
+    
+    if (event->size().width() < event->size().height())
+        center->setDirection(QBoxLayout::TopToBottom);
+    else
+        center->setDirection(QBoxLayout::LeftToRight);
+
+    QWidget::resizeEvent(event);
+}
+
 void QDatumTab::accept() 
 {
     LOG( "QDatumTab::accept()"; )
-	settings.setValue("map/datum",(int) datum);
-    settings.sync();
+    DatumList::Instance().SetDatum(datums[datum]);
+    
+    if (datums[datum]=="UTM")
+    {
+    	QString towgs;
+    	towgs.sprintf(
+    			"%f,%f,%f,%f,%f,%f,%f",
+    			dx->number(),dy->number(),dz->number(),
+    			rx->number(),ry->number(),rz->number(),
+    			m->number()
+    		);
+        Datum::utm->SetAttribute("ellipse",ellipses[list->currentIndex()]);
+        Datum::utm->SetAttribute("towgs",towgs);
+    }
 }
 
 void QDatumTab::setvalue(int v)
 {
 	distbuttons->button(v)->setChecked(true);
-	datum = (geodata::Datum) v;
+	datum = v;
+	if (datums[v]=="UTM")
+	{
+		towgsgroup->show();
+	}
+	else
+    {
+		towgsgroup->hide();
+    }
 }
 
 

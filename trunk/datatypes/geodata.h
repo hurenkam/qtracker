@@ -61,10 +61,10 @@ public:
 };
 
 namespace geodata
-{
-	const float PI = 3.14159265358979323846f;
-	
-	extern QString UniqueName(QString prefix);
+{	
+    static const float pi = 3.14159265358979323846f;
+
+    extern QString UniqueName(QString prefix);
 	
 	extern QString GeoTime();
 
@@ -77,7 +77,7 @@ namespace geodata
 		double &bearing );
 	
 	extern bool IsValueInRange(double v, double r1, double r2);
-	
+/*	
     enum Datum
 	{
         Wgs84_Geo = 0,
@@ -86,6 +86,7 @@ namespace geodata
         MGRS,
         RD
 	};
+*/
 }
 
 #endif /* GEODATA_H_ */

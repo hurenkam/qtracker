@@ -12,6 +12,7 @@
 #include "qwaypointdialog.h"
 #include "ui.h"
 #include "waypointlist.h"
+#include "datumlist.h"
 
 #include <QDebug>
 #define LOG( a ) qDebug() << a
@@ -81,8 +82,8 @@ QEditWayPointTab::QEditWayPointTab(QWayPointTabsDialog *d, QTabWidget* t, const 
 	gridbox->addWidget(name,0,1);
 
 	// Position =======================================
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
-	position = new QLineEdit(w.Representation(datum));
+	//geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+	position = new QLineEdit(DatumList::Instance().Representation(w));
 	gridbox->addWidget(new QLabel(tr("Position:")),1,0);
 	gridbox->addWidget(position,1,1);
 	
@@ -136,21 +137,21 @@ void QEditWayPointTab::accept()
 
 double QEditWayPointTab::Latitude()
 {
-	WayPoint w(position->text());
+    WayPoint w = DatumList::Instance().Position(position->text());
 	return w.Latitude();
 }
 
 double QEditWayPointTab::Longitude()
 {
-	WayPoint w(position->text());
+    WayPoint w = DatumList::Instance().Position(position->text());
 	return w.Longitude();
 }
 
 void QEditWayPointTab::select(const QString& n)
 {
 	const WayPoint& w = WayPointList::Instance().GetItem(n);
-	geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
-	position->setText(w.Representation(datum));
+	//geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+	position->setText(DatumList::Instance().Representation(w));
 	orgname = w.Name();
 	editmode = true;
 	tab->setTabText(0,"Edit");

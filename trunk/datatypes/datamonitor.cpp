@@ -14,6 +14,7 @@
 #include <QCompassReading>
 #include "datamonitor.h"
 #include "waypointlist.h"
+#include "datumlist.h"
 #include "routelist.h"
 #include "tracklist.h"
 
@@ -303,11 +304,11 @@ void DataMonitor::OnPositionUpdate(const QGeoPositionInfo& info)
     LOG( "DataMonitor::PositionUpdate()"; )
     		
 	WayPoint position(info.coordinate().latitude(),info.coordinate().longitude(),info.coordinate().altitude());
-    geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
+    //geodata::Datum datum = (geodata::Datum) settings.value("map/datum",geodata::Wgs84_Geo).toInt();
     
     emit PositionUpdated(info);
     emit PositionUpdated(position);
-    emit PositionUpdated(position.Representation(datum));
+    emit PositionUpdated(DatumList::Instance().Representation(position));
     emit AltitudeUpdated(info.coordinate().altitude());
 	
     if (info.hasAttribute(QGeoPositionInfo::GroundSpeed))
