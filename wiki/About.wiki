@@ -29,14 +29,16 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * Show/Delete routes
  * Persistent settings (current map, zoom mode, many others)
  * Compass using magnetic north sensor
+ * UTM datum support
+ * Datum projection support for proj4 types: stereo, latlon, utm, tmerc
+ * Compass options dialog
+ * Clock options dialog
 
 * Todo before 2nd alpha: *
  * Edit/Save Routes
  * Gpx import
- * Clock options
  * Altitude options
  * Speed options
- * UTM datum support
 
 * Screenshots *
 
