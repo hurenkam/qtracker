@@ -21,6 +21,8 @@ This also has the advantage that external tools can be used to scan large maps, 
 What I miss most of all from tracker-py is the option to show google earth tracks on
 the maps.
 
+ * this is now possible, provided you convert them to gpx format, and place the files in the :/data/qtracker/tracks directory.
+
 <br><br>
 ----
 
