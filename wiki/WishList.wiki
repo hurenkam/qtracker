@@ -11,6 +11,12 @@ WishList | KnownBugs | RoadMap
 
 = New qTracker wishlist: =
 
+=== Use tiled (Geo)Tiff files ===
+A big limitation of qtracker is that it uses jpg images that need to be completely loaded in memory. The advantage is that a camera image can immediately be used as a map, by calibrating 2 points, however, a big disadvantage is that it limits the size of the map that can be used.
+By implementing a camera engine that can save the max resolution to a tiled Tiff file, this problem can be overcome, since qtracker simply loads the tiles needed.
+This also has the advantage that external tools can be used to scan large maps, and keep the data together into a single map file. GeoTiff even has the added advantage that datum & calibration data can be stored with the image.
+
+
 === Show (google earth) tracks on the map ===
 What I miss most of all from tracker-py is the option to show google earth tracks on
 the maps.
@@ -41,30 +47,6 @@ be running while the positioning part is running (to record a track
 or monitor a waypoint).
 On certain events, a ui process can be started automatically.
 
-=== Weasley Family clock ===
-See [http://en.wikipedia.org/wiki/Magical_Objects_in_Harry_Potter#Weasley_Family_Clock Wikipedia]
-When several phones exchange location data, you could use that data to
-implement a weasly family clock in the dash view, thus family members
-can show each-other where they are.
-
-=== Multiple resolutions ===
-Current [http://code.google.com/p/tracker-py/wiki/TrackerV0_20 v0.20]
-implementation for S60 is aimed at N95 in portrait
-mode, meaning it depends on a 240x320 pixel resolution. When used on
-other S60 phones, this resolution may not be available, or prefereable,
-so support for different resolutions is desired.
-
-=== Integrate s60views and wxviews ===
-A lot of code in s60views.py and wxviews.py is identical, probably about
-80 to 90 percent of the code can be shared between the two. It would be
-good to extract the 10-20 percent, and use a single codebase for the rest
-of these modules.
-
-=== Use Accelerometer to scroll the map ===
-Scrolling the map can be a pain, especially if zoomed in on a large map.
-Using the accelerometer would be very handy in this case, simply tilt
-your phone in the direction you want to scroll.
-
 === Exchange of Landmarks ===
 A message format could be defined to send/receive Landmarks over SMS/E-Mail/Bluetooth/Other?
 When a landmark comes in the user can for instance choose to Display on Map or Save to
@@ -73,19 +55,6 @@ on the map can be send to others. Perhaps an automatic action could also be defi
 reception of a Landmark. Feature could also be extended to routes/tracks (although
 tracks could contain large amounts of data)
 Suggested message formats: NMEA, GPX
-
-=== Port to Pocket PC ===
-Currently Tracker.py is focussed on symbian S60, and has some support
-for other (osx/linux/windows) platforms.
-A fully functional port to Pocket PC would be nice, since a lot of them
-are also equipped with either a bluetooth or internal GPS.
-
-=== Stable wxPython version ===
-Tracker.py development has been focussed on symbian S60, but has some
-support for other (osx/linux/windows) platforms. On osx/linux/windows it
-uses the wxpython widget library, but currently the port to this platform
-is incomplete and unstable. A stable version on wxpython would help
-development efforts enormously.
 
 === Localization ===
 Currently Tracker.py is only available in English. It would be nice if all
@@ -112,14 +81,6 @@ a significant difference.
 Another way to figure out when to power-up the GPS could be to use the cell
 signal strength/number of different towers passed, to detect movement/
 estimate distance (although this might not help much in mountain areas where the gsm reception is often absent...).
-
-=== Calibrate GPS to adjust for known deviations ===
-Some GPS devices can report positions with an average error that you may
-like to compensate for, e.g. my N95 by default reports altitude about 55
-meters higher than most maps.
-It would be handy if an offset can be configured so that the reported data
-on the device is more accurate. (suggest: false northing, false easting,
-false altitude).
 
 === Advanced use of Landmarks and Categories ===
 Right now, tracker always shows all landmarks in the waypoint category,
