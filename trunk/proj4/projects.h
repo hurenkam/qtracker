@@ -81,7 +81,7 @@ extern "C" {
 #endif
 	/* prototype hypot for systems where absent */
 #ifndef _WIN32
-extern double hypot(double, double);
+//extern double hypot(double, double);
 #endif
 
 #ifdef _WIN32_WCE

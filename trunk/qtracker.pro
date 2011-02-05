@@ -8,8 +8,7 @@ QT += core \
     gui \
     xml \
     network
-HEADERS += \
-    application/qtracker.h \
+HEADERS += application/qtracker.h \
     dialogs/qdoubleedit.h \
     dialogs/qtrackdialog.h \
     dialogs/qroutedialog.h \
@@ -38,68 +37,14 @@ HEADERS += \
     widgets/qmapstatusbar.h
 INCLUDEPATH += dialogs \
     datatypes \
+    datums \
     widgets \
     images \
     mobility \
     windows \
     application \
     proj4
-FORMS += 
-RESOURCES += 
-VERSION = 0.8.264
-VERSTR = '\\"$${VERSION}\\"'
-DEFINES += VER=\"$${VERSTR}\"
-symbian {
-    TARGET.UID3 = 0xEA82CEF3
-    LIBS += -llbs \
-        -lefsrv \
-        -leikcore \
-        -lcone
-    TARGET.CAPABILITY = Location
-    DEFINES += LOCATION
-    ICON = images/icon.svg
-    UiFiles.sources += images/clock.svg \
-        images/compass.svg \
-        images/compassneedle.svg \
-        images/longhand.svg \
-        images/satview.svg \
-        images/secondhand.svg \
-        images/shorthand.svg \
-        images/speed10.svg \
-        images/speed200.svg \
-        images/style.css \
-        images/speedneedle.svg \
-        images/map.svg \
-        images/splash.png \
-        images/zoom-in.svg \
-        images/zoom-out.svg \
-        images/home.svg \
-        images/options.svg \
-        images/statusbar.svg \
-        images/flag.svg \
-        images/hiker.svg \
-        images/route.svg \
-        images/import.svg \
-        images/export.svg \
-        images/exit.svg \
-        images/delete.svg \
-        images/edit.svg \
-        images/visible.svg \
-        images/invisible.svg \
-        images/locator_red.svg \
-        images/locator_green.svg \
-        images/wpt_green.svg \
-        images/compassring.svg \
-        images/level.svg \
-        images/leveltop.svg
-    UiFiles.path = ./ui
-    DEPLOYMENT += UiFiles
-    TARGET.EPOCHEAPSIZE = 0x30000 \
-        0x3000000
-    TARGET.EPOCSTACKSIZE += 0x14000
-}
-SOURCES += \
-    application/qtracker.cpp \
+SOURCES += application/qtracker.cpp \
     datatypes/geodata.cpp \
     datatypes/gpxio.cpp \
     datatypes/waypointlist.cpp \
@@ -158,3 +103,120 @@ SOURCES += \
     proj4/pj_tsfn.c \
     proj4/pj_units.c \
     main.cpp
+FORMS +=
+
+symbian {
+    TARGET.UID3 = 0xEA82CEF3
+    LIBS += -llbs \
+        -lefsrv \
+        -leikcore \
+        -lcone
+    TARGET.CAPABILITY = Location
+    VERSION = 0.8.270
+
+    ICON = images/icon.svg
+    UiFiles.sources += images/clock.svg \
+        images/compass.svg \
+        images/compassneedle.svg \
+        images/longhand.svg \
+        images/satview.svg \
+        images/secondhand.svg \
+        images/shorthand.svg \
+        images/speed10.svg \
+        images/speed200.svg \
+        images/style.css \
+        images/speedneedle.svg \
+        images/map.svg \
+        images/splash.png \
+        images/zoom-in.svg \
+        images/zoom-out.svg \
+        images/home.svg \
+        images/options.svg \
+        images/statusbar.svg \
+        images/flag.svg \
+        images/hiker.svg \
+        images/route.svg \
+        images/import.svg \
+        images/export.svg \
+        images/exit.svg \
+        images/delete.svg \
+        images/edit.svg \
+        images/visible.svg \
+        images/invisible.svg \
+        images/locator_red.svg \
+        images/locator_green.svg \
+        images/wpt_green.svg \
+        images/compassring.svg \
+        images/level.svg \
+        images/leveltop.svg
+    UiFiles.path = ./ui
+    DEPLOYMENT += UiFiles
+    TARGET.EPOCHEAPSIZE = 0x30000 \
+        0x3000000
+    TARGET.EPOCSTACKSIZE += 0x14000
+}
+
+win32 {
+    UIDIR = ../qtracker/images/
+    DEFINES += UIDIR=\\\"$$UIDIR\\\"
+}
+
+unix:!symbian {
+    maemo5 {
+        target.path = /opt/usr/bin
+    } else {
+        target.path = /usr/local/bin
+    }
+
+    isEmpty(PREFIX) {
+        PREFIX=/usr/local
+    }
+    BINDIR = $$PREFIX/bin/
+    DATADIR = $$PREFIX/share/
+    UIDIR = $$DATADIR/qtracker/ui/
+
+    ICON = images/icon.svg
+    uifiles.files += images/clock.svg \
+        images/compass.svg \
+        images/compassneedle.svg \
+        images/longhand.svg \
+        images/satview.svg \
+        images/secondhand.svg \
+        images/shorthand.svg \
+        images/speed10.svg \
+        images/speed200.svg \
+        images/style.css \
+        images/speedneedle.svg \
+        images/map.svg \
+        images/splash.png \
+        images/zoom-in.svg \
+        images/zoom-out.svg \
+        images/home.svg \
+        images/options.svg \
+        images/statusbar.svg \
+        images/flag.svg \
+        images/hiker.svg \
+        images/route.svg \
+        images/import.svg \
+        images/export.svg \
+        images/exit.svg \
+        images/delete.svg \
+        images/edit.svg \
+        images/visible.svg \
+        images/invisible.svg \
+        images/locator_red.svg \
+        images/locator_green.svg \
+        images/wpt_green.svg \
+        images/compassring.svg \
+        images/level.svg \
+        images/leveltop.svg
+    uifiles.path = $$UIDIR
+
+    DEFINES += DATADIR=\\\"$$DATADIR\\\"
+    DEFINES += PKGDATADIR=\\\"$$PKGDATADIR\\\"
+    DEFINES += UIDIR=\\\"$$UIDIR\\\"
+
+    INSTALLS += target uifiles
+}
+
+DEFINES += LOCATION

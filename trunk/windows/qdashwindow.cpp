@@ -153,7 +153,7 @@ QToolButton* QDashWindow::PlaceButton(QString name, QWidget* group, bool repeat)
     QToolButton* button = new QToolButton(group);
     button->setGeometry(QRect(0,0, 50, 50));
     QIcon icon;
-    icon.addFile(QString(MAPRCDIR) % name, QSize(), QIcon::Normal, QIcon::Off);
+    icon.addFile(QString(MAPRCDIR) + name, QSize(), QIcon::Normal, QIcon::Off);
     button->setIcon(icon);
     button->setIconSize(QSize(50, 50));
     if (repeat)

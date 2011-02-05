@@ -42,9 +42,9 @@ const int     zoommax = 6;
 #define IMPORTDIR "/data/"
 #define EXPORTDIR "/data/"
 #else
-#define MAPDIR "/Users/hurenkam/workspace/qtracker/maps/"
-#define IMPORTDIR "/Users/hurenkam/"
-#define EXPORTDIR "/data/"
+#define MAPDIR "/Workspace/qtracker/maps/"
+#define IMPORTDIR "/Users/Mark Hurenkamp/"
+#define EXPORTDIR "/Users/Mark Hurenkamp/"
 #endif
 
 using namespace geodata;

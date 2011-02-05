@@ -25,14 +25,6 @@ extern QImage svgLevel;
 extern QImage svgLevelTop;
 extern QImage svgSpeedNeedle;
 
-#ifdef Q_OS_SYMBIAN
-#define TEXTDIVIDER 38
-#define UIDIR "/home/hurenkam/Workspace/qtracker/images/"
-#else
-#define UIDIR "/home/hurenkam/Workspace/qtracker/images/"
-#define TEXTDIVIDER 14
-#endif
-
 #ifdef USE_QT_RESOURCES
 #define DASHRCDIR   ":/dash/"
 #define MAPRCDIR    ":/map/"
@@ -40,18 +32,21 @@ extern QImage svgSpeedNeedle;
 #define SPLASHRCDIR ":/splash/"
 #define DIALOGRCDIR ":/dialog/"
 #else
-#ifdef SIMULATOR
-#define DASHRCDIR "/home/hurenkam/Workspace/qtracker/images/"
-#define MAPRCDIR "/home/hurenkam/Workspace/qtracker/images/"
-#define CSSRCDIR "/home/hurenkam/Workspace/qtracker/images/"
-#define SPLASHRCDIR "/home/hurenkam/Workspace/qtracker/images/"
-#define DIALOGRCDIR "/home/hurenkam/Workspace/qtracker/images/"
+#ifdef Q_OS_SYMBIAN
+#define UIDIR        "/private/EA82CEF3/ui/"
+#define TEXTDIVIDER 38
+#define DASHRCDIR    GetDrive() + UIDIR
+#define MAPRCDIR     GetDrive() + UIDIR
+#define CSSRCDIR     GetDrive() + UIDIR
+#define SPLASHRCDIR  GetDrive() + UIDIR
+#define DIALOGRCDIR  GetDrive() + UIDIR
 #else
-#define DASHRCDIR    GetDrive() + "/private/EA82CEF3/ui/"
-#define MAPRCDIR     GetDrive() + "/private/EA82CEF3/ui/"
-#define CSSRCDIR     GetDrive() + "/private/EA82CEF3/ui/"
-#define SPLASHRCDIR  GetDrive() + "/private/EA82CEF3/ui/"
-#define DIALOGRCDIR  GetDrive() + "/private/EA82CEF3/ui/"
+#define TEXTDIVIDER 38
+#define DASHRCDIR    UIDIR
+#define MAPRCDIR     UIDIR
+#define CSSRCDIR     UIDIR
+#define SPLASHRCDIR  UIDIR
+#define DIALOGRCDIR  UIDIR
 #endif
 #endif
 

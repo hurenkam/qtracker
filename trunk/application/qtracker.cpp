@@ -32,7 +32,7 @@ qTracker::qTracker(int argc, char* argv[])
 	QPixmap pixmap(SPLASHRCDIR "splash.png");
 	QSplashScreen splash(pixmap);
 	splash.show();
-	splash.showMessage("qTracker v" VER,Qt::AlignLeft);
+        splash.showMessage("qTracker v0.8.270",Qt::AlignLeft);
 	processEvents();
 	dash = new QDashWindow(settings);
 	dash->setAttribute(Qt::WA_DeleteOnClose);
