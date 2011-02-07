@@ -112,7 +112,7 @@ symbian {
         -leikcore \
         -lcone
     TARGET.CAPABILITY = Location
-    VERSION = 0.8.270
+    VERSION = 0.8.271
 
     ICON = images/icon.svg
     UiFiles.sources += images/clock.svg \

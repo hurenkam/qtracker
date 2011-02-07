@@ -378,7 +378,7 @@ QTrackListTab::~QTrackListTab()
 
 
 QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
-    : QDialog(parent)
+    //: QDialog(parent)
 {
     QTabWidget* tabs = new QTabWidget(this);
 
@@ -398,8 +398,8 @@ QTrackTabsDialog::QTrackTabsDialog(Track* track, QWidget *parent)
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabs);
-    move(0,0);
     setLayout(mainLayout);
+    move(0,0);
     showFullScreen();
     setAttribute(Qt::WA_DeleteOnClose);
 }

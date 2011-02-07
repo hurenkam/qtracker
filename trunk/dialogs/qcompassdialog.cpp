@@ -132,7 +132,7 @@ void QCompassOptions::apply()
 }
 
 QCompassDialog::QCompassDialog(QHeadingWidget *parent)
-    : QDialog(parent)
+    //: QDialog(parent)
 {
     QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);

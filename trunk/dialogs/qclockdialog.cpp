@@ -127,7 +127,7 @@ void QClockOptions::resizeEvent( QResizeEvent * event )
 }
 
 QClockDialog::QClockDialog(QClockWidget *parent)
-    : QDialog(parent)
+    //: QDialog(parent)
 {
     QFile file(CSSRCDIR "style.css");
     file.open(QFile::ReadOnly);

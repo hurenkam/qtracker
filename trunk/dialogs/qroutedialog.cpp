@@ -158,7 +158,7 @@ QRouteListTab::~QRouteListTab()
 
 
 QRouteTabsDialog::QRouteTabsDialog(Route* route, QWidget *parent)
-    : QDialog(parent)
+    //: QDialog(parent)
 {
     QTabWidget* tabs = new QTabWidget(this);
 

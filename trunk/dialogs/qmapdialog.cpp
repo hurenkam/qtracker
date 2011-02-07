@@ -389,7 +389,7 @@ void QDatumTab::setvalue(int v)
 
 
 QMapTabsDialog::QMapTabsDialog(QWidget *p, MapMetaData* m, RefPoint* r)
-    : QDialog(p)
+    //: QDialog(p)
 {
     QTabWidget* tabs = new QTabWidget(this);
 

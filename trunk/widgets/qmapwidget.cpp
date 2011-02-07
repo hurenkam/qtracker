@@ -41,7 +41,13 @@ const int     zoommax = 6;
 #define MAPDIR "/data/qtracker/maps/"
 #define IMPORTDIR "/data/"
 #define EXPORTDIR "/data/"
-#else
+#endif
+#ifdef Q_OS_LINUX
+#define MAPDIR    DATADIR + "/qtracker/maps/"
+#define IMPORTDIR DATADIR
+#define EXPORTDIR DATADIR
+#endif
+#ifdef Q_OS_WIN
 #define MAPDIR "/Workspace/qtracker/maps/"
 #define IMPORTDIR "/Users/Mark Hurenkamp/"
 #define EXPORTDIR "/Users/Mark Hurenkamp/"
@@ -288,7 +294,7 @@ void QMapWidget::ShowWaypointDialog()
     }
     dialog = new QWayPointTabsDialog(wpt,this);
     dialog->setModal(true);
-    dialog->show();
+    dialog->showFullScreen();
 }
 
 void QMapWidget::ShowRouteDialog() 
@@ -301,7 +307,7 @@ void QMapWidget::ShowRouteDialog()
     connect(dialog,SIGNAL(hideroute(const QString&)),list,SLOT(Hide(const QString&)));
 
     dialog->setModal(true);
-    dialog->show();
+    dialog->showFullScreen();
 }
 
 void QMapWidget::ShowTrackDialog() 
@@ -314,7 +320,7 @@ void QMapWidget::ShowTrackDialog()
     connect(dialog,SIGNAL(hidetrack(const QString&)),list,SLOT(Hide(const QString&)));
 
     dialog->setModal(true);
-    dialog->show();
+    dialog->showFullScreen();
 }
 
 void QMapWidget::paintTrack(Track* t)
@@ -447,7 +453,7 @@ void QMapWidget::ShowMapDialog()
     QMapTabsDialog *dialog = new QMapTabsDialog(this,meta,&r);
     connect(dialog,SIGNAL(loadmap(QString)),this,SLOT(MapSelected(QString)));
     dialog->setModal(true);
-    dialog->show();
+    dialog->showFullScreen();
 }
 
 void QMapWidget::UpdatePosition(const QGeoPositionInfo& info)
