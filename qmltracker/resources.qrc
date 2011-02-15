@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file alias="Altimeter.qml">qml/QmlTracker/Altimeter.qml</file>
+        <file alias="Button.qml">qml/QmlTracker/Button.qml</file>
+        <file alias="Clock.qml">qml/QmlTracker/Clock.qml</file>
+        <file alias="Compass.qml">qml/QmlTracker/Compass.qml</file>
+        <file alias="Levels.qml">qml/QmlTracker/Levels.qml</file>
+        <file alias="main.qml">qml/QmlTracker/main.qml</file>
+        <file alias="Satellites.qml">qml/QmlTracker/Satellites.qml</file>
+        <file alias="Speedometer.qml">qml/QmlTracker/Speedometer.qml</file>
+        <file alias="StatusBar.qml">qml/QmlTracker/StatusBar.qml</file>
+        <file alias="compass.svg">qml/Images/compass-2.svg</file>
+        <file alias="compassneedle.svg">qml/Images/compassneedle.svg</file>
+        <file alias="compassring.svg">qml/Images/compassring-2.svg</file>
+        <file alias="clock.svg">qml/Images/clock-2.svg</file>
+        <file alias="level.svg">qml/Images/level-2.svg</file>
+        <file alias="longhand.svg">qml/Images/longhand.svg</file>
+        <file alias="satview.svg">qml/Images/satview-2.svg</file>
+        <file alias="secondhand.svg">qml/Images/secondhand.svg</file>
+        <file alias="shorthand.svg">qml/Images/shorthand.svg</file>
+        <file alias="speed10.svg">qml/Images/speed10-2.svg</file>
+        <file alias="speed200.svg">qml/Images/speed200-2.svg</file>
+        <file alias="speedneedle.svg">qml/Images/speedneedle.svg</file>
+        <file alias="levelhand.svg">qml/Images/levelhand.svg</file>
+        <file alias="exit.svg">qml/Images/exit-2.svg</file>
+        <file alias="MapButton.qml">qml/QmlTracker/MapButton.qml</file>
+        <file alias="empty.svg">qml/Images/empty.svg</file>
+        <file alias="MapWrapper.qml">qml/QmlTracker/MapWrapper.qml</file>
+        <file alias="zoom-in.svg">qml/Images/zoom-in-2.svg</file>
+        <file alias="zoom-out.svg">qml/Images/zoom-out-2.svg</file>
+        <file alias="options.svg">qml/Images/options-2.svg</file>
+        <file alias="flag.svg">qml/Images/flag-2.svg</file>
+        <file alias="hiker.svg">qml/Images/hiker-2.svg</file>
+        <file alias="route.svg">qml/Images/route-2.svg</file>
+        <file alias="import.svg">qml/Images/import-2.svg</file>
+        <file alias="export.svg">qml/Images/export-2.svg</file>
+    </qresource>
+</RCC>
