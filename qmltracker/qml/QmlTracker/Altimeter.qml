@@ -3,7 +3,15 @@ import QtQuick 1.0
 Item {
     id: root
     property double value: model.altitude()
-    width: parent.width; height: parent.height
+    property int viewid: -1
+    x:      parent.gaugeX(viewid)
+    y:      parent.gaugeY(viewid)
+    width:  parent.gaugeW(viewid)
+    height: parent.gaugeH(viewid)
+    Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
     signal clicked()
 
@@ -20,14 +28,16 @@ Item {
 
     Image {
         source: "speed10.svg"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        //width: parent.width
+        //height: parent.height
     }
 
     Image {
         source: "shorthand.svg"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        //width: parent.width
+        //height: parent.height
         transform: Rotation {
             id: shorthand
             origin.x: width/2
@@ -44,8 +54,9 @@ Item {
 
     Image {
         source: "longhand.svg"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        //width: parent.width
+        //height: parent.height
         transform: Rotation {
             id: longhand
             origin.x: width/2

@@ -2,11 +2,19 @@ import QtQuick 1.0
 
 Item {
     id: root
-    width: parent.width; height: parent.height
     property int compass:     model.compassLevel()
     property int battery:     model.batteryLevel()
     property int horizontal:  model.horizontalLevel()
     property int vertical:    model.verticalLevel()
+    property int viewid: -1
+    x:      parent.gaugeX(viewid)
+    y:      parent.gaugeY(viewid)
+    width:  parent.gaugeW(viewid)
+    height: parent.gaugeH(viewid)
+    Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
     signal clicked()
 
@@ -25,8 +33,9 @@ Item {
 
     Image {
         source: "level.svg"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        //width: parent.width
+        //height: parent.height
     }
 
     Image {

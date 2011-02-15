@@ -12,7 +12,7 @@ QML_IMPORT_PATH =
 # Needs to be defined for Symbian
 #DEFINES += NETWORKACCESS
 
-VERSION = 0.0.1
+VERSION = 0.0.2
 
 symbian {
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
@@ -44,8 +44,7 @@ SOURCES += main.cpp \
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
-OTHER_FILES += \
-    qml/QmlTracker/Button.qml
+OTHER_FILES +=
 
 HEADERS += \
     datamonitor.h \

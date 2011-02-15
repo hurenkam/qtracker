@@ -6,8 +6,15 @@ Item {
     property real heading: model.heading()
     property real bearing: model.bearing()
     property bool headingup: true
-
-    width: parent.width; height: parent.height
+    property int viewid: -1
+    x:      parent.gaugeX(viewid)
+    y:      parent.gaugeY(viewid)
+    width:  parent.gaugeW(viewid)
+    height: parent.gaugeH(viewid)
+    Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
     signal clicked()
 
@@ -32,8 +39,9 @@ Item {
 
     Image {
         source: "compassring.svg"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        //width: parent.width
+        //height: parent.height
         transform: Rotation {
             id: ring
             origin.x: width/2
@@ -50,8 +58,9 @@ Item {
     }
     Image {
         source: "compass.svg"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        //width: parent.width
+        //height: parent.height
         transform: Rotation {
             id: compass
             origin.x: width/2
@@ -68,8 +77,9 @@ Item {
     }
     Image {
         source: "compassneedle.svg"
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
+        //width: parent.width
+        //height: parent.height
         transform: Rotation {
             id: needle
             origin.x: width/2
