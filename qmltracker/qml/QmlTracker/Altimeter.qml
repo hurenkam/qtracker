@@ -29,15 +29,11 @@ Item {
     Image {
         source: "speed10.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
     }
 
     Image {
         source: "shorthand.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: shorthand
             origin.x: width/2
@@ -55,8 +51,6 @@ Item {
     Image {
         source: "longhand.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: longhand
             origin.x: width/2

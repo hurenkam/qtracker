@@ -23,7 +23,5 @@ Item {
     Image {
         source: "satview.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
     }
 }

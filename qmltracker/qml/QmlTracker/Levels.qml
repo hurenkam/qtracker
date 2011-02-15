@@ -34,8 +34,6 @@ Item {
     Image {
         source: "level.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
     }
 
     Image {
@@ -109,10 +107,4 @@ Item {
             }
         }
     }
-
-/*    Image {
-        source: "leveltop.svg"
-        width: parent.width
-        height: parent.height
-    }*/
 }

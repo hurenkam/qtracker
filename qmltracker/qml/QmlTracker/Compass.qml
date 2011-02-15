@@ -1,5 +1,4 @@
 import QtQuick 1.0
-//import TrackerModel 1.0
 
 Item {
     id: root
@@ -40,8 +39,6 @@ Item {
     Image {
         source: "compassring.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: ring
             origin.x: width/2
@@ -59,8 +56,6 @@ Item {
     Image {
         source: "compass.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: compass
             origin.x: width/2
@@ -78,8 +73,6 @@ Item {
     Image {
         source: "compassneedle.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: needle
             origin.x: width/2

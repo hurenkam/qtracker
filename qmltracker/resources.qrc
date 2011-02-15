@@ -7,7 +7,6 @@
         <file alias="main.qml">qml/QmlTracker/main.qml</file>
         <file alias="Satellites.qml">qml/QmlTracker/Satellites.qml</file>
         <file alias="Speedometer.qml">qml/QmlTracker/Speedometer.qml</file>
-        <file alias="StatusBar.qml">qml/QmlTracker/StatusBar.qml</file>
         <file alias="compass.svg">qml/Images/compass-2.svg</file>
         <file alias="compassneedle.svg">qml/Images/compassneedle.svg</file>
         <file alias="compassring.svg">qml/Images/compassring-2.svg</file>
@@ -32,8 +31,8 @@
         <file alias="route.svg">qml/Images/route-2.svg</file>
         <file alias="import.svg">qml/Images/import-2.svg</file>
         <file alias="export.svg">qml/Images/export-2.svg</file>
-        <file alias="MapState.qml">qml/QmlTracker/MapState.qml</file>
         <file alias="Layout.qml">qml/QmlTracker/Layout.qml</file>
         <file alias="MouseHandler.qml">qml/QmlTracker/MouseHandler.qml</file>
+        <file alias="statusbar.svg">qml/Images/statusbar-2.svg</file>
     </qresource>
 </RCC>

@@ -57,8 +57,6 @@ Item {
     Image {
         source: "clock.svg";
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
     }
 
     Rectangle {
@@ -89,8 +87,6 @@ Item {
     Image {
         source: "shorthand.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: shorthand
             origin.x: width/2
@@ -108,8 +104,6 @@ Item {
     Image {
         source: "longhand.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: longhand
             origin.x: width/2
@@ -127,8 +121,6 @@ Item {
     Image {
         source: "secondhand.svg"
         anchors.fill: parent
-        //width: parent.width
-        //height: parent.height
         transform: Rotation {
             id: secondhand
             origin.x: width/2

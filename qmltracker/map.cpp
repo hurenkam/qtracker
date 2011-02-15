@@ -72,6 +72,7 @@ Map::moveTo(int x, int y)
     setMapX(x);
     setMapY(y);
     update();
+    emit positionChanged();
     //qDebug() << "New map position: " << _x << "," << _y;
 }
 
@@ -80,6 +81,13 @@ Map::pan(int dx, int dy)
 {
     double z = zoomlevels[_z];
     moveTo(mapX()+dx*z,mapY()+dy*z);
+}
+
+Q_INVOKABLE QString
+Map::position()
+{
+    QString s = QString::number(_x,'g',8) + "  " + QString::number(_y,'g',8);
+    return s;
 }
 
 void

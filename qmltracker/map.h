@@ -25,6 +25,7 @@ public:
     int    mapH()       const    { if (mapimage) return mapimage->size().height(); else return 0; }
     int    zoomLevel()  const    { return _z; }
     double zoomFactor() const;
+    Q_INVOKABLE QString position();
 
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
     explicit Map(QDeclarativeItem *parent = 0);
@@ -36,10 +37,12 @@ protected:
 
 signals:
     void mapLoaded(QString);
+    void positionChanged();
+    void zoomChanged();
 
 public slots:
-    void zoomIn()              { setZoom(zoomLevel()+1); }
-    void zoomOut()             { setZoom(zoomLevel()-1); }
+    void zoomIn()              { setZoom(zoomLevel()+1); emit zoomChanged(); }
+    void zoomOut()             { setZoom(zoomLevel()-1); emit zoomChanged(); }
     void moveTo(int x, int y);
     void pan(int dx, int dy);
 };
