@@ -33,6 +33,6 @@
         <file alias="export.svg">qml/Images/export-2.svg</file>
         <file alias="Layout.qml">qml/QmlTracker/Layout.qml</file>
         <file alias="MouseHandler.qml">qml/QmlTracker/MouseHandler.qml</file>
-        <file alias="statusbar.svg">qml/Images/statusbar-2.svg</file>
+        <file alias="splash.svg">qml/Images/splash.svg</file>
     </qresource>
 </RCC>

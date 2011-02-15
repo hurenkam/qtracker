@@ -75,7 +75,7 @@ Rectangle {
             if (i>=0) return i*55 -60; else return map.height + i * 55 +10
         }
 
-        MapButton { id: menu;     source: "options.svg";   x: map.bx(1);  y: map.by(-1); onClicked: root.menuCliced()      }
+        //MapButton { id: menu;     source: "options.svg";   x: map.bx(1);  y: map.by(-1); onClicked: root.menuClicked()      }
         MapButton { id: exit;     source: "exit.svg";      x: map.bx(-1); y: map.by(-1); onClicked: Qt.quit()              }
         MapButton { id: zoomin;   source: "zoom-in.svg";   x: map.bx(-1); y: map.by(1);  onClicked: map.zoomIn()           }
         MapButton { id: zoomout;  source: "zoom-out.svg";  x: map.bx(-1); y: map.by(2);  onClicked: map.zoomOut()          }
@@ -87,16 +87,17 @@ Rectangle {
 
         Rectangle {
             id: status;
-            x: map.bx(2); y: map.by(-1); width: map.bx(5); height: 50
+            x: map.bx(1); y: map.by(-1); width: map.bx(6); height: 50
             anchors.margins: 5
             border { width: 1; color: Qt.darker(activePalette.dark) }
             smooth: true
-            radius: 10
+            radius: 25
             opacity: 0.7
 
             Text {
                 id: gpspos
-                anchors.margins: 5
+                anchors.leftMargin: map.bx(2)+5
+                anchors.topMargin:  5;
                 anchors.top: parent.top
                 anchors.left: parent.left
                 text: model.position()
@@ -106,7 +107,8 @@ Rectangle {
             }
             Text {
                 id: mappos
-                anchors.margins: 5
+                anchors.leftMargin: map.bx(2)+5
+                anchors.bottomMargin:  5;
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 text: map.position()
@@ -115,6 +117,8 @@ Rectangle {
                 style: Text.Raised; styleColor: "black"
             }
         }
+        MapButton { id: menu;     source: "options.svg";   x: map.bx(1);  y: map.by(-1); onClicked: root.menuClicked()      }
+
         Connections { target: model; onPositionChanged: gpspos.text = model.position() }
         Connections { target: map;   onPositionChanged: mappos.text = map.position()   }
     }
