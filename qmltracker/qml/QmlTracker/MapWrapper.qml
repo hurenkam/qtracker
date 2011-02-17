@@ -17,16 +17,16 @@ Rectangle {
     Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
+    signal singleTap()
+    signal doubleTap()
+    signal longTap()
+
     signal menuClicked()
     signal waypointClicked()
     signal routeClicked()
     signal trackClicked()
     signal loadClicked()
     signal saveClicked()
-
-    signal singleTap()
-    signal doubleTap()
-    signal longTap()
 
     color: activePalette.dark
 
@@ -40,86 +40,86 @@ Rectangle {
             color: activePalette.dark
         }
     }
-
-    Map {
+    MapView {
         id: map
-        anchors.margins: 10
-        anchors.fill: parent
-
-        Flickable {
-            id: flickable
-            anchors.left: parent.left
-            anchors.right:  parent.right
-            anchors.bottom:  parent.bottom
-            anchors.top: parent.top
-            contentX: map.mapx
-            contentY: map.mapy
-            contentWidth: map.mapw + map.width
-            contentHeight: map.maph + map.height
-            onContentXChanged: map.moveTo(contentX, contentY)
-            onContentYChanged: map.moveTo(contentX, contentY)
-            clip: true
-
-            MouseHandler {
-                id: mouse
-                onSingleTap: root.singleTap()
-                onDoubleTap: root.doubleTap()
-                onLongTap:   root.longTap()
-            }
-        }
-        function bx(i) {
-            if (i>=0) return i*55 -60; else return map.width + i * 55 +10
-        }
-
-        function by(i) {
-            if (i>=0) return i*55 -60; else return map.height + i * 55 +10
-        }
-
-        //MapButton { id: menu;     source: "options.svg";   x: map.bx(1);  y: map.by(-1); onClicked: root.menuClicked()      }
-        MapButton { id: exit;     source: "exit.svg";      x: map.bx(-1); y: map.by(-1); onClicked: Qt.quit()              }
-        MapButton { id: zoomin;   source: "zoom-in.svg";   x: map.bx(-1); y: map.by(1);  onClicked: map.zoomIn()           }
-        MapButton { id: zoomout;  source: "zoom-out.svg";  x: map.bx(-1); y: map.by(2);  onClicked: map.zoomOut()          }
-        MapButton { id: waypoint; source: "flag.svg";      x: map.bx(1);  y: map.by(1);  onClicked: root.waypointClicked() }
-        MapButton { id: route;    source: "route.svg";     x: map.bx(2);  y: map.by(1);  onClicked: root.routeClicked()    }
-        MapButton { id: track;    source: "hiker.svg";     x: map.bx(3);  y: map.by(1);  onClicked: root.trackClicked()    }
-        MapButton { id: load;     source: "import.svg";    x: map.bx(4);  y: map.by(1);  onClicked: root.loadClicked()     }
-        MapButton { id: save;     source: "export.svg";    x: map.bx(5);  y: map.by(1);  onClicked: root.saveClicked()     }
-
-        Rectangle {
-            id: status;
-            x: map.bx(1); y: map.by(-1); width: map.bx(6); height: 50
-            anchors.margins: 5
-            border { width: 1; color: Qt.darker(activePalette.dark) }
-            smooth: true
-            radius: 25
-            opacity: 0.7
-
-            Text {
-                id: gpspos
-                anchors.leftMargin: map.bx(2)+5
-                anchors.topMargin:  5;
-                anchors.top: parent.top
-                anchors.left: parent.left
-                text: model.position()
-                color: "black"
-                font.bold: true; font.pixelSize: 15
-                style: Text.Raised; styleColor: "black"
-            }
-            Text {
-                id: mappos
-                anchors.leftMargin: map.bx(2)+5
-                anchors.bottomMargin:  5;
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                text: map.position()
-                color: "black"
-                font.bold: true; font.pixelSize: 15
-                style: Text.Raised; styleColor: "black"
-            }
-        }
-        MapButton { id: menu;     source: "options.svg";   x: map.bx(1);  y: map.by(-1); onClicked: root.menuClicked()      }
-
-        Connections { target: model; onPositionChanged: gpspos.text = model.position() }
-        Connections { target: map;   onPositionChanged: mappos.text = map.position()   }
+        onSingleTap: root.singleTap()
+        onDoubleTap: root.doubleTap()
+        onLongTap:   root.longTap()
     }
+    Image {
+        id: locator
+        source: "locator_red.svg"
+        width: locator.sourceSize.width/2
+        height: locator.sourceSize.height/2
+        x: (parent.width-width)/2
+        y: (parent.height-height)/2
+    }
+
+    function bx(i) { if (i>=0) return (i-1)*55+5; else return width + i * 55  }
+    function by(i) { if (i>=0) return (i-1)*55+5; else return height + i * 55 }
+    function bw(i) { return i*55 - 5 }
+    function bh(i) { return bw(i) - 1 }
+
+    Rectangle {
+        id: toolbar;
+        x: bx(1); y: by(1); width: bw(5); height: bh(1)
+        anchors.margins: 5
+        border { width: 1; color: Qt.darker(activePalette.dark) }
+        smooth: true
+        radius: 23
+        opacity: 0.7
+    }
+    Rectangle {
+        id: zoombar;
+        x: bx(-1); y: by(1); width: bw(1); height: bh(2)
+        anchors.margins: 5
+        border { width: 1; color: Qt.darker(activePalette.dark) }
+        smooth: true
+        radius: 23
+        opacity: 0.7
+    }
+    Rectangle {
+        id: status;
+        x: bx(1); y: by(-1); width: bw(5); height: bh(1)
+        anchors.margins: 5
+        border { width: 1; color: Qt.darker(activePalette.dark) }
+        smooth: true
+        radius: 23
+        opacity: 0.7
+
+        Text {
+            id: gpspos
+            anchors.leftMargin: bx(2)+5
+            anchors.topMargin:  5;
+            anchors.top: parent.top
+            anchors.left: parent.left
+            text: model.position()
+            color: "black"
+            font.bold: true; font.pixelSize: 15
+            style: Text.Raised; styleColor: "black"
+        }
+        Text {
+            id: mappos
+            anchors.leftMargin: bx(2)+5
+            anchors.bottomMargin:  5;
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            text: map.position()
+            color: "black"
+            font.bold: true; font.pixelSize: 15
+            style: Text.Raised; styleColor: "black"
+        }
+    }
+    MapButton { id: waypoint; source: "flag.svg";      x: bx(1);  y: by(1);  onClicked: root.waypointClicked() }
+    MapButton { id: route;    source: "route.svg";     x: bx(2);  y: by(1);  onClicked: root.routeClicked()    }
+    MapButton { id: track;    source: "hiker.svg";     x: bx(3);  y: by(1);  onClicked: root.trackClicked()    }
+    MapButton { id: load;     source: "import.svg";    x: bx(4);  y: by(1);  onClicked: root.loadClicked()     }
+    MapButton { id: save;     source: "export.svg";    x: bx(5);  y: by(1);  onClicked: root.saveClicked()     }
+    MapButton { id: menu;     source: "options.svg";   x: bx(1);  y: by(-1); onClicked: root.menuClicked()      }
+    MapButton { id: exit;     source: "exit.svg";      x: bx(-1); y: by(-1); onClicked: Qt.quit()              }
+    MapButton { id: zoomin;   source: "zoom-in.svg";   x: bx(-1); y: by(1);  onRepeat: map.zoomIn(); interval: 100 }
+    MapButton { id: zoomout;  source: "zoom-out.svg";  x: bx(-1); y: by(2);  onRepeat: map.zoomOut(); interval: 100 }
+
+    Connections { target: model; onPositionChanged: gpspos.text = model.position() }
+    Connections { target: map;   onPositionChanged: mappos.text = map.position()   }
 }

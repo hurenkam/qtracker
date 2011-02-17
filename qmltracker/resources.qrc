@@ -34,5 +34,9 @@
         <file alias="Layout.qml">qml/QmlTracker/Layout.qml</file>
         <file alias="MouseHandler.qml">qml/QmlTracker/MouseHandler.qml</file>
         <file alias="splash.svg">qml/Images/splash.svg</file>
+        <file alias="locator_green.svg">qml/Images/locator_green.svg</file>
+        <file alias="locator_red.svg">qml/Images/locator_red.svg</file>
+        <file alias="map.jpg">qml/Images/map.jpg</file>
+        <file alias="MapView.qml">qml/QmlTracker/MapView.qml</file>
     </qresource>
 </RCC>

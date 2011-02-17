@@ -107,6 +107,8 @@ public:
     // Satellite positions
     Q_INVOKABLE void satellites();
 
+    Q_INVOKABLE QString number(double r, char c, int d)  { return QString::number(r,c,d); }
+
     // Constructor
     DataMonitor();
 
