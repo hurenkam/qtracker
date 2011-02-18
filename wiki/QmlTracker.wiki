@@ -20,6 +20,8 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * Map zoom
  * Installation works on C: and E: (F: is untested, but should work)
  * Compass using magnetic north sensor
+ * Runs on Simulator & Symbian^1 (tested on Windows7/Ubuntu Maverick & N97)
+ * Builds fine for Maemo & Symbian^3 (untested since i don't have those devices)
 
 * Todo before 1st alpha: *
  * Show position on map
