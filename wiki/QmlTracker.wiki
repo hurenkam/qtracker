@@ -10,3 +10,34 @@ WishList | KnownBugs | RoadMap | QmlTracker
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
+
+Platform: Qt for Symbian S60
+(note that the code can also be compiled and run on non-s60 platforms, but not all
+functionality is available then, e.g. GPS/Sensors/Messaging).
+
+* Works: *
+ * Speed/Altitude/Heading display
+ * Map zoom
+ * Installation works on C: and E: (F: is untested, but should work)
+ * Compass using magnetic north sensor
+
+* Todo before 1st alpha: *
+ * Show position on map
+ * Show wgs84 coordinates on map
+ * Calibrate map
+
+* Other todo
+ * Show/Hide/Record/Delete Tracks
+ * Show/Hide/Edit/Save/Delete Waypoints
+ * Show/Delete routes
+ * Persistent settings (current map, zoom mode, many others)
+ * UTM datum support
+ * Datum projection support for proj4 types: stereo, latlon, utm, tmerc
+ * Compass options dialog
+ * Clock options dialog
+ * Min/Max altitude, trip distance, trip time display.
+ * Map autoselect
+ * Edit/Save Routes
+ * Gpx import
+ * Altitude options
+ * Speed options
