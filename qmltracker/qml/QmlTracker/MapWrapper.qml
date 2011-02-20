@@ -1,5 +1,6 @@
 import QtQuick 1.0
-import QmlTrackerModel 1.0
+import QmlTrackerExtensions 1.0
+import "qrc:/js/filesystem.js" as FileSystem
 
 Rectangle {
     id: root
@@ -27,6 +28,11 @@ Rectangle {
     signal trackClicked()
     signal loadClicked()
     signal saveClicked()
+
+    function selectMap(m) {
+        console.log("selecting map",m)
+        map.loadMap(m)
+    }
 
     color: activePalette.dark
 
@@ -109,7 +115,20 @@ Rectangle {
             font.bold: true; font.pixelSize: 15
             style: Text.Raised; styleColor: "black"
         }
+        Text {
+            id: mapstatus
+            anchors.leftMargin: bx(5)-5
+            anchors.bottomMargin:  5;
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            text: map.status == Image.Error? "Error" : map.status == Image.Ready? "Ready" : "Other"
+            color: "black"
+            font.bold: true; font.pixelSize: 15
+            style: Text.Raised; styleColor: "black"
+        }
     }
+
+    //MapButton { id: waypoint; source: "flag.svg";      x: bx(1);  y: by(1);  onClicked: maplist.getmapfiles() }
     MapButton { id: waypoint; source: "flag.svg";      x: bx(1);  y: by(1);  onClicked: root.waypointClicked() }
     MapButton { id: route;    source: "route.svg";     x: bx(2);  y: by(1);  onClicked: root.routeClicked()    }
     MapButton { id: track;    source: "hiker.svg";     x: bx(3);  y: by(1);  onClicked: root.trackClicked()    }

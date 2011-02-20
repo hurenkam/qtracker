@@ -13,45 +13,6 @@
 
 using namespace QtMobility;
 
-class Position: public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(double longitude READ longitude WRITE setLongitude NOTIFY positionChanged)
-    Q_PROPERTY(double latitude  READ latitude  WRITE setLatitude  NOTIFY positionChanged)
-
-private:
-    double _longitude;
-    double _latitude;
-
-signals:
-    void positionChanged();
-
-public:
-    double longitude() const
-    { return _longitude; }
-
-    double latitude()  const
-    { return _latitude;  }
-
-    void   setLongitude(double value)
-    { _longitude = value; emit positionChanged(); }
-
-    void   setLatitude(double value)
-    { _latitude = value;  emit positionChanged(); }
-
-    Position()
-    { setLatitude(0); setLongitude(0); }
-
-    Position(const QGeoPositionInfo& posinfo) : QObject()
-    { setLatitude(posinfo.coordinate().latitude()); setLongitude(posinfo.coordinate().longitude()); }
-
-    Position(const Position& pos) : QObject()
-    { setLatitude(pos.latitude()); setLongitude(pos.longitude()); }
-
-    Position operator=(const Position& pos)
-    { return Position(pos); }
-};
-
 class DataMonitor: public QObject
 {
     Q_OBJECT
@@ -107,7 +68,17 @@ public:
     // Satellite positions
     Q_INVOKABLE void satellites();
 
-    Q_INVOKABLE QString number(double r, char c, int d)  { return QString::number(r,c,d); }
+    // Helper functions
+    Q_INVOKABLE QString number(double r, char c, int d)  { return QString::number(r,c,d);         }
+    Q_INVOKABLE QString datadir()                        { return QString("c:/workspace/qmltracker/data/"); }
+    //Q_INVOKABLE QString datadir()                        { return QString("e:/data/qmltracker/"); }
+    Q_INVOKABLE QString mapdir()                         { return datadir() + QString("maps/");   }
+    Q_INVOKABLE QString routedir()                       { return datadir() + QString("routes/"); }
+    Q_INVOKABLE QString trackdir()                       { return datadir() + QString("tracks/"); }
+    Q_INVOKABLE QString importdir()                      { return datadir() + QString("gpx/");    }
+    Q_INVOKABLE QString exportdir()                      { return datadir() + QString("gpx/");    }
+
+    Q_INVOKABLE QStringList files(QString& dir, QString& mask);
 
     // Constructor
     DataMonitor();

@@ -5,17 +5,18 @@
 #include <QSplashScreen>
 #include <QWaitCondition>
 #include "datamonitor.h"
-#include "layout.h"
-#include "map.h"
 #include "qmlapplicationviewer.h"
+
+//#include <QtDeclarative/qdeclarativeextensionplugin.h>
+//#include <QtDeclarative/qdeclarative.h>
+#include "cpp/folderlistmodel.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     DataMonitor data;
 
-    qmlRegisterType<Map>("QmlTrackerModel",1,0,"Map");
-    qmlRegisterType<Position>("QmlTrackerModel",1,0,"Position");
+    qmlRegisterType<QDeclarativeFolderListModel>("QmlTrackerExtensions",1,0,"FolderListModel");
 
     QPixmap pixmap(":/qml/splash.svg");
     QSplashScreen splash(pixmap);

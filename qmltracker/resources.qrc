@@ -36,7 +36,47 @@
         <file alias="splash.svg">qml/Images/splash.svg</file>
         <file alias="locator_green.svg">qml/Images/locator_green.svg</file>
         <file alias="locator_red.svg">qml/Images/locator_red.svg</file>
-        <file alias="map.jpg">qml/Images/map.jpg</file>
         <file alias="MapView.qml">qml/QmlTracker/MapView.qml</file>
+        <file alias="MapList.qml">qml/QmlTracker/MapList.qml</file>
+        <file alias="MapDialog.qml">qml/QmlTracker/MapDialog.qml</file>
+    </qresource>
+    <qresource prefix="/colibri">
+        <file alias="CLButton.qml">qml/colibri/CLButton.qml</file>
+        <file>qml/colibri/CLCarousel.qml</file>
+        <file>qml/colibri/CLCheckBox.qml</file>
+        <file>qml/colibri/CLComboBox.qml</file>
+        <file>qml/colibri/CLDatePicker.qml</file>
+        <file>qml/colibri/CLDial.qml</file>
+        <file>qml/colibri/CLHistogram.qml</file>
+        <file>qml/colibri/CLKeyboard.qml</file>
+        <file>qml/colibri/CLLayer.qml</file>
+        <file>qml/colibri/CLLineEdit.qml</file>
+        <file>qml/colibri/CLListbox.qml</file>
+        <file>qml/colibri/CLProgressBar.qml</file>
+        <file>qml/colibri/CLRating.qml</file>
+        <file>qml/colibri/CLScrollBar.qml</file>
+        <file>qml/colibri/CLScrollBarVertical.qml</file>
+        <file>qml/colibri/CLSlider.qml</file>
+        <file>qml/colibri/CLSliderVertical.qml</file>
+        <file alias="CLStyle.qml">qml/colibri/CLStyle.qml</file>
+        <file alias="CLTab.qml">qml/colibri/CLTab.qml</file>
+        <file>qml/colibri/CLTextArea.qml</file>
+    </qresource>
+    <qresource prefix="/colibri/javascripts">
+        <file>qml/colibri/javascripts/date.js</file>
+        <file>qml/colibri/javascripts/datepicker.js</file>
+        <file alias="functions.js">qml/colibri/javascripts/functions.js</file>
+        <file>qml/colibri/javascripts/histogram.js</file>
+        <file>qml/colibri/javascripts/histogram2.js</file>
+        <file>qml/colibri/javascripts/keyboard.js</file>
+    </qresource>
+    <qresource prefix="/colibri/gradients">
+        <file>qml/colibri/gradients/Blue.qml</file>
+        <file>qml/colibri/gradients/Grey.qml</file>
+        <file>qml/colibri/gradients/LightBlue.qml</file>
+        <file alias="Red.qml">qml/colibri/gradients/Red.qml</file>
+    </qresource>
+    <qresource prefix="/js">
+        <file alias="filesystem.js">javascript/filesystem.js</file>
     </qresource>
 </RCC>

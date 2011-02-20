@@ -11,6 +11,7 @@ Item {
     state: "normal"
     property bool landscape: (parent.width>=parent.height)
     property real f: landscape? parent.width/640 : parent.height/640
+    property alias mapview: map
 
     ListModel {
         id: normal

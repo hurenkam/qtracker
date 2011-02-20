@@ -38,8 +38,7 @@ MOBILITY += location \
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
     datamonitor.cpp \
-    layout.cpp \
-    map.cpp
+    cpp/folderlistmodel.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -49,8 +48,7 @@ OTHER_FILES +=
 
 HEADERS += \
     datamonitor.h \
-    layout.h \
-    map.h
+    cpp/folderlistmodel.h
 
 RESOURCES += \
     resources.qrc

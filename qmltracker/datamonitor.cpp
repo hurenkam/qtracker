@@ -1,4 +1,8 @@
 #include "datamonitor.h"
+#include <QDir>
+#include <QUrl>
+#include <QString>
+#include <QStringList>
 
 using namespace QtMobility;
 
@@ -124,7 +128,14 @@ Q_INVOKABLE void
 DataMonitor::satellites()
 { }
 
-
+Q_INVOKABLE QStringList
+DataMonitor::files(QString& dir, QString& mask)
+{
+    QStringList files;
+    QDir directory = QDir(dir);
+    files = directory.entryList(QStringList(mask), QDir::Files | QDir::NoSymLinks);
+    return files;
+}
 
 
 DataMonitor::DataMonitor() : QObject(), compass(0), reading(0)
