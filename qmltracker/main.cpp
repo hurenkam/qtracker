@@ -30,10 +30,10 @@ int main(int argc, char *argv[])
     qmlRegisterType<MonitorModel>("QmlTrackerExtensions",1,0,"MonitorModel");
     qmlRegisterType<PositionModel>("QmlTrackerExtensions",1,0,"PositionModel");
 
-    QPixmap pixmap(":/qml/splash.svg");
+    QPixmap pixmap(":/images/splash.svg");
     QSplashScreen splash(pixmap);
     splash.show();
-    splash.showMessage("qTracker v" VERSION,Qt::AlignLeft);
+    splash.showMessage("qTracker v" VERSION,Qt::AlignLeft,Qt::white);
     app.processEvents();
 
     QmlApplicationViewer viewer;
