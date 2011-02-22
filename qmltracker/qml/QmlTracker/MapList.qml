@@ -32,9 +32,7 @@ Rectangle {
         FolderListModel {
             id: folderModel
             //folder: "file:///c:/workspace/QmlTracker/data/maps/"
-            //folder: "file:///e:/data/QmlTracker/maps/"
             folder: "file:///e:/data/qtracker/maps/"
-            //nameFilters: ["*.xml"]
             nameFilters: ["*.jpg"]
         }
 

@@ -1,8 +1,10 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
 
 Item {
     id: root
-    property double value: model.speed();
+    //property double value: model.speed();
+    property double value: speedmodel.current
     property int viewid: -1
     x:      parent.gaugeX(viewid)
     y:      parent.gaugeY(viewid)
@@ -15,41 +17,57 @@ Item {
 
     signal clicked()
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked: root.clicked()
+    SpeedModel {
+        id: speedmodel
     }
 
-    Connections {
-        target: model
-        onSpeedChanged: { value = model.speed(); top.text = model.distance().toString(); }
+    MonitorModel {
+        id:monitormodel
+    }
+
+    MouseHandler {
+        id: mouseHandler
+        anchors.fill: parent
+        onSingleTap: root.clicked()
+        onLongTap: speedmodel.reset()
     }
 
     Image {
-        source: if (root.value < 10) "speed10.svg"; else "speed200.svg"
+        source: if (root.value < 10) "/images/speed10.svg"; else "/images/speed200.svg"
         width: parent.width
         height: parent.height
     }
 
     Rectangle {
-        y: parent.height * 0.8
-        height: parent.height * 0.12
+        y: parent.height * 0.75
+        height: parent.height * 0.16
         color: activePalette.dark
-        width: parent.width/2.5
+        width: parent.width/4
         anchors.horizontalCenter: parent.horizontalCenter
         Text {
             id: top
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: model.distance()
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: 2
+            text: model.number(speedmodel.distance,'g',1)
             color: "white"
-            font.bold: true; font.pixelSize: parent.height/1.25
+            font.bold: true; font.pixelSize: parent.height/3
+            style: Text.Raised; styleColor: "black"
+        }
+        Text {
+            id: bottom
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.margins: 2
+            text: model.number(monitormodel.distance,'g',1)
+            color: "white"
+            font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
         }
     }
 
     Image {
-        source: "speedneedle.svg"
+        source: "/images/speedneedle.svg"
         width: parent.width
         height: parent.height
         transform: Rotation {

@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
 
 Item {
     id: root
@@ -17,21 +18,26 @@ Item {
 
     signal clicked()
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked: root.clicked()
+    ClockModel {
+        id: clockmodel
+        onCurrentChanged: timeChanged()
     }
 
-    Timer {
-        interval: 250; running: true; repeat: true
-        onTriggered: root.timeChanged()
+    MonitorModel {
+        id:monitormodel
+    }
+
+    MouseHandler {
+        id: mouseHandler
+        anchors.fill: parent
+        onSingleTap: root.clicked()
+        onLongTap: clockmodel.reset()
     }
 
     function timeChanged() {
-        setAnalogTime(model.time())
-        setTopTime(model.triptime())
-        setBottomTime(model.eta())
+        setAnalogTime(clockmodel.current)
+        setTopTime(clockmodel.trip)
+        setBottomTime(monitormodel.time)
     }
 
     function setAnalogTime(date) {
@@ -55,22 +61,22 @@ Item {
     }
 
     Image {
-        source: "clock.svg";
+        source: "/images/clock.svg";
         anchors.fill: parent
     }
 
     Rectangle {
-        y: parent.height * 0.55
-        height: parent.height * 0.24
+        y: parent.height * 0.7
+        height: parent.height * 0.18
         color: activePalette.dark
-        width: parent.width/2.5
+        width: parent.width/3.5
         anchors.horizontalCenter: parent.horizontalCenter
         Text {
             id: top
             anchors.horizontalCenter: parent.horizontalCenter
             text: hours.toString() + ":" + minutes.toString() + "." + seconds.toString()
             color: "white"
-            font.bold: true; font.pixelSize: parent.height/2.5
+            font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
         }
         Text {
@@ -79,13 +85,13 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: hours.toString() + ":" + minutes.toString() + "." + seconds.toString()
             color: "white"
-            font.bold: true; font.pixelSize: parent.height/2.5
+            font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
         }
     }
 
     Image {
-        source: "shorthand.svg"
+        source: "/images/shorthand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: shorthand
@@ -102,7 +108,7 @@ Item {
         }
     }
     Image {
-        source: "longhand.svg"
+        source: "/images/longhand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: longhand
@@ -119,7 +125,7 @@ Item {
         }
     }
     Image {
-        source: "secondhand.svg"
+        source: "/images/secondhand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: secondhand

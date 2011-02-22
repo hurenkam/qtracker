@@ -1,8 +1,8 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
 
 Item {
     id: root
-    property double value: model.altitude()
     property int viewid: -1
     x:      parent.gaugeX(viewid)
     y:      parent.gaugeY(viewid)
@@ -15,30 +15,58 @@ Item {
 
     signal clicked()
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked: root.clicked()
+    AltitudeModel {
+        id: altmodel
     }
 
-    Connections {
-        target: model
-        onAltitudeChanged: value = model.altitude()
+    MouseHandler {
+        id: mouseHandler
+        anchors.fill: parent
+        onSingleTap: root.clicked()
+        onLongTap: altmodel.reset()
     }
 
     Image {
-        source: "speed10.svg"
+        source: "/images/speed10.svg"
         anchors.fill: parent
     }
 
+    Rectangle {
+        y: parent.height * 0.75
+        height: parent.height * 0.16
+        color: activePalette.dark
+        width: parent.width/4
+        anchors.horizontalCenter: parent.horizontalCenter
+        Text {
+            id: top
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: 2
+            text: model.number(altmodel.average,'g',1)
+            color: "white"
+            font.bold: true; font.pixelSize: parent.height/3
+            style: Text.Raised; styleColor: "black"
+        }
+        Text {
+            id: bottom
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.margins: 2
+            text: model.number(altmodel.max,'g',1)
+            color: "white"
+            font.bold: true; font.pixelSize: parent.height/3
+            style: Text.Raised; styleColor: "black"
+        }
+    }
+
     Image {
-        source: "shorthand.svg"
+        source: "/images/shorthand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: shorthand
             origin.x: width/2
             origin.y: height/2
-            angle: -180 + root.value/10000*360
+            angle: -180 + altmodel.current/10000*360
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -49,13 +77,13 @@ Item {
     }
 
     Image {
-        source: "longhand.svg"
+        source: "/images/longhand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: longhand
             origin.x: width/2
             origin.y: height/2
-            angle: -180 + ((root.value/1000) % 1000) *360
+            angle: -180 + ((altmodel.current/1000) % 1000) *360
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4

@@ -21,7 +21,7 @@ Item {
     }
 
     Image {
-        source: "satview.svg"
+        source: "/images/satview.svg"
         anchors.fill: parent
     }
 }

@@ -1,11 +1,18 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
 
 Item {
     id: root
-    property int compass:     model.compassLevel()
+    PositionModel { id: positionmodel; }
+    CompassModel { id: compassmodel; }
+
+    //property int compass:     model.compassLevel()
+    property int compass:     compassmodel.quality
     property int battery:     model.batteryLevel()
-    property int horizontal:  model.horizontalLevel()
-    property int vertical:    model.verticalLevel()
+    //property int horizontal:  model.horizontalLevel()
+    //property int vertical:    model.verticalLevel()
+    property int horizontal:  positionmodel.horizontal
+    property int vertical:    positionmodel.vertical
     property int viewid: -1
     x:      parent.gaugeX(viewid)
     y:      parent.gaugeY(viewid)
@@ -26,18 +33,18 @@ Item {
 
     Connections {
         target: model
-        onPositionChanged: { horizontal = model.horizontalLevel(); vertical = model.verticalLevel() }
-        onHeadingChanged:  { compass = model.compassLevel() }
+        //onPositionChanged: { horizontal = model.horizontalLevel(); vertical = model.verticalLevel() }
+        //onHeadingChanged:  { compass = model.compassLevel() }
         onTimeChanged:     { battery = model.batteryLevel() }
     }
 
     Image {
-        source: "level.svg"
+        source: "/images/level.svg"
         anchors.fill: parent
     }
 
     Image {
-        source: "levelhand.svg"
+        source: "/images/levelhand.svg"
         width: parent.width
         height: parent.height*0.55
         transform: Rotation {
@@ -55,7 +62,7 @@ Item {
     }
 
     Image {
-        source: "levelhand.svg"
+        source: "/images/levelhand.svg"
         width: parent.width
         height: parent.height*0.55
         transform: Rotation {
@@ -73,7 +80,7 @@ Item {
     }
 
     Image {
-        source: "levelhand.svg"
+        source: "/images/levelhand.svg"
         width: parent.width
         height: parent.height*0.55
         transform: Rotation {
@@ -91,7 +98,7 @@ Item {
     }
 
     Image {
-        source: "levelhand.svg"
+        source: "/images/levelhand.svg"
         width: parent.width
         height: parent.height*0.55
         transform: Rotation {

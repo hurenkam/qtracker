@@ -38,7 +38,13 @@ MOBILITY += location \
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
     datamonitor.cpp \
-    cpp/folderlistmodel.cpp
+    cpp/folderlistmodel.cpp \
+    cpp/altitudemodel.cpp \
+    cpp/speedmodel.cpp \
+    cpp/clockmodel.cpp \
+    cpp/compassmodel.cpp \
+    cpp/monitormodel.cpp \
+    cpp/positionmodel.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -48,7 +54,13 @@ OTHER_FILES +=
 
 HEADERS += \
     datamonitor.h \
-    cpp/folderlistmodel.h
+    cpp/folderlistmodel.h \
+    cpp/altitudemodel.h \
+    cpp/speedmodel.h \
+    cpp/clockmodel.h \
+    cpp/compassmodel.h \
+    cpp/monitormodel.h \
+    cpp/positionmodel.h
 
 RESOURCES += \
     resources.qrc

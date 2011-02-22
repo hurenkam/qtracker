@@ -1,9 +1,10 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
 
 Item {
     id: root
-    property real heading: model.heading()
-    property real bearing: model.bearing()
+    property real heading: compassmodel.current
+    property real bearing: compassmodel.bearing
     property bool headingup: true
     property int viewid: -1
     x:      parent.gaugeX(viewid)
@@ -17,27 +18,19 @@ Item {
 
     signal clicked()
 
-    MouseArea {
-        id: mouseArea
+    CompassModel {
+        id: compassmodel
+    }
+
+    MouseHandler {
+        id: mouseHandler
         anchors.fill: parent
-        onClicked: root.clicked()
-    }
-
-    Connections {
-        target: model
-        onHeadingChanged: heading = model.heading()
-    }
-
-    function headingChanged() {
-        heading = model.heading()
-    }
-
-    function bearingChanged() {
-        bearing = model.beading()
+        onSingleTap: root.clicked()
+        onLongTap: clockmodel.reset()
     }
 
     Image {
-        source: "compassring.svg"
+        source: "/images/compassring.svg"
         anchors.fill: parent
         transform: Rotation {
             id: ring
@@ -54,7 +47,7 @@ Item {
         }
     }
     Image {
-        source: "compass.svg"
+        source: "/images/compass.svg"
         anchors.fill: parent
         transform: Rotation {
             id: compass
@@ -71,7 +64,7 @@ Item {
         }
     }
     Image {
-        source: "compassneedle.svg"
+        source: "/images/compassneedle.svg"
         anchors.fill: parent
         transform: Rotation {
             id: needle

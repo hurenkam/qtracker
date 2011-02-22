@@ -15,13 +15,13 @@ Item {
 
     ListModel {
         id: normal
-        ListElement { name: "compass";     x: 0;   y:0;   w:120; h:120 }
-        ListElement { name: "clock";       x: 0;   y:120; w:120; h:120 }
-        ListElement { name: "speedometer"; x: 0;   y:240; w:120; h:120 }
-        ListElement { name: "map";         x: 120; y:0;   w:400; h:360 }
-        ListElement { name: "satellites";  x: 520; y:0;   w:120; h:120 }
-        ListElement { name: "levels";      x: 520; y:120; w:120; h:120 }
-        ListElement { name: "altimeter";   x: 520; y:240; w:120; h:120 }
+        ListElement { name: "/images/compass";     x: 0;   y:0;   w:120; h:120 }
+        ListElement { name: "/images/clock";       x: 0;   y:120; w:120; h:120 }
+        ListElement { name: "/images/speedometer"; x: 0;   y:240; w:120; h:120 }
+        ListElement { name: "/images/map";         x: 120; y:0;   w:400; h:360 }
+        ListElement { name: "/images/satellites";  x: 520; y:0;   w:120; h:120 }
+        ListElement { name: "/images/levels";      x: 520; y:120; w:120; h:120 }
+        ListElement { name: "/images/altimeter";   x: 520; y:240; w:120; h:120 }
     }
     ListModel {
         id: compasszoom
