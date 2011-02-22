@@ -6,9 +6,9 @@
 WishList | KnownBugs | RoadMap | QmlTracker
 ----
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000063.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000048.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000064.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000065.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000066.jpg" height="90" width="160" border="0" /><br>
 ----
 
 Platform: Qt for Symbian S60
