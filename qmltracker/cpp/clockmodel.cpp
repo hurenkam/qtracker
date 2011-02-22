@@ -1,7 +1,6 @@
 #include <QObject>
 #include <QDebug>
 #include "clockmodel.h"
-#include "datamonitor.h"
 
 
 //============================================================================================

@@ -1,7 +1,6 @@
 #include <QObject>
 #include <QDebug>
 #include "monitormodel.h"
-#include "datamonitor.h"
 
 
 //============================================================================================

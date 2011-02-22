@@ -3,7 +3,6 @@
 #include <QCompass>
 #include <QCompassReading>
 #include "compassmodel.h"
-#include "datamonitor.h"
 
 
 //============================================================================================

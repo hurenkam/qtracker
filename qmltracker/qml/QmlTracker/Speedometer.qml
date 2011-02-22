@@ -1,9 +1,9 @@
 import QtQuick 1.0
 import QmlTrackerExtensions 1.0
+import "qrc:/js/helpers.js" as Helpers
 
 Item {
     id: root
-    //property double value: model.speed();
     property double value: speedmodel.current
     property int viewid: -1
     x:      parent.gaugeX(viewid)
@@ -49,7 +49,7 @@ Item {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.margins: 2
-            text: model.number(speedmodel.distance,'g',1)
+            text: Helpers.toFixed(speedmodel.distance,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -59,7 +59,7 @@ Item {
             anchors.bottom: parent.bottom
             anchors.right: parent.right
             anchors.margins: 2
-            text: model.number(monitormodel.distance,'g',1)
+            text: Helpers.toFixed(monitormodel.distance,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"

@@ -6,7 +6,6 @@
 #include <QStringList>
 #include <QUrl>
 #include <QObject>
-#include "datamonitor.h"
 #include "clockmodel.h"
 
 QT_BEGIN_HEADER

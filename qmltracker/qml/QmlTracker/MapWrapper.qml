@@ -141,6 +141,5 @@ Rectangle {
     MapButton { id: zoomin;   source: "/images/zoom-in.svg";   x: bx(-1); y: by(1);  onRepeat: map.zoomIn(); interval: 100 }
     MapButton { id: zoomout;  source: "/images/zoom-out.svg";  x: bx(-1); y: by(2);  onRepeat: map.zoomOut(); interval: 100 }
 
-    Connections { target: model; onPositionChanged: gpspos.text = model.position() }
     Connections { target: map;   onPositionChanged: mappos.text = map.position()   }
 }

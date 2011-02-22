@@ -3,14 +3,12 @@ import QmlTrackerExtensions 1.0
 
 Item {
     id: root
-    PositionModel { id: positionmodel; }
-    CompassModel { id: compassmodel; }
+    PositionModel   { id: positionmodel;   }
+    CompassModel    { id: compassmodel;    }
+    DeviceInfoModel { id: deviceinfomodel; }
 
-    //property int compass:     model.compassLevel()
     property int compass:     compassmodel.quality
-    property int battery:     model.batteryLevel()
-    //property int horizontal:  model.horizontalLevel()
-    //property int vertical:    model.verticalLevel()
+    property int battery:     deviceinfomodel.batterylevel
     property int horizontal:  positionmodel.horizontal
     property int vertical:    positionmodel.vertical
     property int viewid: -1
@@ -29,13 +27,6 @@ Item {
         id: mouseArea
         anchors.fill: parent
         onClicked: root.clicked()
-    }
-
-    Connections {
-        target: model
-        //onPositionChanged: { horizontal = model.horizontalLevel(); vertical = model.verticalLevel() }
-        //onHeadingChanged:  { compass = model.compassLevel() }
-        onTimeChanged:     { battery = model.batteryLevel() }
     }
 
     Image {

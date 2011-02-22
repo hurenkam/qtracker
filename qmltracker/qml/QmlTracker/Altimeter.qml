@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import QmlTrackerExtensions 1.0
+import "qrc:/js/helpers.js" as Helpers
 
 Item {
     id: root
@@ -42,7 +43,7 @@ Item {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.margins: 2
-            text: model.number(altmodel.average,'g',1)
+            text: Helpers.toFixed(altmodel.average,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -52,7 +53,7 @@ Item {
             anchors.bottom: parent.bottom
             anchors.right: parent.right
             anchors.margins: 2
-            text: model.number(altmodel.max,'g',1)
+            text: Helpers.toFixed(altmodel.max,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"

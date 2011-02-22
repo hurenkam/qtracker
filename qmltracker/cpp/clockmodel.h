@@ -5,7 +5,8 @@
 #include <QStringList>
 #include <QUrl>
 #include <QObject>
-#include "datamonitor.h"
+#include <QDateTime>
+#include <QTimer>
 
 QT_BEGIN_HEADER
 QT_MODULE(Declarative)

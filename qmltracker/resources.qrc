@@ -17,6 +17,7 @@
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>
+        <file alias="helpers.js">javascript/helpers.js</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="compass.svg">qml/Images/compass-2.svg</file>

@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import "qrc:/js/filesystem.js" as FileSystem
+import "qrc:/js/helpers.js" as Helpers
 
 Item {
     id: root
@@ -23,8 +24,7 @@ Item {
     function zoomIn()   { content.zoomIn()  }
     function zoomOut()  { content.zoomOut() }
     function position() {
-        //return model.number(content.x,'g',0) + " " + model.number(content.y,'g',0)
-        return model.number(content.lat,'g',6) + " " + model.number(content.lon,'g',6)
+        return Helpers.toFixed(content.lat,6) + " " + Helpers.toFixed(content.lon,6)
     }
     function loadMap(m) { content.loadMap(m) }
 
@@ -114,12 +114,6 @@ Item {
         height: sourceSize.height    * content.scale
         x: root.width/2  - content.x * content.scale
         y: root.height/2 - content.y * content.scale
-/*        onStatusChanged: {
-            width=  sourceSize.width     * content.scale
-            height= sourceSize.height    * content.scale
-            x= root.width/2  - content.x * content.scale
-            y= root.height/2 - content.y * content.scale
-        }*/
     }
     Flickable {
         id: flickable
