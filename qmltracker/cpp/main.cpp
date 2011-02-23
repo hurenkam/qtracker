@@ -14,6 +14,7 @@
 #include "monitormodel.h"
 #include "positionmodel.h"
 #include "deviceinfomodel.h"
+#include "mapview.h"
 
 int main(int argc, char *argv[])
 {
@@ -27,6 +28,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MonitorModel>("QmlTrackerExtensions",1,0,"MonitorModel");
     qmlRegisterType<PositionModel>("QmlTrackerExtensions",1,0,"PositionModel");
     qmlRegisterType<DeviceInfoModel>("QmlTrackerExtensions",1,0,"DeviceInfoModel");
+    qmlRegisterType<MapView>("QmlTrackerExtensions",1,0,"MapView2");
 
     QPixmap pixmap(":/images/splash.svg");
     QSplashScreen splash(pixmap);
@@ -37,8 +39,7 @@ int main(int argc, char *argv[])
     QmlApplicationViewer viewer;
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
     viewer.setSource(QUrl("qrc:///qml/main.qml"));
-    splash.hide();
+    splash.finish(&viewer);
     viewer.showFullScreen();
     return app.exec();
 }
-

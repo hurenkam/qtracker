@@ -96,13 +96,24 @@ Rectangle {
         PositionModel {
             id: positionmodel
         }
+        DeviceInfoModel {
+            id: deviceinfomodel
+            function getheapinfo() {
+                var size = heapSize();
+                var alloc = heapAllocated();
+                var limit = heapLimit();
+                return size.toString() + " " + alloc.toString() + " " + limit.toString()
+            }
+        }
+
         Text {
             id: gpspos
             anchors.leftMargin: bx(2)+5
             anchors.topMargin:  5;
             anchors.top: parent.top
             anchors.left: parent.left
-            text: positionmodel.position
+            //text: positionmodel.position
+            text: deviceinfomodel.getheapinfo()
             color: "black"
             font.bold: true; font.pixelSize: 15
             style: Text.Raised; styleColor: "black"

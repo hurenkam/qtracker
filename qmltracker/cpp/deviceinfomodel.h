@@ -6,6 +6,9 @@
 #include <QUrl>
 #include <QObject>
 #include <QSystemDeviceInfo>
+#ifdef Q_OS_SYMBIAN
+#include <e32std.h>
+#endif
 
 class PrivateDeviceInfoModel;
 using namespace QtMobility;
@@ -26,6 +29,16 @@ signals:
 public:
     explicit DeviceInfoModel();
     int batteryLevel();
+
+#ifdef Q_OS_SYMBIAN
+    Q_INVOKABLE int heapSize();
+    Q_INVOKABLE int heapAllocated();
+    Q_INVOKABLE int heapLimit();
+#else
+    Q_INVOKABLE int heapSize()       { return 0; }
+    Q_INVOKABLE int heapAllocated()  { return 0; }
+    Q_INVOKABLE int heapLimit()      { return 0; }
+#endif
 
 private slots:
     void onBatteryLevelChanged();

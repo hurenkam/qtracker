@@ -17,6 +17,28 @@ int DeviceInfoModel::batteryLevel()
     return p->batteryLevel();
 }
 
+#ifdef Q_OS_SYMBIAN
+int DeviceInfoModel::heapSize()
+{
+    TInt size;
+    size = User::Heap().Size();  // Current heap size
+    return size;
+}
+
+int DeviceInfoModel::heapAllocated()
+{
+    TInt mem;
+    User::Heap().AllocSize(mem);  // Amount allocated
+    return mem;
+}
+
+int DeviceInfoModel::heapLimit()
+{
+    TInt limit;
+    limit = User::Heap().MaxLength();  // Max heap size
+    return limit;
+}
+#endif
 
 //============================================================================================
 

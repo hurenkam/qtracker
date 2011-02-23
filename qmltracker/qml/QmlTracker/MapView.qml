@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
 import "qrc:/js/filesystem.js" as FileSystem
 import "qrc:/js/helpers.js" as Helpers
 
@@ -14,7 +15,7 @@ Item {
     property alias maplon:   content.lon
     property alias mapscale: content.scale
     property alias mapname:  content.imagefile
-    property alias status:   viewport.status
+    //property alias status:   viewport.status
 
     signal singleTap()
     signal doubleTap()
@@ -43,11 +44,14 @@ Item {
         id: content
         x: 0
         y: 0
-        width:  viewport.sourceSize.width
-        height: viewport.sourceSize.height
+        //width:  viewport.sourceSize.width
+        //height: viewport.sourceSize.height
+        width:  viewport.filesize.width
+        height: viewport.filesize.height
         property int zoom: 3
         property string imagefile: "map.jpg"
-        scale: zoomlevels.get(zoom).factor
+        //scale: zoomlevels.get(zoom).factor
+        scale: 1
         property real lat: refpoint.baselat + refpoint.y2lat * y
         property real lon: refpoint.baselon + refpoint.x2lon * x
 
@@ -65,11 +69,17 @@ Item {
             flickable.setpos(mx,my)
         }
         function loadMap(m) {
-            imagefile = m
+            //imagefile = m
+            viewport.filename = m
+            console.log("filesize: ", viewport.filesize.width, viewport.filesize.height)
             zoom = 3
+            //width: viewport.sourceSize.width
+            //height: viewport.sourceSize.height
+            //width: viewport.filesize.width
+            //height: viewport.filesize.height
             flickable.setpos(
-                viewport.sourceSize.width/2,
-                viewport.sourceSize.height/2
+                content.width/2,
+                content.height/2
             )
             refpoint.source = FileSystem.path(m) + "/" + FileSystem.base(m) + ".xml"
         }
@@ -105,6 +115,15 @@ Item {
         }
     }
 
+    MapView2 {
+        id: viewport
+        filename: content.imagefile
+        width: root.width
+        height: root.height
+        mapx: content.x
+        mapy: content.y
+    }
+/*
     Image {
         id: viewport
         scale: 1
@@ -115,6 +134,7 @@ Item {
         x: root.width/2  - content.x * content.scale
         y: root.height/2 - content.y * content.scale
     }
+*/
     Flickable {
         id: flickable
         width:  0
@@ -137,10 +157,12 @@ Item {
             onLongTap:   root.longTap()
         }
         function setpos (mx,my) {
-            contentWidth  = content.width * content.scale + root.width
-            contentHeight = content.height * content.scale + root.height
-            contentX      = mx * content.scale
-            contentY      = my * content.scale
+            contentWidth  = root.width  + viewport.filesize.width //* content.scale
+            contentHeight = root.height + viewport.filesize.height //* content.scale
+            contentX      = mx //* content.scale
+            contentY      = my //* content.scale
+            console.log("setpos(): ",contentX,contentY,contentWidth,contentHeight)
+            viewport.invalidate()
         }
     }
 }
