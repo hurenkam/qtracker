@@ -149,8 +149,8 @@ Rectangle {
     MapButton { id: save;     source: "/images/export.svg";    x: bx(5);  y: by(1);  onClicked: root.saveClicked()     }
     MapButton { id: menu;     source: "/images/options.svg";   x: bx(1);  y: by(-1); onClicked: root.menuClicked()      }
     MapButton { id: exit;     source: "/images/exit.svg";      x: bx(-1); y: by(-1); onClicked: Qt.quit()              }
-    MapButton { id: zoomin;   source: "/images/zoom-in.svg";   x: bx(-1); y: by(1);  onRepeat: map.zoomIn(); interval: 100 }
-    MapButton { id: zoomout;  source: "/images/zoom-out.svg";  x: bx(-1); y: by(2);  onRepeat: map.zoomOut(); interval: 100 }
+    MapButton { id: zoomin;   source: "/images/zoom-in.svg";   x: bx(-1); y: by(1);  onRepeat: map.zoomIn(); interval: 300 }
+    MapButton { id: zoomout;  source: "/images/zoom-out.svg";  x: bx(-1); y: by(2);  onRepeat: map.zoomOut(); interval: 300 }
 
     Connections { target: map;   onPositionChanged: mappos.text = map.position()   }
 }

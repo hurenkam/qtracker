@@ -28,7 +28,7 @@ public:
     double    bearing();
     QDateTime time();
 
-    Q_INVOKABLE void reset() { onReset(); }
+    Q_INVOKABLE void reset()   { onReset(); }
 
     explicit MonitorModel(QObject *parent = 0);
     ~MonitorModel() {}

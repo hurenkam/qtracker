@@ -23,6 +23,8 @@ class TileLoader: public QThread
 {
     Q_OBJECT
 signals:
+    void invalidate();
+    void reload(const QPoint&, const QUrl&);
     void tileLoaded(const QPoint& p,QImage i);
 
 public slots:
@@ -33,7 +35,7 @@ private:
 
 public:
     void loadTile(const QPoint& p, const QUrl& u);
-    TileLoader(QObject *parent=0) : QThread(parent) {}
+    TileLoader(QObject *parent=0);
     void run();
 };
 
@@ -44,13 +46,13 @@ class MapView : public QDeclarativeItem
     Q_PROPERTY(QSize   filesize   READ filesize                      NOTIFY filesizeChanged)
     Q_PROPERTY(int     mapx       READ mapx        WRITE setMapX     NOTIFY mapxChanged)
     Q_PROPERTY(int     mapy       READ mapy        WRITE setMapY     NOTIFY mapyChanged)
-    Q_PROPERTY(int     zoom       READ zoom        WRITE setZoom     NOTIFY zoomChanged)
+    Q_PROPERTY(double  scale      READ scale       WRITE setScale    NOTIFY scaleChanged)
 
 signals:
     void filenameChanged();
     void mapxChanged();
     void mapyChanged();
-    void zoomChanged();
+    void scaleChanged();
     void filesizeChanged();
     void loadTile(const QPoint&, const QUrl&);
 
@@ -62,35 +64,36 @@ public:
     QSize   filesize()          { return _filesize;  }
     int     mapx()              { return _mapx;      }
     int     mapy()              { return _mapy;      }
-    int     zoom()              { return _zoom;      }
+    int     scale()             { return _scale;     }
 
     void setFilename(QUrl u);
     void setMapX(int v);
     void setMapY(int v);
-    void setZoom(int v);
+    void setScale(double v);
 
 private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void renderEmpty(QPainter *painter, QPoint& p);
     void renderTile(QPainter *painter, QPoint& p);
-    //bool loadTile(QPoint& p);
-    void discardTile(QPoint& p);
+    void discardTile(const QPoint& p);
+    QRect viewTiles();
+    QRect mapTiles();
+    QRect sourceArea(const QPoint& p);
+    QRect targetArea(const QPoint& p);
 
 private:
-    QUrl    _filename;
-    int     _mapx;
-    int     _mapy;
-    int     _zoom;
+    QUrl                   _filename;
+    int                    _mapx;
+    int                    _mapy;
+    double                 _scale;
     QSize                  _filesize;
-    QSize                  _tilesize;
     QImageReader           reader;
     QImage                 empty;
     QHash<QPoint, QImage>  tiles;
     TileLoader* mythread;
 
-signals:
-
 public slots:
+    void onInvalidate() { invalidate(); }
     void onTileLoaded(const QPoint& p, QImage i);
 };
 

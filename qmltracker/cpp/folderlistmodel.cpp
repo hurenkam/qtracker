@@ -156,7 +156,7 @@ QDeclarativeFolderListModel::QDeclarativeFolderListModel(QObject *parent)
     setRoleNames(roles);
 
     d = new QDeclarativeFolderListModelPrivate;
-    d->model.setFilter(QDir::AllDirs | QDir::Files | QDir::Drives | QDir::NoDotAndDotDot);
+    d->model.setFilter(QDir::Files | QDir::NoDotAndDotDot);
     connect(&d->model, SIGNAL(rowsInserted(const QModelIndex&,int,int))
             , this, SLOT(inserted(const QModelIndex&,int,int)));
     connect(&d->model, SIGNAL(rowsRemoved(const QModelIndex&,int,int))

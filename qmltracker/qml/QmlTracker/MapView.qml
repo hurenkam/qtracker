@@ -50,8 +50,8 @@ Item {
         height: viewport.filesize.height
         property int zoom: 3
         property string imagefile: "map.jpg"
-        //scale: zoomlevels.get(zoom).factor
-        scale: 1
+        scale: zoomlevels.get(zoom).factor
+        //scale: 1
         property real lat: refpoint.baselat + refpoint.y2lat * y
         property real lon: refpoint.baselon + refpoint.x2lon * x
 
@@ -122,6 +122,7 @@ Item {
         height: root.height
         mapx: content.x
         mapy: content.y
+        scale: content.scale
     }
 /*
     Image {
@@ -145,10 +146,14 @@ Item {
         anchors.top:       root.top
         contentX:          0
         contentY:          0
-        contentWidth:      content.width * content.scale + root.width
-        contentHeight:     content.height * content.scale + root.height
-        onContentXChanged: content.setX(contentX / content.scale)
-        onContentYChanged: content.setY(contentY / content.scale)
+        //contentWidth:      content.width * content.scale + root.width
+        //contentHeight:     content.height * content.scale + root.height
+        //onContentXChanged: content.setX(contentX / content.scale)
+        //onContentYChanged: content.setY(contentY / content.scale)
+        contentWidth:      content.width + root.width
+        contentHeight:     content.height + root.height
+        onContentXChanged: content.setX(contentX)
+        onContentYChanged: content.setY(contentY)
         clip: true
         MouseHandler {
             id: mouse
@@ -157,12 +162,20 @@ Item {
             onLongTap:   root.longTap()
         }
         function setpos (mx,my) {
-            contentWidth  = root.width  + viewport.filesize.width //* content.scale
-            contentHeight = root.height + viewport.filesize.height //* content.scale
-            contentX      = mx //* content.scale
-            contentY      = my //* content.scale
+            contentWidth  = root.width  + viewport.filesize.width
+            contentHeight = root.height + viewport.filesize.height
+            contentX = mx
+            contentY = my
+        }
+
+        /*
+        function setpos (mx,my) {
+            contentWidth  = root.width  + viewport.filesize.width * content.scale
+            contentHeight = root.height + viewport.filesize.height * content.scale
+            contentX      = mx * content.scale
+            contentY      = my * content.scale
             console.log("setpos(): ",contentX,contentY,contentWidth,contentHeight)
             viewport.invalidate()
-        }
+        }*/
     }
 }
