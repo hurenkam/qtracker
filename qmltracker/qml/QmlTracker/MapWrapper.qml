@@ -54,7 +54,7 @@ Rectangle {
     }
     Image {
         id: locator
-        source: "/images/locator_red.svg"
+        source: map.state == "scrolling"? "/images/locator_red.svg" : "/images/locator_green.svg"
         width: locator.sourceSize.width/2
         height: locator.sourceSize.height/2
         x: (parent.width-width)/2
@@ -112,8 +112,8 @@ Rectangle {
             anchors.topMargin:  5;
             anchors.top: parent.top
             anchors.left: parent.left
-            //text: positionmodel.position
-            text: deviceinfomodel.getheapinfo()
+            text: positionmodel.position
+            //text: deviceinfomodel.getheapinfo()
             color: "black"
             font.bold: true; font.pixelSize: 15
             style: Text.Raised; styleColor: "black"

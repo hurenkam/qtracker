@@ -9,25 +9,26 @@ Item {
     smooth: true
     anchors.margins: 10
     anchors.fill: parent
+    state: "scrolling"
     property alias mapx:     content.x
     property alias mapy:     content.y
     property alias maplat:   content.lat
     property alias maplon:   content.lon
     property alias mapscale: content.scale
     property alias mapname:  content.imagefile
-    //property alias status:   viewport.status
 
     signal singleTap()
     signal doubleTap()
     signal longTap()
     signal positionChanged()
 
-    function zoomIn()   { content.zoomIn()  }
-    function zoomOut()  { content.zoomOut() }
+    function zoomIn()             { content.zoomIn()  }
+    function zoomOut()            { content.zoomOut() }
     function position() {
         return Helpers.toFixed(content.lat,6) + " " + Helpers.toFixed(content.lon,6)
     }
-    function loadMap(m) { content.loadMap(m) }
+    function loadMap(m)           { content.loadMap(m) }
+    function setPosition(lat,lon) { content.setPosition(lat,lon) }
 
     ListModel {
         id: zoomlevels
@@ -42,21 +43,16 @@ Item {
 
     Item {
         id: content
-        x: 0
-        y: 0
-        //width:  viewport.sourceSize.width
-        //height: viewport.sourceSize.height
+        x: flickable.contentX
+        y: flickable.contentY
         width:  viewport.filesize.width
         height: viewport.filesize.height
         property int zoom: 3
         property string imagefile: "map.jpg"
         scale: zoomlevels.get(zoom).factor
-        //scale: 1
-        property real lat: refpoint.baselat + refpoint.y2lat * y
-        property real lon: refpoint.baselon + refpoint.x2lon * x
+        property real lat: refpoint.baselat + refpoint.y2lat * (y - refpoint.basey)
+        property real lon: refpoint.baselon + refpoint.x2lon * (x - refpoint.basex)
 
-        function setX(newx) { x = newx; positionChanged() }
-        function setY(newy) { y = newy; positionChanged() }
         function zoomIn()
         {
             var mx = x; var my = y;
@@ -69,14 +65,9 @@ Item {
             flickable.setpos(mx,my)
         }
         function loadMap(m) {
-            //imagefile = m
             viewport.filename = m
             console.log("filesize: ", viewport.filesize.width, viewport.filesize.height)
             zoom = 3
-            //width: viewport.sourceSize.width
-            //height: viewport.sourceSize.height
-            //width: viewport.filesize.width
-            //height: viewport.filesize.height
             flickable.setpos(
                 content.width/2,
                 content.height/2
@@ -88,8 +79,12 @@ Item {
             query: "/map/refpoint"
             property real baselat: 0.0
             property real baselon: 0.0
+            property real basex: 0.0
+            property real basey: 0.0
             property real y2lat: 0.0
             property real x2lon: 0.0
+            property real lat2y: 0.0
+            property real lon2x: 0.0
             XmlRole { name: "lat"; query: "@lat/number()" }
             XmlRole { name: "lon"; query: "@lon/number()" }
             XmlRole { name: "x";   query: "@x/number()"   }
@@ -101,16 +96,34 @@ Item {
                     console.log("refpoint:   ",refpoint.get(1).x,refpoint.get(1).y,refpoint.get(1).lat,refpoint.get(1).lon)
                     baselat = refpoint.get(0).lat
                     baselon = refpoint.get(0).lon
+                    basex = refpoint.get(0).x
+                    basey = refpoint.get(0).y
                     var dlat = refpoint.get(1).lat - refpoint.get(0).lat
                     var dlon = refpoint.get(1).lon - refpoint.get(0).lon
                     var dx = refpoint.get(1).x - refpoint.get(0).x
                     var dy = refpoint.get(1).y - refpoint.get(0).y
                     y2lat = dlat/dy
                     x2lon = dlon/dx
+                    lat2y = dy/dlat
+                    lon2x = dx/dlon
                 }
                 if (status == XmlListModel.Error) {
                     console.log("error reading refpoints")
                 }
+            }
+        }
+    }
+
+    PositionModel {
+        id: positionmodel
+        onLatitudeChanged: {
+            if (state == "followgps") {
+                flickable.contentY = refpoint.basey + refpoint.lat2y * (latitude  - refpoint.baselat)
+            }
+        }
+        onLongitudeChanged: {
+            if (state == "followgps") {
+                flickable.contentX = refpoint.basex + refpoint.lon2x * (longitude - refpoint.baselon)
             }
         }
     }
@@ -124,18 +137,7 @@ Item {
         mapy: content.y
         scale: content.scale
     }
-/*
-    Image {
-        id: viewport
-        scale: 1
-        transformOrigin: Item.TopLeft
-        source: content.imagefile
-        width:  sourceSize.width     * content.scale
-        height: sourceSize.height    * content.scale
-        x: root.width/2  - content.x * content.scale
-        y: root.height/2 - content.y * content.scale
-    }
-*/
+
     Flickable {
         id: flickable
         width:  0
@@ -146,18 +148,13 @@ Item {
         anchors.top:       root.top
         contentX:          0
         contentY:          0
-        //contentWidth:      content.width * content.scale + root.width
-        //contentHeight:     content.height * content.scale + root.height
-        //onContentXChanged: content.setX(contentX / content.scale)
-        //onContentYChanged: content.setY(contentY / content.scale)
         contentWidth:      content.width + root.width
         contentHeight:     content.height + root.height
-        onContentXChanged: content.setX(contentX)
-        onContentYChanged: content.setY(contentY)
+        onMovementStarted: root.state = "scrolling"
         clip: true
         MouseHandler {
             id: mouse
-            onSingleTap: root.singleTap()
+            onSingleTap: root.state = "followgps"
             onDoubleTap: root.doubleTap()
             onLongTap:   root.longTap()
         }
@@ -167,15 +164,22 @@ Item {
             contentX = mx
             contentY = my
         }
-
-        /*
-        function setpos (mx,my) {
-            contentWidth  = root.width  + viewport.filesize.width * content.scale
-            contentHeight = root.height + viewport.filesize.height * content.scale
-            contentX      = mx * content.scale
-            contentY      = my * content.scale
-            console.log("setpos(): ",contentX,contentY,contentWidth,contentHeight)
-            viewport.invalidate()
-        }*/
+        function getX() {
+            console.log("flickable.getX()")
+            return contentX
+        }
+        function getY() {
+            console.log("flickable.getY()")
+            return contentY
+        }
     }
+
+    states: [
+        State {
+            name: "scrolling"
+        },
+        State {
+            name: "followgps"
+        }
+    ]
 }

@@ -31,7 +31,7 @@ Rectangle {
         FolderListModel {
             id: folderModel
             //folder: "file:///c:/workspace/QmlTracker/data/maps/"
-            folder: "file:///e:/data/qtracker/maps/"
+            folder: "file:///e:/data/qmltracker/maps/"
             nameFilters: ["*.jpg"]
         }
 
