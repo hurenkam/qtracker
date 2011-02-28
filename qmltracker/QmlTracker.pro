@@ -12,7 +12,7 @@ QML_IMPORT_PATH =
 # Needs to be defined for Symbian
 #DEFINES += NETWORKACCESS
 
-VERSION = 0.1.300
+VERSION = 0.1.301
 
 symbian {
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
@@ -47,7 +47,8 @@ SOURCES += \
     cpp/positionmodel.cpp \
     cpp/deviceinfomodel.cpp \
     cpp/main.cpp \
-    cpp/mapview.cpp
+    cpp/mapview.cpp \
+    cpp/satellitemodel.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -64,7 +65,8 @@ HEADERS += \
     cpp/monitormodel.h \
     cpp/positionmodel.h \
     cpp/deviceinfomodel.h \
-    cpp/mapview.h
+    cpp/mapview.h \
+    cpp/satellitemodel.h
 
 RESOURCES += \
     resources.qrc

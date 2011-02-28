@@ -14,6 +14,7 @@
 #include "monitormodel.h"
 #include "positionmodel.h"
 #include "deviceinfomodel.h"
+#include "satellitemodel.h"
 #include "mapview.h"
 
 int main(int argc, char *argv[])
@@ -28,6 +29,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MonitorModel>("QmlTrackerExtensions",1,0,"MonitorModel");
     qmlRegisterType<PositionModel>("QmlTrackerExtensions",1,0,"PositionModel");
     qmlRegisterType<DeviceInfoModel>("QmlTrackerExtensions",1,0,"DeviceInfoModel");
+    qmlRegisterType<SatelliteModel>("QmlTrackerExtensions",1,0,"SatelliteModel");
     qmlRegisterType<MapView>("QmlTrackerExtensions",1,0,"MapView2");
 
     QPixmap pixmap(":/images/splash.svg");
