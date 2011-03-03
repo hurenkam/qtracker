@@ -113,7 +113,6 @@ Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
             text: positionmodel.position
-            //text: deviceinfomodel.getheapinfo()
             color: "black"
             font.bold: true; font.pixelSize: 15
             style: Text.Raised; styleColor: "black"
@@ -124,11 +123,13 @@ Rectangle {
             anchors.bottomMargin:  5;
             anchors.bottom: parent.bottom
             anchors.left: parent.left
-            text: map.position()
+            //text: map.position()
+            text: deviceinfomodel.getheapinfo()
             color: "black"
             font.bold: true; font.pixelSize: 15
             style: Text.Raised; styleColor: "black"
         }
+/*
         Text {
             id: mapstatus
             anchors.leftMargin: bx(5)-5
@@ -140,6 +141,7 @@ Rectangle {
             font.bold: true; font.pixelSize: 15
             style: Text.Raised; styleColor: "black"
         }
+*/
     }
 
     MapButton { id: waypoint; source: "/images/flag.svg";      x: bx(1);  y: by(1);  onClicked: root.waypointClicked() }

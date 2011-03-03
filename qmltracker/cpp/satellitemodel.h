@@ -8,89 +8,119 @@
 #include <QGeoSatelliteInfo>
 #include <QGeoSatelliteInfoSource>
 #include <QAbstractListModel>
+#include <QTimer>
 
 using namespace QtMobility;
 
-QT_BEGIN_HEADER
-QT_MODULE(Declarative)
+//QT_BEGIN_HEADER
+//QT_MODULE(Declarative)
 
-class QDeclarativeContext;
-class QModelIndex;
-class PrivateSatelliteModel;
+//class QDeclarativeContext;
+//class QModelIndex;
+//class PrivateSatelliteModel;
 
-class SatelliteModel : public QAbstractListModel, public QDeclarativeParserStatus
+class SatelliteInfo: public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(QDeclarativeParserStatus)
-    Q_PROPERTY(double inview  READ inView  NOTIFY inViewChanged)
-    Q_PROPERTY(double inuse   READ inUse   NOTIFY inUseChanged)
+    Q_PROPERTY(bool   inuse     READ inuse     NOTIFY inuseChanged)
+    Q_PROPERTY(double azimuth   READ azimuth   NOTIFY azimuthChanged)
+    Q_PROPERTY(double elevation READ elevation NOTIFY elevationChanged)
+    Q_PROPERTY(double strength  READ strength  NOTIFY strengthChanged)
 
 signals:
-    void inViewChanged();
-    void inUseChanged();
+    void inuseChanged();
+    void azimuthChanged();
+    void elevationChanged();
+    void strengthChanged();
 
 public:
-    int inView();
-    int inUse();
+     SatelliteInfo(QObject *parent = 0)
+         : QObject(parent)
+         , _inuse(false)
+         , _azimuth(0)
+         , _elevation(0)
+         , _strength(0)
+     {}
 
-    enum Roles
-    {
-        SignalStrengthRole = Qt::UserRole+1,
-        ElevationRole = Qt::UserRole+2,
-        AzimuthRole = Qt::UserRole+3,
-        InUseRole = Qt::UserRole+4
-    };
+     SatelliteInfo(bool inuse, double strength, double azimuth, double elevation, QObject *parent = 0)
+         : QObject(parent)
+         , _inuse(inuse)
+         , _azimuth(azimuth)
+         , _elevation(elevation)
+         , _strength(strength)
+     {}
 
-    int rowCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
-
-    explicit SatelliteModel(QObject *parent = 0);
-    ~SatelliteModel() {}
-
-private Q_SLOTS:
-    //void refresh();
-    //void handleDataChanged(const QModelIndex &start, const QModelIndex &end);
-
-    void onInUseChanged()  { beginResetModel(); endResetModel(); emit inUseChanged();  }
-    void onInViewChanged() { beginResetModel(); endResetModel(); emit inViewChanged(); }
+     bool   inuse()     const  { return _inuse;     }
+     double azimuth()   const  { return _azimuth;   }
+     double elevation() const  { return _elevation; }
+     double strength()  const  { return _strength;  }
 
 private:
-    static PrivateSatelliteModel *p;
-
-    void classBegin() {}
-    void componentComplete() {}
-
-    Q_DISABLE_COPY(SatelliteModel)
+     bool   _inuse;
+     double _azimuth;
+     double _elevation;
+     double _strength;
 };
 
+class SatelliteList : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QDeclarativeListProperty<SatelliteInfo> satellites READ satellites NOTIFY satellitesChanged)
+    Q_PROPERTY(int count READ satelliteCount NOTIFY countChanged)
+
+signals:
+    void satellitesChanged();
+    void countChanged();
+
+public:
+    SatelliteList(QObject *parent=0);
+
+    QDeclarativeListProperty<SatelliteInfo> satellites();
+    int satelliteCount() const;
+    SatelliteInfo *satellite(int) const;
+
+private slots:
+     void onTimerExpired();
+     void onInUseChanged (const QList<QGeoSatelliteInfo>& inuse);
+     void onInViewChanged(const QList<QGeoSatelliteInfo>& inview);
+
+private:
+    QTimer                   _timer;
+    QList<SatelliteInfo *>   _satellites;
+
+    QGeoSatelliteInfoSource* _satsource;
+    QList<QGeoSatelliteInfo> _satsinuse;
+    QList<QGeoSatelliteInfo> _satsinview;
+};
+/*
 class PrivateSatelliteModel: public QObject
 {
     Q_OBJECT
 
 signals:
-    void inViewChanged();
-    void inUseChanged();
+    void startUpdate();
+    void endUpdate();
 
 public:
     explicit PrivateSatelliteModel(QObject *parent=0);
 
-    int inView()                       { return satsinview.count(); }
-    int inUse()                        { return satsinuse.count(); }
-    QGeoSatelliteInfo getInView(int i) { return satsinview[i]; }
-    QGeoSatelliteInfo getInUse(int i)  { return satsinuse[i]; }
+    int inView();
+    int inUse();
+    QGeoSatelliteInfo getInView(int i);
+    QGeoSatelliteInfo getInUse(int i);
 
 private slots:
-    void onInUseChanged (const QList<QGeoSatelliteInfo>& inuse)   { satsinuse = inuse;   emit inUseChanged(); }
-    void onInViewChanged(const QList<QGeoSatelliteInfo>& inview)  { satsinview = inview; emit inViewChanged(); }
+    void onInUseChanged (const QList<QGeoSatelliteInfo>& inuse);
+    void onInViewChanged(const QList<QGeoSatelliteInfo>& inview);
 
 private:
     QGeoSatelliteInfoSource* satsource;
     QList<QGeoSatelliteInfo> satsinuse;
     QList<QGeoSatelliteInfo> satsinview;
 };
+*/
 
-
-QML_DECLARE_TYPE(SatelliteModel)
-QT_END_HEADER
+//QML_DECLARE_TYPE(SatelliteModel)
+//QT_END_HEADER
 
 #endif // SATELLITEMODEL_H

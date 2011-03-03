@@ -66,7 +66,8 @@ HEADERS += \
     cpp/positionmodel.h \
     cpp/deviceinfomodel.h \
     cpp/mapview.h \
-    cpp/satellitemodel.h
+    cpp/satellitemodel.h \
+    cpp/helpers.h
 
 RESOURCES += \
     resources.qrc

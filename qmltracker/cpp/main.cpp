@@ -4,6 +4,7 @@
 #include <QPixmap>
 #include <QSplashScreen>
 #include <QWaitCondition>
+#include <QDebug>
 #include "qmlapplicationviewer.h"
 
 #include "folderlistmodel.h"
@@ -17,10 +18,36 @@
 #include "satellitemodel.h"
 #include "mapview.h"
 
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
+static QFile file;
+static QTextStream out(&file);
+static bool fileopen = false;
 
+void debugOutput(QtMsgType type, const char *msg)
+{
+        out << msg << "\n";
+        file.flush();
+}
+
+void debugOpen()
+{
+        file.setFileName("e:/data/qmltracker-debug.txt");
+        if (file.exists())
+            fileopen = file.open(QIODevice::Append | QIODevice::Truncate | QIODevice::Text);
+        else
+                fileopen = false;
+
+        if (fileopen)
+                qInstallMsgHandler(debugOutput);
+}
+
+void debugClose()
+{
+    if (fileopen)
+        file.close();
+}
+
+void registerTypes()
+{
     qmlRegisterType<QDeclarativeFolderListModel>("QmlTrackerExtensions",1,0,"FolderListModel");
     qmlRegisterType<AltitudeModel>("QmlTrackerExtensions",1,0,"AltitudeModel");
     qmlRegisterType<SpeedModel>("QmlTrackerExtensions",1,0,"SpeedModel");
@@ -29,13 +56,24 @@ int main(int argc, char *argv[])
     qmlRegisterType<MonitorModel>("QmlTrackerExtensions",1,0,"MonitorModel");
     qmlRegisterType<PositionModel>("QmlTrackerExtensions",1,0,"PositionModel");
     qmlRegisterType<DeviceInfoModel>("QmlTrackerExtensions",1,0,"DeviceInfoModel");
-    qmlRegisterType<SatelliteModel>("QmlTrackerExtensions",1,0,"SatelliteModel");
+    qmlRegisterType<SatelliteInfo>("QmlTrackerExtensions",1,0,"SatelliteInfo");
+    qmlRegisterType<SatelliteList>("QmlTrackerExtensions",1,0,"SatelliteList");
     qmlRegisterType<MapView>("QmlTrackerExtensions",1,0,"MapView2");
+}
 
+int main(int argc, char *argv[])
+{
+    debugOpen();
+    registerTypes();
+    QApplication app(argc, argv);
+
+    qDebug() << "main(): splash.show()";
     QPixmap pixmap(":/images/splash.svg");
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("qTracker v" VERSION,Qt::AlignLeft,Qt::white);
+
+    qDebug() << "main(): app.processEvents()";
     app.processEvents();
 
     QmlApplicationViewer viewer;
@@ -43,5 +81,9 @@ int main(int argc, char *argv[])
     viewer.setSource(QUrl("qrc:///qml/main.qml"));
     splash.finish(&viewer);
     viewer.showFullScreen();
-    return app.exec();
+
+    qDebug() << "main(): app.exec()";
+    int result = app.exec();
+    debugClose();
+    return result;
 }

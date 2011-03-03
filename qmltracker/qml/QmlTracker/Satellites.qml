@@ -27,29 +27,26 @@ Item {
         anchors.fill: parent
     }
 
-    SatelliteModel {
-        id: satellitemodel
+    SatelliteList {
+        id: satlist
     }
 
     Repeater {
         id: positions
-        anchors.margins: 5
-        anchors.fill: parent
-        smooth: true
-        clip:  true
-        focus: true
+        //anchors.margins: 5
+        //anchors.fill: parent
+        //smooth: true
+        //clip:  true
+        //focus: true
 
         Component {
             id: satellitedelegate
-            //Image {
-                //source: inuse? "/images/locator_green.svg" : "/images/locator_red.svg"
             Rectangle {
-                color: inuse? "#00ff00" : Qt.rgba(strength/255.0,strength/255.0,0,1)
+                color: inuse? "#00ff00" : Qt.rgba(1,strength/32.0,0,1)
                 width: root.width/20
                 height: root.height/20
                 radius: root.width/40
-                x: (root.width-root.width/15)/2
-                y: (root.height-root.height/15)/2
+                anchors.centerIn: parent
 
                 transform: [
                     Translate {
@@ -61,10 +58,11 @@ Item {
                         angle: azimuth - 180
                     }
                 ]
+
             }
         }
 
-        model: satellitemodel
+        model: satlist.satellites
         delegate: satellitedelegate
     }
 }

@@ -3,6 +3,9 @@
 #include "positionmodel.h"
 
 
+//#define ENABLE_DEBUG
+#include "helpers.h"
+
 //============================================================================================
 
 
@@ -12,6 +15,8 @@ PrivatePositionModel::PrivatePositionModel(QObject *parent)
     , _longitude(0)
     , _altitude(0)
 {
+    ENTER("")
+
     possource = QGeoPositionInfoSource::createDefaultSource(this);
     if (possource) {
         possource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
@@ -19,10 +24,14 @@ PrivatePositionModel::PrivatePositionModel(QObject *parent)
         connect(possource, SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(OnPositionUpdate(QGeoPositionInfo)));
         possource->startUpdates();
     }
+
+    EXIT("")
 }
 
 void PrivatePositionModel::OnPositionUpdate(const QGeoPositionInfo& info)
 {
+    ENTER(info)
+
     posinfo = info;
     _latitude = posinfo.coordinate().latitude();
     _longitude = posinfo.coordinate().longitude();
@@ -36,10 +45,14 @@ void PrivatePositionModel::OnPositionUpdate(const QGeoPositionInfo& info)
         emit altitudeChanged();
     }
     UpdateQuality();
+
+    EXIT("")
 }
 
 void PrivatePositionModel::UpdateQuality()
 {
+    ENTER("")
+
     if (posinfo.hasAttribute(QGeoPositionInfo::VerticalAccuracy))
     {
         int r = posinfo.attribute(QGeoPositionInfo::VerticalAccuracy);
@@ -58,6 +71,8 @@ void PrivatePositionModel::UpdateQuality()
             emit horizontalChanged();
         }
     }
+
+    EXIT("")
 }
 
 
@@ -68,6 +83,8 @@ PrivatePositionModel *PositionModel::p = 0;
 
 PositionModel::PositionModel(QObject *parent): QObject(parent)
 {
+    ENTER("")
+
     if (!p) p = new PrivatePositionModel();
 
     connect(p, SIGNAL(latitudeChanged()),   this, SLOT(onLatitudeChanged()));
@@ -76,34 +93,42 @@ PositionModel::PositionModel(QObject *parent): QObject(parent)
     connect(p, SIGNAL(positionChanged()),   this, SLOT(onPositionChanged()));
     connect(p, SIGNAL(verticalChanged()),   this, SLOT(onVerticalChanged()));
     connect(p, SIGNAL(horizontalChanged()), this, SLOT(onHorizontalChanged()));
+
+    EXIT("")
 }
 
 double PositionModel::latitude()
 {
-    return p->latitude();
+    ENTER("")
+    RETURN(double,p->latitude())
 }
 
 double PositionModel::longitude()
 {
-    return p->longitude();
+    ENTER("")
+    RETURN(double,p->longitude())
 }
 
 double PositionModel::altitude()
 {
-    return p->altitude();
+    ENTER("")
+    RETURN(double,p->altitude())
 }
 
 double PositionModel::horizontal()
 {
-    return p->horizontal();
+    ENTER("")
+    RETURN(double,p->horizontal())
 }
 
 double PositionModel::vertical()
 {
-    return p->vertical();
+    ENTER("")
+    RETURN(double,p->vertical())
 }
 
 QString PositionModel::position()
 {
-    return p->position();
+    ENTER("")
+    RETURN(QString,p->position())
 }
