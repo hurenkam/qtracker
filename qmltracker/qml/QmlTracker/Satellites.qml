@@ -31,37 +31,31 @@ Item {
         id: satlist
     }
 
+    Component {
+        id: satellitedelegate
+        Rectangle {
+            color: inuse? "#00ff00" : Qt.rgba(1,strength/32.0,0,1)
+            width: root.width/20
+            height: root.height/20
+            radius: root.width/40
+            anchors.centerIn: parent
+
+            transform: [
+                Translate {
+                    y: elevation * root.height / 180.0
+                },
+                Rotation {
+                    origin.x: width/2
+                    origin.y: height/2
+                    angle: azimuth - 180
+                }
+            ]
+
+        }
+    }
+
     Repeater {
         id: positions
-        //anchors.margins: 5
-        //anchors.fill: parent
-        //smooth: true
-        //clip:  true
-        //focus: true
-
-        Component {
-            id: satellitedelegate
-            Rectangle {
-                color: inuse? "#00ff00" : Qt.rgba(1,strength/32.0,0,1)
-                width: root.width/20
-                height: root.height/20
-                radius: root.width/40
-                anchors.centerIn: parent
-
-                transform: [
-                    Translate {
-                        y: elevation * root.height / 180.0
-                    },
-                    Rotation {
-                        origin.x: width/2
-                        origin.y: height/2
-                        angle: azimuth - 180
-                    }
-                ]
-
-            }
-        }
-
         model: satlist.satellites
         delegate: satellitedelegate
     }

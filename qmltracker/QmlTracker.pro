@@ -12,7 +12,7 @@ QML_IMPORT_PATH =
 # Needs to be defined for Symbian
 #DEFINES += NETWORKACCESS
 
-VERSION = 0.1.301
+VERSION = 0.1.303
 
 symbian {
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
