@@ -11,12 +11,16 @@ WishList | KnownBugs | RoadMap | QmlTracker
 
 = New qTracker wishlist: =
 
+=== Handle OziExplorer calibration data ===
+OziExplorer is quite a popular program used to prepare maps and plan trips using a similar method to qTracker, but aimed at use for PC & PocketPC (the fact it was lacking a Symbian version is what inspired me to start with qTracker in the first place). A lot of existing maps have OziExplorer compatible calibration data, and thus it would be convenient if qTracker can use these as well.
+
 === Use QtMobility Map Viewer API ===
 This would be a major change, but moving over to this API could be another approach to solving the problem of handling tiled based maps in a generic way.
 
 === Use QImageReader to read map data (possibly as tiles) ===
 There seems to be a QImageReader class, which might improve performance if the underlying io handler supports clipped/scaled jpeg image reads.
 If supported, then this could enable the use of 'huge' jpeg based maps without the need of splitting the image itself into seperate files.
+=> already implemented in qmltracker, the qml based test version of qTracker.
 
 === Use tiled (Geo)Tiff files ===
 A big limitation of qtracker is that it uses jpg images that need to be completely loaded in memory. The advantage is that a camera image can immediately be used as a map, by calibrating 2 points, however, a big disadvantage is that it limits the size of the map that can be used.
