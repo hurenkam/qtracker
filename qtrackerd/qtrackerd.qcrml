@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository target="RProperty" uidValue="0xE5371b58">
+
+    <key ref="/server/command/cmd"         int="0x00000001"/>
+    <key ref="/server/response/ack"        int="0x00000002"/>
+
+    <key ref="/server/compass/azimuth"     int="0x00000011"/>
+    <key ref="/server/compass/calibration" int="0x00000012"/>
+
+    <key ref="/server/location/latitude"   int="0x00000021"/>
+    <key ref="/server/location/longitude"  int="0x00000022"/>
+    <key ref="/server/location/altitude"   int="0x00000023"/>
+    <key ref="/server/location/speed"      int="0x00000024"/>
+    <key ref="/server/location/heading"    int="0x00000025"/>
+    <key ref="/server/location/horizontal" int="0x00000026"/>
+    <key ref="/server/location/vertical"   int="0x00000027"/>
+    <key ref="/server/location/distance"   int="0x00000028"/>
+
+    <key ref="/server/altitude/current"    int="0x00000031"/>
+    <key ref="/server/altitude/ascent"     int="0x00000032"/>
+    <key ref="/server/altitude/descent"    int="0x00000033"/>
+    <key ref="/server/altitude/min"        int="0x00000034"/>
+    <key ref="/server/altitude/max"        int="0x00000035"/>
+    <key ref="/server/altitude/average"    int="0x00000036"/>
+
+    <key ref="/server/speed/current"       int="0x00000041"/>
+    <key ref="/server/speed/min"           int="0x00000044"/>
+    <key ref="/server/speed/max"           int="0x00000045"/>
+    <key ref="/server/speed/average"       int="0x00000046"/>
+
+    <key ref="/server/time/current"        int="0x00000051"/>
+    <key ref="/server/time/trip"           int="0x00000052"/>
+
+    <key ref="/server/monitor/bearing"     int="0x00000061"/>
+    <key ref="/server/monitor/time"        int="0x00000062"/>
+    <key ref="/server/monitor/distance"    int="0x00000063"/>
+
+    <key ref="/server/satellite/inview"    int="0x00000071"/>
+    <key ref="/server/satellite/inuse"     int="0x00000072"/>
+
+    <key ref="/viewer/zoom"                int="0x00001001"/>
+    <key ref="/viewer/map/file"            int="0x00001011"/>
+    <key ref="/viewer/map/state"           int="0x00001012"/>
+    <key ref="/viewer/map/x"               int="0x00001013"/>
+    <key ref="/viewer/map/y"               int="0x00001014"/>
+
+</repository>
