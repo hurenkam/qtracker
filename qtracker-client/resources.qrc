@@ -1,0 +1,96 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file alias="Altimeter.qml">qml/qtracker/Altimeter.qml</file>
+        <file alias="Compass.qml">qml/qtracker/Compass.qml</file>
+        <file alias="Clock.qml">qml/qtracker/Clock.qml</file>
+        <file alias="Layout.qml">qml/qtracker/Layout.qml</file>
+        <file alias="Levels.qml">qml/qtracker/Levels.qml</file>
+        <file alias="main.qml">qml/qtracker/main.qml</file>
+        <file alias="MapButton.qml">qml/qtracker/MapButton.qml</file>
+        <file alias="MapDialog.qml">qml/qtracker/MapDialog.qml</file>
+        <file alias="MapList.qml">qml/qtracker/MapList.qml</file>
+        <file alias="MapView.qml">qml/qtracker/MapView.qml</file>
+        <file alias="MapWrapper.qml">qml/qtracker/MapWrapper.qml</file>
+        <file alias="MouseHandler.qml">qml/qtracker/MouseHandler.qml</file>
+        <file alias="Satellites.qml">qml/qtracker/Satellites.qml</file>
+        <file alias="Speedometer.qml">qml/qtracker/Speedometer.qml</file>
+        <file alias="TrackList.qml">qml/qtracker/TrackList.qml</file>
+        <file alias="Database.qml">qml/qtracker/Database.qml</file>
+        <file alias="TrackPoints.qml">qml/qtracker/TrackPoints.qml</file>
+        <file alias="Settings.qml">qml/qtracker/Settings.qml</file>
+        <file alias="TrackDialog.qml">qml/qtracker/TrackDialog.qml</file>
+        <file alias="qTracker.qml">qml/qtracker/qTracker.qml</file>
+    </qresource>
+    <qresource prefix="/js">
+        <file alias="filesystem.js">javascript/filesystem.js</file>
+        <file alias="helpers.js">javascript/helpers.js</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file alias="compass.svg">qml/Images/compass-2.svg</file>
+        <file alias="compassneedle.svg">qml/Images/compassneedle.svg</file>
+        <file alias="compassring.svg">qml/Images/compassring-2.svg</file>
+        <file alias="clock.svg">qml/Images/clock-2.svg</file>
+        <file alias="level.svg">qml/Images/level-2.svg</file>
+        <file alias="longhand.svg">qml/Images/longhand.svg</file>
+        <file alias="satview.svg">qml/Images/satview-2.svg</file>
+        <file alias="secondhand.svg">qml/Images/secondhand.svg</file>
+        <file alias="shorthand.svg">qml/Images/shorthand.svg</file>
+        <file alias="speed10.svg">qml/Images/speed10-2.svg</file>
+        <file alias="speed200.svg">qml/Images/speed200-2.svg</file>
+        <file alias="speedneedle.svg">qml/Images/speedneedle.svg</file>
+        <file alias="levelhand.svg">qml/Images/levelhand.svg</file>
+        <file alias="exit.svg">qml/Images/exit-2.svg</file>
+        <file alias="zoom-in.svg">qml/Images/zoom-in-2.svg</file>
+        <file alias="zoom-out.svg">qml/Images/zoom-out-2.svg</file>
+        <file alias="options.svg">qml/Images/options-2.svg</file>
+        <file alias="flag.svg">qml/Images/flag-2.svg</file>
+        <file alias="hiker.svg">qml/Images/hiker-2.svg</file>
+        <file alias="route.svg">qml/Images/route-2.svg</file>
+        <file alias="import.svg">qml/Images/import-2.svg</file>
+        <file alias="export.svg">qml/Images/export-2.svg</file>
+        <file alias="splash.svg">qml/Images/splash.svg</file>
+        <file alias="locator_green.svg">qml/Images/locator_green.svg</file>
+        <file alias="locator_red.svg">qml/Images/locator_red.svg</file>
+        <file alias="delete.svg">qml/Images/delete.svg</file>
+        <file alias="edit.svg">qml/Images/edit.svg</file>
+        <file alias="home.svg">qml/Images/home.svg</file>
+        <file alias="invisible.svg">qml/Images/invisible.svg</file>
+        <file alias="visible.svg">qml/Images/visible.svg</file>
+    </qresource>
+    <qresource prefix="/colibri">
+        <file alias="CLButton.qml">qml/colibri/CLButton.qml</file>
+        <file>qml/colibri/CLCarousel.qml</file>
+        <file>qml/colibri/CLCheckBox.qml</file>
+        <file>qml/colibri/CLComboBox.qml</file>
+        <file>qml/colibri/CLDatePicker.qml</file>
+        <file>qml/colibri/CLDial.qml</file>
+        <file>qml/colibri/CLHistogram.qml</file>
+        <file>qml/colibri/CLKeyboard.qml</file>
+        <file>qml/colibri/CLLayer.qml</file>
+        <file>qml/colibri/CLLineEdit.qml</file>
+        <file>qml/colibri/CLListbox.qml</file>
+        <file>qml/colibri/CLProgressBar.qml</file>
+        <file>qml/colibri/CLRating.qml</file>
+        <file>qml/colibri/CLScrollBar.qml</file>
+        <file>qml/colibri/CLScrollBarVertical.qml</file>
+        <file>qml/colibri/CLSlider.qml</file>
+        <file>qml/colibri/CLSliderVertical.qml</file>
+        <file alias="CLStyle.qml">qml/colibri/CLStyle.qml</file>
+        <file alias="CLTab.qml">qml/colibri/CLTab.qml</file>
+        <file>qml/colibri/CLTextArea.qml</file>
+    </qresource>
+    <qresource prefix="/colibri/javascripts">
+        <file>qml/colibri/javascripts/date.js</file>
+        <file>qml/colibri/javascripts/datepicker.js</file>
+        <file alias="functions.js">qml/colibri/javascripts/functions.js</file>
+        <file>qml/colibri/javascripts/histogram.js</file>
+        <file>qml/colibri/javascripts/histogram2.js</file>
+        <file>qml/colibri/javascripts/keyboard.js</file>
+    </qresource>
+    <qresource prefix="/colibri/gradients">
+        <file>qml/colibri/gradients/Blue.qml</file>
+        <file>qml/colibri/gradients/Grey.qml</file>
+        <file>qml/colibri/gradients/LightBlue.qml</file>
+        <file alias="Red.qml">qml/colibri/gradients/Red.qml</file>
+    </qresource>
+</RCC>

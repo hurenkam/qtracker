@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository target="RProperty" uidValue="0xE24C9CC8">
+
+    <key ref="/trackdaemon/command"             int="0x00000001"/>
+    <key ref="/trackdaemon/response"            int="0x00000002"/>
+    <key ref="/trackdaemon/data"                int="0x00000003"/>
+
+    <key ref="/trackdaemon/position/latitude"   int="0x00000102"/>
+    <key ref="/trackdaemon/position/longitude"  int="0x00000103"/>
+    <key ref="/trackdaemon/position/altitude"   int="0x00000104"/>
+    <key ref="/trackdaemon/position/speed"      int="0x00000105"/>
+    <key ref="/trackdaemon/position/heading"    int="0x00000106"/>
+    <key ref="/trackdaemon/position/horizontal" int="0x00000107"/>
+    <key ref="/trackdaemon/position/vertical"   int="0x00000108"/>
+
+    <key ref="/trackdaemon/compass/azimuth"     int="0x00000202"/>
+    <key ref="/trackdaemon/compass/calibration" int="0x00000203"/>
+    <key ref="/trackdaemon/compass/monitor"     int="0x00000204"/>
+
+    <key ref="/trackdaemon/time/current"        int="0x00000302"/>
+    <key ref="/trackdaemon/time/trip"           int="0x00000303"/>
+    <key ref="/trackdaemon/time/monitor"        int="0x00000304"/>
+
+    <key ref="/trackdaemon/speed/current"       int="0x00000402"/>
+    <key ref="/trackdaemon/speed/average"       int="0x00000403"/>
+    <key ref="/trackdaemon/speed/count"         int="0x00000404"/>
+    <key ref="/trackdaemon/speed/max"           int="0x00000405"/>
+    <key ref="/trackdaemon/speed/min"           int="0x00000406"/>
+
+    <key ref="/trackdaemon/altitude/current"    int="0x00000502"/>
+    <key ref="/trackdaemon/altitude/average"    int="0x00000503"/>
+    <key ref="/trackdaemon/altitude/count"      int="0x00000504"/>
+    <key ref="/trackdaemon/altitude/max"        int="0x00000505"/>
+    <key ref="/trackdaemon/altitude/min"        int="0x00000506"/>
+    <key ref="/trackdaemon/altitude/ascend"     int="0x00000507"/>
+    <key ref="/trackdaemon/altitude/descend"    int="0x00000508"/>
+    <key ref="/trackdaemon/altitude/threshold"  int="0x00000509"/>
+
+    <key ref="/trackdaemon/distance/total"      int="0x00000602"/>
+    <key ref="/trackdaemon/distance/trip"       int="0x00000603"/>
+    <key ref="/trackdaemon/distance/monitor"    int="0x00000604"/>
+
+</repository>
