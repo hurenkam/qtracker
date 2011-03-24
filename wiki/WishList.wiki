@@ -20,7 +20,7 @@ This would be a major change, but moving over to this API could be another appro
 === Use QImageReader to read map data (possibly as tiles) ===
 There seems to be a QImageReader class, which might improve performance if the underlying io handler supports clipped/scaled jpeg image reads.
 If supported, then this could enable the use of 'huge' jpeg based maps without the need of splitting the image itself into seperate files.
-<br><b>Note:</b> This is already implemented in qmltracker, the qml based test version of qTracker.
+<br><b>Note:</b> This is already implemented in qmltracker, the qml based test version of qTracker. For performance reasons, the resulting tiles are cached, since partial reads of a large image file are very slow.
 
 === Use tiled (Geo)Tiff files ===
 A big limitation of qtracker is that it uses jpg images that need to be completely loaded in memory. The advantage is that a camera image can immediately be used as a map, by calibrating 2 points, however, a big disadvantage is that it limits the size of the map that can be used.
