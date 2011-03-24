@@ -12,7 +12,7 @@ Client::Client(QObject *parent)
 Q_INVOKABLE void Client::startServer()
 {
     qDebug() << "Client::startServer()";
-    process.start("server.exe");
+    process.start("qtrackerd.exe");
 
     if (!publisher)
         publisher  = new QValueSpacePublisher   ("/server/command");
