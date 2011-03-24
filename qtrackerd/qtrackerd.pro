@@ -36,7 +36,10 @@ SOURCES += main.cpp \
 OTHER_FILES += \
     qtrackerd.qcrml
 
+VERSION = 0.3.314
+
 symbian {
+    DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
     TARGET.UID3 = 0xE5371b58
     TARGET.CAPABILITY += NetworkServices Location LocalServices UserEnvironment ReadUserData WriteUserData
 

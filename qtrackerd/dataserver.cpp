@@ -26,7 +26,7 @@ void DataServer::start()
     ENTER("")
 
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("c:\\data\\qtracker\\database.sqlite");
+    db.setDatabaseName("e:\\data\\qtracker\\database.sqlite");
     bool result = db.open();
     if (!result) { EXIT("unable to open db" << error().text()) return; }
 
