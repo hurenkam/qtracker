@@ -3,8 +3,11 @@ import QtQuick 1.0
 Rectangle {
     id: root
     color: "black"
-    width: parent.width
-    height: 50
+    width: parent.width/w
+    height: hide? 0: 50
+    property bool hide: false
+    //scale: w
+    transform: Scale { origin.x: 0; origin.y: 0; xScale: w; yScale: h }
 
     gradient: Gradient {
         GradientStop {

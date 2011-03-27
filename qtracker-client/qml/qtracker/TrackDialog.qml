@@ -5,14 +5,58 @@ import QtQuick 1.0
 
 Page {
     id: root
+    state: "list"
+    signal trackSelected(int trackId)
+    signal trackStarted(int trackId)
+    signal trackStopped(int trackId)
+
+    function confirm() {
+        pageStack.pop();
+    }
+    function cancel() {
+        pageStack.pop();
+    }
+    function add() {
+        state="edit"
+    }
+    function list() {
+        state="list"
+    }
 
     ToolBar {
         id: toolbar
 
         tools: ToolBarLayout {
-            ToolButton { id: backbutton; source: "qrc:/images/import.svg"; onClicked: pageStack.pop(); }
+            hasRightButton: true
+            ToolButton { id: backbutton;    source: "qrc:/images/import.svg";  onClicked: cancel();  }
+            ToolButton { id: listbutton;    source: "qrc:/images/options.svg"; onClicked: list();    }
+            ToolButton { id: addbutton;     source: "qrc:/images/zoom-in.svg"; onClicked: add();     }
+            ToolButton { id: confirmbutton; source: "qrc:/images/visible.svg"; onClicked: confirm(); visible: false }
         }
     }
+
+    TrackList {
+        id:tracklist
+        width: parent.width
+        //height: parent.height-30
+        anchors.top: toolbar.bottom
+        anchors.bottom: parent.bottom
+        index: -1
+    }
+
+    states: [
+        State {
+            name: "list";
+            PropertyChanges { target: confirmbutton; visible: false }
+            PropertyChanges { target: tracklist;     visible: true  }
+        },
+        State {
+            name: "edit";
+            PropertyChanges { target: confirmbutton; visible: true  }
+            PropertyChanges { target: tracklist;     visible: false }
+        }
+    ]
+
 }
 /*
 Page {

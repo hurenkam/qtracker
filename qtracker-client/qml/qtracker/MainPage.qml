@@ -27,20 +27,22 @@ Page {
 
     MapView {
         id: map
-        anchors.top: toolbar.bottom;
-        anchors.bottom: parent.bottom;
+        anchors.top:    toolbar.bottom;
+        anchors.bottom: dashboard.top;
         width: parent.width;
+        clip: true;
         onSingleTap: root.singleTap()
         onDoubleTap: root.doubleTap()
         onLongTap:   root.longTap()
-    }
-    Image {
-        id: locator
-        source: map.state == "scrolling"? "/images/locator_red.svg" : "/images/locator_green.svg"
-        width: locator.sourceSize.width/2
-        height: locator.sourceSize.height/2
-        x: (parent.width-width)/2
-        y: (parent.height-height)/2
+
+        Image {
+            id: locator
+            source: map.state == "scrolling"? "/images/locator_red.svg" : "/images/locator_green.svg"
+            width: sourceSize.width/2
+            height: sourceSize.height/2
+            x: (parent.width-width)/2
+            y: (parent.height-height)/2
+        }
     }
     Connections {
         target: mapDialog
@@ -52,6 +54,11 @@ Page {
 
     ToolBar {
         id: toolbar
+        Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 400 } }
+
+        function toggleHide() {
+            hide = hide? false: true;
+        }
 
         tools: ToolBarLayout {
 
@@ -72,52 +79,24 @@ Page {
         }
     }
 
-    Image {
-        source: landscape? "qrc:/images/dash-bg-landscape.ico": "qrc:/images/dash-bg-portrait.ico"
-        anchors.bottom: parent.bottom
-        height: sourceSize.height*w
-        width: sourceSize.width*w
-    }
-    Clock {
-        id:     clock
-        x:      landscape? 5*w: 0*w
-        y:      landscape? parent.height-80*w: parent.height-200*w
-        width:  80*w
-        height: 80*w
-    }
-    Compass {
-        id:     compass
-        x:      landscape?               440*w:                80*w
-        y:      landscape? parent.height-200*w: parent.height-275*w
-        width:  198*w
-        height: 198*w
-    }
-    Satellites {
-        id:     sats
-        x:      landscape? 365*w: 280*w
-        y:      landscape? parent.height-85*w: parent.height-200*w
-        width:  80*w
-        height: 80*w
-    }
-    Speedometer {
-        id:     speed
-        x:      0
-        y:      landscape? parent.height-205*w: parent.height-120*w
-        width:  120*w
-        height: 120*w
-    }
-    Altimeter {
-        id:     altimeter
-        x:      landscape? 90*w: 240*w
-        y:      parent.height-120*w
-        width:  120*w
-        height: 120*w
+    DashBoard {
+        id: dashboard
+        //anchors.bottom: root.bottom
+        y: hide? (landscape? 360*h: 640*h) : (landscape? 360*h-height: 640*h-height)
+        Behavior on y { NumberAnimation { easing.type: Easing.InOutQuart; duration: 400 } }
+
+        function toggleHide() {
+            hide = hide? false: true;
+        }
     }
 
-    Image {
-        source: landscape? "qrc:/images/dash-fg-landscape.ico": "qrc:/images/dash-fg-portrait.ico"
-        anchors.bottom: parent.bottom
-        height: sourceSize.height*w
-        width: sourceSize.width*w
+    ToolButton {
+        x: landscape? 260*w : 150*w
+        y: landscape? 327*h : 607*h
+        height: 60*h
+        width: 60*w
+        id: hidebutton;
+        source: "qrc:/images/export.svg";
+        onClicked: { dashboard.toggleHide(); toolbar.toggleHide(); }
     }
 }

@@ -9,8 +9,8 @@ Item {
     id: root
     clip: true
     smooth: true
-    anchors.margins: 10
-    anchors.fill: parent
+//    anchors.margins: 10
+//    anchors.fill: parent
     state: "scrolling"
     property alias mapx:     content.x
     property alias mapy:     content.y

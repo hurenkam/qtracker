@@ -3,5 +3,5 @@ import QmlTrackerExtensions 1.0
 
 TableModel {
     id: root
-    database: "e:\\data\\qtracker\\database.sqlite"
+    database: "c:\\data\\qtracker\\database.sqlite"
 }

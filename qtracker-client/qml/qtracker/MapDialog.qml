@@ -18,7 +18,7 @@ Page {
             hasRightButton: true
             ToolButton { id: backbutton;    source: "qrc:/images/import.svg";  onClicked: pageStack.pop();                   }
             ToolButton { id: allbutton;     source: "qrc:/images/options.svg"; onClicked: root.toggleLocal();                }
-            ToolButton { id: localbutton;   source: "qrc:/images/zoom-in.svg"; onClicked: root.addRefpoint();                }
+            ToolButton { id: addbutton;     source: "qrc:/images/zoom-in.svg"; onClicked: root.addRefpoint();                }
             ToolButton {
                 id: confirmbutton;
                 source: "qrc:/images/visible.svg";
