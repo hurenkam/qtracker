@@ -9,10 +9,10 @@ Item {
     y:      parent.gaugeY(viewid)
     width:  parent.gaugeW(viewid)
     height: parent.gaugeH(viewid)
-    Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
     signal clicked()
 

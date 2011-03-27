@@ -4,7 +4,7 @@ folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
 
 # Additional import path used to resolve QML modules in Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH = /imports
 
 # Avoid auto screen rotation
 #DEFINES += ORIENTATIONLOCK
@@ -13,7 +13,7 @@ QML_IMPORT_PATH =
 #DEFINES += NETWORKACCESS
 QT       += sql
 
-VERSION = 0.3.314
+VERSION = 0.3.319
 
 symbian {
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"

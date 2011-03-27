@@ -1,6 +1,6 @@
 import QtQuick 1.0
-import com.nokia.symbian 1.0
-import Qt.labs.components 1.0
+//import com.nokia.symbian 1.0
+//import Qt.labs.components 1.0
 
 // Note: This layout is based on a N97 640x360 resolution.
 //       With the f factor i try to provide a decent view on devices

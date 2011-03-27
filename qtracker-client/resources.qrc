@@ -20,10 +20,20 @@
         <file alias="Settings.qml">qml/qtracker/Settings.qml</file>
         <file alias="TrackDialog.qml">qml/qtracker/TrackDialog.qml</file>
         <file alias="qTracker.qml">qml/qtracker/qTracker.qml</file>
+        <file alias="Screen.qml">qml/qtracker/Screen.qml</file>
+        <file alias="ToolBar.qml">qml/qtracker/ToolBar.qml</file>
+        <file alias="ToolButton.qml">qml/qtracker/ToolButton.qml</file>
+        <file alias="ToolBarLayout.qml">qml/qtracker/ToolBarLayout.qml</file>
+        <file alias="MainPage.qml">qml/qtracker/MainPage.qml</file>
+        <file alias="PageStack.qml">qml/qtracker/PageStack.qml</file>
+        <file alias="Page.qml">qml/qtracker/Page.qml</file>
+        <file alias="RouteDialog.qml">qml/qtracker/RouteDialog.qml</file>
+        <file alias="WaypointDialog.qml">qml/qtracker/WaypointDialog.qml</file>
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>
         <file alias="helpers.js">javascript/helpers.js</file>
+        <file alias="pages.js">javascript/pages.js</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="compass.svg">qml/Images/compass-2.svg</file>
@@ -56,41 +66,9 @@
         <file alias="home.svg">qml/Images/home.svg</file>
         <file alias="invisible.svg">qml/Images/invisible.svg</file>
         <file alias="visible.svg">qml/Images/visible.svg</file>
-    </qresource>
-    <qresource prefix="/colibri">
-        <file alias="CLButton.qml">qml/colibri/CLButton.qml</file>
-        <file>qml/colibri/CLCarousel.qml</file>
-        <file>qml/colibri/CLCheckBox.qml</file>
-        <file>qml/colibri/CLComboBox.qml</file>
-        <file>qml/colibri/CLDatePicker.qml</file>
-        <file>qml/colibri/CLDial.qml</file>
-        <file>qml/colibri/CLHistogram.qml</file>
-        <file>qml/colibri/CLKeyboard.qml</file>
-        <file>qml/colibri/CLLayer.qml</file>
-        <file>qml/colibri/CLLineEdit.qml</file>
-        <file>qml/colibri/CLListbox.qml</file>
-        <file>qml/colibri/CLProgressBar.qml</file>
-        <file>qml/colibri/CLRating.qml</file>
-        <file>qml/colibri/CLScrollBar.qml</file>
-        <file>qml/colibri/CLScrollBarVertical.qml</file>
-        <file>qml/colibri/CLSlider.qml</file>
-        <file>qml/colibri/CLSliderVertical.qml</file>
-        <file alias="CLStyle.qml">qml/colibri/CLStyle.qml</file>
-        <file alias="CLTab.qml">qml/colibri/CLTab.qml</file>
-        <file>qml/colibri/CLTextArea.qml</file>
-    </qresource>
-    <qresource prefix="/colibri/javascripts">
-        <file>qml/colibri/javascripts/date.js</file>
-        <file>qml/colibri/javascripts/datepicker.js</file>
-        <file alias="functions.js">qml/colibri/javascripts/functions.js</file>
-        <file>qml/colibri/javascripts/histogram.js</file>
-        <file>qml/colibri/javascripts/histogram2.js</file>
-        <file>qml/colibri/javascripts/keyboard.js</file>
-    </qresource>
-    <qresource prefix="/colibri/gradients">
-        <file>qml/colibri/gradients/Blue.qml</file>
-        <file>qml/colibri/gradients/Grey.qml</file>
-        <file>qml/colibri/gradients/LightBlue.qml</file>
-        <file alias="Red.qml">qml/colibri/gradients/Red.qml</file>
+        <file alias="dash-fg-portrait.ico">qml/Images/dash-fg-portrait.ico</file>
+        <file alias="dash-bg-landscape.ico">qml/Images/dash-bg-landscape.ico</file>
+        <file alias="dash-bg-portrait.ico">qml/Images/dash-bg-portrait.ico</file>
+        <file alias="dash-fg-landscape.ico">qml/Images/dash-fg-landscape.ico</file>
     </qresource>
 </RCC>

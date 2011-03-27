@@ -1,8 +1,20 @@
 import QtQuick 1.0
 //import "qrc:/colibri"
-import com.nokia.symbian 1.0
+//import com.nokia.symbian 1.0
 //import Qt.labs.components 1.0
 
+Page {
+    id: root
+
+    ToolBar {
+        id: toolbar
+
+        tools: ToolBarLayout {
+            ToolButton { id: backbutton; source: "qrc:/images/import.svg"; onClicked: pageStack.pop(); }
+        }
+    }
+}
+/*
 Page {
     signal cancel()
     signal confirm()
@@ -34,3 +46,4 @@ Page {
         index: -1
     }
 }
+*/

@@ -51,7 +51,7 @@ void registerTypes()
 
 int main(int argc, char *argv[])
 {
-    debugOpen();
+    //debugOpen();
     registerTypes();
     QApplication app(argc, argv);
 
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 
     QmlApplicationViewer viewer;
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setSource(QUrl("qrc:///qml/main.qml"));
+    viewer.setSource(QUrl("qrc:///qml/qTracker.qml"));
     viewer.rootContext()->setContextProperty("client",&client);
     splash.finish(&viewer);
     viewer.showFullScreen();
@@ -77,6 +77,6 @@ int main(int argc, char *argv[])
 
     qDebug() << "main(): app.exec()";
     int result = app.exec();
-    debugClose();
+    //debugClose();
     return result;
 }
