@@ -11,3 +11,18 @@ Page {
         }
     }
 }
+
+/*
+New
+=================
+Name:
+Position:
+Altitude:
+Time:
+| save | cancel |
+
+List
+=================
+d e s <name>
+| cancel |
+*/

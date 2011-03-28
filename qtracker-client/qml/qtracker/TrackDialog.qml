@@ -1,7 +1,4 @@
 import QtQuick 1.0
-//import "qrc:/colibri"
-//import com.nokia.symbian 1.0
-//import Qt.labs.components 1.0
 
 Page {
     id: root
@@ -44,50 +41,73 @@ Page {
         index: -1
     }
 
+    Rectangle {
+        id:newtrack
+        width: parent.width
+        anchors.top:  toolbar.bottom
+        anchors.bottom:  parent.bottom
+        color: activePalette.dark
+        gradient: Gradient {
+            GradientStop {
+                position: 0.0
+                color: activePalette.light
+            }
+            GradientStop {
+                position:  1.0
+                color: activePalette.dark
+            }
+        }
+
+        InputField {
+            id: nameinput
+            label: "Name: "
+            input: "trk-20110328-211000"
+        }
+
+        AutoLayout {
+            id: dualbox
+            anchors.top:    nameinput.bottom
+            anchors.bottom: parent.bottom
+            anchors.left:   parent.left
+            anchors.right:  parent.right
+
+            RadioBox {
+                id: base
+                visible: true
+                onVisibleChanged: dualbox.layoutChildren()
+                selected: 0
+                radiobuttons: [ RadioButton { text:"All"}, RadioButton{ text:"Time based"}, RadioButton { text:"Distance based"} ]
+            }
+            RadioBox {
+                id: time
+                visible: base.selected==1? true: false
+                onVisibleChanged: dualbox.layoutChildren()
+                selected: 1
+                radiobuttons: [ RadioButton { text:"5s"}, RadioButton{ text:"15s"}, RadioButton { text:"1m"}, RadioButton { text:"5m"}, RadioButton { text:"15m"} ]
+            }
+            RadioBox {
+                id: distance
+                visible: base.selected==2? true: false
+                onVisibleChanged: dualbox.layoutChildren()
+                selected: 1
+                radiobuttons: [ RadioButton { text:"10m"}, RadioButton{ text:"30m"}, RadioButton { text:"100m"}, RadioButton { text:"300m"}, RadioButton { text:"1km"} ]
+            }
+        }
+    }
+
     states: [
         State {
             name: "list";
             PropertyChanges { target: confirmbutton; visible: false }
             PropertyChanges { target: tracklist;     visible: true  }
+            PropertyChanges { target: newtrack;      visible: false }
         },
         State {
             name: "edit";
             PropertyChanges { target: confirmbutton; visible: true  }
             PropertyChanges { target: tracklist;     visible: false }
+            PropertyChanges { target: newtrack;      visible: true  }
         }
     ]
 
 }
-/*
-Page {
-    signal cancel()
-    signal confirm()
-    signal add()
-    signal edit()
-    signal options()
-    property alias index: tracklist.index
-
-    ToolBar {
-        id: tools
-        width: parent.width
-        anchors.top: parent.top
-
-        Row {
-            ToolButton { iconSource: "qrc:/images/export.svg";  onClicked: cancel();  }
-            ToolButton { iconSource: "qrc:/images/visible.svg"; onClicked: confirm(); }
-            ToolButton { iconSource: "qrc:/images/zoom-in.svg"; onClicked: add();     }
-            ToolButton { iconSource: "qrc:/images/edit.svg";    onClicked: edit();    }
-            ToolButton { iconSource: "qrc:/images/options.svg"; onClicked: options(); }
-        }
-    }
-
-    TrackList {
-        id:tracklist
-        width: parent.width
-        //height: parent.height-30
-        anchors.top: tools.bottom
-        anchors.bottom: parent.bottom
-        index: -1
-    }
-}
-*/

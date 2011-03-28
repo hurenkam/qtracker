@@ -27,6 +27,10 @@
         <file alias="RouteDialog.qml">qml/qtracker/RouteDialog.qml</file>
         <file alias="WaypointDialog.qml">qml/qtracker/WaypointDialog.qml</file>
         <file alias="DashBoard.qml">qml/qtracker/DashBoard.qml</file>
+        <file alias="InputField.qml">qml/qtracker/InputField.qml</file>
+        <file alias="RadioBox.qml">qml/qtracker/RadioBox.qml</file>
+        <file alias="AutoLayout.qml">qml/qtracker/AutoLayout.qml</file>
+        <file alias="RadioButton.qml">qml/qtracker/RadioButton.qml</file>
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>

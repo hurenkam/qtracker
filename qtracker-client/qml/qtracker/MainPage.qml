@@ -89,7 +89,7 @@ Page {
         property int animationDuration: 300
         Behavior on y {
             enabled: root.animate
-            NumberAnimation { easing.type: Easing.InOutQuart; duration: animationDuration }
+            NumberAnimation { easing.type: Easing.InOutQuart; duration: dashboard.animationDuration }
         }
 
         function toggleHide() {
