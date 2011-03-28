@@ -12,7 +12,8 @@ using namespace QtMobility;
 class Client : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QVariant reply   READ  getReply   NOTIFY replyReady)
+    Q_PROPERTY(QVariant reply    READ  getReply    NOTIFY replyReady)
+    Q_PROPERTY(QVariant platform READ  getPlatform)
 
 signals:
     void replyReady();
@@ -26,6 +27,7 @@ public slots:
 
 public:
     Q_INVOKABLE QVariant getReply();
+    Q_INVOKABLE QVariant getPlatform();
 
 private:
     QValueSpacePublisher*   publisher;

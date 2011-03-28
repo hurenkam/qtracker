@@ -4,8 +4,6 @@ Item {
     id: root
     property bool hide: false
     height: hide? bgimage.height : (landscape? 70*h: 200*w)
-    //visible: hide? false : true
-    //Behavior on y { NumberAnimation { easing.type: Easing.InOutQuart; duration: 400 } }
 
     Image {
         id: bgimage

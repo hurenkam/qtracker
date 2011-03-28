@@ -3,10 +3,10 @@ import QtMobility.publishsubscribe 1.1
 
 Page {
     id: root
+    property bool animate: false
 
     function exitServer() {
         console.log("exitServer()")
-        //client.stopServer();
         var cmd = { "class": "server", "method": "stop", "args": [] }
         client.sendCommand(cmd);
     }
@@ -54,7 +54,11 @@ Page {
 
     ToolBar {
         id: toolbar
-        Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 400 } }
+        property int animationDuration: 300
+        Behavior on height {
+            enabled: root.animate
+            NumberAnimation { easing.type: Easing.InOutQuart; duration: animationDuration }
+        }
 
         function toggleHide() {
             hide = hide? false: true;
@@ -81,9 +85,12 @@ Page {
 
     DashBoard {
         id: dashboard
-        //anchors.bottom: root.bottom
         y: hide? (landscape? 360*h: 640*h) : (landscape? 360*h-height: 640*h-height)
-        Behavior on y { NumberAnimation { easing.type: Easing.InOutQuart; duration: 400 } }
+        property int animationDuration: 300
+        Behavior on y {
+            enabled: root.animate
+            NumberAnimation { easing.type: Easing.InOutQuart; duration: animationDuration }
+        }
 
         function toggleHide() {
             hide = hide? false: true;
@@ -97,6 +104,11 @@ Page {
         width: 60*w
         id: hidebutton;
         source: "qrc:/images/export.svg";
-        onClicked: { dashboard.toggleHide(); toolbar.toggleHide(); }
+        onClicked: {
+            root.animate = true;
+            dashboard.toggleHide();
+            toolbar.toggleHide();
+            root.animate = false;
+        }
     }
 }

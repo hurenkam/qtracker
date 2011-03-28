@@ -39,30 +39,6 @@ void MapView::setFilename(QUrl u)
     update();
 }
 
-/*
-    int w = width();
-    int h = height();
-    int dx = p.x()*tilesize-_mapx+w/2;
-    int dy = p.y()*tilesize-_mapy+h/2;
-    if ((dx > w) || (dy > h)) return;
-
-    int sx = 0;
-    int sw = tilesize;
-    int sy = 0;
-    int sh = tilesize;
-    if (dx < 0)
-    {
-        sw += dx;
-        sx -= dx;
-        dx = 0;
-    }
-    if (dy < 0)
-    {
-        sh += dy;
-        sy -= dy;
-        dy = 0;
-    }
-*/
 QRect MapView::viewTiles()
 {
     double w = width();

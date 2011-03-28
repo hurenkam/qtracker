@@ -3,14 +3,11 @@
         <file alias="Altimeter.qml">qml/qtracker/Altimeter.qml</file>
         <file alias="Compass.qml">qml/qtracker/Compass.qml</file>
         <file alias="Clock.qml">qml/qtracker/Clock.qml</file>
-        <file alias="Layout.qml">qml/qtracker/Layout.qml</file>
         <file alias="Levels.qml">qml/qtracker/Levels.qml</file>
-        <file alias="main.qml">qml/qtracker/main.qml</file>
         <file alias="MapButton.qml">qml/qtracker/MapButton.qml</file>
         <file alias="MapDialog.qml">qml/qtracker/MapDialog.qml</file>
         <file alias="MapList.qml">qml/qtracker/MapList.qml</file>
         <file alias="MapView.qml">qml/qtracker/MapView.qml</file>
-        <file alias="MapWrapper.qml">qml/qtracker/MapWrapper.qml</file>
         <file alias="MouseHandler.qml">qml/qtracker/MouseHandler.qml</file>
         <file alias="Satellites.qml">qml/qtracker/Satellites.qml</file>
         <file alias="Speedometer.qml">qml/qtracker/Speedometer.qml</file>

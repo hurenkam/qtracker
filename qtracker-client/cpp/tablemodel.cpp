@@ -23,12 +23,14 @@ TableModel::~TableModel()
 int TableModel::rowCount(const QModelIndex &parent) const
 {
     ENTER("")
+    if (!model) return 0;
     return model->rowCount(parent);
 }
 
 int TableModel::columnCount(const QModelIndex &parent) const
 {
     ENTER("")
+    if (!model) return 0;
     return model->columnCount(parent);
 }
 

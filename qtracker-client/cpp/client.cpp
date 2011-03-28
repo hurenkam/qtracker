@@ -35,3 +35,16 @@ Q_INVOKABLE QVariant Client::getReply()
     else
         return 0;
 }
+
+Q_INVOKABLE QVariant Client::getPlatform()
+{
+    int result = -1;
+#if   defined(Q_OS_SYMBIAN)
+    result = 0;
+#elif defined(Q_WS_MAEMO_5)
+    result = 1;
+#elif defined(Q_WS_SIMULATOR)
+    result = 2;
+#endif
+    return QVariant(result);
+}

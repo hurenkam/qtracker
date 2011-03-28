@@ -25,14 +25,22 @@ void debugOutput(QtMsgType type, const char *msg)
 
 void debugOpen()
 {
-        file.setFileName("e:/data/mapviewer-debug.txt");
-        if (file.exists())
-            fileopen = file.open(QIODevice::Append | QIODevice::Truncate | QIODevice::Text);
-        else
-                fileopen = false;
+#if   defined(Q_OS_SYMBIAN)
+    file.setFileName("e:/data/mapviewer-debug.txt");
+#elif defined(Q_WS_MAEMO_5)
+    file.setFileName("mapviewer-debug.txt");
+#elif defined(Q_WS_SIMULATOR)
+    file.setFileName("c:/data/mapviewer-debug.txt");
+#else
+    file.setFileName("mapviewer-debug.txt");
+#endif
+    if (file.exists())
+        fileopen = file.open(QIODevice::Append | QIODevice::Truncate | QIODevice::Text);
+    else
+            fileopen = false;
 
-        if (fileopen)
-                qInstallMsgHandler(debugOutput);
+    if (fileopen)
+            qInstallMsgHandler(debugOutput);
 }
 
 void debugClose()
