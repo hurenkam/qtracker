@@ -1,4 +1,4 @@
-#summary QmlTracker: A port of qTracker to qml.
+#summary QmlTracker: A port of qTracker to qml (qtracker-client + qtrackerd).
 
 [http://code.google.com/p/qtracker/wiki/About About] | 
 [http://code.google.com/p/qtracker/wiki/UserManual User Manual] | 
@@ -23,9 +23,9 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
  * Compass using magnetic north sensor
  * Runs on Simulator & Symbian^1 (tested on Windows7/Ubuntu Maverick & N97)
  * Builds fine for Maemo & Symbian^3 (untested since i don't have those devices)
+ * Show position on map
 
 * Todo before 1st alpha: *
- * Show position on map
  * Show wgs84 coordinates on map
  * Calibrate map
 
