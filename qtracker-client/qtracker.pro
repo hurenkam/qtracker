@@ -13,7 +13,7 @@ QML_IMPORT_PATH = /imports
 #DEFINES += NETWORKACCESS
 QT       += sql
 
-VERSION = 0.3.325
+VERSION = 0.3.329
 
 symbian {
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
@@ -24,6 +24,10 @@ symbian {
 win32 {
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
 }
+unix {
+    DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
+}
+
 
 # Define QMLJSDEBUGGER to allow debugging of QML in debug builds
 # (This might significantly increase build time)

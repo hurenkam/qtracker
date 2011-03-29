@@ -5,6 +5,8 @@
 #include <QImageReader>
 #include <QThread>
 
+uint qHash(const QPoint& p);
+
 class Request
 {
 public:
