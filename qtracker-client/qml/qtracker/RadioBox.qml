@@ -24,7 +24,7 @@ Item {
         width: container.width
         height: radiobuttons.length*24
 
-        onClicked: { console.log("MouseArea.onClicked: ", mouseY, (mouseY-3)/24); root.selected=(mouseY-12)/24 }
+        onClicked: { console.log("MouseArea.onClicked: ", mouseY, (mouseY-12)/24); root.selected=(mouseY-12)/24 }
     }
 
     function layoutButtons() {
