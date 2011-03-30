@@ -2,7 +2,7 @@
 #include <QDebug>
 #include "locationserver.h"
 
-#define ENABLE_DEBUG
+//#define ENABLE_DEBUG
 #include "helpers.h"
 LocationServer::LocationServer(QObject *parent)
     : CommandHandler(parent)

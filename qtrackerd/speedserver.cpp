@@ -2,7 +2,7 @@
 #include <QVariant>
 #include "speedserver.h"
 
-#define ENABLE_DEBUG
+//#define ENABLE_DEBUG
 #include "helpers.h"
 
 SpeedServer::SpeedServer(QObject *parent)

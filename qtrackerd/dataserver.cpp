@@ -25,8 +25,29 @@ void DataServer::start()
 {
     ENTER("")
 
+    int platform = -1;
+#if   defined(Q_OS_SYMBIAN)
+    platform = 0;
+#elif defined(Q_WS_MAEMO_5)
+    platform = 1;
+#elif defined(Q_WS_SIMULATOR)
+    platform = 2;
+#endif
+
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("e:\\data\\qtracker\\database.sqlite");
+    switch (platform)
+    {
+    case 0:
+        db.setDatabaseName("e:\\data\\qtracker\\database.sqlite");
+        break;
+    case 2:
+        db.setDatabaseName("c:\\data\\qtracker\\database.sqlite");
+        break;
+    default:
+        db.setDatabaseName("database.sqlite");
+        break;
+    }
+
     bool result = db.open();
     if (!result) { EXIT("unable to open db" << error().text()) return; }
 

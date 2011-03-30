@@ -21,6 +21,8 @@ public slots:
 
 public:
     ~Track();
+    int getId()       { return trackid; }
+    QString getName() { return trackname; }
 
 private:
     explicit Track(QSqlDatabase& db, QString name, int interval);
@@ -30,6 +32,7 @@ private:
     void CreateTrack(QString name, int interval);
 
 private:
+    QString trackname;
     QSqlDatabase& db;
     QSqlTableModel* tracks;
     QSqlTableModel* trackpoints;

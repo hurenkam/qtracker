@@ -12,6 +12,7 @@ Server::Server(QObject *parent)
     : CommandHandler(parent)
     , c(0)
     , publisher(0)
+    , trackinfo(0)
     , subscriber(0)
     , command(0)
     , track(0)
@@ -68,35 +69,7 @@ Server::~Server()
 
     EXIT("")
 }
-/*
-void Server::onIntegerCommand(int cmd)
-{
-    ENTER("")
 
-    bool setc = true;
-    switch (cmd)
-    {
-        case cmdNone:
-            setc = false;
-            break;
-        case cmdStop:
-            stop();
-            setc = false;
-            break;
-        case cmdReset:
-            reset();
-            break;
-        default:
-            LOG("Server::onIntegerCommand(): unknown command " << cmd)
-            break;
-    }
-
-    if (setc)
-        c->setValue("cmd",cmdNone);
-
-    EXIT("")
-}
-*/
 void Server::onCommandAvailable()
 {
     ENTER("")
@@ -126,9 +99,6 @@ void Server::onCommandAvailable()
             }
             break;
         }
-        //case QVariant::Int:
-        //    onIntegerCommand(value.toInt());
-        //    break;
         default:
             LOG("Server::onCommandAvailable(): unknown type " << value)
             break;
@@ -136,25 +106,7 @@ void Server::onCommandAvailable()
 
     EXIT("")
 }
-/*
-void Server::onCommand(QVariant cmd)
-{
-    ENTER("")
 
-    QVariantMap map = cmd.toMap();
-    if (!map.contains("method")) return;
-
-    QString method = map["class"].toString() + map["method"].toString();
-    QVariantList args;
-    if (map.contains("args"))
-        args = map["args"].toList();
-
-    QStringList supported;
-    supported << "trackstart" << "trackstop";
-    if (!supported.contains(method)) return;
-
-    switch (supported.indexOf(method))
-*/
 void Server::onCommand(int method, QVariantList args)
 {
     switch(method)
@@ -169,7 +121,14 @@ void Server::onCommand(int method, QVariantList args)
             break;
         case 2:
         {
+            QString name;
+            int interval;
             if (args.count()>1)
+            {
+                name = args[0].toString();
+                interval = args[1].toInt();
+            }
+            if (!track)
             {
                 QString name = args[0].toString();
                 int interval = args[1].toInt();
@@ -181,6 +140,18 @@ void Server::onCommand(int method, QVariantList args)
                     track,
                     SLOT(addPoint(double,double,double))
                 );
+
+                QVariant trackid = track->getId();
+                QVariant trackname = name;
+                QVariant trackinterval = interval;
+                trackinfo->setValue("status",QVariant(1));
+                trackinfo->setValue("id",trackid);
+                trackinfo->setValue("name",trackname);
+                trackinfo->setValue("interval",trackinterval);
+            }
+            else
+            {
+                LOG("trackstart(" << name << "," << interval << "): Recording already active!")
             }
             break;
         }
@@ -188,6 +159,7 @@ void Server::onCommand(int method, QVariantList args)
             LOG("trackstop")
             delete track;
             track = 0;
+            trackinfo->setValue("status",QVariant(0));
             break;
     }
 
@@ -201,6 +173,7 @@ void Server::start()
     if (c || publisher || subscriber) return;
     c          = new QValueSpacePublisher  ("/server/command");
     publisher  = new QValueSpacePublisher  ("/server/response");
+    trackinfo  = new QValueSpacePublisher  ("/server/track");
     subscriber = new QValueSpaceSubscriber ("/server/command");
 
     //int i = -1;
@@ -213,6 +186,16 @@ void Server::start()
     m["args"]=l;
     c->setValue("cmd",m);
     publisher->setValue("ack",m);
+
+    int i = 0;
+    QVariant status = i;
+    QVariant trackid = i;
+    QVariant trackname = QString("");
+    QVariant trackinterval = i;
+    trackinfo->setValue("status",status);
+    trackinfo->setValue("id",trackid);
+    trackinfo->setValue("name",trackname);
+    trackinfo->setValue("interval",trackinterval);
 
     connect(subscriber,SIGNAL(contentsChanged()),this,SLOT(onCommandAvailable()));
 

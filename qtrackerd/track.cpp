@@ -10,6 +10,7 @@
 Track::Track(QSqlDatabase& d, QString name, int interval)
     : db(d)
     , valid(false)
+    , trackname(name)
 {
     ENTER("")
     if (!db.isOpen()) { EXIT("db not open") return; }

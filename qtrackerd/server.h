@@ -68,6 +68,7 @@ private:
 private:
     QValueSpacePublisher*   c;
     QValueSpacePublisher*   publisher;
+    QValueSpacePublisher*   trackinfo;
     QValueSpaceSubscriber*  subscriber;
     int command;
 

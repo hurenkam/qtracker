@@ -38,6 +38,11 @@
     <key ref="/server/satellite/inview"    int="0x00000071"/>
     <key ref="/server/satellite/inuse"     int="0x00000072"/>
 
+    <key ref="/server/track/status"        int="0x00000081"/>
+    <key ref="/server/track/id"            int="0x00000082"/>
+    <key ref="/server/track/name"          int="0x00000083"/>
+    <key ref="/server/track/interval"      int="0x00000084"/>
+
     <key ref="/viewer/zoom"                int="0x00001001"/>
     <key ref="/viewer/map/file"            int="0x00001011"/>
     <key ref="/viewer/map/state"           int="0x00001012"/>
