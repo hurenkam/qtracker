@@ -6,13 +6,15 @@ Item {
     property list<Item> radiobuttons
     onSelectedChanged:     layoutButtons()
     onRadiobuttonsChanged: layoutButtons()
+    property real buttonheight: 24
+    height: container.height
 
     Rectangle {
         id: container
         x: 3
         width: parent.width -6
+        height: radiobuttons.length*root.buttonheight +6
         y: 3
-        height: parent.height -6
         anchors.margins: 5
         radius: 5
         color: Qt.lighter(activePalette.dark)
@@ -22,9 +24,9 @@ Item {
         x: container.x
         y: containet.y
         width: container.width
-        height: radiobuttons.length*24
+        height: radiobuttons.length*root.buttonheight
 
-        onClicked: { console.log("MouseArea.onClicked: ", mouseY, (mouseY-12)/24); root.selected=(mouseY-12)/24 }
+        onClicked: root.selected=(mouseY-root.buttonheight/2)/root.buttonheight
     }
 
     function layoutButtons() {
@@ -33,9 +35,9 @@ Item {
         for (var i=0; i<radiobuttons.length; i++) {
 
             radiobuttons[i].width = width;
-            radiobuttons[i].height = 24;
+            radiobuttons[i].height = root.buttonheight;
             radiobuttons[i].x = 0;
-            radiobuttons[i].y = i*24;
+            radiobuttons[i].y = i*root.buttonheight;
             radiobuttons[i].parent = container
             radiobuttons[i].selected = (i==root.selected)
 

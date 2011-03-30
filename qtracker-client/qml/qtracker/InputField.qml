@@ -1,6 +1,7 @@
 import QtQuick 1.0
 
 Rectangle {
+    id: root
     x: 3
     y: 3
     anchors.margins: 5
@@ -21,6 +22,7 @@ Rectangle {
         Text {
             id: labelfield
             text: null
+            font.pointSize: root.height/5
             color: "white"
             visible: text? true: false
         }
@@ -36,6 +38,7 @@ Rectangle {
             TextInput {
                 x: 10
                 width: parent.width -20
+                font.pointSize: root.height/5
                 id: inputfield
                 text: null
                 color: "white"

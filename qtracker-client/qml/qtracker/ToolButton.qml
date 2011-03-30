@@ -1,13 +1,29 @@
 import QtQuick 1.0
 
-Image {
-    //Screen { id: screen }
+Item {
     id: root
-    width: 40 //screen.width(40)
-    height: 40 //screen.width(40)
+    width: parent.height*0.7
+    height: parent.height*0.7
     smooth: true
     state: "released"
     property int interval: 0
+    property alias selected: bg.visible
+    property alias source: img.source
+    property alias bgcolor: bg.color
+
+    Rectangle {
+        id: bg
+        visible: false
+        x: 1; y:1; width: parent.width-2; height: parent.height-2
+        radius: height/2
+        color: "white"
+    }
+
+    Image {
+        id: img
+        visible: true
+        anchors.fill: parent
+    }
 
     signal clicked
     signal repeat

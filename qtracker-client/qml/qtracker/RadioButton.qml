@@ -8,18 +8,19 @@ Item {
     Image {
         x: 4
         y: 4
-        width: 20
-        height: 20
+        width: root.height-8
+        height: root.height-8
         source: root.selected? "qrc:/images/visible.svg" : "qrc:/images/invisible.svg"
     }
 
     Text {
         id: priv
         text: null
-        x: 32
+        x: root.height
         y: 2
-        height: 20
-        width: parent.width - 36
+        height: root.height
+        width: root.width - 36
+        font.pixelSize: root.height/2
         color: "white"
     }
 }
