@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import QtMobility.publishsubscribe 1.1
 
 Rectangle {
     id: root
@@ -29,6 +30,12 @@ Rectangle {
         Database {
             id: database
             table: "tracks"
+        }
+        ValueSpaceSubscriber {
+            id: newid;
+            path: "/server/track/id"
+            property int trackid: value
+            onTrackidChanged: { console.log("TrackId changed"); database.refresh(); }
         }
 
         Component {

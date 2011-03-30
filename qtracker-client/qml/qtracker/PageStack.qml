@@ -70,6 +70,10 @@ Rectangle {
         animate = false;
     }
 
+    function home() {
+        while (JS.length() > 1) pop();
+    }
+
     function pop() {
         animate = true;
         if (JS.length()<1) return;

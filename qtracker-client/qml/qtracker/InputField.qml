@@ -21,10 +21,10 @@ Rectangle {
 
         Text {
             id: labelfield
-            text: null
+            text: ""
             font.pointSize: root.height/5
             color: "white"
-            visible: text? true: false
+            visible: text!=""? true: false
         }
 
         Rectangle {

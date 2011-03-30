@@ -20,7 +20,7 @@ Item {
         y: 2
         height: root.height
         width: root.width - 36
-        font.pixelSize: root.height/2
+        font.pixelSize: root.height/1.6
         color: "white"
     }
 }

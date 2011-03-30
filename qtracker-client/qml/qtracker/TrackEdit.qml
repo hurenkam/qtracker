@@ -4,89 +4,42 @@ Page {
     id: root
 
     function confirm() {
-        pageStack.pop();
+        starttrack(nameinput.input,0);
+        pageStack.home();
     }
     function cancel() {
         pageStack.pop();
     }
-    function newtrack() {
+    function starttrack(trackname,interval) {
+        console.log("starttrack()")
+        var cmd = { "class": "server", "method": "trackstart", "args": [ trackname, interval ] }
+        client.sendCommand(cmd);
     }
 
-    Rectangle {
+    MenuEntry {
         id: heading
-
-        x: 2
-        y: 2
-        width: parent.width -4
-        height:  50
-        radius:  15
-        color: activePalette.light
-        state: "normal"
-
-        gradient: Gradient {
-            GradientStop {
-                position: 0.0
-                color: state=="pressed"? Qt.darker(activePalette.light) : Qt.lighter(activePalette.light)
-            }
-            GradientStop {
-                position:  1.0
-                color: state=="pressed"? Qt.darker(activePalette.dark) : Qt.lighter(activePalette.dark)
-            }
-        }
-
-        ToolButton {
-            x: 5
-            y: 5
-            width: 40
-            height: 40
-
-            source: "qrc:/images/back.svg";
-            onClicked: root.cancel();
-        }
-
-        Text {
-            x: 70; y: 5
-            text: "New Track"
-            font.pixelSize: 25
-            color: "white"
-            visible: text? true: false
-        }
-
-        MouseArea {
-            anchors.fill:  parent
-            onClicked: root.cancel()
-            onPressed: state="pressed"
-            onCanceled: state="normal"
-            onReleased: state="normal"
-        }
+        x: 0; y: 0
+        width: parent.width
+        height: 54
+        text: "New Track"
+        leftButtonVisible: true
+        onLeftClicked: root.cancel();
+        rightButtonVisible: true
+        rightButtonSource: "qrc:/images/visible.svg"
+        onRightClicked: root.confirm();
     }
 
-    Rectangle {
+    MenuEntry {
         id: interval
-
-        x: 2
-        y: 56
-        width: parent.width -4
-        height: parent.height -58
-        radius:  15
-        color: activePalette.light
-
-        gradient: Gradient {
-            GradientStop {
-                position: 0.0
-                color: activePalette.light
-            }
-            GradientStop {
-                position:  1.0
-                color: activePalette.dark
-            }
-        }
+        x: 0; y: 54
+        width: parent.width
+        height: parent.height -54
 
         InputField {
+            id: nameinput
             x: 5; y:5;
             height: 50
             width: parent.width-10
-            id: nameinput
             input: "trk-20110328-211000"
         }
         RadioBox {

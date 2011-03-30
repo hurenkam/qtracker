@@ -13,10 +13,11 @@ class Client : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QVariant reply    READ  getReply    NOTIFY replyReady)
-    Q_PROPERTY(QVariant platform READ  getPlatform)
+    Q_PROPERTY(QVariant platform READ  getPlatform NOTIFY platformChanged)
 
 signals:
     void replyReady();
+    void platformChanged();
 
 public:
     explicit Client(QObject *parent = 0);

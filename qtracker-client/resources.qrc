@@ -15,7 +15,6 @@
         <file alias="Database.qml">qml/qtracker/Database.qml</file>
         <file alias="TrackPoints.qml">qml/qtracker/TrackPoints.qml</file>
         <file alias="Settings.qml">qml/qtracker/Settings.qml</file>
-        <file alias="TrackDialog.qml">qml/qtracker/TrackDialog.qml</file>
         <file alias="qTracker.qml">qml/qtracker/qTracker.qml</file>
         <file alias="Screen.qml">qml/qtracker/Screen.qml</file>
         <file alias="ToolBar.qml">qml/qtracker/ToolBar.qml</file>
@@ -24,14 +23,16 @@
         <file alias="MainPage.qml">qml/qtracker/MainPage.qml</file>
         <file alias="PageStack.qml">qml/qtracker/PageStack.qml</file>
         <file alias="Page.qml">qml/qtracker/Page.qml</file>
-        <file alias="RouteDialog.qml">qml/qtracker/RouteDialog.qml</file>
-        <file alias="WaypointDialog.qml">qml/qtracker/WaypointDialog.qml</file>
         <file alias="DashBoard.qml">qml/qtracker/DashBoard.qml</file>
         <file alias="InputField.qml">qml/qtracker/InputField.qml</file>
         <file alias="RadioBox.qml">qml/qtracker/RadioBox.qml</file>
         <file alias="AutoLayout.qml">qml/qtracker/AutoLayout.qml</file>
         <file alias="RadioButton.qml">qml/qtracker/RadioButton.qml</file>
         <file alias="TrackEdit.qml">qml/qtracker/TrackEdit.qml</file>
+        <file alias="MenuEntry.qml">qml/qtracker/MenuEntry.qml</file>
+        <file alias="TrackMenu.qml">qml/qtracker/TrackMenu.qml</file>
+        <file alias="WaypointMenu.qml">qml/qtracker/WaypointMenu.qml</file>
+        <file alias="RouteMenu.qml">qml/qtracker/RouteMenu.qml</file>
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>
@@ -73,8 +74,6 @@
         <file alias="dash-bg-landscape.ico">qml/Images/dash-bg-landscape.ico</file>
         <file alias="dash-bg-portrait.ico">qml/Images/dash-bg-portrait.ico</file>
         <file alias="dash-fg-landscape.ico">qml/Images/dash-fg-landscape.ico</file>
-        <file alias="options-blue.svg">qml/Images/options-blue.svg</file>
-        <file alias="plus-blue.svg">qml/Images/zoom-in-blue.svg</file>
         <file alias="back.svg">qml/Images/back-2.svg</file>
         <file alias="forward.svg">qml/Images/forward-2.svg</file>
     </qresource>

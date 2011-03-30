@@ -22,7 +22,7 @@ Item {
 
     MouseArea {
         x: container.x
-        y: containet.y
+        y: container.y
         width: container.width
         height: radiobuttons.length*root.buttonheight
 
@@ -30,7 +30,7 @@ Item {
     }
 
     function layoutButtons() {
-        console.log("RadioBox.layoutButtons: ",root.selected,radiobuttons.length)
+        //console.log("RadioBox.layoutButtons: ",root.selected,radiobuttons.length)
 
         for (var i=0; i<radiobuttons.length; i++) {
 
@@ -41,7 +41,7 @@ Item {
             radiobuttons[i].parent = container
             radiobuttons[i].selected = (i==root.selected)
 
-            console.log("RadioBox.layoutButtons: ",i,radiobuttons[i].selected,radiobuttons[i].x,radiobuttons[i].y,radiobuttons[i].width,radiobuttons[i].height)
+            //console.log("RadioBox.layoutButtons: ",i,radiobuttons[i].selected,radiobuttons[i].x,radiobuttons[i].y,radiobuttons[i].width,radiobuttons[i].height)
         }
     }
 }

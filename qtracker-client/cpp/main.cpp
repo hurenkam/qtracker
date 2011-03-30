@@ -59,7 +59,7 @@ void registerTypes()
 
 int main(int argc, char *argv[])
 {
-    //debugOpen();
+    debugOpen();
     registerTypes();
     QApplication app(argc, argv);
 
@@ -85,6 +85,6 @@ int main(int argc, char *argv[])
 
     qDebug() << "main(): app.exec()";
     int result = app.exec();
-    //debugClose();
+    debugClose();
     return result;
 }
