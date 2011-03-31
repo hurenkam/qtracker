@@ -31,6 +31,7 @@ Rectangle {
             id: database
             table: "tracks"
         }
+
         ValueSpaceSubscriber {
             id: newid;
             path: "/server/track/id"

@@ -55,8 +55,10 @@ Q_SIGNALS:
     void filterChanged();
     void countChanged();
 
-private Q_SLOTS:
+public Q_SLOTS:
     void refresh();
+
+private Q_SLOTS:
     void inserted(const QModelIndex &index, int start, int end);
     void removed(const QModelIndex &index, int start, int end);
     void handleDataChanged(const QModelIndex &start, const QModelIndex &end);

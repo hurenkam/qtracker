@@ -1,43 +1,50 @@
 #include <QDebug>
 #include "client.h"
 
+#define ENABLE_DEBUG
+#include "helpers.h"
+
 Client::Client(QObject *parent)
     : QObject(parent)
     , publisher(0)
     , subscriber(0)
 {
-    qDebug() << "Client::Client()";
+    ENTER("")
+    EXIT("")
 }
 
 Q_INVOKABLE void Client::startServer()
 {
-    qDebug() << "Client::startServer()";
-    process.start("qtrackerd.exe");
+    ENTER("")
+    //process.start("qtrackerd.exe");
 
     if (!publisher)
         publisher  = new QValueSpacePublisher   ("/server/command");
     if (!subscriber)
         subscriber = new  QValueSpaceSubscriber ("/server/response");
+    EXIT("")
 }
 
 Q_INVOKABLE void Client::sendCommand(const QVariant& value)
 {
-    qDebug() << "Client::sendCommand(" << value << ")";
+    ENTER("")
     if (publisher)
         publisher->setValue("cmd",value);
+    EXIT("")
 }
 
 Q_INVOKABLE QVariant Client::getReply()
 {
-    qDebug() << "Client::getReply()";
+    ENTER("")
     if (subscriber)
         return subscriber->value("ack");
     else
-        return 0;
+        return -1;
 }
 
 Q_INVOKABLE QVariant Client::getPlatform()
 {
+    ENTER("")
     int result = -1;
 #if   defined(Q_OS_SYMBIAN)
     result = 0;
