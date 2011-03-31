@@ -58,6 +58,8 @@ public slots:
     void start();
     void stop();
     void reset();
+    void trackStart(QString name, int interval);
+    void trackStop();
     void onCommandAvailable();
     //virtual void onCommand(QVariant cmd);
     virtual void onCommand(int method, QVariantList args);

@@ -7,7 +7,7 @@
 
 void CommandHandler::onCommand(QVariant cmd)
 {
-    ENTER("")
+    ENTER(cmd)
 
     QVariantMap map = cmd.toMap();
     if (!map.contains("method")) return;

@@ -15,17 +15,21 @@ void debugClose();
 
 void debugOutput(QtMsgType type, const char *msg)
 {
-    //debugOpen();
-
-    out << msg << "\n";
-    file.flush();
-
-    //debugClose();
+        out << QDateTime::currentDateTime().toString() << "    " << msg << "\n";
+        file.flush();
 }
 
 void debugOpen()
 {
-    file.setFileName("e:/data/server-debug.txt");
+//#if   defined(Q_OS_SYMBIAN)
+    file.setFileName("e:/data/qtrackerd-debug.txt");
+//#elif defined(Q_WS_MAEMO_5)
+//    file.setFileName("qtrackerd-debug.txt");
+//#elif defined(Q_WS_SIMULATOR)
+//    file.setFileName("c:/data/qtrackerd-debug.txt");
+//#else
+//    file.setFileName("qtrackerd-debug.txt");
+//#endif
     if (file.exists())
         fileopen = file.open(QIODevice::Append | QIODevice::Text);
     else
@@ -33,20 +37,37 @@ void debugOpen()
 
     if (fileopen)
         qInstallMsgHandler(debugOutput);
+
+    LOG("")
+    LOG("")
+    LOG("====================================================")
+    LOG("Starting debug log for qtrackerd " << VERSION)
+    LOG("----------------------------------------------------")
+    LOG("")
 }
 
 void debugClose()
 {
+    LOG("")
+    LOG("----------------------------------------------------")
+    LOG("Closing debug log for qtrackerd " << VERSION)
+    LOG("====================================================")
+    LOG("")
+    LOG("")
+
     if (fileopen)
         file.close();
 }
+
+
+
 
 
 int main(int argc, char *argv[])
 {
     //qInstallMsgHandler(debugOutput);
     debugOpen();
-    LOG("Enter: main()")
+    LOG("Enter: main() ")
 
     QValueSpace::initValueSpaceServer();
     QCoreApplication a(argc, argv);

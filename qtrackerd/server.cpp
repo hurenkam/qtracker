@@ -121,47 +121,74 @@ void Server::onCommand(int method, QVariantList args)
             break;
         case 2:
         {
+            LOG("trackstart")
             QString name;
             int interval;
             if (args.count()>1)
             {
                 name = args[0].toString();
                 interval = args[1].toInt();
-            }
-            if (!track)
-            {
-                QString name = args[0].toString();
-                int interval = args[1].toInt();
-                LOG("trackstart(" << name << "," << interval << ")")
-                track = data->createTrack(name,interval);
-                connect(
-                    location,
-                    SIGNAL(positionChanged(double,double,double)),
-                    track,
-                    SLOT(addPoint(double,double,double))
-                );
-
-                QVariant trackid = track->getId();
-                QVariant trackname = name;
-                QVariant trackinterval = interval;
-                trackinfo->setValue("status",QVariant(1));
-                trackinfo->setValue("id",trackid);
-                trackinfo->setValue("name",trackname);
-                trackinfo->setValue("interval",trackinterval);
+                trackStart(name,interval);
             }
             else
             {
-                LOG("trackstart(" << name << "," << interval << "): Recording already active!")
+                LOG(" not enough parameters")
             }
             break;
         }
         case 3:
             LOG("trackstop")
-            delete track;
-            track = 0;
-            trackinfo->setValue("status",QVariant(0));
+            trackStop();
             break;
     }
+
+    EXIT("")
+}
+
+void Server::trackStart(QString name, int interval)
+{
+    ENTER("(" << name << "," << interval << ")")
+    if (!track)
+    {
+        track = data->createTrack(name,interval);
+        connect(
+            location,
+            SIGNAL(positionChanged(double,double,double)),
+            track,
+            SLOT(addPoint(double,double,double))
+        );
+
+        QVariant trackstatus = "recording";
+        QVariant trackid = track->getId();
+        QVariant trackname = name;
+        QVariant trackinterval = interval;
+        trackinfo->setValue("status",trackstatus);
+        trackinfo->setValue("id",trackid);
+        trackinfo->setValue("name",trackname);
+        trackinfo->setValue("interval",trackinterval);
+    }
+    else
+    {
+        LOG("Recording already active!")
+    }
+    EXIT("")
+}
+
+void Server::trackStop()
+{
+    ENTER("")
+    delete track;
+    track = 0;
+
+    int i = 0;
+    QVariant trackstatus = QString("idle");
+    QVariant trackid = i;
+    QVariant trackname = QString("");
+    QVariant trackinterval = i;
+    trackinfo->setValue("status",trackstatus);
+    trackinfo->setValue("id",trackid);
+    trackinfo->setValue("name",trackname);
+    trackinfo->setValue("interval",trackinterval);
 
     EXIT("")
 }
@@ -176,9 +203,6 @@ void Server::start()
     trackinfo  = new QValueSpacePublisher  ("/server/track");
     subscriber = new QValueSpaceSubscriber ("/server/command");
 
-    //int i = -1;
-    //c->setValue         ("cmd",i);
-    //publisher->setValue ("ack",i);
     QVariantMap m;
     QVariantList l;
     m["class"]="server";
@@ -187,16 +211,7 @@ void Server::start()
     c->setValue("cmd",m);
     publisher->setValue("ack",m);
 
-    int i = 0;
-    QVariant status = i;
-    QVariant trackid = i;
-    QVariant trackname = QString("");
-    QVariant trackinterval = i;
-    trackinfo->setValue("status",status);
-    trackinfo->setValue("id",trackid);
-    trackinfo->setValue("name",trackname);
-    trackinfo->setValue("interval",trackinterval);
-
+    trackStop();
     connect(subscriber,SIGNAL(contentsChanged()),this,SLOT(onCommandAvailable()));
 
     compass->start();
@@ -233,6 +248,7 @@ void Server::stop()
     ENTER("")
 
     handler.clear();
+    trackStop();
 
     data->stop();
     satellite->stop();
@@ -245,9 +261,11 @@ void Server::stop()
 
     delete c;
     delete publisher;
+    delete trackinfo;
     delete subscriber;
     c = 0;
     publisher = 0;
+    trackinfo = 0;
     subscriber = 0;
 
     LOG("emit stopped")
