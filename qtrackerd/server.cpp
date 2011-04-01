@@ -49,7 +49,7 @@ Server::Server(QObject *parent)
     handler["time"]=time;
     handler["server"]=this;
 
-    methods << "stop" << "reset" << "trackstart" << "trackstop";
+    methods << "ping" << "ack" << "stop" << "reset" << "trackstart" << "trackstop";
     EXIT("")
 }
 
@@ -112,14 +112,30 @@ void Server::onCommand(int method, QVariantList args)
     switch(method)
     {
         case 0:
+        {
+            LOG("ping")
+
+            QVariantMap m;
+            QVariantList l;
+            m["class"]="server";
+            m["method"]="ack";
+            m["args"]=l;
+            publisher->setValue("ack",m);
+
+            break;
+        }
+        case 1:
+            LOG("ack")
+            break;
+        case 2:
             LOG("stop")
             stop();
             break;
-        case 1:
+        case 3:
             LOG("reset")
             reset();
             break;
-        case 2:
+        case 4:
         {
             LOG("trackstart")
             QString name;
@@ -136,7 +152,7 @@ void Server::onCommand(int method, QVariantList args)
             }
             break;
         }
-        case 3:
+        case 5:
             LOG("trackstop")
             trackStop();
             break;
@@ -206,11 +222,26 @@ void Server::start()
     QVariantMap m;
     QVariantList l;
     m["class"]="server";
-    m["method"]="start";
+    m["method"]="ping";
     m["args"]=l;
-    c->setValue("cmd",m);
     publisher->setValue("ack",m);
-
+    c->setValue("cmd",m);
+/*
+    QVariant value = subscriber->value("ack");
+    if (value.type() == QVariant::Map) {
+        QVariantMap map = value.toMap();
+        LOG("Found Ack: " << map)
+        if ( map.contains("class")
+          && map.contains("method")
+          && map["class"]=="server"
+          && map["method"]=="ack")
+        {
+            LOG("Exiting, server already running.")
+            emit stopped();
+            return;
+        }
+    }
+*/
     trackStop();
     connect(subscriber,SIGNAL(contentsChanged()),this,SLOT(onCommandAvailable()));
 
@@ -224,7 +255,6 @@ void Server::start()
     data->start();
 
     emit started();
-
     EXIT("")
 }
 
