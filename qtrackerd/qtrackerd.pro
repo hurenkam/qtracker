@@ -36,7 +36,7 @@ SOURCES += main.cpp \
 OTHER_FILES += \
     qtrackerd.qcrml
 
-VERSION = 0.3.331
+VERSION = 0.3.337
 DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
 
 symbian {
