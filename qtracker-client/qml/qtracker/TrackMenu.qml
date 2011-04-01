@@ -17,6 +17,8 @@ Page {
 
     function stop() {
         console.log("TrackMenu.stop()")
+        var cmd = { "class": "server", "method": "trackstop", "args": [ ] }
+        client.sendCommand(cmd);
     }
 
     MenuEntry {
@@ -37,6 +39,10 @@ Page {
         onStatusChanged: console.log("TrackMenu.trackstatus:onStatusChanged: ", status)
         Component.onCompleted: console.log("TrackMenu.trackstatus:onCompleted: ", value)
     }
+    ValueSpaceSubscriber  {
+        id: trackname;
+        path: "/server/track/name"
+    }
     MenuEntry {
         id: start
         visible: trackstatus.status=="idle"? true: false
@@ -54,7 +60,8 @@ Page {
         anchors.top: heading.bottom
         width: parent.width
         height: 54
-        text: "Stop Track"
+        //text: "Stop Track"
+        text: "Stop " + trackname.value
         rightButtonVisible: true
         onRightClicked: root.stop();
     }
