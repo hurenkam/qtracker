@@ -140,51 +140,65 @@ void TableModel::setFilter(const QString &filter)
 
 void TableModel::classBegin()
 {
+    ENTER("")
 }
 
 void TableModel::componentComplete()
 {
+    ENTER("")
 }
 
 void TableModel::refresh()
 {
-    if (_count) {
-        emit beginRemoveRows(QModelIndex(), 0, _count);
-        _count = 0;
-        emit endRemoveRows();
+    ENTER("")
+    if (model) {
+        if (_count) {
+            emit beginRemoveRows(QModelIndex(), 0, _count);
+            _count = 0;
+            emit endRemoveRows();
+        }
+        int newcount = model->rowCount();
+        if (newcount) {
+            emit beginInsertRows(QModelIndex(), 0, newcount-1);
+            _count = newcount;
+            emit endInsertRows();
+        }
     }
-    int newcount = model->rowCount();
-    if (newcount) {
-        emit beginInsertRows(QModelIndex(), 0, newcount-1);
-        _count = newcount;
-        emit endInsertRows();
-    }
+    EXIT("")
 }
 
 void TableModel::inserted(const QModelIndex &index, int start, int end)
 {
+    ENTER("")
     emit beginInsertRows(QModelIndex(), start, end);
     _count = model->rowCount();
     emit endInsertRows();
+    EXIT("")
 }
 
 void TableModel::removed(const QModelIndex &index, int start, int end)
 {
+    ENTER("")
     emit beginRemoveRows(QModelIndex(), start, end);
     _count = model->rowCount();
     emit endRemoveRows();
+    EXIT("")
 }
 
 void TableModel::handleDataChanged(const QModelIndex &start, const QModelIndex &end)
 {
+    ENTER("")
     emit dataChanged(index(start.row(),0), index(end.row(),0));
+    EXIT("")
 }
 
 void TableModel::createTable(const QString& sql)
 {
+    ENTER("")
     if (!db.isOpen()) return;
     if (_table.isEmpty() || _table.isNull()) return;
 
     QSqlQuery query("CREATE TABLE IF NOT EXISTS "+_table+" (" + sql + ")",db);
     query.exec();
+    EXIT("")
 }

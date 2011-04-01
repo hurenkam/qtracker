@@ -22,17 +22,30 @@ Item {
         radius: 15
         color: activePalette.light
         state: "normal"
+        //property color gradientstart: activePalette.light
+        //property color gradientstop:  activePalette.dark
 
-        gradient: Gradient {
+        property QtObject normalgradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: state=="pressed"? Qt.darker(activePalette.light) : Qt.lighter(activePalette.light)
+                color: Qt.lighter(activePalette.light)
             }
             GradientStop {
                 position:  1.0
-                color: state=="pressed"? Qt.darker(activePalette.dark) : Qt.lighter(activePalette.dark)
+                color: Qt.lighter(activePalette.dark)
             }
         }
+        property QtObject pressedgradient: Gradient {
+            GradientStop {
+                position: 0.0
+                color: activePalette.light
+            }
+            GradientStop {
+                position:  1.0
+                color: activePalette.dark
+            }
+        }
+        gradient: state=="pressed"? pressedgradient : normalgradient
 
         ToolButton {
             id: leftbutton

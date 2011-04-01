@@ -26,10 +26,10 @@ void debugClose();
 
 void debugOutput(QtMsgType type, const char *msg)
 {
-        debugOpen();
+        //debugOpen();
         out << QDateTime::currentDateTime().toString() << "    " << msg << "\n";
-        //file.flush();
-        debugClose();
+        file.flush();
+        //debugClose();
 }
 
 void debugOpen()
@@ -51,28 +51,26 @@ void debugOpen()
     else
         fileopen = false;
 
-    //if (fileopen)
-    //    qInstallMsgHandler(debugOutput);
-/*
+    if (fileopen)
+        qInstallMsgHandler(debugOutput);
+
     LOG("")
     LOG("")
     LOG("====================================================")
     LOG("Starting debug log for qtracker " << VERSION)
     LOG("----------------------------------------------------")
     LOG("")
-*/
 }
 
 void debugClose()
 {
-/*
     LOG("")
     LOG("----------------------------------------------------")
     LOG("Closing debug log for qtracker " << VERSION)
     LOG("====================================================")
     LOG("")
     LOG("")
-*/
+
     if (fileopen)
         file.close();
 }
@@ -91,8 +89,7 @@ void registerTypes()
 
 int main(int argc, char *argv[])
 {
-    //debugOpen();
-    qInstallMsgHandler(debugOutput);
+    debugOpen();
     registerTypes();
     QApplication app(argc, argv);
 
@@ -114,10 +111,9 @@ int main(int argc, char *argv[])
     viewer.rootContext()->setContextProperty("client",&client);
     splash.finish(&viewer);
     viewer.showFullScreen();
-    //viewer.showMaximized();
 
     LOG("main(): app.exec()")
     int result = app.exec();
-    //debugClose();
+    debugClose();
     return result;
 }

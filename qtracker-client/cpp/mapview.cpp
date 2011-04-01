@@ -5,6 +5,9 @@
 #include <QDir>
 #include <math.h>
 
+//#define ENABLE_DEBUG
+#include "helpers.h"
+
 const int tilesize = 512;
 const int requestdelay = 100;
 
@@ -15,6 +18,7 @@ const int maxzoom = 4;
 MapView::MapView(QDeclarativeItem *parent)
     : QDeclarativeItem(parent)
 {
+    ENTER("")
     _scale = 0.5;
     QPixmap t(tilesize,tilesize);
     t.fill(Qt::lightGray);
@@ -26,10 +30,12 @@ MapView::MapView(QDeclarativeItem *parent)
     connect(mythread, SIGNAL(tileLoaded(QPoint,QImage)), this,     SLOT(onTileLoaded(QPoint,QImage)));
     connect(mythread, SIGNAL(invalidate()),              this,     SLOT(onInvalidate()));
     mythread->start();
+    EXIT("")
 }
 
 void MapView::setFilename(QUrl u)
 {
+    ENTER("")
     _filename = u;
     reader.setFileName(u.toLocalFile());
     _filesize = reader.size();
@@ -37,10 +43,12 @@ void MapView::setFilename(QUrl u)
     _mapy = 0;
     tiles.clear();
     update();
+    EXIT("")
 }
 
 QRect MapView::viewTiles()
 {
+    ENTER("")
     double w = width();
     double h = height();
     double x = ((double)_mapx) * _scale;
@@ -59,6 +67,7 @@ QRect MapView::viewTiles()
 
 QRect MapView::mapTiles()
 {
+    ENTER("")
     int w = _filesize.width()/tilesize;
     if (_filesize.width()%tilesize) w++;
     int h = _filesize.height()/tilesize;
@@ -68,11 +77,13 @@ QRect MapView::mapTiles()
 
 QRect MapView::sourceArea(const QPoint& p)
 {
+    ENTER("")
     return QRect(QPoint(0,0),QSize(tilesize,tilesize));
 }
 
 QRect MapView::targetArea(const QPoint& p)
 {
+    ENTER("")
     int w = width();
     int h = height();
     int dx = p.x()*tilesize*_scale-_mapx*_scale+w/2;
@@ -83,20 +94,25 @@ QRect MapView::targetArea(const QPoint& p)
 
 void MapView::renderTile(QPainter *painter, QPoint& p)
 {
+    ENTER("")
     QRect s = sourceArea(p);
     QRect t = targetArea(p);
     painter->drawImage(t,tiles[p],s);
+    EXIT("")
 }
 
 void MapView::renderEmpty(QPainter *painter, QPoint& p)
 {
+    ENTER("")
     QRect s = sourceArea(p);
     QRect t = targetArea(p);
     painter->drawImage(t,empty,s);
+    EXIT("")
 }
 
 void MapView::invalidate()
 {
+    ENTER("")
     QRect r = viewTiles();
     QHash<QPoint,QImage>::iterator i;
     //qDebug() << "invalidate(); valid rect: " << r;
@@ -113,10 +129,12 @@ void MapView::invalidate()
             //qDebug() << "not removing key " << i.key();
         }
     }
+    EXIT("")
 }
 
 void MapView::discardTile(const QPoint& p)
 {
+    ENTER("")
     if (tiles.contains(p))
         tiles.remove(p);
     else
@@ -125,6 +143,7 @@ void MapView::discardTile(const QPoint& p)
 
 void MapView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    ENTER("")
     if (_filename.toLocalFile()=="") return;
 
     QRect r = mapTiles().intersected(viewTiles());
@@ -148,16 +167,26 @@ void MapView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 }
 
 void MapView::setMapX(int v)
-{ _mapx = v; update(); }//     qDebug() << "mapx:     " << v; }
+{
+    ENTER("")
+    _mapx = v; update();
+}
 
 void MapView::setMapY(int v)
-{ _mapy = v; update(); }//     qDebug() << "mapy:     " << v; }
+{
+    ENTER("")
+    _mapy = v; update();
+}
 
 void MapView::setScale(double v)
-{ _scale = v; update(); }//     qDebug() << "zoom:     " << v; }
+{
+    ENTER("")
+    _scale = v; update();
+}
 
 void MapView::onTileLoaded(const QPoint& p, QImage i)
 {
+    ENTER("")
     tiles[p]=i;
     update();
 }

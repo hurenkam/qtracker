@@ -44,6 +44,9 @@
 #include <QDebug>
 #include <qdeclarativecontext.h>
 
+//#define ENABLE_DEBUG
+#include "helpers.h"
+
 class QDeclarativeFolderListModelPrivate
 {
 public:
@@ -150,6 +153,7 @@ public:
 QDeclarativeFolderListModel::QDeclarativeFolderListModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    ENTER("")
     QHash<int, QByteArray> roles;
     roles[FileNameRole] = "fileName";
     roles[FilePathRole] = "filePath";
@@ -165,15 +169,19 @@ QDeclarativeFolderListModel::QDeclarativeFolderListModel(QObject *parent)
             , this, SLOT(handleDataChanged(const QModelIndex&,const QModelIndex&)));
     connect(&d->model, SIGNAL(modelReset()), this, SLOT(refresh()));
     connect(&d->model, SIGNAL(layoutChanged()), this, SLOT(refresh()));
+    EXIT("")
 }
 
 QDeclarativeFolderListModel::~QDeclarativeFolderListModel()
 {
+    ENTER("")
     delete d;
+    EXIT("")
 }
 
 QVariant QDeclarativeFolderListModel::data(const QModelIndex &index, int role) const
 {
+    ENTER("")
     QVariant rv;
     QModelIndex modelIndex = d->model.index(index.row(), 0, d->folderIndex);
     if (modelIndex.isValid()) {
@@ -187,6 +195,7 @@ QVariant QDeclarativeFolderListModel::data(const QModelIndex &index, int role) c
 
 int QDeclarativeFolderListModel::rowCount(const QModelIndex &parent) const
 {
+    ENTER("")
     Q_UNUSED(parent);
     return d->count;
 }
@@ -204,11 +213,13 @@ int QDeclarativeFolderListModel::rowCount(const QModelIndex &parent) const
 */
 QUrl QDeclarativeFolderListModel::folder() const
 {
+    ENTER("")
     return d->folder;
 }
 
 void QDeclarativeFolderListModel::setFolder(const QUrl &folder)
 {
+    ENTER("")
     if (folder == d->folder)
         return;
     QModelIndex index = d->model.index(folder.toLocalFile());
@@ -218,10 +229,12 @@ void QDeclarativeFolderListModel::setFolder(const QUrl &folder)
         QMetaObject::invokeMethod(this, "refresh", Qt::QueuedConnection);
         emit folderChanged();
     }
+    EXIT("")
 }
 
 QUrl QDeclarativeFolderListModel::parentFolder() const
 {
+    ENTER("")
     QString localFile = d->folder.toLocalFile();
     if (!localFile.isEmpty()) {
         QDir dir(localFile);
@@ -259,13 +272,17 @@ QUrl QDeclarativeFolderListModel::parentFolder() const
 */
 QStringList QDeclarativeFolderListModel::nameFilters() const
 {
+    ENTER("")
     return d->nameFilters;
+    EXIT("")
 }
 
 void QDeclarativeFolderListModel::setNameFilters(const QStringList &filters)
 {
+    ENTER("")
     d->nameFilters = filters;
     d->model.setNameFilters(d->nameFilters);
+    EXIT("")
 }
 
 void QDeclarativeFolderListModel::classBegin()
@@ -274,37 +291,46 @@ void QDeclarativeFolderListModel::classBegin()
 
 void QDeclarativeFolderListModel::componentComplete()
 {
+    ENTER("")
     if (!d->folder.isValid() || !QDir().exists(d->folder.toLocalFile()))
         setFolder(QUrl(QLatin1String("file://")+QDir::currentPath()));
 
     if (!d->folderIndex.isValid())
         QMetaObject::invokeMethod(this, "refresh", Qt::QueuedConnection);
+    EXIT("")
 }
 
 QDeclarativeFolderListModel::SortField QDeclarativeFolderListModel::sortField() const
 {
+    ENTER("")
     return d->sortField;
+    EXIT("")
 }
 
 void QDeclarativeFolderListModel::setSortField(SortField field)
 {
+    ENTER("")
     if (field != d->sortField) {
         d->sortField = field;
         d->updateSorting();
     }
+    EXIT("")
 }
 
 bool QDeclarativeFolderListModel::sortReversed() const
 {
+    ENTER("")
     return d->sortReversed;
 }
 
 void QDeclarativeFolderListModel::setSortReversed(bool rev)
 {
+    ENTER("")
     if (rev != d->sortReversed) {
         d->sortReversed = rev;
         d->updateSorting();
     }
+    EXIT("")
 }
 
 /*!
@@ -315,6 +341,7 @@ void QDeclarativeFolderListModel::setSortReversed(bool rev)
 */
 bool QDeclarativeFolderListModel::isFolder(int index) const
 {
+    ENTER("")
     if (index != -1) {
         QModelIndex idx = d->model.index(index, 0, d->folderIndex);
         if (idx.isValid())
@@ -325,6 +352,7 @@ bool QDeclarativeFolderListModel::isFolder(int index) const
 
 void QDeclarativeFolderListModel::refresh()
 {
+    ENTER("")
     d->folderIndex = QModelIndex();
     if (d->count) {
         emit beginRemoveRows(QModelIndex(), 0, d->count);
@@ -338,30 +366,37 @@ void QDeclarativeFolderListModel::refresh()
         d->count = newcount;
         emit endInsertRows();
     }
+    EXIT("")
 }
 
 void QDeclarativeFolderListModel::inserted(const QModelIndex &index, int start, int end)
 {
+    ENTER("")
     if (index == d->folderIndex) {
         emit beginInsertRows(QModelIndex(), start, end);
         d->count = d->model.rowCount(d->folderIndex);
         emit endInsertRows();
     }
+    EXIT("")
 }
 
 void QDeclarativeFolderListModel::removed(const QModelIndex &index, int start, int end)
 {
+    ENTER("")
     if (index == d->folderIndex) {
         emit beginRemoveRows(QModelIndex(), start, end);
         d->count = d->model.rowCount(d->folderIndex);
         emit endRemoveRows();
     }
+    EXIT("")
 }
 
 void QDeclarativeFolderListModel::handleDataChanged(const QModelIndex &start, const QModelIndex &end)
 {
+    ENTER("")
     if (start.parent() == d->folderIndex)
         emit dataChanged(index(start.row(),0), index(end.row(),0));
+    EXIT("")
 }
 
 /*!
@@ -378,17 +413,20 @@ void QDeclarativeFolderListModel::handleDataChanged(const QModelIndex &start, co
 */
 bool QDeclarativeFolderListModel::showDirs() const
 {
+    ENTER("")
     return d->model.filter() & QDir::AllDirs;
 }
 
 void  QDeclarativeFolderListModel::setShowDirs(bool on)
 {
+    ENTER("")
     if (!(d->model.filter() & QDir::AllDirs) == !on)
         return;
     if (on)
         d->model.setFilter(d->model.filter() | QDir::AllDirs | QDir::Drives);
     else
         d->model.setFilter(d->model.filter() & ~(QDir::AllDirs | QDir::Drives));
+    EXIT("")
 }
 
 /*!
@@ -403,17 +441,20 @@ void  QDeclarativeFolderListModel::setShowDirs(bool on)
 */
 bool QDeclarativeFolderListModel::showDotAndDotDot() const
 {
+    ENTER("")
     return !(d->model.filter() & QDir::NoDotAndDotDot);
 }
 
 void  QDeclarativeFolderListModel::setShowDotAndDotDot(bool on)
 {
+    ENTER("")
     if (!(d->model.filter() & QDir::NoDotAndDotDot) == on)
         return;
     if (on)
         d->model.setFilter(d->model.filter() & ~QDir::NoDotAndDotDot);
     else
         d->model.setFilter(d->model.filter() | QDir::NoDotAndDotDot);
+    EXIT("")
 }
 
 /*!
@@ -428,15 +469,18 @@ void  QDeclarativeFolderListModel::setShowDotAndDotDot(bool on)
 */
 bool QDeclarativeFolderListModel::showOnlyReadable() const
 {
+    ENTER("")
     return d->model.filter() & QDir::Readable;
 }
 
 void QDeclarativeFolderListModel::setShowOnlyReadable(bool on)
 {
+    ENTER("")
     if (!(d->model.filter() & QDir::Readable) == !on)
         return;
     if (on)
         d->model.setFilter(d->model.filter() | QDir::Readable);
     else
         d->model.setFilter(d->model.filter() & ~QDir::Readable);
+    EXIT("")
 }

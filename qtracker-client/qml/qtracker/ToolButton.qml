@@ -40,6 +40,7 @@ Item {
     ]
 
     function pressed() {
+        root.selected = true
         state = "pressed"
         if (repeat) {
             //root.repeat()
@@ -49,6 +50,7 @@ Item {
     }
 
     function released() {
+        root.selected = false
         state = "released"
         if (repeat) {
             timer.stop()
