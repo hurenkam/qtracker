@@ -36,7 +36,7 @@ Rectangle {
             id: newid;
             path: "/server/track/id"
             property int trackid: value
-            onTrackidChanged: { console.log("TrackId changed"); database.refresh(); }
+            onTrackidChanged: { console.log("TrackId changed", trackid); database.refresh(); }
         }
 
         Component {

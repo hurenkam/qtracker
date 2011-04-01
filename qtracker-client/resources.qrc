@@ -5,7 +5,6 @@
         <file alias="Clock.qml">qml/qtracker/Clock.qml</file>
         <file alias="Levels.qml">qml/qtracker/Levels.qml</file>
         <file alias="MapButton.qml">qml/qtracker/MapButton.qml</file>
-        <file alias="MapDialog.qml">qml/qtracker/MapDialog.qml</file>
         <file alias="MapList.qml">qml/qtracker/MapList.qml</file>
         <file alias="MapView.qml">qml/qtracker/MapView.qml</file>
         <file alias="MouseHandler.qml">qml/qtracker/MouseHandler.qml</file>
@@ -33,6 +32,8 @@
         <file alias="TrackMenu.qml">qml/qtracker/TrackMenu.qml</file>
         <file alias="WaypointMenu.qml">qml/qtracker/WaypointMenu.qml</file>
         <file alias="RouteMenu.qml">qml/qtracker/RouteMenu.qml</file>
+        <file alias="MapMenu.qml">qml/qtracker/MapMenu.qml</file>
+        <file alias="CalibrationMenu.qml">qml/qtracker/CalibrationMenu.qml</file>
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>

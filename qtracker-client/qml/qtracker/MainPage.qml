@@ -23,7 +23,8 @@ Page {
     TrackMenu      { id: trkMenu }
     WaypointMenu   { id: wptMenu }
     RouteMenu      { id: rteMenu }
-    MapDialog      { id: mapDialog }
+    //MapDialog      { id: mapDialog }
+    MapMenu        { id: mapMenu }
 
     MapView {
         id: map
@@ -45,7 +46,8 @@ Page {
         }
     }
     Connections {
-        target: mapDialog
+        //target: mapDialog
+        target: mapMenu
         onMapSelected: {
             //state="normal"
             map.loadMap(fileName)
@@ -66,7 +68,8 @@ Page {
 
         tools: ToolBarLayout {
 
-            ToolButton { id: mapbutton; source: "qrc:/images/options.svg"; onClicked: root.pageStack.push(mapDialog); }
+            //ToolButton { id: mapbutton; source: "qrc:/images/options.svg"; onClicked: root.pageStack.push(mapDialog); }
+            ToolButton { id: mapbutton; source: "qrc:/images/options.svg"; onClicked: root.pageStack.push(mapMenu); }
             ToolButton { id: wptbutton; source: "qrc:/images/flag.svg";    onClicked: root.pageStack.push(wptMenu); }
             ToolButton { id: rtebutton; source: "qrc:/images/route.svg";   onClicked: root.pageStack.push(rteMenu); }
             ToolButton { id: trkbutton; source: "qrc:/images/hiker.svg";   onClicked: root.pageStack.push(trkMenu); }
