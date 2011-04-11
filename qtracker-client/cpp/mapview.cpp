@@ -184,6 +184,12 @@ void MapView::setScale(double v)
     _scale = v; update();
 }
 
+void MapView::setTrackid(int id)
+{
+    _trackid = id;
+    emit trackidChanged();
+}
+
 void MapView::onTileLoaded(const QPoint& p, QImage i)
 {
     ENTER("")

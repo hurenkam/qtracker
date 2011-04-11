@@ -114,4 +114,24 @@ Page {
             root.animate = false;
         }
     }
+
+    ToolButton {
+        x: landscape? 640*w - width*1.1 : 360*w - width*1.1
+        y: 60*h
+        height: 40*h
+        width: 40*w
+        id: zoominbutton;
+        source: "qrc:/images/zoom-in.svg";
+        onClicked: map.zoomIn()
+    }
+
+    ToolButton {
+        x: landscape? 640*w - width*1.1 : 360*w - width*1.1
+        y: 115*h
+        height: 40*h
+        width: 40*w
+        id: zoomoutbutton;
+        source: "qrc:/images/zoom-out.svg";
+        onClicked: map.zoomOut()
+    }
 }

@@ -49,12 +49,14 @@ class MapView : public QDeclarativeItem
     Q_PROPERTY(int     mapx       READ mapx        WRITE setMapX     NOTIFY mapxChanged)
     Q_PROPERTY(int     mapy       READ mapy        WRITE setMapY     NOTIFY mapyChanged)
     Q_PROPERTY(double  scale      READ scale       WRITE setScale    NOTIFY scaleChanged)
+    Q_PROPERTY(int     trackid    READ trackid     WRITE setTrackid  NOTIFY trackidChanged)
 
 signals:
     void filenameChanged();
     void mapxChanged();
     void mapyChanged();
     void scaleChanged();
+    void trackidChanged();
     void filesizeChanged();
     void loadTile(const QPoint&, const QUrl&);
 
@@ -67,11 +69,13 @@ public:
     int     mapx()              { return _mapx;      }
     int     mapy()              { return _mapy;      }
     int     scale()             { return _scale;     }
+    int     trackid()           { return _trackid;   }
 
     void setFilename(QUrl u);
     void setMapX(int v);
     void setMapY(int v);
     void setScale(double v);
+    void setTrackid(int id);
 
 private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -87,6 +91,7 @@ private:
     QUrl                   _filename;
     int                    _mapx;
     int                    _mapy;
+    int                    _trackid;
     double                 _scale;
     QSize                  _filesize;
     QImageReader           reader;
