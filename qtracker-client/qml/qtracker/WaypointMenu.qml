@@ -1,5 +1,41 @@
 import QtQuick 1.0
 
+OptionPage {
+    id: root
+    title: "Waypoint"
+    options: Item {
+        OptionBox {
+            id: wptbox
+            title: "New Waypoint"
+            items: Item {
+                OptionItem { id: category;    text: "<category>" }
+                OptionItem { id: name;        text: "Name:"      }
+                OptionItem { id: lat;         text: "Latitude:"  }
+                OptionItem { id: lon;         text: "Longitude:" }
+                OptionItem { id: alt;         text: "Altitude:"  }
+                OptionItem { id: notes;       text: "Notes:"     }
+            }
+        }
+    }
+}
+
+/*
++-----------------------+
+| <Catagory>          > |
++-----------------------+
+| Name:      __________ |
++-----------------------+
+| Latitude:  __________ |
++-----------------------+
+| Longitude: __________ |
++-----------------------+
+| Altitude:  __________ |
++-----------------------+
+| Notes:     __________ |
++-----------------------+
+*/
+
+/*
 Page {
     id: root
 
@@ -9,11 +45,11 @@ Page {
     function cancel() {
         pageStack.pop();
     }
-/*
+/ *
     WaypointEdit {
         id: edit
     }
-*/
+* /
     function newentry() {
         //pageStack.push(edit)
     }
@@ -43,14 +79,15 @@ Page {
         anchors.top: start.bottom
         anchors.bottom: parent.bottom
         width: parent.width
-/*
+/ *
         WaypointList {
             id: listbox
             anchors.fill: parent
         }
-*/
+* /
     }
 }
+*/
 
 /*
 New

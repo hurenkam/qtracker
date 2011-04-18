@@ -69,6 +69,7 @@ void TableModel::setDatabase(const QString &database)
         setTable(_table);
 
     emit databaseChanged();
+    emit countChanged();
 
     EXIT("")
 }
@@ -114,6 +115,8 @@ void TableModel::setTable(const QString &table)
     connect(model, SIGNAL(layoutChanged()), this, SLOT(refresh()));
 
     emit tableChanged();
+    emit countChanged();
+
     EXIT("")
 }
 
@@ -134,6 +137,8 @@ void TableModel::setFilter(const QString &filter)
     model->setFilter(_filter);
     model->select();
     emit filterChanged();
+    emit countChanged();
+
 
     EXIT("")
 }

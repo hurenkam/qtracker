@@ -34,6 +34,11 @@ public:
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
+    Q_INVOKABLE QVariant get(const QVariant& index, QVariant role) {
+        int r = roleNames().key(role.toString().toLatin1());
+        QModelIndex i=createIndex(index.toInt(),0);
+        return data(i,r);
+    }
 
     int count() const { return rowCount(QModelIndex()); }
 

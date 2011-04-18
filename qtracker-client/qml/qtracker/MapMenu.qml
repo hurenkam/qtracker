@@ -1,75 +1,75 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
+import "qrc:/js/filesystem.js" as FileSystem
 
 Page {
     id: root
+    imageSource: "qrc:/images/options-bg.png"
+
     signal mapSelected(string fileName)
 
-    function confirm() {
-        root.mapSelected(listbox.mapname);
-        pageStack.pop();
-    }
     function cancel() {
         pageStack.pop();
     }
 
-    CalibrationMenu {
-        id: calmenu
-    }
-
-    function calibration() {
-        pageStack.push(calmenu)
-    }
-/*
-    DatumMenu {
-        id: calmenu
-    }
-*/
-    function datums() {
-        //pageStack.push(calmenu)
-    }
-
-    MenuEntry {
-        id: heading
-        x: 2; y: 2
-        width: parent.width
-        height: 54
-        text: "Map Menu"
+    OptionHeader {
+        id: hdr
+        x: 0; y:0; width: parent.width; height: 50
+        text: "Map"
         leftButtonVisible: true
         onLeftClicked: root.cancel();
-        rightButtonVisible: true
-        rightButtonSource: "qrc:/images/visible.svg"
-        onRightClicked: root.confirm();
     }
 
-    MenuEntry {
-        id: calentry
-        anchors.top: heading.bottom
-        width: parent.width
-        height: 54
-        text: "Calibration"
-        rightButtonVisible: true
-        onRightClicked: root.calibration();
+    OptionBox {
+        id: edit
+        title: "Options"
+        x: 0; width: parent.width;
+        anchors.top: hdr.bottom;
+        items: Item {
+            OptionItem { text: "Name" }
+            OptionItem { text: "Calibration" }
+            OptionItem { text: "Datum" }
+        }
     }
 
-    MenuEntry {
-        id: datumentry
-        anchors.top: calentry.bottom
-        width: parent.width
-        height: 54
-        text: "Wgs84"
-        rightButtonVisible: true
-        onRightClicked: root.datums();
-    }
+    OptionList {
+        id: lst
+        x: 0; width: parent.width;
+        anchors.top: edit.bottom;
+        anchors.bottom: parent.bottom;
+        title: "List"
 
-    MenuEntry {
-        id: list
-        anchors.top: datumentry.bottom
-        anchors.bottom: parent.bottom
-        width: parent.width
+        FolderListModel {
+            id: maplist
+            //folder: (client.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
+            //folder: "file:///c:/data/qtracker/maps/"
+            folder: "file:///e:/data/qtracker/maps/"
+            nameFilters: ["*.jpg"]
+        }
 
-        MapList {
-            id: listbox
-            anchors.fill: parent
+        Component {
+            id: delegate
+            OptionItem { text: "" }
+        }
+
+        items: Item {
+            id: content
+        }
+
+        Component.onCompleted: {
+            var item = null;
+            console.log("maplist contains",maplist.count,"items")
+            for (var i=0; i<maplist.count; i++) {
+                console.log("maplist item ",maplist.get(i,"fileName"))
+                item = delegate.createObject(content)
+                item.text = FileSystem.base(maplist.get(i,"fileName"))
+            }
+            lst.layout()
+        }
+
+        onClicked: {
+            root.mapSelected(maplist.folder + text + ".jpg");
+            pageStack.pop();
         }
     }
 }

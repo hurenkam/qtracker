@@ -25,6 +25,7 @@ Page {
     RouteMenu      { id: rteMenu }
     //MapDialog      { id: mapDialog }
     MapMenu        { id: mapMenu }
+    ImExportPage   { id: options }
 
     MapView {
         id: map
@@ -73,7 +74,7 @@ Page {
             ToolButton { id: wptbutton; source: "qrc:/images/flag.svg";    onClicked: root.pageStack.push(wptMenu); }
             ToolButton { id: rtebutton; source: "qrc:/images/route.svg";   onClicked: root.pageStack.push(rteMenu); }
             ToolButton { id: trkbutton; source: "qrc:/images/hiker.svg";   onClicked: root.pageStack.push(trkMenu); }
-            ToolButton { id: iobutton;  source: "qrc:/images/export.svg";  }
+            ToolButton { id: iobutton;  source: "qrc:/images/export.svg";  onClicked: root.pageStack.push(options); }
 
             hasRightButton: true
             ToolButton {

@@ -34,6 +34,12 @@
         <file alias="RouteMenu.qml">qml/qtracker/RouteMenu.qml</file>
         <file alias="MapMenu.qml">qml/qtracker/MapMenu.qml</file>
         <file alias="CalibrationMenu.qml">qml/qtracker/CalibrationMenu.qml</file>
+        <file alias="OptionPage.qml">qml/qtracker/OptionPage.qml</file>
+        <file alias="OptionBox.qml">qml/qtracker/OptionBox.qml</file>
+        <file alias="OptionItem.qml">qml/qtracker/OptionItem.qml</file>
+        <file alias="OptionHeader.qml">qml/qtracker/OptionHeader.qml</file>
+        <file alias="ImExportPage.qml">qml/qtracker/ImExportPage.qml</file>
+        <file alias="OptionList.qml">qml/qtracker/OptionList.qml</file>
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>
@@ -77,5 +83,6 @@
         <file alias="dash-fg-landscape.ico">qml/Images/dash-fg-landscape.ico</file>
         <file alias="back.svg">qml/Images/back-2.svg</file>
         <file alias="forward.svg">qml/Images/forward-2.svg</file>
+        <file alias="options-bg.png">qml/Images/options-bg.PNG</file>
     </qresource>
 </RCC>
