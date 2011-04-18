@@ -41,7 +41,7 @@ Page {
         anchors.top: hdr.bottom;
         items: recordingitems
 
-        VisualItemModel {
+        DynamicItemModel {
             id: recordingitems
             OptionItem { text: trackstatus.status=="idle"? "Start Track": "Stop Track" }
         }
@@ -65,14 +65,10 @@ Page {
             onCountChanged: lst.update()
         }
 
-        items: Item {
-            id: content
+        items: content
 
-            function clear() {
-                for (var i=0; i<content.children.length; ++i) {
-                    content.children[i].destroy();
-                }
-            }
+        DynamicItemModel {
+            id: content
         }
 
         function update() {
@@ -81,10 +77,15 @@ Page {
             console.log("tracklist contains",database.count,"items")
             for (var i=0; i<database.count; i++) {
                 console.log("tracklist item ",database.get(i,"name"))
-                item = delegate.createObject(content)
+                item = delegate.createObject(null)
                 item.text = database.get(i,"trackid") + " " + database.get(i,"name")
+                content.append(item)
                 lst.layout()
             }
+        }
+
+        onClicked: {
+            console.log("TrackMenu.onClicked",index,text);
         }
 
         Component.onCompleted: update()

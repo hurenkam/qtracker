@@ -40,6 +40,7 @@
         <file alias="OptionHeader.qml">qml/qtracker/OptionHeader.qml</file>
         <file alias="ImExportPage.qml">qml/qtracker/ImExportPage.qml</file>
         <file alias="OptionList.qml">qml/qtracker/OptionList.qml</file>
+        <file alias="DynamicItemModel.qml">qml/qtracker/DynamicItemModel.qml</file>
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>

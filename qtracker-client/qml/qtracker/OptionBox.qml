@@ -4,7 +4,7 @@ Item {
     id: root
     property alias title: header.text
     property QtObject items: null
-    height: box.height + header.offset + 4
+    height: header.offset + box.height + 10
 
     Text {
         id: header
@@ -14,7 +14,7 @@ Item {
         style: Text.Sunken
         styleColor: "black"
         text: ""
-        property int offset: (text=="")? 10 : 50
+        property int offset: (text=="")? 10 : 40
     }
 
     Rectangle {
@@ -22,7 +22,8 @@ Item {
 
         x: 10
         y: 10 + header.offset
-        width: parent.width -20
+        width: root.width -20
+        height: content.height
         radius: 12
         color: "white"
         border.color: "grey"
@@ -43,17 +44,9 @@ Item {
         }
 
         function layout() {
+            items.parent = content
             if (items) {
-                //items.parent = box;
-                //items.x = 0;
-                //items.y = 0;
-                //items.width = box.width;
-                layoutItems(box.width);
-                //items.height = box.height;
-                content.x = 0;
-                content.y = 0;
-                content.width = box.width;
-                content.height = box.height;
+                content.height = layoutItems(box.width);
             }
         }
 
@@ -67,14 +60,16 @@ Item {
                 if ((i+1) < items.children.length) {
                     seperator = line.createObject(seperators)
                     h = h+1
+                    seperator.x = 0
+                    seperator.width = w
                     seperator.y = h
                 }
             }
-            box.height = h+2;
+            return h+2;
         }
 
         function layoutOptionItem(item,w,h) {
-            item.parent = content;
+            //item.parent = content;
             item.x = 10;
             item.y = h;
             item.width = w-20;
@@ -83,8 +78,6 @@ Item {
             return h;
         }
 
-        //Component.onCompleted: console.log("optionbox.oncompleted:    width = ",box.width)
-        //onWidthChanged:        console.log("optionbox.onwidthchanged: width = ",box.width)
         onWidthChanged:         layout();
         Component.onCompleted:  layout();
     }
@@ -93,13 +86,8 @@ Item {
         id: line
 
         Rectangle {
-            x: 0
-            //y: box.height/items.length * (index+1)
-            width: box.width
             height: 1
             color: "grey"
-
-            //Component.onCompleted: console.log("line:",index + 1)
         }
     }
 

@@ -15,7 +15,7 @@ OptionPage {
             title: "Security"
             items: securityitems
 
-            VisualItemModel {
+            DynamicItemModel {
                 id: securityitems
                 OptionItem { text: "Passcode"; button: true; onClicked: root.pageStack.push(security) }
             }
@@ -26,7 +26,7 @@ OptionPage {
             title: "General"
             items: generalitems
 
-            VisualItemModel {
+            DynamicItemModel {
                 id: generalitems
                 OptionItem { text: "Days End" }
                 OptionItem { text: "Moment Sorting" }
@@ -40,8 +40,10 @@ OptionPage {
             id: box3
             title: "Other"
             height: 170
+            items: otheritems
 
-            items: Item {
+            DynamicItemModel {
+                id: otheritems
                 OptionItem { text: "Option a" }
                 OptionItem { text: "Option b" }
                 OptionItem { text: "Option c" }

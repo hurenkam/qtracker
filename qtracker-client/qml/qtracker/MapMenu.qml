@@ -27,7 +27,7 @@ Page {
         anchors.top: hdr.bottom;
         items: optionitems
 
-        VisualItemModel {
+        DynamicItemModel {
             id: optionitems
             OptionItem { text: "Name" }
             OptionItem { text: "Calibration" }
@@ -45,8 +45,8 @@ Page {
         FolderListModel {
             id: maplist
             //folder: (client.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
-            folder: "file:///c:/data/qtracker/maps/"
-            //folder: "file:///e:/data/qtracker/maps/"
+            //folder: "file:///c:/data/qtracker/maps/"
+            folder: "file:///e:/data/qtracker/maps/"
             nameFilters: ["*.jpg"]
         }
 
@@ -55,20 +55,27 @@ Page {
             OptionItem { text: "" }
         }
 
-        items: Item {
+        items: content
+
+        DynamicItemModel {
             id: content
         }
 
-        Component.onCompleted: {
+        function update() {
             var item = null;
+            content.clear()
             console.log("maplist contains",maplist.count,"items")
             for (var i=0; i<maplist.count; i++) {
                 console.log("maplist item ",maplist.get(i,"fileName"))
-                item = delegate.createObject(content)
+                item = delegate.createObject(null)
                 item.text = FileSystem.base(maplist.get(i,"fileName"))
+                content.append(item)
             }
+            console.log("content contains",content.count,"items",content.children[0])
             lst.layout()
         }
+
+        Component.onCompleted: update()
 
         onClicked: {
             root.mapSelected(maplist.folder + text + ".jpg");

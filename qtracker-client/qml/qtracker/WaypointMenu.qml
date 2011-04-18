@@ -12,7 +12,7 @@ OptionPage {
             title: "New Waypoint"
             items: wptitems
 
-            VisualItemModel {
+            DynamicItemModel {
                 id: wptitems
                 OptionItem { id: category;    text: "<category>" }
                 OptionItem { id: name;        text: "Name:"      }
