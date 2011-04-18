@@ -29,6 +29,10 @@ Item {
         border.width: 1
 
         Item {
+            id: content
+        }
+
+        Item {
             id: seperators
 
             function clear() {
@@ -40,12 +44,16 @@ Item {
 
         function layout() {
             if (items) {
-                items.parent = box;
-                items.x = 0;
-                items.y = 0;
-                items.width = box.width;
+                //items.parent = box;
+                //items.x = 0;
+                //items.y = 0;
+                //items.width = box.width;
                 layoutItems(box.width);
-                items.height = box.height;
+                //items.height = box.height;
+                content.x = 0;
+                content.y = 0;
+                content.width = box.width;
+                content.height = box.height;
             }
         }
 
@@ -66,6 +74,7 @@ Item {
         }
 
         function layoutOptionItem(item,w,h) {
+            item.parent = content;
             item.x = 10;
             item.y = h;
             item.width = w-20;

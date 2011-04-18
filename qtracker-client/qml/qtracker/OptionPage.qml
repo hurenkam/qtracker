@@ -41,14 +41,14 @@ Page {
         onLeftClicked: root.cancel();
     }
 
-    property Item options: null;
+    property QtObject options: null;
 
     function layoutPage() {
         header.parent = title;
         header.anchors.fill = title;
 
         if (options) {
-            options.parent = content;
+            //options.parent = content;
             layoutOptions(root.width);
         }
     }
@@ -64,6 +64,7 @@ Page {
     }
 
     function layoutOptionBox(child,w,h) {
+        child.parent = content;
         child.x = 0;
         child.y = h;
         child.width = w;

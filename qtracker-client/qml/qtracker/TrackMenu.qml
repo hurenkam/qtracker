@@ -39,7 +39,10 @@ Page {
         title: "Recording"
         x: 0; width: parent.width;
         anchors.top: hdr.bottom;
-        items: Item {
+        items: recordingitems
+
+        VisualItemModel {
+            id: recordingitems
             OptionItem { text: trackstatus.status=="idle"? "Start Track": "Stop Track" }
         }
     }

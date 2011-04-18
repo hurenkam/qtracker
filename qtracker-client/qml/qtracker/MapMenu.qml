@@ -25,7 +25,10 @@ Page {
         title: "Options"
         x: 0; width: parent.width;
         anchors.top: hdr.bottom;
-        items: Item {
+        items: optionitems
+
+        VisualItemModel {
+            id: optionitems
             OptionItem { text: "Name" }
             OptionItem { text: "Calibration" }
             OptionItem { text: "Datum" }
@@ -42,8 +45,8 @@ Page {
         FolderListModel {
             id: maplist
             //folder: (client.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
-            //folder: "file:///c:/data/qtracker/maps/"
-            folder: "file:///e:/data/qtracker/maps/"
+            folder: "file:///c:/data/qtracker/maps/"
+            //folder: "file:///e:/data/qtracker/maps/"
             nameFilters: ["*.jpg"]
         }
 

@@ -3,14 +3,20 @@ import QtQuick 1.0
 OptionPage {
     id: root
     title: "Settings"
-    options: Item {
+    options: settingsmodel
 
-        OptionPage { id: security; title: "Security"}
+    OptionPage { id: security; title: "Security"}
+
+    VisualItemModel {
+        id: settingsmodel
 
         OptionBox {
             id: box1
             title: "Security"
-            items: Item {
+            items: securityitems
+
+            VisualItemModel {
+                id: securityitems
                 OptionItem { text: "Passcode"; button: true; onClicked: root.pageStack.push(security) }
             }
         }
@@ -18,8 +24,10 @@ OptionPage {
         OptionBox {
             id: box2
             title: "General"
+            items: generalitems
 
-            items: Item {
+            VisualItemModel {
+                id: generalitems
                 OptionItem { text: "Days End" }
                 OptionItem { text: "Moment Sorting" }
                 OptionItem { text: "Week Starts On" }

@@ -3,11 +3,17 @@ import QtQuick 1.0
 OptionPage {
     id: root
     title: "Waypoint"
-    options: Item {
+    options: wptoptions
+
+    VisualItemModel {
+        id: wptoptions
         OptionBox {
             id: wptbox
             title: "New Waypoint"
-            items: Item {
+            items: wptitems
+
+            VisualItemModel {
+                id: wptitems
                 OptionItem { id: category;    text: "<category>" }
                 OptionItem { id: name;        text: "Name:"      }
                 OptionItem { id: lat;         text: "Latitude:"  }
