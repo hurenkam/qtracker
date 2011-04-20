@@ -2,56 +2,52 @@ import QtQuick 1.0
 import QmlTrackerExtensions 1.0
 import "qrc:/js/filesystem.js" as FileSystem
 
-Rectangle {
+OptionList {
     id: root
-    anchors.margins: 5
-    clip:  true
-    property string mapname: ""
-    property alias index: maplist.currentIndex
+    x: 0; width: parent.width;
+    anchors.top: edit.bottom;
+    anchors.bottom: parent.bottom;
+    title: "List"
 
-    color: activePalette.dark
-    gradient: Gradient {
-        GradientStop {
-            position: 0.0
-            color: activePalette.light
-        }
-        GradientStop {
-            position:  1.0
-            color: activePalette.dark
-        }
+    signal mapSelected(string fileName)
+
+    FolderListModel {
+        id: maplist
+        //folder: (client.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
+        folder: "file:///c:/data/qtracker/maps/"
+        //folder: "file:///e:/data/qtracker/maps/"
+        nameFilters: ["*.jpg"]
     }
 
-    ListView {
-        id: maplist
-        anchors.margins: 5
-        anchors.fill: parent
-        smooth: true
-        clip:  true
+    Component {
+        id: delegate
+        OptionItem { text: ""; button: true }
+    }
 
-        FolderListModel {
-            id: folderModel
-            folder: (client.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
-            nameFilters: ["*.jpg"]
+    items: content
+
+    DynamicItemModel {
+        id: content
+        name: "MapList"
+    }
+
+    function update() {
+        var item = null;
+        content.clear()
+        console.log("maplist contains",maplist.count,"items")
+        for (var i=0; i<maplist.count; i++) {
+            console.log("maplist item ",maplist.get(i,"fileName"))
+            item = delegate.createObject(null)
+            item.text = FileSystem.base(maplist.get(i,"fileName"))
+            content.append(item)
         }
+        console.log("content contains",content.count(),"items",content.get(0),content.get(0).text)
+        lst.layout()
+    }
 
-        Component {
-            id: fileDelegate
-            Text {
-                text: FileSystem.base(fileName); color: "white"; font.pixelSize: 24
-                MouseArea {
-                    id: mouseArea
-                    anchors.fill:  parent
-                    onClicked: {
-                        root.mapname = folderModel.folder + fileName
-                        maplist.currentIndex = index
-                    }
-                }
-            }
-        }
+    Component.onCompleted: update()
 
-        model: folderModel
-        delegate: fileDelegate
-        highlight: Rectangle { color: "lightsteelblue"; radius: 5; width: parent.width }
-        focus: true
+    onClicked: {
+        root.mapSelected(maplist.folder + text + ".jpg");
     }
 }

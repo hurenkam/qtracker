@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Rectangle {
     id: root
     x: 3
@@ -46,3 +50,4 @@ Rectangle {
         }
     }
 }
+*/

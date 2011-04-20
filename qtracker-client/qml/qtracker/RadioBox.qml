@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Item {
     id: root
     property int selected: -1
@@ -45,3 +49,4 @@ Item {
         }
     }
 }
+*/

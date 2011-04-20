@@ -1,4 +1,9 @@
 import QtQuick 1.0
+
+Item {}
+
+/* Obsolete
+
 import QmlTrackerExtensions 1.0
 import QtMobility.publishsubscribe 1.1
 
@@ -111,3 +116,4 @@ Item {
         }
     }
 }
+*/

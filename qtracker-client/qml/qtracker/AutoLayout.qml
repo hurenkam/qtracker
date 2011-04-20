@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Item {
     id: root
     property bool hasRightButton: false
@@ -8,12 +12,12 @@ Item {
     onSideBySideChanged:   layoutChildren()
     onChildrenChanged:     layoutChildren()
     Component.onCompleted: layoutChildren()
-/*
+/ *
     function connectChildren() {
         for (i=0; i<c; i++)
             Connections { target: children[i]; onVisibilityChanged: root.layoutChildren; }
     }
-*/
+* /
     function layoutChildren() {
         if (!parent) return
         if (!parent.width) return
@@ -56,3 +60,4 @@ Item {
         }
     }
 }
+*/

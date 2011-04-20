@@ -1,5 +1,7 @@
 import QtQuick 1.0
 
+Item {}
+/*
 Item {
     id: root
     property real w: (parent.height>parent.width)? parent.width/360  : parent.width/640
@@ -13,3 +15,4 @@ Item {
         return x*w;
     }
 }
+*/

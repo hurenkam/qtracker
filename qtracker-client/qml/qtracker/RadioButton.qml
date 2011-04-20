@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Item {
     id: root
     property alias text: priv.text
@@ -24,3 +28,4 @@ Item {
         color: "white"
     }
 }
+*/

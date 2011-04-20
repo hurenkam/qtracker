@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Page {
     id: root
 
@@ -9,11 +13,11 @@ Page {
     function cancel() {
         pageStack.pop();
     }
-/*
+/ *
     RefpointEdit {
         id: edit
     }
-*/
+* /
     function newentry() {
         //pageStack.push(edit)
     }
@@ -43,11 +47,12 @@ Page {
         anchors.top: start.bottom
         anchors.bottom: parent.bottom
         width: parent.width
-/*
+/ *
         RefpointList {
             id: listbox
             anchors.fill: parent
         }
-*/
+* /
     }
 }
+*/

@@ -4,7 +4,7 @@ Item {
     id: root
     property alias title: header.text
     property QtObject items: null
-    height: header.offset + box.height + 10
+    height: header.offset + box.height + 20
 
     signal clicked(int index, string text)
 
@@ -26,7 +26,7 @@ Item {
         width: root.width
         //height: 360 - header.offset
         //height: 100
-        height: root.height -header.offset
+        height: root.height -header.offset-18
         contentWidth: root.width
         contentHeight: box.height+2
         interactive: contentHeight > height? true: false
@@ -43,7 +43,6 @@ Item {
             color: "white"
             border.color: "grey"
             border.width: 1
-
             Item {
                 id: content
             }
@@ -59,7 +58,7 @@ Item {
             }
 
             function layout() {
-                if (items) {
+                if (items && (items.count() > 0)) {
                     //items.parent = content
                     content.height = layoutItems(box.width);
                 }
@@ -70,13 +69,13 @@ Item {
             }
 
             function layoutItems(w) {
-                //console.log("got", items.children.length, "items")
+                console.log("OptionList.layoutItems(): got", items.count(), "items for model",items.name)
                 var h = 2;
                 seperators.clear();
                 var seperator;
-                for (var i=0; i<items.count; ++i) {
+                for (var i=0; i<items.count(); ++i) {
                     h = layoutOptionItem(items.get(i),w,h+10) + 10;
-                    if ((i+1) < items.count) {
+                    if ((i+1) < items.count()) {
                         seperator = line.createObject(seperators)
                         h = h+1
                         seperator.x = 0
@@ -93,21 +92,32 @@ Item {
                 item.y = h;
                 item.width = w-20;
                 h = h + item.height;
-                //console.log("item:",item.x,item.y,item.width,item.height);
+                //console.log("OptionList.layoutOptionItem():",item.x,item.y,item.width,item.height);
                 return h;
             }
 
             function initialise() {
-                for (var i=0; i<items.count; ++i) {
-                    items.get(i).clicked.disconnect()
+                console.log("OptionList.initialise():",items.name,items.count());
+                for (var i=0; i<items.count(); ++i) {
+                    items.get(i).clicked.disconnect(root.clicked)
                     items.get(i).clicked.connect(root.clicked)
-                    items.get(i).button = true;
                     items.get(i).index = i;
                 }
             }
 
-            Component.onCompleted: { initialise(); layout(); }
-            onWidthChanged:        { layout(); }
+            function connectitem(i) {
+                items.get(i).clicked.connect(root.clicked)
+                items.get(i).index = i;
+            }
+
+            Connections {
+                target: items
+                onListCleared:     { box.layout(); }
+                onListAppended:    { box.connectitem(items.count()-1); }
+            }
+
+            Component.onCompleted: { box.layout(); }
+            onWidthChanged:        { box.layout(); }
         }
     }
 
@@ -120,10 +130,14 @@ Item {
         }
     }
 
+    function initialise() {
+        box.initialise()
+    }
+
     function layout() {
         box.layout();
     }
 
-    onItemsChanged:         box.layout();
-    onHeightChanged:        box.layout();
+    onItemsChanged:         { initialise(); layout(); }
+    onHeightChanged:        layout();
 }

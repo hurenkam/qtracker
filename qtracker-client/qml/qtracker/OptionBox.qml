@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Item {
     id: root
     property alias title: header.text
@@ -55,13 +59,13 @@ Item {
         }
 
         function layoutItems(w) {
-            //console.log("got", items.children.length, "items")
+            console.log("OptionBox.layoutItems(): got", items.count(), "items for model",items.name)
             var h = 2;
             seperators.clear();
             var seperator;
-            for (var i=0; i<items.count; ++i) {
+            for (var i=0; i<items.count(); ++i) {
                 h = layoutOptionItem(items.get(i),w,h+10) + 10;
-                if ((i+1) < items.count) {
+                if ((i+1) < items.count()) {
                     seperator = line.createObject(seperators)
                     h = h+1
                     seperator.x = 0
@@ -78,7 +82,7 @@ Item {
             item.y = h;
             item.width = w-20;
             h = h + item.height;
-            //console.log("item:",item.x,item.y,item.width,item.height);
+            //console.log("OptionBox.layoutOptionItem():",item.x,item.y,item.width,item.height);
             return h;
         }
 
@@ -102,3 +106,4 @@ Item {
     onItemsChanged:         box.layout();
     onHeightChanged:        box.layout();
 }
+*/

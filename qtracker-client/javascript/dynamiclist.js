@@ -1,4 +1,4 @@
-// dynamiclist.js
+// script.js
 var jList = new Array()
 
 function getList() {

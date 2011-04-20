@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Page {
     id: root
 
@@ -74,3 +78,4 @@ Page {
     }
 }
 
+*/

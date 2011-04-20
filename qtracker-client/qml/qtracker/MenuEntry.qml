@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Item {
     id: root
 
@@ -109,3 +113,4 @@ Item {
         }
     }
 }
+*/

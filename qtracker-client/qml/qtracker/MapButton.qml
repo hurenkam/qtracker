@@ -1,5 +1,9 @@
 import QtQuick 1.0
 
+Item {}
+
+/* Obsolete
+
 Image {
     id: root
     width: 50
@@ -47,3 +51,4 @@ Image {
         onReleased: root.released()
     }
 }
+*/
