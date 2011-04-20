@@ -14,12 +14,21 @@ OptionPage {
 
             DynamicItemModel {
                 id: wptitems
-                OptionItem { id: category;    text: "<category>" }
-                OptionItem { id: name;        text: "Name:"      }
-                OptionItem { id: lat;         text: "Latitude:"  }
-                OptionItem { id: lon;         text: "Longitude:" }
-                OptionItem { id: alt;         text: "Altitude:"  }
-                OptionItem { id: notes;       text: "Notes:"     }
+                name: "wptitems"
+
+                VisualItemModel {
+                    OptionItem { id: category;    text: "<category>" }
+                    OptionItem { id: name;        text: "Name:"      }
+                    OptionItem { id: lat;         text: "Latitude:"  }
+                    OptionItem { id: lon;         text: "Longitude:" }
+                    OptionItem { id: alt;         text: "Altitude:"  }
+                    OptionItem { id: notes;       text: "Notes:"     }
+                    Component.onCompleted: {
+                        for (var i=0; i<count; i++) {
+                            wptitems.append(children[i])
+                        }
+                    }
+                }
             }
         }
     }

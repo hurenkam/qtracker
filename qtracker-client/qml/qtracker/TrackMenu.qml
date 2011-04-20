@@ -43,7 +43,16 @@ Page {
 
         DynamicItemModel {
             id: recordingitems
-            OptionItem { text: trackstatus.status=="idle"? "Start Track": "Stop Track" }
+            name: "recordingitems"
+
+            VisualItemModel {
+                OptionItem { text: trackstatus.status=="idle"? "Start Track": "Stop Track" }
+                Component.onCompleted: {
+                    for (var i=0; i<count; i++) {
+                        recordingitems.append(children[i])
+                    }
+                }
+            }
         }
     }
 
@@ -69,6 +78,7 @@ Page {
 
         DynamicItemModel {
             id: content
+            name: "TrackList"
         }
 
         function update() {

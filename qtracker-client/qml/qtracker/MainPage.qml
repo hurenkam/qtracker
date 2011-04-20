@@ -60,7 +60,7 @@ Page {
         property int animationDuration: 300
         Behavior on height {
             enabled: root.animate
-            NumberAnimation { easing.type: Easing.InOutQuart; duration: animationDuration }
+            NumberAnimation { easing.type: Easing.InOutQuart; duration: toolbar.animationDuration }
         }
 
         function toggleHide() {

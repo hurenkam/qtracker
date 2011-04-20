@@ -17,7 +17,15 @@ OptionPage {
 
             DynamicItemModel {
                 id: securityitems
-                OptionItem { text: "Passcode"; button: true; onClicked: root.pageStack.push(security) }
+                name: "securityitems"
+                VisualItemModel {
+                    OptionItem { text: "Passcode"; button: true; onClicked: root.pageStack.push(security) }
+                    Component.onCompleted: {
+                        for (var i=0; i<count; i++) {
+                            securityitems.append(children[i])
+                        }
+                    }
+                }
             }
         }
 
@@ -28,11 +36,19 @@ OptionPage {
 
             DynamicItemModel {
                 id: generalitems
-                OptionItem { text: "Days End" }
-                OptionItem { text: "Moment Sorting" }
-                OptionItem { text: "Week Starts On" }
-                OptionItem { text: "Sounds" }
-                OptionItem { text: "Photos" }
+                name: "generalitems"
+                VisualItemModel {
+                    OptionItem { text: "Days End" }
+                    OptionItem { text: "Moment Sorting" }
+                    OptionItem { text: "Week Starts On" }
+                    OptionItem { text: "Sounds" }
+                    OptionItem { text: "Photos" }
+                    Component.onCompleted: {
+                        for (var i=0; i<count; i++) {
+                            generalitems.append(children[i])
+                        }
+                    }
+                }
             }
         }
 
@@ -44,14 +60,22 @@ OptionPage {
 
             DynamicItemModel {
                 id: otheritems
-                OptionItem { text: "Option a" }
-                OptionItem { text: "Option b" }
-                OptionItem { text: "Option c" }
-                OptionItem { text: "Option d" }
-                OptionItem { text: "Option e" }
-                OptionItem { text: "Option f" }
-                OptionItem { text: "Option g" }
-                OptionItem { text: "Option h" }
+                name: "otheritems"
+                VisualItemModel {
+                    OptionItem { text: "Option a" }
+                    OptionItem { text: "Option b" }
+                    OptionItem { text: "Option c" }
+                    OptionItem { text: "Option d" }
+                    OptionItem { text: "Option e" }
+                    OptionItem { text: "Option f" }
+                    OptionItem { text: "Option g" }
+                    OptionItem { text: "Option h" }
+                    Component.onCompleted: {
+                        for (var i=0; i<count; i++) {
+                            otheritems.append(children[i])
+                        }
+                    }
+                }
             }
 
             onClicked: console.log("other.onclicked:",index,text)

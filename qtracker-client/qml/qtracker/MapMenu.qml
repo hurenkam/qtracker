@@ -29,9 +29,18 @@ Page {
 
         DynamicItemModel {
             id: optionitems
-            OptionItem { text: "Name" }
-            OptionItem { text: "Calibration" }
-            OptionItem { text: "Datum" }
+            name: "optionitems"
+
+            VisualItemModel {
+                OptionItem { text: "Name" }
+                OptionItem { text: "Calibration" }
+                OptionItem { text: "Datum" }
+                Component.onCompleted: {
+                    for (var i=0; i<count; i++) {
+                        optionitems.append(children[i])
+                    }
+                }
+            }
         }
     }
 
@@ -59,6 +68,7 @@ Page {
 
         DynamicItemModel {
             id: content
+            name: "MapList"
         }
 
         function update() {
@@ -71,7 +81,7 @@ Page {
                 item.text = FileSystem.base(maplist.get(i,"fileName"))
                 content.append(item)
             }
-            console.log("content contains",content.count,"items",content.children[0])
+            console.log("content contains",content.count,"items",content.get(0),content.get(0).text)
             lst.layout()
         }
 

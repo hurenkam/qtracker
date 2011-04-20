@@ -59,9 +59,13 @@ Item {
             }
 
             function layout() {
-                items.parent = content
                 if (items) {
+                    //items.parent = content
                     content.height = layoutItems(box.width);
+                }
+                else
+                {
+                    content.height = 30
                 }
             }
 
@@ -70,9 +74,9 @@ Item {
                 var h = 2;
                 seperators.clear();
                 var seperator;
-                for (var i=0; i<items.children.length; ++i) {
-                    h = layoutOptionItem(items.children[i],w,h+10) + 10;
-                    if ((i+1) < items.children.length) {
+                for (var i=0; i<items.count; ++i) {
+                    h = layoutOptionItem(items.get(i),w,h+10) + 10;
+                    if ((i+1) < items.count) {
                         seperator = line.createObject(seperators)
                         h = h+1
                         seperator.x = 0
@@ -84,7 +88,7 @@ Item {
             }
 
             function layoutOptionItem(item,w,h) {
-                //item.parent = content;
+                item.parent = content;
                 item.x = 10;
                 item.y = h;
                 item.width = w-20;
@@ -94,11 +98,11 @@ Item {
             }
 
             function initialise() {
-                for (var i=0; i<items.children.length; ++i) {
-                    items.children[i].clicked.disconnect()
-                    items.children[i].clicked.connect(root.clicked)
-                    items.children[i].button = true;
-                    items.children[i].index = i;
+                for (var i=0; i<items.count; ++i) {
+                    items.get(i).clicked.disconnect()
+                    items.get(i).clicked.connect(root.clicked)
+                    items.get(i).button = true;
+                    items.get(i).index = i;
                 }
             }
 

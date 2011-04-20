@@ -1,36 +1,27 @@
 import QtQuick 1.0
+import "qrc:/js/dynamiclist.js" as JList
 
 QtObject {
     id: root
-    default property alias children: container.children
-    property int count: container.children.length
-    property alias parent: container.parent
+    default property variant list
+    property int count: 0
+    property string name: "unnamed"
 
-    property Item c: Item {
-        id: container
-        parent: null
-        anchors.fill: parent
-
-        function append(item) {
-            item.parent = container
-            //childrenChanged()
-        }
-        function clear() {
-            children=[]
-            //childrenChanged()
-        }
-
-        onChildrenChanged: console.log("DynamicItemModel.onChildrenChanged",container.children.length)
+    function get(index) {
+        return JList.getItem(index)
     }
-
-    function append(item) {
-        console.log("DynamicItemModel.append()",item)
-        container.append(item)
+    function append(index) {
+        JList.addItem(index)
+        update()
+    }
+    function update() {
+        list = JList.getList()
+        count = JList.count()
+        listChanged()
     }
     function clear() {
-        console.log("DynamicItemModel.clear()")
-        container.clear()
+        JList.clear()
     }
 
-    Component.onCompleted: console.log("DynamicItemModel.onCompleted")
+    Component.onCompleted: update()
 }

@@ -46,6 +46,7 @@
         <file alias="filesystem.js">javascript/filesystem.js</file>
         <file alias="helpers.js">javascript/helpers.js</file>
         <file alias="pages.js">javascript/pages.js</file>
+        <file alias="dynamiclist.js">javascript/dynamiclist.js</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="compass.svg">qml/Images/compass-2.svg</file>
