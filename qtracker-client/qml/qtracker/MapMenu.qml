@@ -1,45 +1,57 @@
 import QtQuick 1.0
 
-Page {
+OptionPage {
     id: root
-    imageSource: "qrc:/images/options-bg.png"
+    title: "Map"
+    options: mapmodel
 
-    signal mapSelected(string fileName)
+    signal mapSelected(int index, string baseName, string fileName)
 
-    function cancel() {
-        pageStack.pop();
-    }
+    CalibrationMenu  { id: calselectpage }
 
-    OptionHeader {
-        id: hdr
-        x: 0; y:0; width: parent.width; height: 50
-        text: "Map"
-        leftButtonVisible: true
-        onLeftClicked: root.cancel();
-    }
-
-    OptionList {
-        id: edit
-        title: "Options"
-        x: 0; width: parent.width;
-        anchors.top: hdr.bottom;
-        items: optionitems
-
-        DynamicItemModel {
-            id: optionitems
-            name: "optionitems"
-            OptionItem { text: "Name" }
-            OptionItem { text: "Calibration" }
-            OptionItem { text: "Datum" }
+    MapSelectionPage {
+        id: mapselectpage;
+        onMapSelected: {
+            mapname.value = baseName
+            root.mapSelected(index,baseName,fileName)
+            //pageStack.pop()
         }
     }
 
-    MapList {
-        id: lst
-        x: 0; width: parent.width;
-        anchors.top: edit.bottom;
-        anchors.bottom: parent.bottom;
-        title: "List"
-        onMapSelected: { root.mapSelected(fileName); root.cancel(); }
+    VisualItemModel {
+        id: mapmodel
+
+        OptionList {
+            id: edit
+            title: "Options"
+            items: optionitems
+
+            DynamicItemModel {
+                id: optionitems
+                name: "optionitems"
+                OptionInputItem  { id: mapname; text: "Map";   value:"no map"; button: true; onClicked: pageStack.push(mapselectpage) }
+                OptionInputItem  { id: datum;   text: "Datum"; value:"Wgs84";  button: true; }
+                //OptionTextItem   { text: "Select Calibration Point"; button: true; onClicked: pageStack.push(calselectpage) }
+            }
+        }
+
+        OptionList {
+            id: editrefpoint
+            title: "Calibration Points"
+            items: refpoints
+
+            DynamicItemModel {
+                id: refpoints
+                name: "securityitems"
+                OptionTextItem  { id: newrefpoint; text: "[Add]"; button: true; onClicked: pageStack.push(calselectpage) }
+/*
+                OptionInputItem { id: refname;        text: "Name:";      value: "Home"        }
+                OptionInputItem { id: reflat;         text: "Latitude:";  value: "53.128"      }
+                OptionInputItem { id: reflon;         text: "Longitude:"; value: "5.2801"      }
+                OptionInputItem { id: refx;           text: "X:";         value: "0"           }
+                OptionInputItem { id: refy;           text: "Y:";         value: "0"           }
+*/
+            }
+        }
     }
 }

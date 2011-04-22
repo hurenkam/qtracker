@@ -9,19 +9,19 @@ OptionList {
     anchors.bottom: parent.bottom;
     title: "List"
 
-    signal mapSelected(string fileName)
+    signal mapSelected(int index, string baseName, string fileName)
 
     FolderListModel {
         id: maplist
         //folder: (client.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
-        folder: "file:///c:/data/qtracker/maps/"
-        //folder: "file:///e:/data/qtracker/maps/"
+        //folder: "file:///c:/data/qtracker/maps/"
+        folder: "file:///e:/data/qtracker/maps/"
         nameFilters: ["*.jpg"]
     }
 
     Component {
         id: delegate
-        OptionItem { text: ""; button: true }
+        OptionTextItem { text: ""; button: true }
     }
 
     items: content
@@ -48,6 +48,6 @@ OptionList {
     Component.onCompleted: update()
 
     onClicked: {
-        root.mapSelected(maplist.folder + text + ".jpg");
+        root.mapSelected(index,text,maplist.folder + text + ".jpg");
     }
 }

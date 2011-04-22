@@ -22,6 +22,7 @@ Item {
     Image {
         id: img
         visible: true
+        smooth: true
         anchors.fill: parent
     }
 

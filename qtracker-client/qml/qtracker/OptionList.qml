@@ -43,7 +43,12 @@ Item {
             color: "white"
             border.color: "grey"
             border.width: 1
+            clip: true
+            smooth: true
             Item {
+                width: box.width
+                clip: true
+                smooth: true
                 id: content
             }
 
@@ -83,6 +88,8 @@ Item {
                         seperator.y = h
                     }
                 }
+                items.get(0).roundtop = true
+                items.get(items.count()-1).roundbottom = true
                 return h+2;
             }
 

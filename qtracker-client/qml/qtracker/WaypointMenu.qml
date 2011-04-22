@@ -5,6 +5,8 @@ OptionPage {
     title: "Waypoint"
     options: wptoptions
 
+    CategoryMenu { id: categorymenu }
+
     VisualItemModel {
         id: wptoptions
 
@@ -17,12 +19,18 @@ OptionPage {
                 id: wptitems
                 name: "wptitems"
 
-                OptionItem { id: category;    text: "<category>" }
-                OptionItem { id: name;        text: "Name:"      }
-                OptionItem { id: lat;         text: "Latitude:"  }
-                OptionItem { id: lon;         text: "Longitude:" }
-                OptionItem { id: alt;         text: "Altitude:"  }
-                OptionItem { id: notes;       text: "Notes:"     }
+                OptionInputItem {
+                    id: category;
+                    text: "Category:";
+                    value: "Waypoints";
+                    button: true;
+                    onClicked: root.pageStack.push(categorymenu)
+                }
+                OptionInputItem { id: name;        text: "Name:";      value: "Home"        }
+                OptionInputItem { id: lat;         text: "Latitude:";  value: "53.128"      }
+                OptionInputItem { id: lon;         text: "Longitude:"; value: "5.2801"      }
+                OptionInputItem { id: alt;         text: "Altitude:";  value: "29.8"        }
+                //OptionInputItem { id: notes;       text: "Notes:";     value: ""            }
             }
         }
     }

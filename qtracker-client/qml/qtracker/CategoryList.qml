@@ -11,7 +11,7 @@ OptionList {
 
     Database {
         id: database
-        table: "tracks"
+        table: "categories"
         onCountChanged: lst.update()
     }
 
@@ -19,24 +19,24 @@ OptionList {
 
     DynamicItemModel {
         id: content
-        name: "TrackList"
+        name: "CategoryList"
     }
 
     function update() {
         var item = null;
         content.clear();
-        console.log("tracklist contains",database.count,"items")
+        console.log("categorylist contains",database.count,"items")
         for (var i=0; i<database.count; i++) {
-            console.log("tracklist item ",database.get(i,"name"))
+            console.log("categorylist item ",database.get(i,"name"))
             item = delegate.createObject(null)
-            item.text = database.get(i,"trackid") + " " + database.get(i,"name")
+            item.text = database.get(i,"categoryid") + " " + database.get(i,"name")
             content.append(item)
             lst.layout()
         }
     }
 
     onClicked: {
-        console.log("TrackMenu.onClicked",index,text);
+        console.log("CategoryList.onClicked",index,text);
     }
 
     Component.onCompleted: update()

@@ -50,6 +50,7 @@ Item {
             height: root.buttonheight *0.8
 
             visible: false
+            bgcolor: "black"
             source: "qrc:/images/back.svg";
             onClicked: root.leftClicked();
         }

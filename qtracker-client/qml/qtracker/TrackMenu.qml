@@ -45,7 +45,7 @@ Page {
             id: recordingitems
             name: "recordingitems"
 
-            OptionItem { text: trackstatus.status=="idle"? "Start Track": "Stop Track" }
+            OptionTextItem { text: trackstatus.status=="idle"? "Start Track": "Stop Track" }
         }
     }
 

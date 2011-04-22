@@ -35,12 +35,17 @@
         <file alias="MapMenu.qml">qml/qtracker/MapMenu.qml</file>
         <file alias="CalibrationMenu.qml">qml/qtracker/CalibrationMenu.qml</file>
         <file alias="OptionPage.qml">qml/qtracker/OptionPage.qml</file>
-        <file alias="OptionBox.qml">qml/qtracker/OptionBox.qml</file>
         <file alias="OptionItem.qml">qml/qtracker/OptionItem.qml</file>
         <file alias="OptionHeader.qml">qml/qtracker/OptionHeader.qml</file>
         <file alias="ImExportPage.qml">qml/qtracker/ImExportPage.qml</file>
         <file alias="OptionList.qml">qml/qtracker/OptionList.qml</file>
         <file alias="DynamicItemModel.qml">qml/qtracker/DynamicItemModel.qml</file>
+        <file alias="OptionInputItem.qml">qml/qtracker/OptionInputItem.qml</file>
+        <file alias="OptionTextItem.qml">qml/qtracker/OptionTextItem.qml</file>
+        <file alias="CategoryList.qml">qml/qtracker/CategoryList.qml</file>
+        <file alias="WaypointList.qml">qml/qtracker/WaypointList.qml</file>
+        <file alias="CategoryMenu.qml">qml/qtracker/CategoryMenu.qml</file>
+        <file alias="MapSelectionPage.qml">qml/qtracker/MapSelectionPage.qml</file>
     </qresource>
     <qresource prefix="/js">
         <file alias="filesystem.js">javascript/filesystem.js</file>

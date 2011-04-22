@@ -1,58 +1,60 @@
 import QtQuick 1.0
 
-Item {}
-
-/* Obsolete
-
-Page {
+OptionPage {
     id: root
+    title: "Calibration Point"
+    options: caloptions
 
-    function confirm() {
-        pageStack.pop();
-    }
-    function cancel() {
-        pageStack.pop();
-    }
-/ *
-    RefpointEdit {
-        id: edit
-    }
-* /
-    function newentry() {
-        //pageStack.push(edit)
-    }
+    CategoryMenu { id: categorymenu }
 
-    MenuEntry {
-        id: heading
-        x: 2; y: 2
-        width: parent.width
-        height: 54
-        text: "Calibration Menu"
-        leftButtonVisible: true
-        onLeftClicked: root.cancel();
-    }
+    VisualItemModel {
+        id: caloptions
 
-    MenuEntry {
-        id: start
-        anchors.top: heading.bottom
-        width: parent.width
-        height: 54
-        text: "New Refpoint"
-        rightButtonVisible: true
-        onRightClicked: root.newentry();
-    }
+        OptionList {
+            id: editrefpoint
+            title: "Edit"
+            items: refedititems
 
-    MenuEntry {
-        id: list
-        anchors.top: start.bottom
-        anchors.bottom: parent.bottom
-        width: parent.width
-/ *
-        RefpointList {
-            id: listbox
-            anchors.fill: parent
+            DynamicItemModel {
+                id: refedititems
+                name: "refedititems"
+                OptionInputItem { id: refname;        text: "Name:";      value: "Home"        }
+                OptionInputItem { id: reflat;         text: "Latitude:";  value: "53.128"      }
+                OptionInputItem { id: reflon;         text: "Longitude:"; value: "5.2801"      }
+                OptionInputItem { id: refx;           text: "X:";         value: "0"           }
+                OptionInputItem { id: refy;           text: "Y:";         value: "0"           }
+            }
         }
-* /
+
+        OptionList {
+            id: fromwpt
+            items: fromwptitems
+
+            DynamicItemModel {
+                id: fromwptitems
+                name: "fromwptitems"
+                OptionTextItem {
+                    text: "From Waypoint";
+                    button: true;
+                    //onClicked: pageStack.push(wptselect)
+                }
+            }
+        }
+
+        OptionList {
+            id: confirm
+            items: confirmitems
+
+            DynamicItemModel {
+                id: confirmitems
+                name: "confirmitems"
+                OptionTextItem {
+                    text: "Confirm";
+                    button: true;
+                    buttonsource: "qrc:/images/visible.svg";
+                    onClicked: pageStack.pop()
+                }
+            }
+        }
     }
 }
-*/

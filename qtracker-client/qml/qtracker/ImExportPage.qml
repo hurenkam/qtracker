@@ -18,7 +18,7 @@ OptionPage {
             DynamicItemModel {
                 id: securityitems
                 name: "securityitems"
-                OptionItem { text: "Passcode"; button: true; onClicked: root.pageStack.push(security) }
+                OptionTextItem { text: "Passcode"; button: true; onClicked: root.pageStack.push(security) }
             }
         }
 
@@ -31,11 +31,11 @@ OptionPage {
                 id: generalitems
                 name: "generalitems"
 
-                OptionItem { text: "Days End" }
-                OptionItem { text: "Moment Sorting" }
-                OptionItem { text: "Week Starts On" }
-                OptionItem { text: "Sounds" }
-                OptionItem { text: "Photos" }
+                OptionTextItem { text: "Days End" }
+                OptionTextItem { text: "Moment Sorting" }
+                OptionTextItem { text: "Week Starts On" }
+                OptionTextItem { text: "Sounds" }
+                OptionTextItem { text: "Photos" }
             }
         }
 
@@ -48,14 +48,14 @@ OptionPage {
             DynamicItemModel {
                 id: otheritems
                 property string name: "otheritems"
-                OptionItem { text: "Option a"; button: true }
-                OptionItem { text: "Option b"; button: true }
-                OptionItem { text: "Option c"; button: true }
-                OptionItem { text: "Option d"; button: true }
-                OptionItem { text: "Option e"; button: true }
-                OptionItem { text: "Option f"; button: true }
-                OptionItem { text: "Option g"; button: true }
-                OptionItem { text: "Option h"; button: true }
+                OptionTextItem { text: "Option a"; button: true }
+                OptionTextItem { text: "Option b"; button: true }
+                OptionTextItem { text: "Option c"; button: true }
+                OptionTextItem { text: "Option d"; button: true }
+                OptionTextItem { text: "Option e"; button: true }
+                OptionTextItem { text: "Option f"; button: true }
+                OptionTextItem { text: "Option g"; button: true }
+                OptionTextItem { text: "Option h"; button: true }
             }
 
             onClicked: console.log("other.onclicked:",index,text)
