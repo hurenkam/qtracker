@@ -33,5 +33,21 @@ OptionPage {
                 //OptionInputItem { id: notes;       text: "Notes:";     value: ""            }
             }
         }
+
+        OptionList {
+            id: confirm
+            items: confirmitems
+
+            DynamicItemModel {
+                id: confirmitems
+                name: "confirmitems"
+                OptionTextItem {
+                    text: "Confirm";
+                    button: true;
+                    buttonsource: "qrc:/images/visible.svg";
+                    onClicked: pageStack.pop()
+                }
+            }
+        }
     }
 }

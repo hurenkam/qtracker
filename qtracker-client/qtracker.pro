@@ -55,7 +55,11 @@ SOURCES += \
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
-OTHER_FILES +=
+OTHER_FILES += \
+    javascript/dynamiclist.js \
+    javascript/helpers.js \
+    javascript/filesystem.js \
+    javascript/pages.js
 
 HEADERS += \
     cpp/folderlistmodel.h \
