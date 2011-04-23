@@ -1,7 +1,19 @@
 # Add more folders to ship with the application, here
-folder_01.source = qml/qtracker
-folder_01.target = qml
-DEPLOYMENTFOLDERS = folder_01
+main.source = Main
+main.target = .
+components.source = Components
+components.target = .
+gauges.source = Gauges
+gauges.target = .
+map.source = Map
+map.target = .
+wpt.source = Waypoint
+wpt.target = .
+rte.source = Route
+rte.target = .
+trk.source = Track
+trk.target = .
+DEPLOYMENTFOLDERS = main components gauges map wpt rte trk
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH = /imports
@@ -55,12 +67,6 @@ SOURCES += \
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
-OTHER_FILES += \
-    javascript/dynamiclist.js \
-    javascript/helpers.js \
-    javascript/filesystem.js \
-    javascript/pages.js
-
 HEADERS += \
     cpp/folderlistmodel.h \
     cpp/deviceinfomodel.h \
@@ -68,6 +74,3 @@ HEADERS += \
     cpp/helpers.h \
     cpp/client.h \
     cpp/tablemodel.h
-
-RESOURCES += \
-    resources.qrc

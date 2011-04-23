@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     client.startServer();
 
     LOG("main(): splash.show()")
-    QPixmap pixmap(":/images/splash.svg");
+    QPixmap pixmap(QLatin1String("Main/splash.svg"));
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("qTracker v" VERSION,Qt::AlignLeft,Qt::white);
@@ -107,7 +107,8 @@ int main(int argc, char *argv[])
 
     QmlApplicationViewer viewer;
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setSource(QUrl("qrc:///qml/qTracker.qml"));
+    //viewer.setSource(QUrl("qrc:///qml/qTracker.qml"));
+    viewer.setMainQmlFile(QLatin1String("Main/main.qml"));
     viewer.rootContext()->setContextProperty("client",&client);
     splash.finish(&viewer);
     viewer.showFullScreen();
