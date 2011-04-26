@@ -31,9 +31,9 @@ OptionList {
         content.clear();
         console.log("tracklist contains",database.count,"items")
         for (var i=0; i<database.count; i++) {
-            console.log("tracklist item ",database.get(i,"name"))
+            console.log("tracklist item ",database.get(i).name)
             item = delegate.createObject(null)
-            item.text = database.get(i,"trackid") + " " + database.get(i,"name")
+            item.text = database.get(i).trackid + " " + database.get(i).name
             content.append(item)
             lst.layout()
         }

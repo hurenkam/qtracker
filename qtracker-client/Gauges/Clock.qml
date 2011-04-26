@@ -5,16 +5,26 @@ import "../Components"
 Item {
     id: root
     property int viewid: -1
-    x:      parent.gaugeX(viewid)
-    y:      parent.gaugeY(viewid)
-    width:  parent.gaugeW(viewid)
-    height: parent.gaugeH(viewid)
+    //x:      parent.gaugeX(viewid)
+    //y:      parent.gaugeY(viewid)
+    //width:  parent.gaugeW(viewid)
+    //height: parent.gaugeH(viewid)
     //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
     signal clicked()
+    signal options()
+
+    MouseHandler {
+        id: mouseHandler
+        anchors.fill: parent
+        onSingleTap: root.clicked()
+        onLongTap: root.reset()
+        onDoubleTap: root.options()
+    }
+
     ValueSpaceSubscriber {
         id: analog;
         path: "/server/time/current"
@@ -39,17 +49,11 @@ Item {
         property int second: (value==undefined)? 0 : value.second
         property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
     }
+
     function reset() {
         console.log("clock.reset()")
         var cmd = { "class": "time", "method": "reset", "args": [] }
         client.sendCommand(cmd);
-    }
-
-    MouseHandler {
-        id: mouseHandler
-        anchors.fill: parent
-        onSingleTap: root.clicked()
-        onLongTap: root.reset()
     }
 
     Image {

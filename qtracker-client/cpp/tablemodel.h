@@ -40,6 +40,11 @@ public:
         return data(i,r);
     }
 
+    Q_INVOKABLE QVariantMap get(const QVariant& index);
+    Q_INVOKABLE void set(const QVariant& index, const QVariantMap& value);
+    Q_INVOKABLE QVariant append(const QVariantMap& value);
+    Q_INVOKABLE void exec(const QVariant& cmd);
+
     int count() const { return rowCount(QModelIndex()); }
 
     QString database() const;

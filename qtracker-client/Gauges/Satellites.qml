@@ -1,24 +1,28 @@
 import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
+import "../Components"
 
 Item {
     id: root
     property int viewid: -1
-    x:      parent.gaugeX(viewid)
-    y:      parent.gaugeY(viewid)
-    width:  parent.gaugeW(viewid)
-    height: parent.gaugeH(viewid)
+    //x:      parent.gaugeX(viewid)
+    //y:      parent.gaugeY(viewid)
+    //width:  parent.gaugeW(viewid)
+    //height: parent.gaugeH(viewid)
     //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
     signal clicked()
+    signal options()
 
-    MouseArea {
-        id: mouseArea
+    MouseHandler {
+        id: mouseHandler
         anchors.fill: parent
-        onClicked: root.clicked()
+        onSingleTap: root.clicked()
+        //onLongTap: root.reset()
+        onDoubleTap: root.options()
     }
 
     Image {

@@ -1,5 +1,6 @@
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include "tablemodel.h"
 
 //#define ENABLE_DEBUG
@@ -133,6 +134,7 @@ void TableModel::setFilter(const QString &filter)
 
     if (_database.isEmpty() || _database.isNull()) return;
     if (_table.isEmpty() || _table.isNull()) return;
+    if (!model) return;
 
     model->setFilter(_filter);
     model->select();
@@ -205,5 +207,62 @@ void TableModel::createTable(const QString& sql)
 
     QSqlQuery query("CREATE TABLE IF NOT EXISTS "+_table+" (" + sql + ")",db);
     query.exec();
+    EXIT("")
+}
+
+Q_INVOKABLE QVariantMap TableModel::get(const QVariant& index) {
+    ENTER("")
+    QVariantMap result;
+    if (!model) { LOG("TableModel::set: no model set") return result; }
+
+    for (int i = 0; i< model->columnCount(QModelIndex()); ++i) {
+        result[model->headerData(i,Qt::Horizontal,Qt::DisplayRole).toString().toLatin1()] =
+                model->data(this->index(index.toInt(),i),Qt::DisplayRole);
+    }
+    return result;
+}
+
+Q_INVOKABLE void TableModel::set(const QVariant& index, const QVariantMap& value) {
+    ENTER("")
+    if (!model) { LOG("TableModel::set: no model set") return; }
+
+    QSqlRecord record = model->record();
+    for (int i =0; i<value.keys().count(); i++)
+    {
+        record.setValue(value.keys()[i],value.values()[i]);
+    }
+    model->setRecord(index.toInt(),record);
+    model->submit();
+    QModelIndex mi=createIndex(index.toInt(),0);
+    emit dataChanged(mi,mi);
+    EXIT("")
+}
+
+Q_INVOKABLE QVariant TableModel::append(const QVariantMap& value) {
+    ENTER("")
+    if (!model) { LOG("TableModel::append: no model set") return QVariant(); }
+
+    QSqlRecord record = model->record();
+
+    for (int i =0; i<value.keys().count(); i++)
+    {
+        LOG("key: " << value.keys()[i] << " value: " << value.values()[i].toString())
+        record.setValue(value.keys()[i],value.values()[i]);
+    }
+
+    LOG("record: " << record)
+    model->insertRecord(-1,record);
+    model->submit();
+    emit countChanged();
+    return model->query().lastInsertId();
+}
+
+Q_INVOKABLE void TableModel::exec(const QVariant& cmd)
+{
+    ENTER("")
+    QSqlQuery query(db);
+    QString sql(cmd.toString());
+    bool result = query.exec (sql);
+    if (!result) { EXIT("unable to execute cmd" << cmd.toString() << db.lastError().text()) return; }
     EXIT("")
 }

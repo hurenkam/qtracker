@@ -6,25 +6,33 @@ Item {
     id: root
     property bool headingup: true
     property int viewid: -1
-    x:      parent.gaugeX(viewid)
-    y:      parent.gaugeY(viewid)
-    width:  parent.gaugeW(viewid)
-    height: parent.gaugeH(viewid)
+    //x:      parent.gaugeX(viewid)
+    //y:      parent.gaugeY(viewid)
+    //width:  parent.gaugeW(viewid)
+    //height: parent.gaugeH(viewid)
     //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
 
     signal clicked()
-
-    ValueSpaceSubscriber { id: azimuth; path: "/server/compass/azimuth" }
-    ValueSpaceSubscriber { id: bearing; path: "/server/monitor/bearing" }
+    signal options()
 
     MouseHandler {
         id: mouseHandler
         anchors.fill: parent
         onSingleTap: root.clicked()
-        onLongTap: clockmodel.reset()
+        onLongTap: root.reset()
+        onDoubleTap: root.options()
+    }
+
+    ValueSpaceSubscriber { id: azimuth; path: "/server/compass/azimuth" }
+    ValueSpaceSubscriber { id: bearing; path: "/server/monitor/bearing" }
+
+    function reset() {
+        console.log("compass.reset()")
+        var cmd = { "class": "compass", "method": "reset", "args": [] }
+        client.sendCommand(cmd);
     }
 
     Image {

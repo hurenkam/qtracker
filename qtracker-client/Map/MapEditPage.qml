@@ -9,6 +9,8 @@ OptionPage {
 
     signal mapSelected(int index, string baseName, string fileName)
 
+    Settings { id: settings }
+
     RefpointSelectionPage { id: calselectpage }
     MapSelectionPage {
         id: mapselectpage;
@@ -35,6 +37,26 @@ OptionPage {
                 OptionInputItem  { id: refpoints; text: "Calibration";  value:"";       button: true; onClicked: pageStack.push(calselectpage) }
                 OptionInputItem  { id: datum;     text: "Datum";        value:"Wgs84";  button: true; }
             }
+
+            function base(filename) {
+                var txt = String(filename);
+                var p1 = txt.lastIndexOf('/');
+                var p2 = txt.lastIndexOf('.');
+                return txt.slice(p1+1,p2);
+            }
+
+            Component.onCompleted: {
+                console.log("mapeditpage.edit.onCompleted",settings.database, settings.table, settings.filter)
+                var filename = settings.getProperty("map_filename","")
+                if (filename == "") {
+                    mapname.value = "no map"
+                } else {
+                    currentmap = base(filename)
+                    mapname.value = currentmap
+                }
+                console.log("mapeditpage.edit.onCompleted:",mapname.value)
+            }
+
         }
 /*
         OptionList {

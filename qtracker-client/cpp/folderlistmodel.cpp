@@ -44,7 +44,7 @@
 #include <QDebug>
 #include <qdeclarativecontext.h>
 
-//#define ENABLE_DEBUG
+#define ENABLE_DEBUG
 #include "helpers.h"
 
 class QDeclarativeFolderListModelPrivate
@@ -219,7 +219,7 @@ QUrl QDeclarativeFolderListModel::folder() const
 
 void QDeclarativeFolderListModel::setFolder(const QUrl &folder)
 {
-    ENTER("")
+    ENTER(folder)
     if (folder == d->folder)
         return;
     QModelIndex index = d->model.index(folder.toLocalFile());

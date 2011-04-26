@@ -1,6 +1,7 @@
 import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
 import "../Components"
+import "../Gauges"
 import "../Map"
 import "../Waypoint"
 import "../Route"
@@ -24,6 +25,12 @@ Page {
         root.exitServer();
         root.exitClient();
     }
+
+    ClockOptionsPage      { id: clkPage }
+    CompassOptionsPage    { id: compassPage }
+    SpeedOptionsPage      { id: speedPage }
+    AltitudeOptionsPage   { id: altPage }
+    SatelliteOptionsPage  { id: satsPage }
 
     TrackSelectionPage    { id: trkPage }
     WaypointSelectionPage { id: wptPage }
@@ -102,6 +109,12 @@ Page {
         function toggleHide() {
             hide = hide? false: true;
         }
+
+        onClockOptions:     pageStack.push(clkPage)
+        onAltitudeOptions:  pageStack.push(altPage)
+        onSpeedOptions:     pageStack.push(speedPage)
+        onCompassOptions:   pageStack.push(compassPage)
+        onSatsOptions:      pageStack.push(satsPage)
     }
 
     ToolButton {

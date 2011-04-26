@@ -9,7 +9,7 @@ Item {
     smooth: true
 //    anchors.margins: 10
 //    anchors.fill: parent
-    state: "scrolling"
+    //state: "scrolling"
     property alias mapx:     content.x
     property alias mapy:     content.y
     property alias maplat:   content.lat
@@ -49,6 +49,10 @@ Item {
         return txt.slice(p+1);
     }
 
+    Settings {
+        id: settings
+    }
+
     ListModel {
         id: zoomlevels
         ListElement { factor: 0.3 }
@@ -76,21 +80,24 @@ Item {
         {
             var mx = x; var my = y;
             zoom = zoom<6? zoom+1: zoom;
+            settings.setProperty("map_zoom", zoom)
             flickable.setpos(mx,my)
         }
         function zoomOut()  {
             var mx = x; var my = y;
             zoom = zoom>0? zoom-1: zoom;
+            settings.setProperty("map_zoom", zoom)
             flickable.setpos(mx,my)
         }
         function loadMap(m) {
             viewport.filename = m
             console.log("filesize: ", viewport.filesize.width, viewport.filesize.height)
+            settings.setProperty("map_filename", m);
             zoom = 3
-            flickable.setpos(
+            /*flickable.setpos(
                 content.width/2,
                 content.height/2
-            )
+            )*/
             refpoint.source = root.path(m) + "/" + root.base(m) + ".xml"
         }
         XmlListModel {
@@ -130,6 +137,16 @@ Item {
                     console.log("error reading refpoints")
                 }
             }
+        }
+        Component.onCompleted: {
+            var mapfile = settings.getProperty("map_filename","")
+            if (mapfile != "") {
+                loadMap(mapfile)
+
+                flickable.contentX = settings.getProperty("map_x",0)
+                flickable.contentY = settings.getProperty("map_y",0)
+            }
+            content.zoom = settings.getProperty("map_zoom",3)
         }
     }
 
@@ -178,12 +195,19 @@ Item {
         anchors.right:     root.right
         anchors.bottom:    root.bottom
         anchors.top:       root.top
-        contentX:          0
-        contentY:          0
+        contentX: 0
+        contentY: 0
         contentWidth:      content.width + root.width
         contentHeight:     content.height + root.height
         onMovementStarted: root.state = "scrolling"
+        onMovementEnded: {
+            settings.setProperty("map_x",flickable.contentX)
+            settings.setProperty("map_y",flickable.contentY)
+        }
+
         clip: true
+        property bool initialized: false
+
         MouseHandler {
             id: mouse
             onSingleTap: root.state = "followgps"
@@ -195,6 +219,8 @@ Item {
             contentHeight = root.height + viewport.filesize.height
             contentX = mx
             contentY = my
+            settings.setProperty("map_x",flickable.contentX)
+            settings.setProperty("map_y",flickable.contentY)
         }
         function getX() {
             console.log("flickable.getX()")
@@ -204,20 +230,27 @@ Item {
             console.log("flickable.getY()")
             return contentY
         }
+        Component.onCompleted: {
+            flickable.initialized = true
+        }
     }
 
     states: [
         State {
             name: "scrolling"
             StateChangeScript {
-                script: console.log("change state to scrolling")
+                script: { console.log("change state to scrolling"); settings.setProperty("map_state","scrolling") }
             }
         },
         State {
             name: "followgps"
             StateChangeScript {
-                script: console.log("change state to followgps")
+                script: { console.log("change state to followgps"); settings.setProperty("map_state","followgps") }
             }
         }
     ]
+
+    Component.onCompleted: {
+        root.state = settings.getProperty("map_state","scrolling")
+    }
 }

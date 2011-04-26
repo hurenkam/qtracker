@@ -6,6 +6,7 @@
 #include <QWaitCondition>
 #include <QDebug>
 #include <QDateTime>
+#include <QDeclarativeEngine>
 #include "qmlapplicationviewer.h"
 
 #include "folderlistmodel.h"
@@ -106,6 +107,11 @@ int main(int argc, char *argv[])
     app.processEvents();
 
     QmlApplicationViewer viewer;
+    QString dataPath = "e:\\data\\qTracker";
+    LOG("engine.offlineStoragePath() old: " << viewer.engine()->offlineStoragePath())
+    viewer.engine()->setOfflineStoragePath(dataPath);
+    LOG("engine.offlineStoragePath() new: " << viewer.engine()->offlineStoragePath())
+
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
     //viewer.setSource(QUrl("qrc:///qml/qTracker.qml"));
     viewer.setMainQmlFile(QLatin1String("Main/main.qml"));
