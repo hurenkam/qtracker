@@ -25,5 +25,9 @@ Database {
 
     onTrackidChanged: updatefilter()
     onRangeChanged: updatefilter()
-    Component.onCompleted: updatefilter()
+    Component.onCompleted: {
+        console.log("TrackpointList.database.onCompleted")
+        database.exec("CREATE TABLE IF NOT EXISTS trackpoints (pointid INTEGER PRIMARY KEY, trackid INTEGER, latitude REAL, longitude REAL, altitude REAL);")
+        updatefilter()
+    }
 }

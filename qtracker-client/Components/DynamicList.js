@@ -18,5 +18,8 @@ function count() {
 }
 
 function clear() {
-    jList=[]
+    for (var i=0; i<jList.length; i++) {
+        jList[i].destroy()
+    }
+    jList = []
 }

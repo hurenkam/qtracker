@@ -6,8 +6,9 @@ OptionPage {
     id: root
     title: "Calibration Points"
     options: refoptions
+    property MapView mapview: null
 
-    RefpointEditPage { id: refedit }
+    RefpointEditPage { id: refedit; mapview: root.mapview }
 
     VisualItemModel {
         id: refoptions

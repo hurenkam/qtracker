@@ -3,11 +3,12 @@ import QtQuick 1.0
 Page {
     id: root
     imageSource: "options-bg.png"
+    property alias backbutton: hdr.leftButtonVisible
+    property alias confirmbutton: hdr.rightButtonVisible
     property alias title: hdr.text
 
-    function confirm() {
-        pageStack.pop();
-    }
+    signal confirm()
+
     function cancel() {
         pageStack.pop();
     }
@@ -39,6 +40,9 @@ Page {
         text: "Options"
         leftButtonVisible: true
         onLeftClicked: root.cancel();
+        rightButtonVisible: false
+        rightButtonSource: "visible.svg"
+        onRightClicked: root.confirm();
     }
 
     property QtObject options: null;

@@ -33,9 +33,9 @@ Page {
     SatelliteOptionsPage  { id: satsPage }
 
     TrackSelectionPage    { id: trkPage }
-    WaypointSelectionPage { id: wptPage }
+    WaypointSelectionPage { id: wptPage; mapview: map }
     RouteSelectionPage    { id: rtePage }
-    MapEditPage           { id: mapPage }
+    MapEditPage           { id: mapPage; mapview: map }
     ImExportPage          { id: options }
 
     MapView {

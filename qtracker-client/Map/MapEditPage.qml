@@ -6,12 +6,13 @@ OptionPage {
     title: "Map"
     options: mapmodel
     property string currentmap: ""
+    property MapView mapview: null
 
     signal mapSelected(int index, string baseName, string fileName)
 
     Settings { id: settings }
 
-    RefpointSelectionPage { id: calselectpage }
+    RefpointSelectionPage { id: calselectpage; mapview: root.mapview }
     MapSelectionPage {
         id: mapselectpage;
         onMapSelected: {

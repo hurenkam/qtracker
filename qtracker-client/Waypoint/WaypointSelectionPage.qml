@@ -1,13 +1,15 @@
 import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
 import "../Components"
+import "../Map"
 
 OptionPage {
     id: root
     title: "Waypoint List"
     options: wptoptions
+    property MapView mapview: null
 
-    WaypointEditPage { id: wptedit }
+    WaypointEditPage { id: wptedit; mapview: root.mapview; onWaypointSaved: lst.saveWaypoint(index,name,lat,lon,alt) }
 
     VisualItemModel {
         id: wptoptions
@@ -15,7 +17,16 @@ OptionPage {
         WaypointList {
             id: lst
             //title: "Waypoint List"
-            onEditWaypoint:   { wptedit.index = index; pageStack.push(wptedit); }
+            onWaypointSelected:   {
+                wptedit.index = index;
+                if (index >= 0) {
+                    wptedit.name = name;
+                    wptedit.latitude = lat;
+                    wptedit.longitude = lon;
+                    wptedit.altitude = alt;
+                }
+                pageStack.push(wptedit);
+            }
         }
     }
 }

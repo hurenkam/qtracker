@@ -75,6 +75,7 @@ Item {
 
             visible: false
             source: "forward.svg";
+            bgcolor: "black"
             onClicked: root.rightClicked();
         }
 
@@ -94,13 +95,24 @@ Item {
         }
 
         MouseArea {
-            anchors.left:  leftbutton.visible?  leftbutton.right : parent.left
-            anchors.right: rightbutton.visible? rightbutton.left : parent.right
+            id: leftarea
+            anchors.left: parent.left
+            width: parent.width/2
             height: parent.height
-            onClicked: parent.clicked()
-            onPressed: parent.pressed()
-            onCanceled: parent.released()
-            onReleased: parent.released()
+            onClicked: root.leftClicked()
+            onPressed:  { rect.state="pressed"; leftbutton.pressed();   }
+            onCanceled: { rect.state="normal";  leftbutton.cancelled(); }
+            onReleased: { rect.state="normal";  leftbutton.released();  }
+        }
+        MouseArea {
+            id: rightarea
+            anchors.right: parent.right
+            height: parent.height
+            width: parent.width/2
+            onClicked: root.rightClicked()
+            onPressed:  { rect.state="pressed"; rightbutton.pressed();   }
+            onCanceled: { rect.state="normal";  rightbutton.cancelled(); }
+            onReleased: { rect.state="normal";  rightbutton.released();  }
         }
     }
 }

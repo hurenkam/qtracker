@@ -201,7 +201,7 @@ void TableModel::handleDataChanged(const QModelIndex &start, const QModelIndex &
 
 void TableModel::createTable(const QString& sql)
 {
-    ENTER("")
+    ENTER("CREATE TABLE IF NOT EXISTS " << _table << "(" << sql << ")")
     if (!db.isOpen()) return;
     if (_table.isEmpty() || _table.isNull()) return;
 

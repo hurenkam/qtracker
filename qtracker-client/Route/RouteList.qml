@@ -9,7 +9,7 @@ OptionList {
 
     Component {
         id: delegate
-        OptionTextItem { text: "" }
+        OptionTextItem { text: ""; button: true; }
     }
 
     Database {
@@ -23,17 +23,21 @@ OptionList {
     DynamicItemModel {
         id: content
         name: "RouteList"
-        OptionTextItem { text: "<new>"; button: true; }
+        //OptionTextItem { text: "<new>"; button: true; }
     }
 
     function update() {
         var item = null;
         content.clear();
+        item = delegate.createObject(null)
+        item.text = "<new>"
+        item.button = true;
+        content.append(item)
         console.log("routelist contains",database.count,"items")
         for (var i=0; i<database.count; i++) {
             console.log("routelist item ",database.get(i,"name"))
             item = delegate.createObject(null)
-            item.text = database.get(i,"routeid") + " " + database.get(i,"name")
+            item.text = database.get(i).rteid + " " + database.get(i).name
             content.append(item)
             lst.layout()
         }
@@ -44,5 +48,7 @@ OptionList {
         editRoute(index-1)
     }
 
-    Component.onCompleted: update()
+    Component.onCompleted: {
+        update()
+    }
 }

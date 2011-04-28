@@ -5,6 +5,7 @@ OptionPage {
     id: root
     title: index == -1? "New Route" : "Route Edit"
     options: rteoptions
+    confirmbutton: true
     property int index: -1
 
     RoutePointEditPage { id: rteptedit }
@@ -38,21 +39,9 @@ OptionPage {
             }
             onClicked: { rteptedit.index = index -1; pageStack.push(rteptedit); }
         }
-
-        OptionList {
-            id: confirm
-            items: confirmitems
-
-            DynamicItemModel {
-                id: confirmitems
-                name: "confirmitems"
-                OptionTextItem {
-                    text: "Confirm";
-                    button: true;
-                    buttonsource: "visible.svg";
-                    onClicked: pageStack.pop()
-                }
-            }
-        }
+    }
+    onConfirm: {
+        console.log("RouteEditPage.onConfirm")
+        pageStack.pop()
     }
 }

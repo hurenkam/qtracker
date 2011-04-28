@@ -5,6 +5,7 @@ OptionPage {
     id: root
     title: index == -1? "New Route Point" : "Route Point Edit"
     options: rteptoptions
+    confirmbutton: true
     property int index: -1
 
     VisualItemModel {
@@ -25,21 +26,9 @@ OptionPage {
                 OptionInputItem { id: alt;         text: "Altitude:";  value: "29.8"        }
             }
         }
-
-        OptionList {
-            id: confirm
-            items: confirmitems
-
-            DynamicItemModel {
-                id: confirmitems
-                name: "confirmitems"
-                OptionTextItem {
-                    text: "Confirm";
-                    button: true;
-                    buttonsource: "visible.svg";
-                    onClicked: pageStack.pop()
-                }
-            }
-        }
+    }
+    onConfirm: {
+        console.log("RoutePointEditPage.onConfirm")
+        pageStack.pop()
     }
 }
