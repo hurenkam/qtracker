@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import "../Components"
+import "../Map"
 
 OptionPage {
     id: root
@@ -7,8 +8,27 @@ OptionPage {
     options: rteoptions
     confirmbutton: true
     property int index: -1
+    property int routeid: -1
+    property MapView mapview: null
+    property alias name: rtename.value
+    property real rtetop
+    property real rteleft
+    property real rtebottom
+    property real rteright
 
-    RoutePointEditPage { id: rteptedit }
+    signal routeSaved(int index, string name, real top, real left, real bottom, real right)
+
+    function saveRoute(index,name,lat,lon,alt) {
+        console.log("RouteEditPage.saveRoute",index,name,top,left,bottom,right)
+        routeSaved(index,name,top,left,bottom,right)
+    }
+
+    RoutePointEditPage {
+        id: rteptedit;
+        routeid: root.routeid;
+        mapview: root.mapview;
+        onRoutepointSaved: rtepointbox.saveRoutepoint(index,name,lat,lon,alt)
+    }
 
     VisualItemModel {
         id: rteoptions
@@ -22,26 +42,26 @@ OptionPage {
                 id: rteitems
                 name: "rteitems"
 
-                OptionInputItem { id: rtename; text: "Name:";   value: "Home" }
+                OptionInputItem { id: rtename; text: "Name:";   value: "rte" }
             }
         }
 
-        OptionList {
+        RoutePointList {
             id: rtepointbox
+            routeid: root.routeid
             title: "Route Points"
-            items: rtepoints
-
-            DynamicItemModel {
-                id: rtepoints
-                name: "rtepoints"
-
-                OptionTextItem { id: newpoint; text: "<new>"; button: true }
+            onRoutepointSelected: {
+                rteptedit.index = index;
+                if (index >= 0) {
+                    rteptedit.name = name;
+                }
+                pageStack.push(rteptedit);
             }
-            onClicked: { rteptedit.index = index -1; pageStack.push(rteptedit); }
         }
     }
     onConfirm: {
         console.log("RouteEditPage.onConfirm")
+        saveRoute(root.index,rtename.value,0,0,0,0)
         pageStack.pop()
     }
 }

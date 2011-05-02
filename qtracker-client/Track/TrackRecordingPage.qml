@@ -8,6 +8,10 @@ OptionPage {
     confirmbutton: true
     property int index: -1
 
+    Settings {
+        id: settings
+    }
+
     VisualItemModel {
         id: trkoptions
 
@@ -20,7 +24,10 @@ OptionPage {
                 id: trkitems
                 name: "trkitems"
 
-                OptionInputItem { id: trkname; text: "Name:";   value: "Home" }
+                OptionInputItem { id: trkname; text: "Name:"; onValueChanged: settings.setProperty("track_defaultname",value) }
+                Component.onCompleted: {
+                    trkname.value = settings.getProperty("track_defaultname","trk-000")
+                }
             }
         }
 
@@ -35,13 +42,20 @@ OptionPage {
 
                 OptionRadioButton { id: btnall;  text: "All";      }
                 OptionRadioButton { id: btntime; text: "Time";     }
-                OptionRadioButton { id: btndist; text: "Distance"; ticked: true }
+                OptionRadioButton { id: btndist; text: "Distance"; }
+                function select(index) {
+                    settings.setProperty("track_intervaltype",index)
+                    for (var i=0; i<count(); i++) {
+                        get(i).ticked = (index == i)
+                    }
+                }
+                Component.onCompleted: {
+                    select(settings.getProperty("track_intervaltype",2))
+                }
             }
             onClicked: {
                 console.log("Interval.onClicked",index)
-                for (var i=0; i<intervalitems.count(); i++) {
-                    intervalitems.get(i).ticked = (index == i)
-                }
+                intervalitems.select(index)
             }
         }
 
@@ -56,17 +70,25 @@ OptionPage {
                 name: "timeitems"
 
                 OptionRadioButton { text: " 5 seconds";  }
-                OptionRadioButton { text: "15 seconds";  ticked: true }
+                OptionRadioButton { text: "15 seconds";  }
                 OptionRadioButton { text: " 1 minute";   }
                 OptionRadioButton { text: " 5 minutes";  }
                 OptionRadioButton { text: "15 minutes";  }
                 OptionRadioButton { text: " 1 hour";     }
+
+                function select(index) {
+                    settings.setProperty("track_intervaltime",index)
+                    for (var i=0; i<count(); i++) {
+                        get(i).ticked = (index == i)
+                    }
+                }
+                Component.onCompleted: {
+                    select(settings.getProperty("track_intervaltime",1))
+                }
             }
             onClicked: {
                 console.log("Time.onClicked",index)
-                for (var i=0; i<timeitems.count(); i++) {
-                    timeitems.get(i).ticked = (index == i)
-                }
+                timeitems.select(index)
             }
             onVisibleChanged: root.layoutPage();
         }
@@ -82,16 +104,24 @@ OptionPage {
                 name: "distitems"
 
                 OptionRadioButton { text: " 10 meters";    }
-                OptionRadioButton { text: " 30 meters";    ticked: true }
+                OptionRadioButton { text: " 30 meters";    }
                 OptionRadioButton { text: "100 meters";    }
                 OptionRadioButton { text: "300 meters";    }
                 OptionRadioButton { text: "  1 kilometer"; }
+
+                function select(index) {
+                    settings.setProperty("track_intervaldist",index)
+                    for (var i=0; i<count(); i++) {
+                        get(i).ticked = (index == i)
+                    }
+                }
+                Component.onCompleted: {
+                    select(settings.getProperty("track_intervaldist",1))
+                }
             }
             onClicked: {
-                console.log("Distance.onClicked",index)
-                for (var i=0; i<distitems.count(); i++) {
-                    distitems.get(i).ticked = (index == i)
-                }
+                console.log("Dist.onClicked",index)
+                distitems.select(index)
             }
             onVisibleChanged: root.layoutPage();
         }

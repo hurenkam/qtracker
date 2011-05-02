@@ -44,7 +44,7 @@
 #include <QDebug>
 #include <qdeclarativecontext.h>
 
-#define ENABLE_DEBUG
+//#define ENABLE_DEBUG
 #include "helpers.h"
 
 class QDeclarativeFolderListModelPrivate

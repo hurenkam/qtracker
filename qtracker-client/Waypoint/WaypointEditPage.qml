@@ -21,6 +21,10 @@ OptionPage {
         waypointSaved(index,name,lat,lon,alt)
     }
 
+    Settings {
+        id: settings
+    }
+
     CategorySelectionPage { id: catselpage }
 
     VisualItemModel {
@@ -42,11 +46,15 @@ OptionPage {
                     button: true;
                     onClicked: root.pageStack.push(catselpage)
                 }
-                OptionInputItem { id: wptname;        text: "Name:";      value: "wpt"          }
+                OptionInputItem { id: wptname;        text: "Name:";      onValueChanged: settings.setProperty("wpt_defaultname",value) }
                 OptionInputItem { id: wptlat;         text: "Latitude:";  value: mapview.maplat }
                 OptionInputItem { id: wptlon;         text: "Longitude:"; value: mapview.maplon }
                 OptionInputItem { id: wptalt;         text: "Altitude:";  value: "0.0"          }
                 //OptionInputItem { id: notes;       text: "Notes:";     value: ""              }
+
+                Component.onCompleted: {
+                    wptname.value = settings.getProperty("wpt_defaultname","wpt-000")
+                }
             }
         }
     }

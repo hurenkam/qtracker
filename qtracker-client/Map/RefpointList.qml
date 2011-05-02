@@ -52,8 +52,8 @@ OptionList {
             item = delegate.createObject(null)
             item.text = database.get(i,"refpointid") + " " + database.get(i,"name")
             content.append(item)
-            lst.layout()
         }
+        root.layout()
     }
 
     onClicked: {

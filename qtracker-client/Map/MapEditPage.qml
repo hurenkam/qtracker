@@ -59,19 +59,6 @@ OptionPage {
             }
 
         }
-/*
-        OptionList {
-            id: editrefpoint
-            title: "Calibration Points"
-            items: refpoints
-
-            DynamicItemModel {
-                id: refpoints
-                name: "securityitems"
-                OptionTextItem  { id: newrefpoint; text: "<new calibration point>"; button: true; onClicked: pageStack.push(calselectpage) }
-            }
-        }
-*/
     }
     onVisibleChanged: {
         if ((visible==true) && (currentmap=="")) pageStack.push(mapselectpage);

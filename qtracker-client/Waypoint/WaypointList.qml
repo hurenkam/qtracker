@@ -31,7 +31,7 @@ OptionList {
 
         Component.onCompleted: {
             console.log("WaypointList.database.onCompleted")
-            database.exec("CREATE TABLE IF NOT EXISTS waypoints (wptid INTEGER PRIMARY KEY, name TEXT, latitude REAL, longitude REAL, altitude REAL, notes TEXT);")
+            database.exec("CREATE TABLE IF NOT EXISTS waypoints (pointid INTEGER PRIMARY KEY, name TEXT, latitude REAL, longitude REAL, altitude REAL, notes TEXT);")
         }
     }
 
@@ -52,12 +52,12 @@ OptionList {
         item.button = true;
         content.append(item)
         for (var i=0; i<database.count; i++) {
-            console.log("waypointlist item ",database.get(i,"name"))
+            console.log("waypointlist item ",database.get(i).name)
             item = delegate.createObject(null)
             item.text = database.get(i).wptid + " " + database.get(i).name
             content.append(item)
-            lst.layout()
         }
+        root.layout()
     }
 
     onClicked: {

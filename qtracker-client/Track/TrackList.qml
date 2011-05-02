@@ -45,8 +45,8 @@ OptionList {
             item = delegate.createObject(null)
             item.text = database.get(i).trackid + " " + database.get(i).name
             content.append(item)
-            lst.layout()
         }
+        root.layout()
     }
 
     onClicked: {

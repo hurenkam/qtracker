@@ -79,7 +79,10 @@ Item {
                 seperators.clear();
                 var seperator;
                 for (var i=0; i<items.count(); ++i) {
-                    h = layoutOptionItem(items.get(i),w,h+10) + 10;
+                    var item = items.get(i)
+                    item.roundtop = false
+                    item.roundbottom = false
+                    h = layoutOptionItem(item,w,h+10) + 10;
                     if ((i+1) < items.count()) {
                         seperator = line.createObject(seperators)
                         h = h+1

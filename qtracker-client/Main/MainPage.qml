@@ -32,9 +32,9 @@ Page {
     AltitudeOptionsPage   { id: altPage }
     SatelliteOptionsPage  { id: satsPage }
 
-    TrackSelectionPage    { id: trkPage }
+    TrackSelectionPage    { id: trkPage; mapview: map }
     WaypointSelectionPage { id: wptPage; mapview: map }
-    RouteSelectionPage    { id: rtePage }
+    RouteSelectionPage    { id: rtePage; mapview: map }
     MapEditPage           { id: mapPage; mapview: map }
     ImExportPage          { id: options }
 
