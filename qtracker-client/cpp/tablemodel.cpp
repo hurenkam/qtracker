@@ -24,14 +24,16 @@ TableModel::~TableModel()
 int TableModel::rowCount(const QModelIndex &parent) const
 {
     ENTER("")
-    if (!model) return 0;
+    if (!model) { LOG("TableModel::refresh: no model set") return 0; }
+
     return model->rowCount(parent);
 }
 
 int TableModel::columnCount(const QModelIndex &parent) const
 {
     ENTER("")
-    if (!model) return 0;
+    if (!model) { LOG("TableModel::refresh: no model set") return 0; }
+
     return model->columnCount(parent);
 }
 
@@ -39,6 +41,8 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 {
     ENTER(index << role)
     QModelIndex myindex();
+
+    if (!model) { LOG("TableModel::refresh: no model set") return QVariant(); }
 
     if (role > Qt::UserRole)
         return model->data(this->index(index.row(),role - Qt::UserRole -1),Qt::DisplayRole);
@@ -134,7 +138,8 @@ void TableModel::setFilter(const QString &filter)
 
     if (_database.isEmpty() || _database.isNull()) return;
     if (_table.isEmpty() || _table.isNull()) return;
-    if (!model) return;
+    if (!model) { LOG("TableModel::setFilter: no model set") return; }
+
 
     model->setFilter(_filter);
     model->select();
@@ -158,18 +163,18 @@ void TableModel::componentComplete()
 void TableModel::refresh()
 {
     ENTER("")
-    if (model) {
-        if (_count) {
-            emit beginRemoveRows(QModelIndex(), 0, _count);
-            _count = 0;
-            emit endRemoveRows();
-        }
-        int newcount = model->rowCount();
-        if (newcount) {
-            emit beginInsertRows(QModelIndex(), 0, newcount-1);
-            _count = newcount;
-            emit endInsertRows();
-        }
+    if (!model) { LOG("TableModel::refresh: no model set") return; }
+
+    if (_count) {
+        emit beginRemoveRows(QModelIndex(), 0, _count);
+        _count = 0;
+        emit endRemoveRows();
+    }
+    int newcount = model->rowCount();
+    if (newcount) {
+        emit beginInsertRows(QModelIndex(), 0, newcount-1);
+        _count = newcount;
+        emit endInsertRows();
     }
     EXIT("")
 }
@@ -177,6 +182,8 @@ void TableModel::refresh()
 void TableModel::inserted(const QModelIndex &index, int start, int end)
 {
     ENTER("")
+    if (!model) { LOG("TableModel::inserted: no model set") return; }
+
     emit beginInsertRows(QModelIndex(), start, end);
     _count = model->rowCount();
     emit endInsertRows();
@@ -186,6 +193,8 @@ void TableModel::inserted(const QModelIndex &index, int start, int end)
 void TableModel::removed(const QModelIndex &index, int start, int end)
 {
     ENTER("")
+    if (!model) { LOG("TableModel::removed: no model set") return; }
+
     emit beginRemoveRows(QModelIndex(), start, end);
     _count = model->rowCount();
     emit endRemoveRows();

@@ -11,9 +11,13 @@
 const int tilesize = 512;
 const int requestdelay = 100;
 
+// maxtiles must be >= (640/(512/maxfactor) + 1) * (360/(512/maxfactor) + 1)
+// currently maxfactor == 3.0 (see mapview.qml)
+const int maxtiles = 24;
+
 static bool paintdebug = false;
-const int minzoom = 0;
-const int maxzoom = 4;
+//const int minzoom = 0;
+//const int maxzoom = 4;
 
 MapView::MapView(QDeclarativeItem *parent)
     : QDeclarativeItem(parent)
@@ -194,6 +198,7 @@ void MapView::onTileLoaded(const QPoint& p, QImage i)
 {
     ENTER("")
     tiles[p]=i;
+    if (tiles.count()>maxtiles) invalidate();
     update();
 }
 
@@ -262,7 +267,9 @@ void TileLoader::loadTile(const QPoint& p, const QUrl& u)
         onTileRequest(p,u);
     }
     else
+    {
         emit tileLoaded(p,image);
+    }
 }
 
 void TileLoader::run()
