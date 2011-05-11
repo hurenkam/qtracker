@@ -19,6 +19,11 @@ Rectangle {
     property real w: (landscape)? width/640  : width/360
 
     property Item pageStack: null
+    property int platform: 0
+    onPageStackChanged: {
+        root.platform = pageStack.platform
+    }
+
     //onWidthChanged:  console.log ("Page.onWidthChanged",width,height)
     //onHeightChanged: console.log ("Page.onHeightChanged",width,height)
 }

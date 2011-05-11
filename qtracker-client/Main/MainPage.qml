@@ -38,6 +38,10 @@ Page {
     MapEditPage           { id: mapPage; mapview: map }
     ImExportPage          { id: options }
 
+    Settings {
+        id: settings
+    }
+
     MapView {
         id: map
         anchors.top:    toolbar.bottom;
@@ -77,6 +81,7 @@ Page {
 
         function toggleHide() {
             hide = hide? false: true;
+            settings.setProperty("toolbar_hide", hide)
         }
 
         tools: ToolBarLayout {
@@ -95,6 +100,10 @@ Page {
                 interval: 5000;
             }
         }
+
+        Component.onCompleted: {
+            toolbar.hide = settings.getProperty("toolbar_hide",false)
+        }
     }
 
     DashBoard {
@@ -108,6 +117,7 @@ Page {
 
         function toggleHide() {
             hide = hide? false: true;
+            settings.setProperty("dash_hide", hide)
         }
 
         onClockOptions:     pageStack.push(clkPage)
@@ -115,6 +125,10 @@ Page {
         onSpeedOptions:     pageStack.push(speedPage)
         onCompassOptions:   pageStack.push(compassPage)
         onSatsOptions:      pageStack.push(satsPage)
+
+        Component.onCompleted: {
+            dashboard.hide = settings.getProperty("dash_hide",false)
+        }
     }
 
     ToolButton {

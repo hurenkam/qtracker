@@ -226,9 +226,30 @@ void QDeclarativeFolderListModel::setFolder(const QUrl &folder)
     if ((index.isValid() && d->model.isDir(index)) || folder.toLocalFile().isEmpty()) {
 
         d->folder = folder;
-        QMetaObject::invokeMethod(this, "refresh", Qt::QueuedConnection);
+        //QMetaObject::invokeMethod(this, "refresh", Qt::QueuedConnection);
+        d->model.refresh();
         emit folderChanged();
     }
+    EXIT("")
+}
+
+QVariant QDeclarativeFolderListModel::platform() const
+{
+    ENTER("")
+    int result = -1;
+#if   defined(Q_OS_SYMBIAN)
+    result = 0;
+#elif defined(Q_WS_MAEMO_5)
+    result = 1;
+#elif defined(Q_WS_SIMULATOR)
+    result = 2;
+#endif
+    return QVariant(result);
+}
+
+void QDeclarativeFolderListModel::setPlatform(const QVariant &newplatform)
+{
+    ENTER(newplatform)
     EXIT("")
 }
 

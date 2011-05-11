@@ -4,14 +4,19 @@ import "../Components"
 
 OptionList {
     id: root
+    property int platform: 0
 
     signal mapSelected(int index, string baseName, string fileName)
 
+    Settings {
+        id: settings
+    }
+
     FolderListModel {
         id: maplist
-        //folder: (client.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
+        //folder: (platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
         //folder: "file:///c:/data/qtracker/maps/"
-        folder: "file:///e:/data/qtracker/maps/"
+        //folder: "file:///e:/data/qtracker/maps/"
         nameFilters: ["*.jpg"]
     }
 
@@ -48,7 +53,12 @@ OptionList {
         lst.layout()
     }
 
-    Component.onCompleted: update()
+    //Component.onCompleted: update()
+    Component.onCompleted: {
+        var mapdir = settings.getProperty("map_directory",(maplist.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/")
+        maplist.folder = mapdir
+        root.update()
+    }
 
     onClicked: {
         root.mapSelected(index,text,maplist.folder + text + ".jpg");

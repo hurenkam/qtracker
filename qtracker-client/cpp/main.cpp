@@ -25,6 +25,19 @@ static bool fileopen = false;
 void debugOpen();
 void debugClose();
 
+QString getStoragePath()
+{
+#if   defined(Q_OS_SYMBIAN)
+    return "e:/data/qTracker";
+#elif defined(Q_WS_MAEMO_5)
+    return ".";
+#elif defined(Q_WS_SIMULATOR)
+    return "c:/data/qTracker";
+#else
+    return ".";
+#endif
+}
+
 void debugOutput(QtMsgType type, const char *msg)
 {
         //debugOpen();
@@ -35,6 +48,7 @@ void debugOutput(QtMsgType type, const char *msg)
 
 void debugOpen()
 {
+    file.setFileName(getStoragePath() + "/qtracker-debug.txt");
 /*
 #if   defined(Q_OS_SYMBIAN)
     file.setFileName("e:/data/qtracker-debug.txt");
@@ -46,7 +60,7 @@ void debugOpen()
     file.setFileName("qtracker-debug.txt");
 #endif
 */
-    file.setFileName("e:/data/qtracker-debug.txt");
+    //file.setFileName("e:/data/qtracker-debug.txt");
     if (file.exists())
         fileopen = file.open(QIODevice::Append | QIODevice::Text);
     else
@@ -75,7 +89,6 @@ void debugClose()
     if (fileopen)
         file.close();
 }
-
 
 
 void registerTypes()
@@ -107,15 +120,15 @@ int main(int argc, char *argv[])
     app.processEvents();
 
     QmlApplicationViewer viewer;
-    QString dataPath = "e:\\data\\qTracker";
+    QString dataPath = getStoragePath();
     LOG("engine.offlineStoragePath() old: " << viewer.engine()->offlineStoragePath())
     viewer.engine()->setOfflineStoragePath(dataPath);
     LOG("engine.offlineStoragePath() new: " << viewer.engine()->offlineStoragePath())
 
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
     //viewer.setSource(QUrl("qrc:///qml/qTracker.qml"));
-    viewer.setMainQmlFile(QLatin1String("Main/main.qml"));
     viewer.rootContext()->setContextProperty("client",&client);
+    viewer.setMainQmlFile(QLatin1String("Main/main.qml"));
     splash.finish(&viewer);
     viewer.showFullScreen();
 

@@ -89,16 +89,19 @@ Item {
             settings.setProperty("map_zoom", zoom)
             flickable.setpos(mx,my)
         }
-        function loadMap(m) {
-            viewport.filename = m
-            console.log("filesize: ", viewport.filesize.width, viewport.filesize.height)
+        function _loadMap(m) {
+            imagefile = m
             settings.setProperty("map_filename", m);
+            refpoint.source = root.path(m) + "/" + root.base(m) + ".xml"
+        }
+        function loadMap(m) {
+            _loadMap(m)
+            console.log("filesize: ", viewport.filesize.width, viewport.filesize.height)
             zoom = 3
-            /*flickable.setpos(
+            flickable.setpos(
                 content.width/2,
                 content.height/2
-            )*/
-            refpoint.source = root.path(m) + "/" + root.base(m) + ".xml"
+            )
         }
         XmlListModel {
             id: refpoint
@@ -141,10 +144,12 @@ Item {
         Component.onCompleted: {
             var mapfile = settings.getProperty("map_filename","")
             if (mapfile != "") {
-                loadMap(mapfile)
+                _loadMap(mapfile)
 
-                flickable.contentX = settings.getProperty("map_x",0)
-                flickable.contentY = settings.getProperty("map_y",0)
+                var x = settings.getProperty("map_x",0)
+                var y = settings.getProperty("map_y",0)
+                zoom = settings.getProperty("map_zoom",3)
+                flickable.setpos(x,y)
             }
             content.zoom = settings.getProperty("map_zoom",3)
         }

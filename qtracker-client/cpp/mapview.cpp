@@ -43,6 +43,7 @@ void MapView::setFilename(QUrl u)
     _filename = u;
     reader.setFileName(u.toLocalFile());
     _filesize = reader.size();
+    emit filesizeChanged();
     _mapx = 0;
     _mapy = 0;
     tiles.clear();

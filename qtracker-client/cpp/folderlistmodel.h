@@ -70,6 +70,7 @@ class QDeclarativeFolderListModel : public QAbstractListModel, public QDeclarati
     Q_PROPERTY(bool showDotAndDotDot READ showDotAndDotDot WRITE setShowDotAndDotDot)
     Q_PROPERTY(bool showOnlyReadable READ showOnlyReadable WRITE setShowOnlyReadable)
     Q_PROPERTY(int count READ count)
+    Q_PROPERTY(QVariant platform READ platform NOTIFY platformChanged)
 
 public:
     QDeclarativeFolderListModel(QObject *parent = 0);
@@ -90,6 +91,9 @@ public:
     }
 
     int count() const { return rowCount(QModelIndex()); }
+
+    QVariant platform() const;
+    void setPlatform(const QVariant &newplatform);
 
     QUrl folder() const;
     void setFolder(const QUrl &folder);
@@ -121,6 +125,7 @@ public:
 
 Q_SIGNALS:
     void folderChanged();
+    void platformChanged();
 
 private Q_SLOTS:
     void refresh();

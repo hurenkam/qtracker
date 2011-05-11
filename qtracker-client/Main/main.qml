@@ -10,6 +10,7 @@ Item {
 
     PageStack {
         id: pageStack
+        platform: client.platform
     }
 
     MainPage {
