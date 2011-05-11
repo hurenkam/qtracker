@@ -5,6 +5,13 @@ OptionPage {
     id: root
     title: "Satellite Options"
     options: satoptions
+    confirmbutton: true
+    signal optionsChanged()
+    onConfirm: {
+        console.log("ClockOptionsPage.onConfirm")
+        optionsChanged()
+        pageStack.pop()
+    }
 
     VisualItemModel {
         id: satoptions

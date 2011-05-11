@@ -5,6 +5,13 @@ OptionPage {
     id: root
     title: "Compass Options"
     options: compassoptions
+    confirmbutton: true
+    signal optionsChanged()
+    onConfirm: {
+        console.log("CompassOptionsPage.onConfirm")
+        optionsChanged()
+        pageStack.pop()
+    }
 
     VisualItemModel {
         id: compassoptions

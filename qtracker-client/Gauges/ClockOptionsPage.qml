@@ -5,6 +5,8 @@ OptionPage {
     id: root
     title: "Clock Options"
     options: clockoptions
+    confirmbutton: true
+    signal optionsChanged()
 
     VisualItemModel {
         id: clockoptions
@@ -72,20 +74,10 @@ OptionPage {
                 }
             }
         }
-        OptionList {
-            id: confirm
-            items: confirmitems
-
-            DynamicItemModel {
-                id: confirmitems
-                name: "confirmitems"
-                OptionTextItem {
-                    text: "Confirm";
-                    button: true;
-                    buttonsource: "visible.svg";
-                    onClicked: pageStack.pop()
-                }
-            }
-        }
+    }
+    onConfirm: {
+        console.log("ClockOptionsPage.onConfirm")
+        optionsChanged()
+        pageStack.pop()
     }
 }

@@ -5,6 +5,8 @@ OptionPage {
     id: root
     title: "Altitude Options"
     options: altoptions
+    confirmbutton: true
+    signal optionsChanged()
 
     VisualItemModel {
         id: altoptions
@@ -19,5 +21,10 @@ OptionPage {
                 name: "analogitems"
             }
         }
+    }
+    onConfirm: {
+        console.log("AltitudeOptionsPage.onConfirm")
+        optionsChanged()
+        pageStack.pop()
     }
 }

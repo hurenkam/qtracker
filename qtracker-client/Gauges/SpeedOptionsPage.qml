@@ -5,6 +5,13 @@ OptionPage {
     id: root
     title: "Speed Options"
     options: speedoptions
+    confirmbutton: true
+    signal optionsChanged()
+    onConfirm: {
+        console.log("SpeedOptionsPage.onConfirm")
+        optionsChanged()
+        pageStack.pop()
+    }
 
     VisualItemModel {
         id: speedoptions
