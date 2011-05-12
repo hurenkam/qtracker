@@ -14,9 +14,6 @@ OptionList {
 
     FolderListModel {
         id: maplist
-        //folder: (platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
-        //folder: "file:///c:/data/qtracker/maps/"
-        //folder: "file:///e:/data/qtracker/maps/"
         nameFilters: ["*.jpg"]
     }
 
@@ -53,7 +50,6 @@ OptionList {
         lst.layout()
     }
 
-    //Component.onCompleted: update()
     Component.onCompleted: {
         var mapdir = settings.getProperty("map_directory",(maplist.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/")
         maplist.folder = mapdir

@@ -13,14 +13,28 @@ OptionPage {
     Settings { id: settings }
 
     RefpointSelectionPage { id: calselectpage; mapview: root.mapview }
-    MapSelectionPage {
-        id: mapselectpage;
-        onMapSelected: {
-            mapname.value = baseName
-            root.currentmap = baseName
-            root.mapSelected(index,baseName,fileName)
-            pageStack.pop()
+
+    Loader {
+        id: pageloader
+    }
+
+    Component {
+        id: pagesource
+
+        MapSelectionPage {
+            id: mapselectpage;
+            onMapSelected: {
+                mapname.value = baseName
+                root.currentmap = baseName
+                root.mapSelected(index,baseName,fileName)
+                pageStack.pop()
+            }
         }
+    }
+
+    function showMapSelectionPage() {
+        pageloader.sourceComponent = pagesource
+        pageStack.push(pageloader.item)
     }
 
     VisualItemModel {
@@ -34,7 +48,7 @@ OptionPage {
             DynamicItemModel {
                 id: optionitems
                 name: "optionitems"
-                OptionInputItem  { id: mapname;   text: "Map";          value:"no map"; button: true; onClicked: pageStack.push(mapselectpage) }
+                OptionInputItem  { id: mapname;   text: "Map";          value:"no map"; button: true; onClicked: showMapSelectionPage() } //pageStack.push(mapselectpage) }
                 OptionInputItem  { id: refpoints; text: "Calibration";  value:"";       button: true; onClicked: pageStack.push(calselectpage) }
                 OptionInputItem  { id: datum;     text: "Datum";        value:"Wgs84";  button: true; }
             }
@@ -57,10 +71,9 @@ OptionPage {
                 }
                 console.log("mapeditpage.edit.onCompleted:",mapname.value)
             }
-
         }
     }
     onVisibleChanged: {
-        if ((visible==true) && (currentmap=="")) pageStack.push(mapselectpage);
+        if ((visible==true) && (currentmap=="")) showMapSelectionPage(); //pageStack.push(mapselectpage);
     }
 }

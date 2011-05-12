@@ -26,6 +26,8 @@ Page {
         root.exitClient();
     }
 
+    Settings              { id: settings }
+
     ClockOptionsPage      { id: clkPage }
     CompassOptionsPage    { id: compassPage }
     SpeedOptionsPage      { id: speedPage }
@@ -37,10 +39,6 @@ Page {
     RouteSelectionPage    { id: rtePage; mapview: map }
     MapEditPage           { id: mapPage; mapview: map }
     ImExportPage          { id: options }
-
-    Settings {
-        id: settings
-    }
 
     MapView {
         id: map

@@ -8,14 +8,13 @@ Item {
 
     signal clicked()
 
-    MouseHandler {
-        id: mouseHandler
-        anchors.fill: parent
-        onSingleTap: root.clicked()
-    }
-
     onGaugeChanged: {
         console.log("Gauge.onGaugeChanged")
         gauge.parent = root
+    }
+
+    Connections {
+        target: gauge
+        onClicked: clicked()
     }
 }

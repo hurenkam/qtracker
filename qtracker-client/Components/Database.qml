@@ -10,12 +10,3 @@ TableModel {
     //    Engine.setup()
     //}
 }
-
-/*
-Item {
-    id: root
-    property string database: "c:\\data\\qtracker\\database.sqlite"
-    property string table: "tables"
-    property int count: 0
-}
-*/
