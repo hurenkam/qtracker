@@ -95,7 +95,8 @@ Item {
             id: shorthand
             origin.x: width/2
             origin.y: height/2
-            angle: -180 + current.value/10000 * 360
+            //angle: -180 + current.value/10000 * 360
+            angle: current.value? -180 + current.value/10000 * 360 : -180
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -112,7 +113,8 @@ Item {
             id: longhand
             origin.x: width/2
             origin.y: height/2
-            angle: -180 + current.value/1000 * 360
+            //angle: -180 + current.value/1000 * 360
+            angle: current.value? -180 + current.value/1000 * 360 : -180
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4

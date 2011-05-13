@@ -43,7 +43,7 @@ Item {
             origin.x: width/2
             origin.y: height/2
             //angle: 360 - azimuth.value
-            angle: bearing.value - azimuth.value
+            angle: (bearing.value && azimuth.value)? bearing.value - azimuth.value : 0
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -60,7 +60,8 @@ Item {
             id: compass
             origin.x: width/2
             origin.y: height/2
-            angle: 360 - azimuth.value
+            //angle: 360 - azimuth.value
+            angle: azimuth.value? 360 - azimuth.value : 0
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4

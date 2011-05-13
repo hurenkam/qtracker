@@ -57,7 +57,8 @@ Item {
     }
 
     Image {
-        source: if (analog.value < 10) "speed10.svg"; else "speed200.svg"
+        //source: if (analog.value < 10) "speed10.svg"; else "speed200.svg"
+        source: (analog.value && (analog.value>10))? "speed200.svg" : "speed10.svg"
         width: parent.width
         height: parent.height
     }
@@ -98,7 +99,8 @@ Item {
             id: needle
             origin.x: width/2
             origin.y: height/2
-            angle: if (analog.value < 10) analog.value/10*360 -180; else analog.value/200*360 -180
+            //angle: if (analog.value < 10) analog.value/10*360 -180; else analog.value/200*360 -180
+            angle: analog.value? ( (analog.value<10)? analog.value/10*360 -180: analog.value/200*360 -180 ) : -180
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
