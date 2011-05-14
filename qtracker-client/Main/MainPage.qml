@@ -28,12 +28,6 @@ Page {
 
     Settings              { id: settings }
 
-    ClockOptionsPage      { id: clkPage }
-    CompassOptionsPage    { id: compassPage }
-    SpeedOptionsPage      { id: speedPage }
-    AltitudeOptionsPage   { id: altPage }
-    SatelliteOptionsPage  { id: satsPage }
-
     TrackSelectionPage    { id: trkPage; mapview: map }
     WaypointSelectionPage { id: wptPage; mapview: map }
     RouteSelectionPage    { id: rtePage; mapview: map }
@@ -108,6 +102,8 @@ Page {
         id: dashboard
         y: hide? (landscape? 360*h: 640*h) : (landscape? 360*h-height: 640*h-height)
         property int animationDuration: 300
+        pageStack: root.pageStack
+
         Behavior on y {
             enabled: root.animate
             NumberAnimation { easing.type: Easing.InOutQuart; duration: dashboard.animationDuration }
@@ -117,12 +113,6 @@ Page {
             hide = hide? false: true;
             settings.setProperty("dash_hide", hide)
         }
-
-        onClockOptions:     pageStack.push(clkPage)
-        onAltitudeOptions:  pageStack.push(altPage)
-        onSpeedOptions:     pageStack.push(speedPage)
-        onCompassOptions:   pageStack.push(compassPage)
-        onSatsOptions:      pageStack.push(satsPage)
 
         Component.onCompleted: {
             dashboard.hide = settings.getProperty("dash_hide",false)

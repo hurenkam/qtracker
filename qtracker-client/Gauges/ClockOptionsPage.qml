@@ -7,6 +7,11 @@ OptionPage {
     options: clockoptions
     confirmbutton: true
     signal optionsChanged()
+    property alias analogindex: analogitems.ticked
+    property alias topindex:    analogitems.ticked
+    property alias bottomindex: analogitems.ticked
+
+    Settings { id: settings }
 
     VisualItemModel {
         id: clockoptions
@@ -16,20 +21,17 @@ OptionPage {
             title: "Analog"
             items: analogitems
 
-            DynamicItemModel {
+            RadioBox {
                 id: analogitems
-                name: "analogitems"
+                name: "clock_analog"
 
-                OptionRadioButton { text: "Current Time";      ticked: true }
+                OptionRadioButton { text: "Current Time";      }
                 OptionRadioButton { text: "Elapsed Time";      }
-                OptionRadioButton { text: "Remaining Time";    }
                 OptionRadioButton { text: "Monitor Time";      }
             }
             onClicked: {
                 console.log("analogitems.onClicked",index)
-                for (var i=0; i<analogitems.count(); i++) {
-                    analogitems.get(i).ticked = (index == i)
-                }
+                analogitems.ticked = index
             }
         }
         OptionList {
@@ -37,20 +39,18 @@ OptionPage {
             title: "Top"
             items: topitems
 
-            DynamicItemModel {
+            RadioBox {
                 id: topitems
-                name: "topitems"
+                name: "clock_top"
 
-                OptionRadioButton { text: "Current Time";      ticked: true }
+                OptionRadioButton { text: "Current Time";      }
                 OptionRadioButton { text: "Elapsed Time";      }
-                OptionRadioButton { text: "Remaining Time";    }
                 OptionRadioButton { text: "Monitor Time";      }
             }
+
             onClicked: {
                 console.log("topitems.onClicked",index)
-                for (var i=0; i<topitems.count(); i++) {
-                    topitems.get(i).ticked = (index == i)
-                }
+                topitems.ticked = index
             }
         }
         OptionList {
@@ -58,20 +58,18 @@ OptionPage {
             title: "Bottom"
             items: bottomitems
 
-            DynamicItemModel {
+            RadioBox {
                 id: bottomitems
-                name: "bottomitems"
+                name: "clock_bottom"
 
-                OptionRadioButton { text: "Current Time";      ticked: true }
+                OptionRadioButton { text: "Current Time";      }
                 OptionRadioButton { text: "Elapsed Time";      }
-                OptionRadioButton { text: "Remaining Time";    }
                 OptionRadioButton { text: "Monitor Time";      }
             }
+
             onClicked: {
                 console.log("bottomitems.onClicked",index)
-                for (var i=0; i<bottomitems.count(); i++) {
-                    bottomitems.get(i).ticked = (index == i)
-                }
+                bottomitems.ticked = index
             }
         }
     }

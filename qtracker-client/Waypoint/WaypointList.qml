@@ -22,7 +22,7 @@ OptionList {
         id: delegate
         OptionTextItem { text: ""; button: true }
     }
-
+/*
     Database {
         id: database
         table: "waypoints"
@@ -33,6 +33,12 @@ OptionList {
             console.log("WaypointList.database.onCompleted")
             database.exec("CREATE TABLE IF NOT EXISTS waypoints (pointid INTEGER PRIMARY KEY, name TEXT, latitude REAL, longitude REAL, altitude REAL, notes TEXT);")
         }
+    }
+*/
+    Waypoints {
+        id: database
+        onCountChanged: root.update()
+        onDataChanged: root.update()
     }
 
     items: content

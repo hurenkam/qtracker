@@ -5,14 +5,19 @@ import "../Components"
 Item {
     id: root
     property int viewid: -1
-    //x:      parent.gaugeX(viewid)
-    //y:      parent.gaugeY(viewid)
-    //width:  parent.gaugeW(viewid)
-    //height: parent.gaugeH(viewid)
-    //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    property int analogindex: -1
+    property int topindex:    -1
+    property int bottomindex: -1
+
+    Settings { id: settings }
+
+    function update() {
+        analogindex = settings.getProperty("clock_analog",0)
+        topindex =    settings.getProperty("clock_top",0)
+        bottomindex = settings.getProperty("clock_bottom",1)
+    }
+
+    Component.onCompleted: update()
 
     signal clicked()
     signal options()
@@ -25,30 +30,35 @@ Item {
         onDoubleTap: root.options()
     }
 
-    ValueSpaceSubscriber {
-        id: analog;
-        path: "/server/time/current"
-        property int hour:   (value==undefined)? 0 : value.hour
-        property int minute: (value==undefined)? 0 : value.minute
-        property int second: (value==undefined)? 0 : value.second
-        property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
-    }
-    ValueSpaceSubscriber {
-        id: top;
-        path: "/server/time/trip"
-        property int hour:   (value==undefined)? 0 : value.hour
-        property int minute: (value==undefined)? 0 : value.minute
-        property int second: (value==undefined)? 0 : value.second
-        property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
-    }
-    ValueSpaceSubscriber {
-        id: bottom;
-        path: "/server/monitor/time"
-        property int hour:   (value==undefined)? 0 : value.hour
-        property int minute: (value==undefined)? 0 : value.minute
-        property int second: (value==undefined)? 0 : value.second
-        property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
-    }
+    property list<QtObject> values: [
+        ValueSpaceSubscriber {
+            id: currenttime
+            path: "/server/time/current"
+            property int hour:   value? value.hour   : 0
+            property int minute: value? value.minute : 0
+            property int second: value? value.second : 0
+            property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
+            //onTextChanged: console.log("current:   ", text)
+        },
+        ValueSpaceSubscriber {
+            id: triptime
+            path: "/server/time/trip"
+            property int hour:   value? value.hour   : 0
+            property int minute: value? value.minute : 0
+            property int second: value? value.second : 0
+            property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
+            //onTextChanged: console.log("trip:      ", text)
+        },
+        ValueSpaceSubscriber {
+            id: monitortime
+            path: "/server/monitor/time"
+            property int hour:   value? value.hour   : 0
+            property int minute: value? value.minute : 0
+            property int second: value? value.second : 0
+            property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
+            //onTextChanged: console.log("monitor:   ", text)
+        }
+    ]
 
     function reset() {
         console.log("clock.reset()")
@@ -70,7 +80,7 @@ Item {
         Text {
             id: toptext
             anchors.horizontalCenter: parent.horizontalCenter
-            text: top.text
+            text: values[topindex].text
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -79,7 +89,7 @@ Item {
             y: parent.height/2
             id: bottomtext
             anchors.horizontalCenter: parent.horizontalCenter
-            text: bottom.text
+            text: values[bottomindex].text
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -93,7 +103,7 @@ Item {
             id: shorthand
             origin.x: width/2
             origin.y: height/2
-            angle:  analog.hour*360/12 + analog.minute/2
+            angle: values[analogindex].hour*360/12 +  values[analogindex].minute/2
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -110,7 +120,7 @@ Item {
             id: longhand
             origin.x: width/2
             origin.y: height/2
-            angle: analog.minute*360/60
+            angle: values[analogindex].minute*360/60
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -127,7 +137,7 @@ Item {
             id: secondhand
             origin.x: width/2
             origin.y: height/2
-            angle: analog.second*360/60
+            angle: values[analogindex].second*360/60
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4

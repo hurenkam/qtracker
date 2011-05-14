@@ -22,7 +22,7 @@ OptionList {
         id: delegate
         OptionTextItem { text: ""; button: true; }
     }
-
+/*
     Database {
         id: database
         table: "routes"
@@ -33,6 +33,12 @@ OptionList {
             console.log("RouteList.database.onCompleted")
             database.exec("CREATE TABLE IF NOT EXISTS routes (routeid INTEGER PRIMARY KEY, name TEXT, top REAL, left REAL, bottom REAL, right REAL);")
         }
+    }
+*/
+    Routes {
+        id: database
+        onCountChanged: root.update()
+        onDataChanged: root.update()
     }
 
     items: content

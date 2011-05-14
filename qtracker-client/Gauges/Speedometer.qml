@@ -5,14 +5,9 @@ import "../Components"
 Item {
     id: root
     property int viewid: -1
-    //x:      parent.gaugeX(viewid)
-    //y:      parent.gaugeY(viewid)
-    //width:  parent.gaugeW(viewid)
-    //height: parent.gaugeH(viewid)
-    //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    property int analogindex: -1
+    property int topindex:    -1
+    property int bottomindex: -1
 
     signal clicked()
     signal options()
@@ -30,9 +25,27 @@ Item {
         onDoubleTap: root.options()
     }
 
-    ValueSpaceSubscriber { id: analog; path: "/server/speed/current"     }
-    ValueSpaceSubscriber { id: top;    path: "/server/location/distance" }
-    ValueSpaceSubscriber { id: bottom; path: "/server/monitor/distance"  }
+    function update() {
+        analogindex = settings.getProperty("speed_analog",0)
+        topindex =    settings.getProperty("speed_top",3)
+        bottomindex = settings.getProperty("speed_bottom",4)
+    }
+
+    Component.onCompleted: update()
+
+    property list<QtObject> values: [
+        ValueSpaceSubscriber { id: speedcur; path: "/server/speed/current"     },
+        ValueSpaceSubscriber { id: speedmin; path: "/server/speed/min"         },
+        ValueSpaceSubscriber { id: speedmax; path: "/server/speed/max"         },
+        ValueSpaceSubscriber { id: speedavg; path: "/server/speed/average"     },
+        ValueSpaceSubscriber { id: distance; path: "/server/location/distance" },
+        ValueSpaceSubscriber { id: monitor;  path: "/server/monitor/distance"  }
+    ]
+    property double analogvalue: values[analogindex].value? values[analogindex].value : -180
+    property double topvalue:    values[topindex].value?    values[topindex].value    : 0
+    property double bottomvalue: values[bottomindex].value? values[bottomindex].value : 0
+
+
     function reset() {
         console.log("speedometer.reset()")
         var cmd = { "class": "speed", "method": "reset", "args": [] }
@@ -58,7 +71,7 @@ Item {
 
     Image {
         //source: if (analog.value < 10) "speed10.svg"; else "speed200.svg"
-        source: (analog.value && (analog.value>10))? "speed200.svg" : "speed10.svg"
+        source: (analogvalue && (analogvalue>10))? "speed200.svg" : "speed10.svg"
         width: parent.width
         height: parent.height
     }
@@ -74,7 +87,8 @@ Item {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.margins: 2
-            text: root.toFixed(top.value,1)
+            //text: root.toFixed(top.value,1)
+            text: root.toFixed(topvalue,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -84,7 +98,8 @@ Item {
             anchors.bottom: parent.bottom
             anchors.right: parent.right
             anchors.margins: 2
-            text: root.toFixed(bottom.value,1)
+            //text: root.toFixed(bottom.value,1)
+            text: root.toFixed(bottomvalue,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -100,7 +115,7 @@ Item {
             origin.x: width/2
             origin.y: height/2
             //angle: if (analog.value < 10) analog.value/10*360 -180; else analog.value/200*360 -180
-            angle: analog.value? ( (analog.value<10)? analog.value/10*360 -180: analog.value/200*360 -180 ) : -180
+            angle: analogvalue<10? analogvalue/10*360 -180: analogvalue/200*360 -180
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4

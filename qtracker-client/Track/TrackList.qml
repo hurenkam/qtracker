@@ -6,22 +6,18 @@ OptionList {
     id: root
 
     signal recordTrack(int index)
+    signal editTrack(int index)
+    signal stopTrack(int index)
 
     Component {
         id: delegate
         OptionTextItem { text: "" }
     }
 
-    Database {
+    Tracks {
         id: database
-        table: "tracks"
         onCountChanged: root.update()
         onDataChanged: root.update()
-
-        Component.onCompleted: {
-            console.log("TrackList.database.onCompleted")
-            database.exec("CREATE TABLE IF NOT EXISTS tracks (trackid INTEGER PRIMARY KEY, name TEXT, interval INTEGER, top REAL, left REAL, bottom REAL, right REAL);")
-        }
     }
 
     items: content
@@ -32,11 +28,41 @@ OptionList {
         //OptionTextItem { text: "<new>"; button: true; }
     }
 
+    ValueSpaceSubscriber  {
+        id: trackstatus;
+        path: "/server/track/status"
+        property string status: value
+        onStatusChanged: { console.log("TrackMenu.trackstatus:onStatusChanged: ", status); root.update() }
+        Component.onCompleted: console.log("TrackMenu.trackstatus:onCompleted: ", value)
+        //OptionTextItem { text: trackstatus.status=="idle"? "Start Track": "Stop Track" }
+    }
+
+    ValueSpaceSubscriber  {
+        id: trackname;
+        path: "/server/track/name"
+        property string name: value
+    }
+
+    //(trackid INTEGER PRIMARY KEY, name TEXT, interval INTEGER, top REAL, left REAL, bottom REAL, right REAL)
+    function saveTrack(index,name,interval) {
+        console.log("TrackList.saveTrack",index,name,interval)
+        var trackid
+        if (index < 0) {
+            trackid = database.append({name: name, interval: interval})
+        } else {
+            database.set(index, {name: name, interval: interval})
+            trackid = database.get(index).trackid
+        }
+        database.refresh()
+        root.update()
+        return trackid
+    }
+
     function update() {
         var item = null;
         content.clear();
         item = delegate.createObject(null)
-        item.text = "<new>"
+        item.text = trackstatus.status=="idle"? "<new>" : "<stop>"
         item.button = true;
         content.append(item)
         console.log("tracklist contains",database.count,"items")
@@ -51,7 +77,15 @@ OptionList {
 
     onClicked: {
         console.log("TrackList.onClicked",index,text);
-        recordTrack(index-1)
+        if (index == 0) {
+            if (trackstatus.status == "idle") {
+                recordTrack(index-1)
+            } else {
+                stopTrack(index-1)
+            }
+        } else {
+            editTrack(index-1)
+        }
     }
 
     Component.onCompleted: update()

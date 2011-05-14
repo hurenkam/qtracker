@@ -73,12 +73,12 @@ Item {
     }
 
     Timer {
-        id: singletap; interval: 200; running: false; repeat: false;
+        id: singletap; interval: 300; running: false; repeat: false;
         onTriggered: root.handleSingleTapTimeout()
     }
 
     Timer {
-        id: longtap;   interval: 500; running: false; repeat: false;
+        id: longtap;   interval: 600; running: false; repeat: false;
         onTriggered: root.handleLongTapTimeout()
     }
 

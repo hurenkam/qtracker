@@ -12,6 +12,13 @@ OptionPage {
         id: settings
     }
 
+    signal trackSaved(int index, string name, int interval)
+
+    function saveTrack(index,name,interval) {
+        console.log("TrackRecordingPage.saveTrack",index,name,interval)
+        trackSaved(index,name,interval)
+    }
+
     VisualItemModel {
         id: trkoptions
 
@@ -36,26 +43,17 @@ OptionPage {
             title: "Recording Options"
             items: intervalitems
 
-            DynamicItemModel {
+            RadioBox {
                 id: intervalitems
-                name: "intervalitems"
+                name: "trk_interval"
 
                 OptionRadioButton { id: btnall;  text: "All";      }
                 OptionRadioButton { id: btntime; text: "Time";     }
                 OptionRadioButton { id: btndist; text: "Distance"; }
-                function select(index) {
-                    settings.setProperty("track_intervaltype",index)
-                    for (var i=0; i<count(); i++) {
-                        get(i).ticked = (index == i)
-                    }
-                }
-                Component.onCompleted: {
-                    select(settings.getProperty("track_intervaltype",2))
-                }
             }
             onClicked: {
                 console.log("Interval.onClicked",index)
-                intervalitems.select(index)
+                intervalitems.ticked=index
             }
         }
 
@@ -65,9 +63,9 @@ OptionPage {
             items: timeitems
             visible: btntime.ticked
 
-            DynamicItemModel {
+            RadioBox {
                 id: timeitems
-                name: "timeitems"
+                name: "trk_timeinterval"
 
                 OptionRadioButton { text: " 5 seconds";  }
                 OptionRadioButton { text: "15 seconds";  }
@@ -75,20 +73,10 @@ OptionPage {
                 OptionRadioButton { text: " 5 minutes";  }
                 OptionRadioButton { text: "15 minutes";  }
                 OptionRadioButton { text: " 1 hour";     }
-
-                function select(index) {
-                    settings.setProperty("track_intervaltime",index)
-                    for (var i=0; i<count(); i++) {
-                        get(i).ticked = (index == i)
-                    }
-                }
-                Component.onCompleted: {
-                    select(settings.getProperty("track_intervaltime",1))
-                }
             }
             onClicked: {
                 console.log("Time.onClicked",index)
-                timeitems.select(index)
+                timeitems.ticked=index
             }
             onVisibleChanged: root.layoutPage();
         }
@@ -99,35 +87,49 @@ OptionPage {
             items: distitems
             visible: btndist.ticked
 
-            DynamicItemModel {
+            RadioBox {
                 id: distitems
-                name: "distitems"
+                name: "trk_distinterval"
 
                 OptionRadioButton { text: " 10 meters";    }
                 OptionRadioButton { text: " 30 meters";    }
                 OptionRadioButton { text: "100 meters";    }
                 OptionRadioButton { text: "300 meters";    }
                 OptionRadioButton { text: "  1 kilometer"; }
-
-                function select(index) {
-                    settings.setProperty("track_intervaldist",index)
-                    for (var i=0; i<count(); i++) {
-                        get(i).ticked = (index == i)
-                    }
-                }
-                Component.onCompleted: {
-                    select(settings.getProperty("track_intervaldist",1))
-                }
             }
             onClicked: {
                 console.log("Dist.onClicked",index)
-                distitems.select(index)
+                distitems.ticked=index
             }
             onVisibleChanged: root.layoutPage();
         }
     }
+
+    function startTrack(id,interval) {
+        var cmd = { "class": "server", "method": "trackstart", "args": [ id, interval ] }
+        console.log("TrackRecordingPage.startTrack(): ",cmd)
+        client.sendCommand(cmd);
+    }
+
+    function stopTrack(id) {
+        console.log("TrackRecordingPage.startTrack()")
+        var cmd = { "class": "server", "method": "trackstop", "args": [ id ] }
+        client.sendCommand(cmd);
+    }
+
     onConfirm: {
-        console.log("TrackRecordingPage.onConfirm")
+        var times = [ 5, 15, 60, 5*60, 15*60, 60*60 ]
+        var time = times[timeitems.ticked]
+        var dists = [ 10, 30, 100, 300, 1000 ]
+        var dist = dists[distitems.ticked]
+        var type = intervalitems.ticked
+
+        var message = "TrackRecordingPage.onConfirm: " + trkname.value
+        message += " " + intervalitems.get(type).text
+        if (type == 1) message += " " + time + " seconds"
+        if (type == 2) message += " " + dist + " meters"
+        console.log(message)
+        saveTrack(root.index,trkname.value,(type==0)? 0 : ((type==1)? time: -1 * dist))
         pageStack.pop()
     }
 }

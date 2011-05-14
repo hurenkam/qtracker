@@ -9,7 +9,19 @@ OptionPage {
     options: trkoptions
     property MapView mapview: null
 
-    TrackRecordingPage { id: trkrecord }
+    TrackRecordingPage {
+        id: trkrecord;
+        onTrackSaved: {
+            var trackid = lst.saveTrack(index,name,interval)
+            trkrecord.startTrack(trackid,interval)
+        }
+    }
+
+    ValueSpaceSubscriber  {
+        id: currenttrack;
+        path: "/server/track/id"
+        property int trackid: value
+    }
 
     VisualItemModel {
         id: trkoptions
@@ -17,7 +29,9 @@ OptionPage {
         TrackList {
             id: lst
             //title: "Route List"
-            onRecordTrack: { trkrecord.index = index; pageStack.push(trkrecord); }
+            onRecordTrack: { trkrecord.index = index; pageStack.push(trkrecord);    }
+            onEditTrack:   { trkrecord.index = index; pageStack.push(trkrecord);    }
+            onStopTrack:   { trkrecord.stopTrack(currenttrack.trackid); }
         }
     }
 }

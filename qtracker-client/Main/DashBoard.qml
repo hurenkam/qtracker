@@ -6,12 +6,7 @@ Item {
     id: root
     property bool hide: false
     height: hide? bgimage.height : (landscape? 70*h: 200*w)
-
-    signal clockOptions()
-    signal compassOptions()
-    signal satsOptions()
-    signal speedOptions()
-    signal altitudeOptions()
+    property Item pageStack: null
 
     Settings { id: settings }
 
@@ -23,12 +18,18 @@ Item {
         width: sourceSize.width*w
     }
 
+    ClockOptionsPage      { id: clockoptions;     onOptionsChanged: clock.update()     }
+    CompassOptionsPage    { id: compassoptions;   onOptionsChanged: compass.update()   }
+    SpeedOptionsPage      { id: speedoptions;     onOptionsChanged: speed.update()     }
+    SatelliteOptionsPage  { id: satsoptions;      onOptionsChanged: sats.update()      }
+    AltitudeOptionsPage   { id: altimeteroptions; onOptionsChanged: altimeter.update() }
+
     property list<Item> gaugelist: [
-        Clock       { id: clock;     anchors.fill: parent; onOptions: clockOptions()    },
-        Compass     { id: compass;   anchors.fill: parent; onOptions: compassOptions()  },
-        Satellites  { id: sats;      anchors.fill: parent; onOptions: satsOptions()     },
-        Speedometer { id: speed;     anchors.fill: parent; onOptions: speedOptions()    },
-        Altimeter   { id: altimeter; anchors.fill: parent; onOptions: altitudeOptions() }
+        Clock       { id: clock;     anchors.fill: parent; onOptions: pageStack.push(clockoptions)     },
+        Compass     { id: compass;   anchors.fill: parent; onOptions: pageStack.push(compassoptions)   },
+        Satellites  { id: sats;      anchors.fill: parent; onOptions: pageStack.push(satsoptions)      },
+        Speedometer { id: speed;     anchors.fill: parent; onOptions: pageStack.push(speedoptions)     },
+        Altimeter   { id: altimeter; anchors.fill: parent; onOptions: pageStack.push(altimeteroptions) }
     ]
 
     property int topleft:     0

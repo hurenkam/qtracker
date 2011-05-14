@@ -4,7 +4,8 @@ Database {
     id: root
     table: "trackpoints"
     property int trackid: -1
-    property var range: []
+    property list<QtObject> range
+    range: []
 
     function updateFilter() {
         var filter = "";
@@ -22,6 +23,11 @@ Database {
         root.range = [ left, top, right, bottom ];
         updateFilter();
     }
+
+    function clearRange() {
+        root.range = []
+    }
+
 
     onTrackidChanged: updatefilter()
     onRangeChanged: updatefilter()

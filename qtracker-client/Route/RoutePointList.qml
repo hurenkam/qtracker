@@ -24,7 +24,7 @@ OptionList {
         id: delegate
         OptionTextItem { text: ""; button: true; }
     }
-
+/*
     Database {
         id: database
         table: "routepoints"
@@ -42,7 +42,14 @@ OptionList {
             database.exec("CREATE TABLE IF NOT EXISTS routepoints (pointid INTEGER PRIMARY KEY, routeid INTEGER, name TEXT, latitude REAL, longitude REAL, altitude REAL);")
         }
     }
-
+*/
+    RoutePoints {
+        id: database
+        routeid: root.routeid
+        onCountChanged: root.update()
+        onDataChanged: root.update()
+        onFilterChanged: root.update()
+    }
 
 
     items: content
