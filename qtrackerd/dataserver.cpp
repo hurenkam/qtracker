@@ -66,3 +66,14 @@ Track* DataServer::createTrack(QString name, int interval)
     EXIT("")
     return result;
 }
+
+Track* DataServer::openTrack(int id)
+{
+    ENTER("")
+
+    if (!db.isOpen()) { EXIT("not open") return 0; }
+    Track* result = new Track(db,id);
+
+    EXIT("")
+    return result;
+}

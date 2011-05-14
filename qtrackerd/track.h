@@ -26,9 +26,11 @@ public:
 
 private:
     explicit Track(QSqlDatabase& db, QString name, int interval);
+    explicit Track(QSqlDatabase& db, int id);
     void UpdateMetaData(double lat, double lon, double alt);
     void SetupTracks();
     void SetupTrackPoints();
+    void OpenTrack(int id);
     void CreateTrack(QString name, int interval);
 
 private:

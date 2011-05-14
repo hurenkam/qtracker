@@ -138,13 +138,15 @@ void Server::onCommand(int method, QVariantList args)
         case 4:
         {
             LOG("trackstart")
-            QString name;
+            //QString name;
+            int id;
             int interval;
             if (args.count()>1)
             {
-                name = args[0].toString();
+                //name = args[0].toString();
+                id = args[0].toInt();
                 interval = args[1].toInt();
-                trackStart(name,interval);
+                trackStart(id,interval);
             }
             else
             {
@@ -154,7 +156,17 @@ void Server::onCommand(int method, QVariantList args)
         }
         case 5:
             LOG("trackstop")
-            trackStop();
+            int id;
+            if (args.count()>0)
+            {
+                //name = args[0].toString();
+                id = args[0].toInt();
+                trackStop();
+            }
+            else
+            {
+                LOG(" not enough parameters")
+            }
             break;
     }
 
@@ -177,6 +189,36 @@ void Server::trackStart(QString name, int interval)
         QVariant trackstatus = "recording";
         QVariant trackid = track->getId();
         QVariant trackname = name;
+        QVariant trackinterval = interval;
+        trackinfo->setValue("status",trackstatus);
+        trackinfo->setValue("id",trackid);
+        trackinfo->setValue("name",trackname);
+        trackinfo->setValue("interval",trackinterval);
+    }
+    else
+    {
+        LOG("Recording already active!")
+    }
+    EXIT("")
+}
+
+void Server::trackStart(int id, int interval)
+{
+    ENTER("(" << id << "," << interval << ")")
+    if (!track)
+    {
+        //track = data->createTrack(name,interval);
+        track = data->openTrack(id);
+        connect(
+            location,
+            SIGNAL(positionChanged(double,double,double)),
+            track,
+            SLOT(addPoint(double,double,double))
+        );
+
+        QVariant trackstatus = "recording";
+        QVariant trackid = track->getId();
+        QVariant trackname = track->getName();
         QVariant trackinterval = interval;
         trackinfo->setValue("status",trackstatus);
         trackinfo->setValue("id",trackid);

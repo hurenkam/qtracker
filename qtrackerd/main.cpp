@@ -21,15 +21,15 @@ void debugOutput(QtMsgType type, const char *msg)
 
 void debugOpen()
 {
-//#if   defined(Q_OS_SYMBIAN)
+#if defined(Q_OS_SYMBIAN)
     file.setFileName("e:/data/qtrackerd-debug.txt");
-//#elif defined(Q_WS_MAEMO_5)
-//    file.setFileName("qtrackerd-debug.txt");
-//#elif defined(Q_WS_SIMULATOR)
-//    file.setFileName("c:/data/qtrackerd-debug.txt");
-//#else
-//    file.setFileName("qtrackerd-debug.txt");
-//#endif
+#elif defined(Q_WS_MAEMO_5)
+    file.setFileName("qtrackerd-debug.txt");
+#elif defined(Q_WS_SIMULATOR)
+    file.setFileName("c:/data/qtrackerd-debug.txt");
+#else
+    file.setFileName("qtrackerd-debug.txt");
+#endif
     if (file.exists())
         fileopen = file.open(QIODevice::Append | QIODevice::Text);
     else

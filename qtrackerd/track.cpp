@@ -22,6 +22,20 @@ Track::Track(QSqlDatabase& d, QString name, int interval)
     EXIT("")
 }
 
+Track::Track(QSqlDatabase& d, int id)
+    : db(d)
+    , valid(false)
+{
+    ENTER("")
+    if (!db.isOpen()) { EXIT("db not open") return; }
+
+    SetupTracks();
+    SetupTrackPoints();
+    OpenTrack(id);
+
+    EXIT("")
+}
+
 Track::~Track()
 {
     delete tracks;
@@ -68,6 +82,20 @@ void Track::SetupTrackPoints()
     EXIT("")
 }
 
+void Track::OpenTrack(int id)
+{
+    ENTER("")
+
+    trackid = id;
+    QString f = QString("trackid=%1").arg(trackid);
+    tracks->setFilter(f);
+    tracks->select();
+    trackpoints->setFilter(f);
+    trackpoints->select();
+
+    EXIT("")
+}
+
 void Track::CreateTrack(QString name, int interval)
 {
     ENTER("")
@@ -79,11 +107,7 @@ void Track::CreateTrack(QString name, int interval)
     tracks->insertRecord(-1,newtrack);
     tracks->submit();
     trackid = tracks->query().lastInsertId().toInt();
-    QString f = QString("trackid=%1").arg(trackid);
-    tracks->setFilter(f);
-    tracks->select();
-    trackpoints->setFilter(f);
-    trackpoints->select();
+    OpenTrack(trackid);
 
     EXIT("")
 }

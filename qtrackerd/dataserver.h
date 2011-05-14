@@ -19,6 +19,7 @@ signals:
 public slots:
     void start();
     void stop();
+    Track* openTrack(int id);
     Track* createTrack(QString name, int interval);
 
 public:
