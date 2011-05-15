@@ -4,19 +4,20 @@ import "../Components"
 
 Item {
     id: root
-    property bool headingup: true
-    property int viewid: -1
-    //x:      parent.gaugeX(viewid)
-    //y:      parent.gaugeY(viewid)
-    //width:  parent.gaugeW(viewid)
-    //height: parent.gaugeH(viewid)
-    //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    property bool headingup:       true
+    property int viewid:           -1
+    property int sourceindex:      -1
+    property int orientationindex: -1
 
     signal clicked()
     signal options()
+
+    function update() {
+        sourceindex =      settings.getProperty("compass_source",0)
+        orientationindex = settings.getProperty("compass_orientation",0)
+    }
+
+    Component.onCompleted: update()
 
     MouseHandler {
         id: mouseHandler
@@ -26,8 +27,14 @@ Item {
         onDoubleTap: root.options()
     }
 
-    ValueSpaceSubscriber { id: azimuth; path: "/server/compass/azimuth" }
-    ValueSpaceSubscriber { id: bearing; path: "/server/monitor/bearing" }
+    property list<QtObject> values: [
+        ValueSpaceSubscriber { path: "/server/compass/azimuth"  },
+        ValueSpaceSubscriber { path: "/server/location/heading" },
+        ValueSpaceSubscriber { path: "/server/monitor/bearing"  }
+    ]
+    property double azimuth: (sourceindex==0)? (values[0].value? values[0].value: 0) : (values[1].value? values[1].value : 0)
+    property double bearing: values[2].value? values[2].value : 0
+    property bool northup: (orientationindex==1)
 
     function reset() {
         console.log("compass.reset()")
@@ -43,7 +50,8 @@ Item {
             origin.x: width/2
             origin.y: height/2
             //angle: 360 - azimuth.value
-            angle: (bearing.value && azimuth.value)? bearing.value - azimuth.value : 0
+            //angle: (bearing.value && azimuth.value)? bearing.value - azimuth.value : 0
+            angle: northup? bearing : bearing - azimuth
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -61,7 +69,8 @@ Item {
             origin.x: width/2
             origin.y: height/2
             //angle: 360 - azimuth.value
-            angle: azimuth.value? 360 - azimuth.value : 0
+            //angle: azimuth.value? 360 - azimuth.value : 0
+            angle: northup? 0 : 360 - azimuth
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -78,7 +87,7 @@ Item {
             id: needle
             origin.x: width/2
             origin.y: height/2
-            angle: 0
+            angle: northup? azimuth : 0
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4

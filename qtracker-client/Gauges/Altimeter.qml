@@ -5,14 +5,6 @@ import "../Components"
 Item {
     id: root
     property int viewid: -1
-    //x:      parent.gaugeX(viewid)
-    //y:      parent.gaugeY(viewid)
-    //width:  parent.gaugeW(viewid)
-    //height: parent.gaugeH(viewid)
-    //Behavior on x      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
-    //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     property int analogindex: -1
     property int topindex:    -1
     property int bottomindex: -1
