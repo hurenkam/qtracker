@@ -137,6 +137,19 @@ void MapView::invalidate()
     EXIT("")
 }
 
+void MapView::clearcache()
+{
+    ENTER("")
+    QRect r = viewTiles();
+    QHash<QPoint,QImage>::iterator i;
+    //qDebug() << "invalidate(); valid rect: " << r;
+    for (i=tiles.begin(); i!=tiles.end(); ++i)
+    {
+        discardTile(i.key());
+    }
+    EXIT("")
+}
+
 void MapView::discardTile(const QPoint& p)
 {
     ENTER("")

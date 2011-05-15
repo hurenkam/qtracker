@@ -61,6 +61,7 @@ signals:
     void loadTile(const QPoint&, const QUrl&);
 
 public:
+    Q_INVOKABLE void clearcache();
     Q_INVOKABLE void invalidate();
     explicit MapView(QDeclarativeItem *parent = 0);
 

@@ -13,6 +13,9 @@ Item {
     //Behavior on y      { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
     //Behavior on height { NumberAnimation { easing.type: Easing.InOutQuart; duration: 800 } }
+    property int analogindex: -1
+    property int topindex:    -1
+    property int bottomindex: -1
 
     signal clicked()
     signal options()
@@ -35,9 +38,26 @@ Item {
         anchors.fill: parent
     }
 
-    ValueSpaceSubscriber { id: current; path: "/server/altitude/current" }
-    ValueSpaceSubscriber { id: average; path: "/server/altitude/average" }
-    ValueSpaceSubscriber { id: max;     path: "/server/altitude/max"     }
+    function update() {
+        analogindex = settings.getProperty("altimeter_analog",3)
+        topindex =    settings.getProperty("altimeter_top",1)
+        bottomindex = settings.getProperty("altimeter_bottom",2)
+    }
+
+    Component.onCompleted: update()
+
+    property list<QtObject> values: [
+        ValueSpaceSubscriber { id: current; path: "/server/altitude/current" },
+        ValueSpaceSubscriber { id: min;     path: "/server/altitude/min"     },
+        ValueSpaceSubscriber { id: max;     path: "/server/altitude/max"     },
+        ValueSpaceSubscriber { id: average; path: "/server/altitude/average" },
+        ValueSpaceSubscriber { id: ascent;  path: "/server/altitude/ascent"  },
+        ValueSpaceSubscriber { id: descent; path: "/server/altitude/descent" }
+    ]
+    property double analogvalue: values[analogindex].value? values[analogindex].value : 0
+    property double topvalue:    values[topindex].value?    values[topindex].value    : 0
+    property double bottomvalue: values[bottomindex].value? values[bottomindex].value : 0
+
     function reset() {
         console.log("altimeter.reset()")
         var cmd = { "class": "altitude", "method": "reset", "args": [] }
@@ -71,7 +91,7 @@ Item {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.margins: 2
-            text: root.toFixed(average.value,1)
+            text: root.toFixed(topvalue,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -81,7 +101,7 @@ Item {
             anchors.bottom: parent.bottom
             anchors.right: parent.right
             anchors.margins: 2
-            text: root.toFixed(max.value,1)
+            text: root.toFixed(bottomvalue,1)
             color: "white"
             font.bold: true; font.pixelSize: parent.height/3
             style: Text.Raised; styleColor: "black"
@@ -96,7 +116,7 @@ Item {
             origin.x: width/2
             origin.y: height/2
             //angle: -180 + current.value/10000 * 360
-            angle: current.value? -180 + current.value/10000 * 360 : -180
+            angle: -180 + analogvalue/10000 * 360
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -114,7 +134,7 @@ Item {
             origin.x: width/2
             origin.y: height/2
             //angle: -180 + current.value/1000 * 360
-            angle: current.value? -180 + current.value/1000 * 360 : -180
+            angle: -180 + analogvalue/1000 * 360
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4

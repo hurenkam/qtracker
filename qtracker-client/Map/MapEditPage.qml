@@ -33,6 +33,7 @@ OptionPage {
     }
 
     function showMapSelectionPage() {
+        //mapview.clearCache()
         pageloader.sourceComponent = pagesource
         pageStack.push(pageloader.item)
     }

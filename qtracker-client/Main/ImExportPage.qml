@@ -5,6 +5,7 @@ OptionPage {
     id: root
     title: "Settings"
     options: settingsmodel
+    property Item mapview
 
     OptionPage { id: security; title: "Security"}
 

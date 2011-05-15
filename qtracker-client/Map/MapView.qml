@@ -49,6 +49,10 @@ Item {
         return txt.slice(p+1);
     }
 
+    function clearCache() {
+        viewport.clearcache()
+    }
+
     Settings {
         id: settings
     }
