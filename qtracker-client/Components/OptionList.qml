@@ -52,17 +52,13 @@ Item {
                 id: content
             }
 
-            Item {
-                id: seperators
-
-                function clear() {
-                    for (var i=0; i<seperators.children.length; ++i) {
-                        seperators.children[i].destroy();
-                    }
-                }
+            function clear() {
+                //console.log("OptionList.box.clear()")
+                content.children = [];
             }
 
             function layout() {
+                clear();
                 if (items && (items.count() > 0)) {
                     //items.parent = content
                     content.height = layoutItems(box.width);
@@ -76,20 +72,11 @@ Item {
             function layoutItems(w) {
                 console.log("OptionList.layoutItems(): got", items.count(), "items for model",items.name)
                 var h = 2;
-                seperators.clear();
-                var seperator;
                 for (var i=0; i<items.count(); ++i) {
                     var item = items.get(i)
                     item.roundtop = false
                     item.roundbottom = false
                     h = layoutOptionItem(item,w,h+10) + 10;
-                    if ((i+1) < items.count()) {
-                        seperator = line.createObject(seperators)
-                        h = h+1
-                        seperator.x = 0
-                        seperator.width = w
-                        seperator.y = h
-                    }
                 }
                 items.get(0).roundtop = true
                 items.get(items.count()-1).roundbottom = true
@@ -142,6 +129,10 @@ Item {
 
     function initialise() {
         box.initialise()
+    }
+
+    function clear() {
+        box.clear()
     }
 
     function layout() {

@@ -19,7 +19,6 @@ function count() {
 
 function clear() {
     for (var i=0; i<jList.length; i++) {
-        jList[i].visible = false
         jList[i].destroy()
     }
     jList = []

@@ -25,7 +25,7 @@ QML_IMPORT_PATH = /imports
 #DEFINES += NETWORKACCESS
 QT       += sql
 
-VERSION = 0.4.361
+VERSION = 0.4.364
 
 symbian {
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"

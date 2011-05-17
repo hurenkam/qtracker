@@ -32,6 +32,14 @@ Item {
         color: root.hilitecolor
     }
 
+    Rectangle {
+        id: bottomline
+        visible: ! roundbottom
+        x: -9;               width:  parent.width +20
+        y: parent.height+9;  height: 1
+        color: "grey"
+    }
+
     ToolButton {
         id: btn
 

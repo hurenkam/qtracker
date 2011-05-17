@@ -18,11 +18,13 @@ Item {
         width: sourceSize.width*w
     }
 
-    ClockOptionsPage      { id: clockoptions;     onOptionsChanged: clock.update()     }
-    CompassOptionsPage    { id: compassoptions;   onOptionsChanged: compass.update()   }
-    SpeedOptionsPage      { id: speedoptions;     onOptionsChanged: speed.update()     }
-    SatelliteOptionsPage  { id: satsoptions;      onOptionsChanged: sats.update()      }
-    AltitudeOptionsPage   { id: altimeteroptions; onOptionsChanged: altimeter.update() }
+    property list<Item> optionpages: [
+        ClockOptionsPage      { id: clockoptions;     onOptionsChanged: clock.update()     },
+        CompassOptionsPage    { id: compassoptions;   onOptionsChanged: compass.update()   },
+        SatelliteOptionsPage  { id: satsoptions;      onOptionsChanged: sats.update()      },
+        SpeedOptionsPage      { id: speedoptions;     onOptionsChanged: speed.update()     },
+        AltitudeOptionsPage   { id: altimeteroptions; onOptionsChanged: altimeter.update() }
+    ]
 
     property list<Item> gaugelist: [
         Clock       { id: clock;     anchors.fill: parent; onOptions: pageStack.push(clockoptions)     },
@@ -52,6 +54,7 @@ Item {
         width:  198*w
         height: 198*w
         gauge:  gaugelist[centertop]
+        onClicked: { console.log("topright.onClicked"); pageStack.push(optionpages[centertop]); }
     }
     Gauge {
         x:      landscape? 365*w: 280*w

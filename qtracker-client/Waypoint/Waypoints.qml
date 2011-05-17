@@ -28,7 +28,7 @@ Database {
     onRangeChanged: updateFilter()
     Component.onCompleted: {
         console.log("Waypoints.onCompleted")
-        database.exec("CREATE TABLE IF NOT EXISTS waypoints (pointid INTEGER PRIMARY KEY, name TEXT, latitude REAL, longitude REAL, altitude REAL, notes TEXT);")
+        root.exec("CREATE TABLE IF NOT EXISTS waypoints (wpt INTEGER PRIMARY KEY, name TEXT, latitude REAL, longitude REAL, altitude REAL, notes TEXT);")
         updateFilter()
     }
 }

@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import "../Components"
 
 Database {
     id: root
@@ -33,7 +34,7 @@ Database {
     onRangeChanged: updatefilter()
     Component.onCompleted: {
         console.log("TrackpointList.database.onCompleted")
-        database.exec("CREATE TABLE IF NOT EXISTS trackpoints (pointid INTEGER PRIMARY KEY, trackid INTEGER, latitude REAL, longitude REAL, altitude REAL);")
+        root.exec("CREATE TABLE IF NOT EXISTS trackpoints (trkpt INTEGER PRIMARY KEY, trk INTEGER, latitude REAL, longitude REAL, altitude REAL, time TEXT);")
         updatefilter()
     }
 }

@@ -16,6 +16,6 @@ Database {
 */
     Component.onCompleted: {
         console.log("RoutePointEditPage.database.onCompleted")
-        database.exec("CREATE TABLE IF NOT EXISTS routepoints (pointid INTEGER PRIMARY KEY, routeid INTEGER, name TEXT, latitude REAL, longitude REAL, altitude REAL);")
+        database.exec("CREATE TABLE IF NOT EXISTS routepoints (rtept INTEGER PRIMARY KEY, rte INTEGER, name TEXT, latitude REAL, longitude REAL, altitude REAL);")
     }
 }

@@ -7,6 +7,6 @@ Database {
 
     Component.onCompleted: {
         //console.log("Routes.onCompleted")
-        database.exec("CREATE TABLE IF NOT EXISTS routes (routeid INTEGER PRIMARY KEY, name TEXT, top REAL, left REAL, bottom REAL, right REAL);")
+        database.exec("CREATE TABLE IF NOT EXISTS routes (rte INTEGER PRIMARY KEY, name TEXT, top REAL, left REAL, bottom REAL, right REAL);")
     }
 }

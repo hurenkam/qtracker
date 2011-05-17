@@ -60,10 +60,11 @@ OptionList {
 
     function update() {
         var item = null;
-        content.clear();
+        console.log("TrackList.update(): content.count() after content.clear()", content.count())
         item = delegate.createObject(null)
         item.text = trackstatus.status=="idle"? "<new>" : "<stop>"
         item.button = true;
+        content.clear();
         content.append(item)
         console.log("tracklist contains",database.count,"items")
         for (var i=0; i<database.count; i++) {
