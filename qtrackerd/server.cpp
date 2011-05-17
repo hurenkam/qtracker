@@ -47,6 +47,7 @@ Server::Server(QObject *parent)
     handler["location"]=location;
     handler["speed"]=speed;
     handler["time"]=time;
+    handler["trip"]=trip;
     handler["server"]=this;
 
     methods << "ping" << "ack" << "stop" << "reset" << "trackstart" << "trackstop";
@@ -295,6 +296,21 @@ void Server::start()
     monitor->start();
     satellite->start();
     data->start();
+    trip = data->getTripServer();
+    trip->start();
+
+    QObject::connect(altitude, SIGNAL(ascentChanged(double)),   trip, SLOT(onAltAscentChanged(double)));
+    QObject::connect(altitude, SIGNAL(descentChanged(double)),  trip, SLOT(onAltDescentChanged(double)));
+    QObject::connect(altitude, SIGNAL(minChanged(double)),      trip, SLOT(onAltMinChanged(double)));
+    QObject::connect(altitude, SIGNAL(maxChanged(double)),      trip, SLOT(onAltMaxChanged(double)));
+    QObject::connect(altitude, SIGNAL(averageChanged(double)),  trip, SLOT(onAltAverageChanged(double)));
+
+    QObject::connect(speed,    SIGNAL(minChanged(double)),      trip, SLOT(onSpeedMinChanged(double)));
+    QObject::connect(speed,    SIGNAL(maxChanged(double)),      trip, SLOT(onSpeedMaxChanged(double)));
+    QObject::connect(speed,    SIGNAL(averageChanged(double)),  trip, SLOT(onSpeedAverageChanged(double)));
+
+    QObject::connect(time,     SIGNAL(tripTimeChanged(QTime)),  trip, SLOT(onTripTimeChanged(QTime)));
+    QObject::connect(location, SIGNAL(distanceChanged(double)), trip, SLOT(onTripDistanceChanged(double)));
 
     emit started();
     EXIT("")
@@ -304,6 +320,7 @@ void Server::reset()
 {
     ENTER("")
 
+    trip->stop();
     satellite->reset();
     monitor->reset();
     time->reset();
@@ -311,6 +328,7 @@ void Server::reset()
     altitude->reset();
     location->reset();
     compass->reset();
+    trip->start();
 
     EXIT("")
 }

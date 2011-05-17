@@ -4,8 +4,9 @@
 #include <QStringList>
 #include "dataserver.h"
 #include "track.h"
+#include "tripserver.h"
 
-//#define ENABLE_DEBUG
+#define ENABLE_DEBUG
 #include "helpers.h"
 
 DataServer::DataServer(QObject *parent)
@@ -60,7 +61,7 @@ Track* DataServer::createTrack(QString name, int interval)
 {
     ENTER("")
 
-    if (!db.isOpen()) { EXIT("not open") return 0; }
+    if (!db.isOpen()) { EXIT("db not open") return 0; }
     Track* result = new Track(db,name,interval);
 
     EXIT("")
@@ -71,8 +72,19 @@ Track* DataServer::openTrack(int id)
 {
     ENTER("")
 
-    if (!db.isOpen()) { EXIT("not open") return 0; }
+    if (!db.isOpen()) { EXIT("db not open") return 0; }
     Track* result = new Track(db,id);
+
+    EXIT("")
+    return result;
+}
+
+TripServer* DataServer::getTripServer(QString name)
+{
+    ENTER("")
+
+    if (!db.isOpen()) { EXIT("db not open") return 0; }
+    TripServer* result = new TripServer(db,name);
 
     EXIT("")
     return result;

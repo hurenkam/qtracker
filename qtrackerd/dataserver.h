@@ -7,6 +7,7 @@
 #include <QSqlError>
 
 class Track;
+class TripServer;
 class DataServer : public QObject
 {
     Q_OBJECT
@@ -21,6 +22,7 @@ public slots:
     void stop();
     Track* openTrack(int id);
     Track* createTrack(QString name, int interval);
+    TripServer* getTripServer(QString name="");
 
 public:
     QSqlError error();

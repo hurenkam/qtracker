@@ -13,6 +13,7 @@
 #include "satelliteserver.h"
 #include "dataserver.h"
 #include "commandhandler.h"
+#include "tripserver.h"
 
 using namespace QtMobility;
 
@@ -43,7 +44,7 @@ public:
         cmdStop,
         cmdReset,
         cmdTrackStart,
-        cmdTrackStop
+        cmdTrackStop,
     };
 
 public:
@@ -84,6 +85,7 @@ private:
     SatelliteServer* satellite;
     DataServer*      data;
     Track*           track;
+    TripServer*      trip;
 
     QMap<QString, CommandHandler*> handler;
 };

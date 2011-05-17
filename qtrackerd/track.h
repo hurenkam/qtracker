@@ -6,6 +6,9 @@
 #include <QSqlDatabase>
 #include "dataserver.h"
 
+const QString trkInit =   "CREATE TABLE tracks      (trk   INTEGER PRIMARY KEY, name TEXT, interval INTEGER, top REAL, left REAL, bottom REAL, right REAL);";
+const QString trkptInit = "CREATE TABLE trackpoints (trkpt INTEGER PRIMARY KEY, trk INTEGER, latitude REAL, longitude REAL, altitude REAL, time TEXT);";
+
 class Track : public QObject
 {
     Q_OBJECT

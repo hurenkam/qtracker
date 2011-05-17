@@ -31,12 +31,13 @@ SOURCES += main.cpp \
     satelliteserver.cpp \
     dataserver.cpp \
     track.cpp \
-    commandhandler.cpp
+    commandhandler.cpp \
+    tripserver.cpp
 
 OTHER_FILES += \
     qtrackerd.qcrml
 
-VERSION = 0.4.361
+VERSION = 0.4.364
 DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
 
 symbian {
@@ -60,4 +61,5 @@ HEADERS += \
     helpers.h \
     dataserver.h \
     track.h \
-    commandhandler.h
+    commandhandler.h \
+    tripserver.h

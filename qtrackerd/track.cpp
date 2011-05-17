@@ -49,9 +49,7 @@ void Track::SetupTracks()
     QSqlQuery query(db);
     if (!db.tables().contains("tracks"))
     {
-        QString sql(
-                    "CREATE TABLE tracks (trackid INTEGER PRIMARY KEY, name TEXT, interval INTEGER, top REAL, left REAL, bottom REAL, right REAL);"
-                    );
+        QString sql(trkInit);
         bool result = query.exec (sql);
         if (!result) { EXIT("unable to create tracks table" << db.lastError().text()) return; }
     }
@@ -69,9 +67,7 @@ void Track::SetupTrackPoints()
     QSqlQuery query(db);
     if (!db.tables().contains("trackpoints"))
     {
-        QString sql(
-                    "CREATE TABLE trackpoints (pointid INTEGER PRIMARY KEY, trackid INTEGER, latitude REAL, longitude REAL, altitude REAL);"
-                    );
+        QString sql(trkptInit);
         bool result = query.exec (sql);
         if (!result) { EXIT("unable to create trackpoints table" << db.lastError().text()) return; }
     }
