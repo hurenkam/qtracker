@@ -11,6 +11,6 @@ Database {
                       "trip INTEGER PRIMARY KEY, name TEXT, " +
                       "ascent REAL, descent REAL, altmin REAL, altmax REAL, altavg REAL" +
                       "speedmin REAL, speedmax REAL, speedavg REAL, " +
-                      "triptime TEXT, tripdist REAL );")
+                      "triptime DATETIME, tripdist REAL );")
     }
 }

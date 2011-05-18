@@ -1,6 +1,7 @@
 import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
 import "../Components"
+import "../Main"
 
 OptionList {
     id: root
@@ -18,6 +19,10 @@ OptionList {
         id: database
         onCountChanged: root.update()
         onDataChanged: root.update()
+    }
+
+    TripTracks {
+        id: triptracks
     }
 
     items: content
@@ -43,19 +48,25 @@ OptionList {
         property string name: value
     }
 
-    //(trackid INTEGER PRIMARY KEY, name TEXT, interval INTEGER, top REAL, left REAL, bottom REAL, right REAL)
+    ValueSpaceSubscriber  {
+        id: trip;
+        path: "/server/trip/id"
+        property int tripid: value
+    }
+
     function saveTrack(index,name,interval) {
         console.log("TrackList.saveTrack",index,name,interval)
-        var trackid
+        var trk
         if (index < 0) {
-            trackid = database.append({name: name, interval: interval})
+            trk = database.append({name: name, interval: interval})
+            triptracks.append({trk: trk, trip: trip.tripid})
         } else {
             database.set(index, {name: name, interval: interval})
-            trackid = database.get(index).trackid
+            trk = database.get(index).trk
         }
         database.refresh()
         root.update()
-        return trackid
+        return trk
     }
 
     function update() {
@@ -70,7 +81,7 @@ OptionList {
         for (var i=0; i<database.count; i++) {
             console.log("tracklist item ",database.get(i).name)
             item = delegate.createObject(null)
-            item.text = database.get(i).trackid + " " + database.get(i).name
+            item.text = database.get(i).trk + " " + database.get(i).name
             content.append(item)
         }
         root.layout()

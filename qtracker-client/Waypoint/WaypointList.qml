@@ -1,21 +1,34 @@
 import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
 import "../Components"
+import "../Main"
 
 OptionList {
     id: root
 
     signal waypointSelected(int index, string name, real lat, real lon, real alt)
 
+    TripWaypoints {
+        id: tripwaypoints
+    }
+
+    ValueSpaceSubscriber  {
+        id: trip;
+        path: "/server/trip/id"
+        property int tripid: value
+    }
+
     function saveWaypoint(index,name,lat,lon,alt) {
         console.log("saveWaypoint",index,name,lat,lon,alt)
         if (index < 0) {
-            database.append({name: name, latitude: lat, longitude: lon, altitude: alt})
+            var wpt = database.append({name: name, latitude: lat, longitude: lon, altitude: alt})
+            tripwaypoints.append({wpt: wpt, trip: trip.tripid})
         } else {
-            database.set(index, {name: name, latitude: lat, longitude: lon, altitude: alt})
+            var wpt = database.set(index, {name: name, latitude: lat, longitude: lon, altitude: alt})
         }
         database.refresh()
         root.update()
+        return wpt
     }
 
     Component {
@@ -60,7 +73,7 @@ OptionList {
         for (var i=0; i<database.count; i++) {
             console.log("waypointlist item ",database.get(i).name)
             item = delegate.createObject(null)
-            item.text = database.get(i).wptid + " " + database.get(i).name
+            item.text = database.get(i).wpt + " " + database.get(i).name
             content.append(item)
         }
         root.layout()

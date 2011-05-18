@@ -10,7 +10,7 @@ Database {
 
     function updateFilter() {
         var filter = "";
-        filter += "trackid="+root.trackid.toString();
+        filter += "trk="+root.trackid.toString();
         if (range.length>0) {
             filter += " AND " + "longitude>=" + root.range[0].toString();
             filter += " AND " + "longitude<=" + root.range[2].toString();

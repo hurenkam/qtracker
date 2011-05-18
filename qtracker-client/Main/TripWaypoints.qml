@@ -8,6 +8,6 @@ Database {
     Component.onCompleted: {
         //console.log("Maps.onCompleted")
         root.exec("CREATE TABLE IF NOT EXISTS tripwaypoints " +
-                  "( trippt INTEGER PRIMARY KEY, trip INTEGER, wpt INTEGER );")
+                  "( tripwpt INTEGER PRIMARY KEY, trip INTEGER, wpt INTEGER );")
     }
 }

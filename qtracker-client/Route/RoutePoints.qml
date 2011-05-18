@@ -5,7 +5,7 @@ Database {
     id: root
     table: "routepoints"
     property int routeid: -1
-    filter: routeid>=0? "routeid=\"" + routeid.toString() + "\"" : ""
+    filter: routeid>=0? "rte=\"" + routeid.toString() + "\"" : ""
 /*
     onFilterChanged: {
         console.log("RoutePoints.filter",filter)

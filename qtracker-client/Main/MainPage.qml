@@ -42,7 +42,7 @@ Page {
     Component { id: wptselectsrc; WaypointSelectionPage { id: wptPage; mapview: map } }
     Component { id: rteselectsrc; RouteSelectionPage    { id: rtePage; mapview: map } }
     Component { id: mapselectsrc; MapEditPage           { id: mapPage; mapview: map; onMapSelected: map.loadMap(fileName); } }
-    Component { id: tstselectsrc; ImExportPage          { id: options               } }
+    Component { id: tstselectsrc; ImExportPage          { id: options; mapview: map } }
 
     MapView {
         id: map
