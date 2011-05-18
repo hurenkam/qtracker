@@ -13,7 +13,7 @@ const QString tripInit =
     "CREATE TABLE IF NOT EXISTS trips ("
     "trip INTEGER PRIMARY KEY, name TEXT, "
     "ascent REAL, descent REAL, altmin REAL, altmax REAL, altavg REAL, "
-    "speedmin REAL, speedmax REAL, speedavg REAL, triptime TEXT, tripdist REAL );";
+    "speedmin REAL, speedmax REAL, speedavg REAL, triptime DATETIME, tripdist REAL );";
 
 using namespace QtMobility;
 
@@ -33,6 +33,10 @@ public:
     void CreateTrip(QString name);
     void OpenTrip(int id);
 
+signals:
+    void started();
+    void stopped();
+
 public slots:
     void stop();
     void start();
@@ -47,21 +51,29 @@ public slots:
     void onAltMaxChanged(double v)       { _dirty = true; altmax = v; }
     void onAltAverageChanged(double v)   { _dirty = true; altavg = v; }
 
-    void onTripTimeChanged(QTime v)      { _dirty = true; triptime = v; }
-    void onTripDistanceChanged(double v) { _dirty = true; tripdist = v; }
-
-//private slots:
-    void SubmitChangesIfDirty();
-
-
+    void onTripTimeChanged(QTime v)      { _dirty = true; triptime = v; publishTripTime(); }
+    void onTripDistanceChanged(double v) { _dirty = true; tripdist = v; publishDistance(); }
 
 private:
-    QSqlDatabase&   _db;
-    QSqlTableModel* _trips;
-    int             _id;
-    QString         _name;
-    bool            _dirty;
-    QTimer          _timer;
+    void publishTripTime();
+    void publishDistance();
+
+private slots:
+    void SubmitChangesIfDirty();
+
+public:
+    //virtual void onCommand(QVariant cmd);
+    virtual void onCommand(int method, QVariantList args);
+
+private:
+    QValueSpacePublisher* _p;
+    QSqlDatabase&         _db;
+    QSqlTableModel*       _trips;
+    int                   _id;
+    QString               _name;
+    bool                  _dirty;
+    QTimer                _timer;
+    QTime                 _starttime;
 
     double speedmin;
     double speedmax;

@@ -43,10 +43,14 @@
     <key ref="/server/track/name"          int="0x00000083"/>
     <key ref="/server/track/interval"      int="0x00000084"/>
 
-    <key ref="/viewer/zoom"                int="0x00001001"/>
-    <key ref="/viewer/map/file"            int="0x00001011"/>
-    <key ref="/viewer/map/state"           int="0x00001012"/>
-    <key ref="/viewer/map/x"               int="0x00001013"/>
-    <key ref="/viewer/map/y"               int="0x00001014"/>
+    <key ref="/server/route/status"        int="0x00000091"/>
+    <key ref="/server/route/id"            int="0x00000092"/>
+    <key ref="/server/route/name"          int="0x00000093"/>
+
+    <key ref="/server/trip/status"         int="0x00000901"/>
+    <key ref="/server/trip/id"             int="0x00000902"/>
+    <key ref="/server/trip/name"           int="0x00000903"/>
+    <key ref="/server/trip/distance"       int="0x00000904"/>
+    <key ref="/server/trip/time"           int="0x00000905"/>
 
 </repository>

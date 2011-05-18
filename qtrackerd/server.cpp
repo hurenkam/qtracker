@@ -47,7 +47,6 @@ Server::Server(QObject *parent)
     handler["location"]=location;
     handler["speed"]=speed;
     handler["time"]=time;
-    handler["trip"]=trip;
     handler["server"]=this;
 
     methods << "ping" << "ack" << "stop" << "reset" << "trackstart" << "trackstop";
@@ -87,7 +86,10 @@ void Server::onCommandAvailable()
                 QString id=map["class"].toString();
                 if (handler.contains(id))
                 {
-                    handler[id]->onCommand(value);
+                    if (handler[id])
+                        handler[id]->onCommand(value);
+                    else
+                        LOG("Server::onCommandAvailable(): handler for class " << map << " is null")
                 }
                 else
                 {
@@ -297,6 +299,7 @@ void Server::start()
     satellite->start();
     data->start();
     trip = data->getTripServer();
+    handler["trip"]=trip;
     trip->start();
 
     QObject::connect(altitude, SIGNAL(ascentChanged(double)),   trip, SLOT(onAltAscentChanged(double)));
