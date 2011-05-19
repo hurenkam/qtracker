@@ -6,6 +6,7 @@ import "../Map"
 import "../Waypoint"
 import "../Route"
 import "../Track"
+import "../Trip"
 
 Page {
     id: root
@@ -38,11 +39,12 @@ Page {
         pageStack.push(pageloader.item)
     }
 
-    Component { id: trkselectsrc; TrackSelectionPage    { id: trkPage; mapview: map } }
-    Component { id: wptselectsrc; WaypointSelectionPage { id: wptPage; mapview: map } }
-    Component { id: rteselectsrc; RouteSelectionPage    { id: rtePage; mapview: map } }
-    Component { id: mapselectsrc; MapEditPage           { id: mapPage; mapview: map; onMapSelected: map.loadMap(fileName); } }
-    Component { id: tstselectsrc; ImExportPage          { id: options; mapview: map } }
+    Component { id: trkselectsrc;  TrackSelectionPage    { id: trkPage;  mapview: map } }
+    Component { id: wptselectsrc;  WaypointSelectionPage { id: wptPage;  mapview: map } }
+    Component { id: rteselectsrc;  RouteSelectionPage    { id: rtePage;  mapview: map } }
+    Component { id: mapselectsrc;  MapEditPage           { id: mapPage;  mapview: map; onMapSelected: map.loadMap(fileName); } }
+    Component { id: tripselectsrc; TripSelectionPage     { id: tripPage; mapview: map } }
+    //Component { id: tstselectsrc; ImExportPage          { id: options; mapview: map } }
 
     MapView {
         id: map
@@ -78,11 +80,11 @@ Page {
         }
 
         tools: ToolBarLayout {
-            ToolButton { id: mapbutton; source: "options.svg"; onClicked: showPage(mapselectsrc) } //root.pageStack.push(mapPage); }
-            ToolButton { id: wptbutton; source: "flag.svg";    onClicked: showPage(wptselectsrc) } //root.pageStack.push(wptPage); }
-            ToolButton { id: rtebutton; source: "route.svg";   onClicked: showPage(rteselectsrc) } //root.pageStack.push(rtePage); }
-            ToolButton { id: trkbutton; source: "hiker.svg";   onClicked: showPage(trkselectsrc) } //root.pageStack.push(trkPage); }
-            ToolButton { id: iobutton;  source: "export.svg";  onClicked: showPage(tstselectsrc) } //root.pageStack.push(options); }
+            ToolButton { id: mapbutton; source: "options.svg"; onClicked: showPage(mapselectsrc)  } //root.pageStack.push(mapPage); }
+            ToolButton { id: wptbutton; source: "flag.svg";    onClicked: showPage(wptselectsrc)  } //root.pageStack.push(wptPage); }
+            ToolButton { id: rtebutton; source: "route.svg";   onClicked: showPage(rteselectsrc)  } //root.pageStack.push(rtePage); }
+            ToolButton { id: trkbutton; source: "hiker.svg";   onClicked: showPage(trkselectsrc)  } //root.pageStack.push(trkPage); }
+            ToolButton { id: iobutton;  source: "export.svg";  onClicked: showPage(tripselectsrc) } //root.pageStack.push(options); }
 
             hasRightButton: true
             ToolButton {

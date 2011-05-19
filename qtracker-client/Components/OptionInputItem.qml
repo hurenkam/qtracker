@@ -4,6 +4,7 @@ OptionItem {
     id: root
     property alias text: txt.text
     property alias value: inputfield.text
+    property alias readOnly: inputfield.readOnly
     height: txt.height
     signal accepted(int index,string value)
 

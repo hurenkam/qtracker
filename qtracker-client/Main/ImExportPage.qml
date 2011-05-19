@@ -4,37 +4,6 @@ import "../Components"
 
 OptionPage {
     id: root
-    title: "Trip List"
-    options: tripoptions
-    property Item mapview
-
-    TripEditPage { id: tripedit; onTripSaved: { lst.saveTrip(index,name) } onTripStopped: lst.update(); onTripStarted: lst.update() }
-
-    ValueSpaceSubscriber  {
-        id: currenttrip;
-        path: "/server/trip/id"
-        property int tripid: value
-    }
-
-    VisualItemModel {
-        id: tripoptions
-
-        TripList {
-            id: lst
-            onStartTrip: { tripedit.startTrip(currenttrip.tripid); }
-            onEditTrip:  {
-                tripedit.index = index;
-                tripedit.name = name;
-                pageStack.push(tripedit);
-            }
-            onStopTrip:  { tripedit.stopTrip(currenttrip.tripid); }
-        }
-    }
-}
-
-/*
-OptionPage {
-    id: root
     title: "Settings"
     options: settingsmodel
     property Item mapview
@@ -97,4 +66,3 @@ OptionPage {
 
     }
 }
-*/

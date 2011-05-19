@@ -20,6 +20,12 @@ OptionList {
         onDataChanged: root.update()
     }
 
+    function getRecord(index) {
+        var result = database.get(index)
+        console.log("getRecord: ", result.trip, result.name)
+        return result
+    }
+
     items: content
 
     DynamicItemModel {

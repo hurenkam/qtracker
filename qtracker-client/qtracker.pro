@@ -13,7 +13,9 @@ rte.source = Route
 rte.target = .
 trk.source = Track
 trk.target = .
-DEPLOYMENTFOLDERS = main components gauges map wpt rte trk
+trip.source = Trip
+trip.target = .
+DEPLOYMENTFOLDERS = main components gauges map wpt rte trk trip
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH = /imports
@@ -74,3 +76,5 @@ HEADERS += \
     cpp/helpers.h \
     cpp/client.h \
     cpp/tablemodel.h
+
+OTHER_FILES += \
