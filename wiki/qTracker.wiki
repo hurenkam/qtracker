@@ -1,0 +1,54 @@
+[http://code.google.com/p/qtracker/wiki/About About] | 
+[http://code.google.com/p/qtracker/wiki/UserManual User Manual] | 
+[http://code.google.com/p/qtracker/wiki/InstallManual Installation Manual] | 
+WishList | KnownBugs | RoadMap | QmlTracker
+----
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000048.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
+----
+
+Software aimed at helping hikers & geocachers to determine their position, and record & monitoring tracks, routes and waypoints. 
+
+Platform: Qt for Symbian S60
+(note that the code can also be compiled and run on non-s60 platforms, but not all
+functionality is available then, e.g. GPS/Sensors/Messaging).
+
+* Works: *
+ * Show position on map
+ * Show wgs84 coordinates on map
+ * Speed/Altitude/Heading display
+ * Min/Max altitude, trip distance, trip time display.
+ * Map autoselect
+ * Map zoom
+ * Installation works on C: and E: (F: is untested, but should work)
+ * Calibrate map
+ * Show/Hide/Record/Delete Tracks
+ * Show/Hide/Edit/Save/Delete Waypoints
+ * Show/Delete routes
+ * Persistent settings (current map, zoom mode, many others)
+ * Compass using magnetic north sensor
+ * UTM datum support
+ * Datum projection support for proj4 types: stereo, latlon, utm, tmerc
+ * Compass options dialog
+ * Clock options dialog
+
+* Todo before 2nd alpha: *
+ * Edit/Save Routes
+ * Gpx import
+ * Altitude options
+ * Speed options
+
+* Screenshots *
+
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000058.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000060.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/screenshot-124-1.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000040.jpg" height="180" width="320" border="0" />
+<br>
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000056.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000057.jpg" height="180" width="320" border="0" />
+<br>
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="180" width="320" border="0" /><br>
