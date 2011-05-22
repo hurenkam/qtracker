@@ -11,40 +11,6 @@ WishList | KnownBugs | RoadMap | QmlTracker
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000066.jpg" height="90" width="160" border="0" /><br>
 ----
 
-Platform: Qt for Symbian S60
-(note that the code can also be compiled and run on non-s60 platforms, but not all
-functionality is available then, e.g. GPS/Sensors/Messaging).
-Note: Although initially named QmlTracker because i started it as a proof of concept, i now refer to this version as qtracker-client with qtrackerd, and the client presents itself as qtracker.
-It is not likely i will continue on the original qtracker code base, since this new client/server version is in many ways already much more advanced than qtracker-0.8.270
+This is a qml port of qtracker. I've stopped working on this version in favor of the branched qTracker-client and qTrackerd versions.
 
-* Works: *
- * Gauges:
-   * Compass:   North up or Heading up, use sensor or gps
-   * Clock:     Current time, Trip time
-   * Satelites: In view & In use
-   * Speed:     Actual, Average, Min, Max, Trip Distance
-   * Altitude:  Actual, Average, Min, Max, Trip Ascent, Trip Descent
-   * Levels:    Battery, Compass sensor, Gps Accuracy
- * Map zoom
- * Map centers on & follows gps position
- * Installation works on C: and E: (F: is untested, but should work)
- * Runs on Simulator & Symbian^1 (tested on Windows7/Ubuntu Maverick & N97)
- * Builds fine for Maemo & Symbian^3 (untested since i don't have those devices)
- * Record Tracks
- * Create & Edit Waypoints
- * Create & Edit routes
- * Persistent settings (current map, zoom mode, many others)
- * Client server model
-
-* Todo before 1st alpha: *
- * Show wgs84 coordinates on map
- * Calibrate map
-
-* Other todo *
- * Show/Hide/Delete Tracks
- * Show/Hide/Delete Waypoints
- * Show/Hide/Delete routes
- * UTM datum support
- * Datum projection support for proj4 types: stereo, latlon, utm, tmerc
- * Map autoselect
- * Gpx import
+see [http://code.google.com/p/qtracker/wiki/qTracker_client qTracker Client] and [http://code.google.com/p/qtracker/wiki/qTracker_server qTracker Server]
