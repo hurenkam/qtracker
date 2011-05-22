@@ -16,12 +16,19 @@ WishList | KnownBugs | RoadMap |
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000094.jpg" height="160" width="90" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000095.jpg" height="160" width="90" border="0" /><br>
 ----
+= qTracker v0.3 & v0.4 series =
 
-Platform: Qt for Symbian S60
-(note that the code can also be compiled and run on non-s60 platforms, but not all
-functionality is available then, e.g. GPS/Sensors/Messaging).
-Note: Although initially named QmlTracker because i started it as a proof of concept, i now refer to this version as qtracker-client with qtrackerd, and the client presents itself as qtracker.
-It is not likely i will continue on the original qtracker code base, since this new client/server version is in many ways already much more advanced than qtracker-0.8.270
+This is essentially a port of qTracker to qml, split in a client and server part so that the client (which consumes a lot of resources) does not need to run all the time, because the server keeps track of trip and track recording data.
+
+Although the new qTracker client and server have not yet reached the maturity of the original qTracker, it is not likely i will continue on the original code base, because the new client/server version is in many ways already much more advanced than qtracker-0.8.270
+
+= Requirements =
+
+Platform: Symbian^1, Symbian^3 or Maemo
+Qt versions: Qt v4.7.x, QtMobility 1.1.x
+(note that the code can also be compiled and run on non-s60 platforms)
+
+= Features =
 
 * Works: *
  * Gauges:
@@ -53,4 +60,4 @@ It is not likely i will continue on the original qtracker code base, since this 
  * UTM datum support
  * Datum projection support for proj4 types: stereo, latlon, utm, tmerc
  * Map autoselect
- * Gpx import
+ * Gpx import/export
