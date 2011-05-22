@@ -9,6 +9,7 @@ WishList | KnownBugs | RoadMap |
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000096.jpg" height="160" width="90" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000099.jpg" height="160" width="90" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000085.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000087.jpg" height="160" width="90" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000092.jpg" height="160" width="90" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000095.jpg" height="160" width="90" border="0" /><br>
 ----
