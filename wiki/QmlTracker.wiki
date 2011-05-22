@@ -11,6 +11,6 @@ WishList | KnownBugs | RoadMap | QmlTracker
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000066.jpg" height="90" width="160" border="0" /><br>
 ----
 
-This is a qml port of qtracker. I've stopped working on this version in favor of the branched qTracker-client and qTrackerd versions.
+This is a qml port of qtracker. I've stopped working on this branch in favor of the branched qTracker-client and qTrackerd versions.
 
 see [http://code.google.com/p/qtracker/wiki/qTracker_client qTracker Client] and [http://code.google.com/p/qtracker/wiki/qTracker_server qTracker Server]
