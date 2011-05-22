@@ -1,6 +1,6 @@
 #summary QmlTracker: A port of qTracker to qml (qtracker-client + qtrackerd).
 
-[http://code.google.com/p/qtracker/wiki/About About] | 
+[http://code.google.com/p/qtracker/wiki/qTracker About] | 
 [http://code.google.com/p/qtracker/wiki/UserManual User Manual] | 
 [http://code.google.com/p/qtracker/wiki/InstallManual Installation Manual] | 
 WishList | KnownBugs | RoadMap | QmlTracker
