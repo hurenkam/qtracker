@@ -24,7 +24,7 @@ Although the new qTracker client and server have not yet reached the maturity of
 
 = Requirements =
 
-Platform: Symbian^1, Symbian^3 or Maemo
+Platform: Symbian^^1, Symbian^^3 or Maemo
 Qt versions: Qt v4.7.x, QtMobility 1.1.x
 (note that the code can also be compiled and run on non-s60 platforms)
 
