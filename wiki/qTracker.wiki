@@ -10,6 +10,8 @@ WishList | KnownBugs | RoadMap | QmlTracker
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
+= qTracker 0.8.x series =
+
 Software aimed at helping hikers & geocachers to determine their position, and record & monitoring tracks, routes and waypoints. 
 
 Platform: Qt for Symbian S60
