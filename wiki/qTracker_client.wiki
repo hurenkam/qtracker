@@ -16,7 +16,7 @@ WishList | KnownBugs | RoadMap |
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000094.jpg" height="160" width="90" border="0" />
 <img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000095.jpg" height="160" width="90" border="0" /><br>
 ----
-= qTracker v0.3 & v0.4 series =
+= qTracker v0.3 & v0.4 series (unstable) =
 
 This is essentially a port of qTracker to qml, split in a client and server part so that the client (which consumes a lot of resources) does not need to run all the time, because the server keeps track of trip and track recording data.
 
