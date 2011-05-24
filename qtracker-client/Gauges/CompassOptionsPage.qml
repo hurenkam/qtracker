@@ -5,7 +5,7 @@ import "../Components"
 TabOptionPage {
     id: root
     title: "Compass Options"
-    confirmbutton: true
+    showheader: false
     signal optionsChanged()
     property alias sourceindex:      sourceitems.ticked
     property alias orientationindex: orientationitems.ticked
@@ -15,9 +15,9 @@ TabOptionPage {
     tabs: TabLayout {
         //anchors.fill: parent
         x:      landscape?             gauge.height-15 : 0;
-        y:      landscape?                           0 : gauge.width-60
+        y:      landscape?                           0 : gauge.width-15
         width:  landscape? gauge.width-gauge.height+15 : gauge.width
-        height: landscape?                gauge.height : gauge.height-gauge.width+60
+        height: landscape?                gauge.height : gauge.height-gauge.width+15
 
         TabItem {
             title: "Face"
@@ -175,6 +175,36 @@ TabOptionPage {
             y: gauge.margin
             width: gauge.radius
             height: gauge.radius
+        }
+
+        ToolButton {
+            id: leftbutton
+            x: 10; y:10
+            width: 50
+            height: width
+
+            bgcolor: "black"
+            source: "backc.svg";
+            onClicked: root.cancel();
+        }
+
+        ToolButton {
+            id: rightbutton
+
+            x: root.width - 10 -width; y:10
+            width: 50
+            height: width
+
+            source: "confirmc.svg";
+            bgcolor: "black"
+            //onClicked: root.optionsChanged();
+
+            onClicked: {
+                console.log("CompassOptionsPage.onConfirm")
+                optionsChanged()
+                pageStack.pop()
+            }
+
         }
 
         OptionInputItem {
