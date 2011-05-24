@@ -9,6 +9,7 @@ Item {
     property int   index: -1
     property bool  roundtop: false
     property bool  roundbottom: false
+    property bool  underline: true
 
     signal clicked(int index, string name)
     //clip: true
@@ -34,7 +35,7 @@ Item {
 
     Rectangle {
         id: bottomline
-        visible: ! roundbottom
+        visible: (! roundbottom) && underline
         x: -9;               width:  parent.width +20
         y: parent.height+9;  height: 1
         color: "grey"

@@ -3,7 +3,9 @@ import QtQuick 1.0
 OptionItem {
     id: root
     property alias text: txt.text
+    property alias textcolor: txt.color
     property alias value: inputfield.text
+    property alias valuecolor: inputfield.color
     property alias readOnly: inputfield.readOnly
     height: txt.height
     signal accepted(int index,string value)

@@ -1,7 +1,7 @@
 import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
 import "../Components"
-import "../Main"
+import "../Trip"
 
 OptionList {
     id: root
