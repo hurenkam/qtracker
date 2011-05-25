@@ -53,10 +53,14 @@ QtMobility: 1.1.x <BR>
  * Show wgs84 coordinates on map
  * Calibrate map
 
-* Other todo *
+* Todo before 1st beta: *
+ * Fix client stability issues
+ * Show/Hide/Delete Trips
  * Show/Hide/Delete Tracks
  * Show/Hide/Delete Waypoints
- * Show/Hide/Delete routes
+ * Show/Hide/Delete Routes
+
+* Other todo *
  * UTM datum support
  * Datum projection support for proj4 types: stereo, latlon, utm, tmerc
  * Map autoselect
