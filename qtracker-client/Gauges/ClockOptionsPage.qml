@@ -1,81 +1,206 @@
 import QtQuick 1.0
+import QtMobility.publishsubscribe 1.1
 import "../Components"
 
-OptionPage {
+TabOptionPage {
     id: root
     title: "Clock Options"
-    options: clockoptions
-    confirmbutton: true
+    showheader: false
     signal optionsChanged()
     property alias analogindex: analogitems.ticked
-    property alias topindex:    analogitems.ticked
-    property alias bottomindex: analogitems.ticked
+    property alias topindex:    topitems.ticked
+    property alias bottomindex: bottomitems.ticked
+    property bool landscape: (width>height)
+    property Item mapview
 
-    Settings { id: settings }
+    tabs: TabLayout {
+        //anchors.fill: parent
+        x:      landscape?             gauge.height-15 : 0;
+        y:      landscape?                           0 : gauge.width-15
+        width:  landscape? gauge.width-gauge.height+15 : gauge.width
+        height: landscape?                gauge.height : gauge.height-gauge.width+15
 
-    VisualItemModel {
-        id: clockoptions
-
-        OptionList {
-            id: analogbox
+        TabItem {
             title: "Analog"
-            items: analogitems
 
-            RadioBox {
-                id: analogitems
-                name: "clock_analog"
+            OptionList {
+                id: analogbox
+                //title: "Analog"
+                items: analogitems
+                x: 0
+                y: 0
+                width: parent.width
 
-                OptionRadioButton { text: "Current Time";      }
-                OptionRadioButton { text: "Elapsed Time";      }
-                OptionRadioButton { text: "Monitor Time";      }
-            }
-            onClicked: {
-                console.log("analogitems.onClicked",index)
-                analogitems.ticked = index
+                RadioBox {
+                    id: analogitems
+                    name: "clock_analog"
+
+                    OptionRadioButton { text: "Current Time";      }
+                    OptionRadioButton { text: "Elapsed Time";      }
+                    OptionRadioButton { text: "Monitor Time";      }
+                }
+                onClicked: {
+                    console.log("analogitems.onClicked",index)
+                    analogitems.ticked = index
+                }
             }
         }
-        OptionList {
-            id: topbox
+        TabItem {
             title: "Top"
-            items: topitems
 
-            RadioBox {
-                id: topitems
-                name: "clock_top"
+            OptionList {
+                id: topbox
+                //title: "Top"
+                items: topitems
+                x: 0
+                y: 0
+                width: parent.width
 
-                OptionRadioButton { text: "Current Time";      }
-                OptionRadioButton { text: "Elapsed Time";      }
-                OptionRadioButton { text: "Monitor Time";      }
-            }
+                RadioBox {
+                    id: topitems
+                    name: "clock_top"
 
-            onClicked: {
-                console.log("topitems.onClicked",index)
-                topitems.ticked = index
+                    OptionRadioButton { text: "Current Time";      }
+                    OptionRadioButton { text: "Elapsed Time";      }
+                    OptionRadioButton { text: "Monitor Time";      }
+                }
+
+                onClicked: {
+                    console.log("topitems.onClicked",index)
+                    topitems.ticked = index
+                }
             }
         }
-        OptionList {
-            id: bottombox
+        TabItem {
             title: "Bottom"
-            items: bottomitems
 
-            RadioBox {
-                id: bottomitems
-                name: "clock_bottom"
+            OptionList {
+                id: bottombox
+                //title: "Bottom"
+                items: bottomitems
+                x: 0
+                y: 0
+                width: parent.width
 
-                OptionRadioButton { text: "Current Time";      }
-                OptionRadioButton { text: "Elapsed Time";      }
-                OptionRadioButton { text: "Monitor Time";      }
-            }
+                RadioBox {
+                    id: bottomitems
+                    name: "clock_bottom"
 
-            onClicked: {
-                console.log("bottomitems.onClicked",index)
-                bottomitems.ticked = index
+                    OptionRadioButton { text: "Current Time";      }
+                    OptionRadioButton { text: "Elapsed Time";      }
+                    OptionRadioButton { text: "Monitor Time";      }
+                }
+
+                onClicked: {
+                    console.log("bottomitems.onClicked",index)
+                    bottomitems.ticked = index
+                }
             }
         }
+/*        TabItem {
+            title: "Options"
+
+            OptionList {
+                id: sourcebox
+                //title: "Source"
+                items: sourceitems
+                x: 0
+                y: 0
+                width: parent.width
+
+                RadioBox {
+                    id: sourceitems
+                    name: "sourceitems"
+
+                    OptionRadioButton { text: "Magnetic North Sensor"; }
+                    OptionRadioButton { text: "GPS Heading";           }
+                }
+                onClicked: {
+                    console.log("sourceitems.onClicked",index)
+                    sourceitems.ticked = index
+                }
+            }
+
+            OptionList {
+                id: orientationbox
+                //title: "Orientation"
+                items: orientationitems
+                x: 0
+                y: sourcebox.height
+                width: parent.width
+
+                RadioBox {
+                    id: orientationitems
+                    name: "compass_orientation"
+
+                    OptionRadioButton { text: "Heading up";         }
+                    OptionRadioButton { text: "North up";           }
+                }
+
+                onClicked: {
+                    console.log("orientationitems.onClicked",index)
+                    orientationitems.ticked = index
+                }
+            }
+        }
+*/
     }
-    onConfirm: {
-        console.log("ClockOptionsPage.onConfirm")
-        optionsChanged()
-        pageStack.pop()
+
+    background: Rectangle {
+        id: gauge
+        objectName: "gauge"
+        anchors.fill: parent
+        property double margin: root.landscape? (height-radius)/2 : (width-radius)/2
+        property double radius: root.landscape? height*0.9 : width*0.9
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0.0
+                color: Qt.lighter(activePalette.light)
+            }
+            GradientStop {
+                position:  1.0
+                color: Qt.lighter(activePalette.dark)
+            }
+        }
+
+        Clock {
+            id: clock;
+            objectName: "clock"
+            x: gauge.margin
+            y: gauge.margin
+            width: gauge.radius
+            height: gauge.radius
+        }
+
+        ToolButton {
+            id: leftbutton
+            x: 10; y:10
+            width: 50
+            height: width
+
+            bgcolor: "black"
+            source: "backc.svg";
+            onClicked: root.cancel();
+        }
+
+        ToolButton {
+            id: rightbutton
+
+            x: root.width - 10 -width; y:10
+            width: 50
+            height: width
+
+            source: "confirmc.svg";
+            bgcolor: "black"
+            //onClicked: root.optionsChanged();
+
+            onClicked: {
+                console.log("CompassOptionsPage.onConfirm")
+                optionsChanged()
+                pageStack.pop()
+            }
+
+        }
     }
 }

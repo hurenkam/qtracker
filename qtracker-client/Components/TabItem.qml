@@ -72,7 +72,10 @@ Item {
         height: header.height+3
 
         MouseArea {
-            anchors.fill:  parent
+            //anchors.fill:  parent
+            x: -2; y:-15
+            width: parent.width +4
+            height: parent.height +20
             onClicked: root.clicked(root.index)
             onPressed: root.pressed(root.index)
             onCanceled: root.released(root.index)

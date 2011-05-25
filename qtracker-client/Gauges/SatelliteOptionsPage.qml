@@ -1,30 +1,70 @@
 import QtQuick 1.0
+import QtMobility.publishsubscribe 1.1
 import "../Components"
 
-OptionPage {
+TabOptionPage {
     id: root
     title: "Satellite Options"
-    options: satoptions
-    confirmbutton: true
+    showheader: false
     signal optionsChanged()
-    onConfirm: {
-        console.log("ClockOptionsPage.onConfirm")
-        optionsChanged()
-        pageStack.pop()
-    }
+    property bool landscape: (width>height)
+    property Item mapview
 
-    VisualItemModel {
-        id: satoptions
+    background: Rectangle {
+        id: gauge
+        objectName: "gauge"
+        anchors.fill: parent
+        property double margin: root.landscape? (height-radius)/2 : (width-radius)/2
+        property double radius: root.landscape? height*0.9 : width*0.9
 
-        OptionList {
-            id: satbox
-            //title: "Analog"
-            items: satitems
-
-            DynamicItemModel {
-                id: satitems
-                name: "satitems"
+        gradient: Gradient {
+            GradientStop {
+                position: 0.0
+                color: Qt.lighter(activePalette.light)
             }
+            GradientStop {
+                position:  1.0
+                color: Qt.lighter(activePalette.dark)
+            }
+        }
+
+        Satellites {
+            id: sats;
+            objectName: "sats"
+            x: gauge.margin
+            y: gauge.margin
+            width: gauge.radius
+            height: gauge.radius
+        }
+
+        ToolButton {
+            id: leftbutton
+            x: 10; y:10
+            width: 50
+            height: width
+
+            bgcolor: "black"
+            source: "backc.svg";
+            onClicked: root.cancel();
+        }
+
+        ToolButton {
+            id: rightbutton
+
+            x: root.width - 10 -width; y:10
+            width: 50
+            height: width
+
+            source: "confirmc.svg";
+            bgcolor: "black"
+            //onClicked: root.optionsChanged();
+
+            onClicked: {
+                console.log("CompassOptionsPage.onConfirm")
+                optionsChanged()
+                pageStack.pop()
+            }
+
         }
     }
 }

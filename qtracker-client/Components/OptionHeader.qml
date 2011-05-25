@@ -44,10 +44,10 @@ Item {
         ToolButton {
             id: leftbutton
 
-            x: root.buttonheight * 0.1
-            y: root.buttonheight * 0.1
-            width:  root.buttonheight *0.8
-            height: root.buttonheight *0.8
+            x: visible? root.buttonheight * 0.1 : 0
+            y: visible? root.buttonheight * 0.1 : 0
+            width:  visible? root.buttonheight *0.8 : 0
+            height: visible? root.buttonheight *0.8 : 0
 
             visible: false
             bgcolor: "black"
@@ -62,16 +62,16 @@ Item {
             text: ""
             font.pixelSize: parent.height/2
             color: "white"
-            visible: text!=""? true: false
+            visible: (text!="")
         }
 
         ToolButton {
             id: rightbutton
 
-            x: parent.width - root.buttonheight * 1.1
-            y: root.buttonheight * 0.1
-            width:  root.buttonheight *0.8
-            height: root.buttonheight *0.8
+            x: visible? parent.width - root.buttonheight * 1.1 : parent.width
+            y: visible? root.buttonheight * 0.1 : 0
+            width:  visible? root.buttonheight *0.8 : 0
+            height: visible? root.buttonheight *0.8 : 0
 
             visible: false
             source: "forward.svg";

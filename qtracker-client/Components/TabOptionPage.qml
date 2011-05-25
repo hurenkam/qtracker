@@ -6,6 +6,7 @@ Page {
     property alias backbutton: hdr.leftButtonVisible
     property alias confirmbutton: hdr.rightButtonVisible
     property alias title: hdr.text
+    property alias showheader: titlebar.visible
     property Item tabs
     property Item background
     property int raised: -1
@@ -22,10 +23,10 @@ Page {
 
     Item {
         id: titlebar
-        x: 0;
-        y: 0;
-        width: root.width;
-        height: 50;
+        x: 0
+        y: 0
+        width:  visible? root.width : 0
+        height: visible? 50 : 0
     }
 
     Item {
@@ -46,6 +47,7 @@ Page {
 
     property Item header: OptionHeader {
         id: hdr
+        visible: true
         text: "Options"
         leftButtonVisible: true
         onLeftClicked: root.cancel();
@@ -84,7 +86,7 @@ Page {
             tab.x = 0
             tab.width = tabs.width
             tab.height = tabs.height
-            tab.y = (i===root.raised)? 6 : tabs.height - tab.titleheight - 6
+            tab.y = (i<=root.raised)? 6 : tabs.height - tab.titleheight - 6
             //tab.z = (i==raised)? 9 : 10 + count - i
             tab.z = 10
 
