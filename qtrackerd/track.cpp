@@ -80,10 +80,10 @@ void Track::SetupTrackPoints()
 
 void Track::OpenTrack(int id)
 {
-    ENTER("")
+    ENTER(id)
 
     trackid = id;
-    QString f = QString("trackid=%1").arg(trackid);
+    QString f = QString("trk=")+QString::number(trackid);
     tracks->setFilter(f);
     tracks->select();
     trackpoints->setFilter(f);
@@ -164,7 +164,7 @@ void Track::addPoint(double lat, double lon, double alt)
     UpdateMetaData(lat,lon,alt);
 
     QSqlRecord point = trackpoints->record();
-    point.setValue("trackid",trackid);
+    point.setValue("trk",trackid);
     point.setValue("latitude",lat);
     point.setValue("longitude",lon);
     point.setValue("altitude",alt);

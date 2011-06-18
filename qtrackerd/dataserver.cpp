@@ -2,6 +2,7 @@
 #include <QSqlRecord>
 #include <QSqlTableModel>
 #include <QStringList>
+#include <QDir>
 #include "dataserver.h"
 #include "track.h"
 #include "tripserver.h"
@@ -29,10 +30,16 @@ void DataServer::start()
     db = QSqlDatabase::addDatabase("QSQLITE");
 
 #if   defined(Q_OS_SYMBIAN)
+    if (! QDir("e:/data/qtracker/").exists() )
+        QDir().mkdir("e:/data/qtracker/");
     db.setDatabaseName("e:\\data\\qtracker\\database.sqlite");
 #elif defined(Q_WS_MAEMO_5)
     db.setDatabaseName("database.sqlite");
 #elif defined(Q_WS_SIMULATOR)
+    if (! QDir("c:/data/").exists() )
+        QDir().mkdir("c:/data/");
+    if (! QDir("c:/data/qtracker/").exists() )
+        QDir().mkdir("c:/data/qtracker/");
     db.setDatabaseName("c:\\data\\qtracker\\database.sqlite");
 #else
     db.setDatabaseName("database.sqlite");

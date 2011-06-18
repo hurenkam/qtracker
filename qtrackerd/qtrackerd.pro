@@ -37,10 +37,21 @@ SOURCES += main.cpp \
 OTHER_FILES += \
     qtrackerd.qcrml
 
-VERSION = 0.4.367
+VERSION = 0.4.409
 DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
 
 symbian {
+    # Remove all the existing platform dependencies
+    default_deployment.pkg_prerules -= pkg_platform_dependencies
+
+    #Add a dependency for just the S60 5th edition (Symbian^1) and later phones
+    supported_platforms = \
+        "; Application that only supports S60 5th edition" \
+        "[0x1028315F],0,0,0,{\"S60ProductID\"}"
+
+    platforms.pkg_prerules += supported_platforms
+    DEPLOYMENT += platforms
+
     TARGET.UID3 = 0xE5371b58
     TARGET.CAPABILITY += NetworkServices Location LocalServices UserEnvironment ReadUserData WriteUserData
 
