@@ -26,7 +26,8 @@ int TableModel::rowCount(const QModelIndex &parent) const
     ENTER("")
     if (!model) { LOG("TableModel::refresh: no model set") return 0; }
 
-    return model->rowCount(parent);
+    //return model->rowCount(parent);
+    return model->rowCount(QModelIndex());
 }
 
 int TableModel::columnCount(const QModelIndex &parent) const
@@ -166,7 +167,7 @@ QVariant TableModel::platform() const
 
 void TableModel::setPlatform(const QVariant &newplatform)
 {
-    ENTER(filter)
+    ENTER(newplatform.toInt())
     EXIT("")
 }
 

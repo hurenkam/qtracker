@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Gauges"
 import "../Map"
@@ -29,6 +30,12 @@ Page {
 
     Settings              { id: settings }
 
+    Component { id: trkselectsrc;  TrackSelectionPage    { id: trkPage;  mapview: map } }
+    Component { id: wptselectsrc;  WaypointSelectionPage { id: wptPage;  mapview: map } }
+    Component { id: rteselectsrc;  RouteSelectionPage    { id: rtePage;  mapview: map } }
+    Component { id: mapselectsrc;  MapEditPage           { id: mapPage;  mapview: map; onMapSelected: map.loadMap(mapid); } }
+    Component { id: tripselectsrc; TripSelectionPage     { id: tripPage; mapview: map } }
+
     Loader {
         id: pageloader
     }
@@ -39,12 +46,18 @@ Page {
         pageStack.push(pageloader.item)
     }
 
-    Component { id: trkselectsrc;  TrackSelectionPage    { id: trkPage;  mapview: map } }
-    Component { id: wptselectsrc;  WaypointSelectionPage { id: wptPage;  mapview: map } }
-    Component { id: rteselectsrc;  RouteSelectionPage    { id: rtePage;  mapview: map } }
-    Component { id: mapselectsrc;  MapEditPage           { id: mapPage;  mapview: map; onMapSelected: map.loadMap(fileName); } }
-    Component { id: tripselectsrc; TripSelectionPage     { id: tripPage; mapview: map } }
-    //Component { id: tstselectsrc; ImExportPage          { id: options; mapview: map } }
+/*
+    TrackSelectionPage    { id: trkselectsrc;  mapview: map }
+    WaypointSelectionPage { id: wptselectsrc;  mapview: map }
+    RouteSelectionPage    { id: rteselectsrc;  mapview: map }
+    MapEditPage           { id: mapselectsrc;  mapview: map; onMapSelected: map.loadMap(mapid); }
+    TripSelectionPage     { id: tripselectsrc; mapview: map }
+
+    function showPage(src) {
+        src.mapview = map
+        pageStack.push(src)
+    }
+*/
 
     MapView {
         id: map
@@ -64,6 +77,12 @@ Page {
             x: (parent.width-width)/2
             y: (parent.height-height)/2
         }
+
+        onMapLoaded: {
+            mapPage.currentmap = name
+            mapPage.currentid = mapid
+            console.log("MapView.onMapLoaded()",mapid,name)
+        }
     }
 
     ToolBar {
@@ -81,6 +100,7 @@ Page {
 
         tools: ToolBarLayout {
             ToolButton { id: mapbutton; source: "options.svg"; onClicked: showPage(mapselectsrc)  } //root.pageStack.push(mapPage); }
+            //ToolButton { id: mapbutton; source: "options.svg"; onClicked: map.loadMap(2);         }
             ToolButton { id: wptbutton; source: "flag.svg";    onClicked: showPage(wptselectsrc)  } //root.pageStack.push(wptPage); }
             ToolButton { id: rtebutton; source: "route.svg";   onClicked: showPage(rteselectsrc)  } //root.pageStack.push(rtePage); }
             ToolButton { id: trkbutton; source: "hiker.svg";   onClicked: showPage(trkselectsrc)  } //root.pageStack.push(trkPage); }

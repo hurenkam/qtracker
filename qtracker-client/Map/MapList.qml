@@ -6,15 +6,48 @@ OptionList {
     id: root
     property int platform: 0
 
-    signal mapSelected(int index, string baseName, string fileName)
+    signal mapSelected(int mapid, string name)
+    signal importMap()
 
     Settings {
         id: settings
     }
 
-    FolderListModel {
-        id: maplist
-        nameFilters: ["*.jpg"]
+    GpxFile {
+        id: gpxfile
+        property int mapid: -1
+
+        onFileNameChanged: {
+            console.log("GpxFile.onFileNameChanged(): ",fileName)
+            reset()
+            parseGpx()
+        }
+
+        onRefPoint: {
+            console.log("GpxFile.onRefpointFound()",mapid,refpt.x,refpt.y,refpt.latitude,refpt.longitude);
+            refpoints.append({ mapid: mapid, latitude: refpt.latitude, longitude: refpt.longitude, x: refpt.x, y: refpt.y})
+        }
+
+        onResolution: console.log("GpxFile.onResolutionFound()",resolution.width,resolution.height);
+    }
+
+    Refpoints {
+        id: refpoints
+    }
+
+    function addMap(name,folder) {
+        console.log("Maps.importMap(",name,",",folder,")")
+
+        gpxfile.mapid = database.append({ name: name, filename: folder+name+".jpg" } )
+        gpxfile.fileName = folder+name+".xml"
+        //gpxfile.fileName = "c:\\data\\qtracker\\maps\\51a_oisterwijk.xml"
+
+    }
+
+    Maps {
+        id: database
+        onCountChanged: root.update()
+        onDataChanged: root.update()
     }
 
     Component {
@@ -29,34 +62,37 @@ OptionList {
         name: "MapList"
     }
 
-    function base(filename) {
-        var txt = String(filename);
-        var p1 = txt.lastIndexOf('/');
-        var p2 = txt.lastIndexOf('.');
-        return txt.slice(p1+1,p2);
-    }
-
     function update() {
         var item = null;
-        content.clear()
-        console.log("maplist contains",maplist.count,"items")
-        for (var i=0; i<maplist.count; i++) {
-            console.log("maplist item ",maplist.get(i,"fileName"))
+        content.clear();
+        console.log("maplist contains",database.count,"items")
+        item = delegate.createObject(null)
+        item.text = "<import>"
+        item.button = true;
+        content.append(item)
+        for (var i=0; i<database.count; i++) {
+            console.log("maplist item ",database.get(i).mapid,database.get(i).name)
             item = delegate.createObject(null)
-            item.text = base(maplist.get(i,"fileName"))
+            item.text = database.get(i).mapid + " " + database.get(i).name
             content.append(item)
         }
-        console.log("content contains",content.count(),"items",content.get(0),content.get(0).text)
-        lst.layout()
+        root.layout()
     }
 
     Component.onCompleted: {
-        var mapdir = settings.getProperty("map_directory",(maplist.platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/")
-        maplist.folder = mapdir
         root.update()
     }
 
     onClicked: {
-        root.mapSelected(index,text,maplist.folder + text + ".jpg");
+        if (index === 0)
+        {
+            console.log("MapList.onClicked()",index)
+            root.importMap()
+        }
+        else
+        {
+            console.log("MapList.onClicked()",index,database.get(index-1).mapid)
+            root.mapSelected(database.get(index-1).mapid,database.get(index-1).name);
+        }
     }
 }

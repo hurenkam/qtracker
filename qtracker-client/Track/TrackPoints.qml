@@ -34,7 +34,7 @@ Database {
     onRangeChanged: updatefilter()
     Component.onCompleted: {
         console.log("TrackpointList.database.onCompleted")
-        root.exec("CREATE TABLE IF NOT EXISTS trackpoints (trkpt INTEGER PRIMARY KEY, trk INTEGER, latitude REAL, longitude REAL, altitude REAL, time TEXT);")
+        root.exec("CREATE TABLE IF NOT EXISTS trackpoints (trkpt INTEGER PRIMARY KEY, trk INTEGER, time TEXT, latitude REAL, longitude REAL, altitude REAL, time TEXT);")
         updatefilter()
     }
 }

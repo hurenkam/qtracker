@@ -138,6 +138,10 @@ Item {
             origin.x: width/2
             origin.y: height/2
             angle: values[analogindex].second*360/60
+
+/* Disabled for now due to performance reasons
+   http://code.google.com/p/qtracker/issues/detail?id=11
+
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -145,6 +149,7 @@ Item {
                     modulus: 360
                 }
             }
+*/
         }
     }
 }

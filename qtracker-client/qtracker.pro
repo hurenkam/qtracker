@@ -27,9 +27,20 @@ QML_IMPORT_PATH = /imports
 #DEFINES += NETWORKACCESS
 QT       += sql
 
-VERSION = 0.4.367
+VERSION = 0.4.408
 
 symbian {
+    # Remove all the existing platform dependencies
+    default_deployment.pkg_prerules -= pkg_platform_dependencies
+
+    #Add a dependency for just the S60 5th edition (Symbian^1) and later phones
+    supported_platforms = \
+        "; Application that only supports S60 5th edition" \
+        "[0x1028315F],0,0,0,{\"S60ProductID\"}"
+
+    platforms.pkg_prerules += supported_platforms
+    DEPLOYMENT += platforms
+
     DEFINES += VERSION=\"\\\"$${VERSION}\\\"\"
     TARGET.UID3 = 0xE024B05A
     TARGET.CAPABILITY += NetworkServices Location LocalServices UserEnvironment ReadUserData WriteUserData
@@ -63,7 +74,9 @@ SOURCES += \
     cpp/main.cpp \
     cpp/mapview.cpp \
     cpp/client.cpp \
-    cpp/tablemodel.cpp
+    cpp/tablemodel.cpp \
+    cpp/gpxfile.cpp \
+    cpp/database.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -75,6 +88,8 @@ HEADERS += \
     cpp/mapview.h \
     cpp/helpers.h \
     cpp/client.h \
-    cpp/tablemodel.h
+    cpp/tablemodel.h \
+    cpp/gpxfile.h \
+    cpp/database.h
 
 OTHER_FILES += \

@@ -7,6 +7,7 @@ Database {
     table: "settings"
 
     function setProperty(key,newvalue) {
+    /*
         console.log("setProperty",key,newvalue)
         root.filter = "setting=\""+key+"\""
         console.log("filter",root.filter,"count",root.count)
@@ -16,6 +17,11 @@ Database {
         else {
             set(0,{ setting: key, value: newvalue } );
         }
+    */
+        console.log("setProperty: ",key,newvalue)
+        var q = "INSERT OR REPLACE INTO settings (setting,value) VALUES (\"" + key + "\",\"" + newvalue + "\")"
+        console.log("setProperty: ",q)
+        root.exec(q);
     }
 
     function getProperty(key,defaultvalue) {

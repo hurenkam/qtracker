@@ -14,6 +14,7 @@
 #include "mapview.h"
 #include "client.h"
 #include "tablemodel.h"
+#include "gpxfile.h"
 
 #define ENABLE_DEBUG
 #include "helpers.h"
@@ -98,6 +99,12 @@ void registerTypes()
     qmlRegisterType<DeviceInfoModel>("QmlTrackerExtensions",1,0,"DeviceInfoModel");
     qmlRegisterType<MapView>("QmlTrackerExtensions",1,0,"MapView2");
     qmlRegisterType<TableModel>("QmlTrackerExtensions",1,0,"TableModel");
+    qmlRegisterType<GpxFile>("QmlTrackerExtensions",1,0,"GpxFile");
+    //qmlRegisterType<Database>("QmlTrackerExtensions",1,0,"TDatabase");
+    //qmlRegisterType<WaypointList>("QmlTrackerExtensions",1,0,"TWaypointList");
+    //qmlRegisterType<MapList>("QmlTrackerExtensions",1,0,"TMapList");
+    //qmlRegisterType<Map>("QmlTrackerExtensions",1,0,"TMap");
+    //qmlRegisterType<Waypoint>("QmlTrackerExtensions",1,0,"TWaypoint");
     LOG("Exit: registerTypes()")
 }
 

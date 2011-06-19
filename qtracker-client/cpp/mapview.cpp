@@ -5,8 +5,17 @@
 #include <QDir>
 #include <math.h>
 
-//#define ENABLE_DEBUG
+#define ENABLE_DEBUG
 #include "helpers.h"
+#define ENTER1(a) ENTER(a)
+#define ENTER2(a)
+#define ENTER3(a)
+#define EXIT1(a) EXIT(a)
+#define EXIT2(a)
+#define EXIT3(a)
+#define LOG1(a) LOG(a)
+#define LOG2(a)
+#define LOG3(a)
 
 const int tilesize = 512;
 const int requestdelay = 100;
@@ -21,8 +30,13 @@ static bool paintdebug = false;
 
 MapView::MapView(QDeclarativeItem *parent)
     : QDeclarativeItem(parent)
+    , _filename("")
+    , _trackid(-1)
+    , _mapid(-1)
+    , _map(0)
+    , area(0)
 {
-    ENTER("")
+    ENTER1("")
     _scale = 0.5;
     QPixmap t(tilesize,tilesize);
     t.fill(Qt::lightGray);
@@ -34,12 +48,12 @@ MapView::MapView(QDeclarativeItem *parent)
     connect(mythread, SIGNAL(tileLoaded(QPoint,QImage)), this,     SLOT(onTileLoaded(QPoint,QImage)));
     connect(mythread, SIGNAL(invalidate()),              this,     SLOT(onInvalidate()));
     mythread->start();
-    EXIT("")
+    EXIT1("")
 }
 
 void MapView::setFilename(QUrl u)
 {
-    ENTER("")
+    ENTER1(u)
     _filename = u;
     reader.setFileName(u.toLocalFile());
     _filesize = reader.size();
@@ -48,12 +62,31 @@ void MapView::setFilename(QUrl u)
     _mapy = 0;
     tiles.clear();
     update();
-    EXIT("")
+    EXIT1("")
+}
+
+void MapView::setMapid(int id)
+{
+    ENTER1("")
+    if (id < 0) return;
+
+    _mapid = id;
+    emit mapidChanged();
+    if (_map) delete _map;
+    _map = Database::Instance().GetMap(_mapid);
+    emit nameChanged();
+    if (_map)
+    {
+        setFilename(_map->url());
+        emit filenameChanged();
+        _map->calibrate();
+    }
+    EXIT1("")
 }
 
 QRect MapView::viewTiles()
 {
-    ENTER("")
+    ENTER2("")
     double w = width();
     double h = height();
     double x = ((double)_mapx) * _scale;
@@ -72,7 +105,7 @@ QRect MapView::viewTiles()
 
 QRect MapView::mapTiles()
 {
-    ENTER("")
+    ENTER2("")
     int w = _filesize.width()/tilesize;
     if (_filesize.width()%tilesize) w++;
     int h = _filesize.height()/tilesize;
@@ -82,13 +115,13 @@ QRect MapView::mapTiles()
 
 QRect MapView::sourceArea(const QPoint& p)
 {
-    ENTER("")
+    ENTER3("")
     return QRect(QPoint(0,0),QSize(tilesize,tilesize));
 }
 
 QRect MapView::targetArea(const QPoint& p)
 {
-    ENTER("")
+    ENTER3("")
     int w = width();
     int h = height();
     int dx = p.x()*tilesize*_scale-_mapx*_scale+w/2;
@@ -97,27 +130,164 @@ QRect MapView::targetArea(const QPoint& p)
     return QRect(QPoint(dx,dy),QSize(tilesize*_scale,tilesize*_scale));
 }
 
+Waypoint MapView::MapXY2Waypoint(const QPoint& p)
+{
+    double lon=0;
+    double lat=0;
+    if (_map && _map->isCalibrated())
+    {
+        lon = _map->mapx2lon(p.x());
+        lat = _map->mapy2lat(p.y());
+    }
+/*
+    else
+    {
+        lon = area->topLeft().longitude() + p.x()/_filesize.width()  * (area->bottomRight().longitude() - area->topLeft().longitude());
+        lat = area->topLeft().latitude()  + p.y()/_filesize.height() * (area->bottomRight().latitude()  - area->topLeft().latitude());
+    }
+*/
+    return Waypoint(lat,lon);
+}
+
+QPoint MapView::Waypoint2MapXY(const Waypoint& w)
+{
+    int x=0;
+    int y=0;
+    if (_map && _map->isCalibrated())
+    {
+        x = _map->lon2mapx(w.longitude());
+        y = _map->lat2mapy(w.latitude());
+    }
+/*
+    else
+    {
+        x = (w.longitude()-area->topLeft().longitude()) * _filesize.width()  / (area->bottomRight().longitude() - area->topLeft().longitude());
+        y = (w.latitude() -area->topLeft().latitude())  * _filesize.height() / (area->bottomRight().latitude()  - area->topLeft().latitude());
+    }
+*/
+    return QPoint(x,y);
+}
+
+QPoint MapView::MapXY2ViewXY(const QPoint& p)
+{
+    int w = width();
+    int h = height();
+    double x = (p.x()-_mapx)*_scale+w/2;
+    double y = (p.y()-_mapy)*_scale+h/2;
+    return QPoint(x,y);
+}
+
+Area MapView::geoArea(const QPoint& p)
+{
+    ENTER1(p)
+/*
+    QPoint topleft(     p.x()   *tilesize, p.y()   *tilesize);
+    QPoint bottomright((p.x()+1)*tilesize,(p.y()+1)*tilesize);
+    Area result(MapXY2Waypoint(topleft),MapXY2Waypoint(bottomright));
+
+    LOG("MapView::geoArea() " << result.topLeft().latitude() << ", " <<  result.topLeft().longitude() << ", " << result.bottomRight().latitude() << ", " << result.bottomRight().longitude() )
+*/
+    QPoint topleft(     p.x()   *tilesize-5, p.y()   *tilesize-5);
+    QPoint bottomright((p.x()+1)*tilesize+5,(p.y()+1)*tilesize+5);
+    Area result(MapXY2Waypoint(topleft),MapXY2Waypoint(bottomright));
+
+    LOG1("MapView::geoArea() " << result.topLeft().latitude() << ", " <<  result.topLeft().longitude() << ", " << result.bottomRight().latitude() << ", " << result.bottomRight().longitude() )
+    return result;
+}
+
 void MapView::renderTile(QPainter *painter, QPoint& p)
 {
-    ENTER("")
+    ENTER3("")
     QRect s = sourceArea(p);
     QRect t = targetArea(p);
     painter->drawImage(t,tiles[p],s);
-    EXIT("")
+    EXIT3("")
 }
 
 void MapView::renderEmpty(QPainter *painter, QPoint& p)
 {
-    ENTER("")
+    ENTER3("")
     QRect s = sourceArea(p);
     QRect t = targetArea(p);
     painter->drawImage(t,empty,s);
-    EXIT("")
+    EXIT3("")
+}
+
+void MapView::renderWaypoints(QPainter *painter, QPoint& p)
+{
+    if (!_map || !_map->isCalibrated()) return;
+
+    ENTER2(p)
+    QRect s(sourceArea(p));
+    Area a(geoArea(p));
+    WaypointList w = Database::Instance().Waypoints(a);
+    LOG("render area (" << a.topLeft() << " " << a.bottomRight() << ") contains " << w.count() << " waypoints")
+
+    QPen pen;
+    pen.setWidth(5);
+    pen.setColor(Qt::blue);
+    painter->setPen(pen);
+    for (int i=0; i<w.count(); i++)
+    {
+        QPoint mappt =  Waypoint2MapXY(w[i]);
+        QPoint viewpt = MapXY2ViewXY(mappt);
+        if ( (viewpt.x()>=0) && (viewpt.x()<=width()) && (viewpt.y()>=0) && (viewpt.y()<=height()))
+        {
+            LOG("render waypoint: " << w[i].getName() << w[i] << " " << mappt << " " << viewpt)
+            painter->drawEllipse(viewpt,5,5);
+        }
+    }
+    //painter->drawEllipse(QPoint(100,100),5,5);
+
+    EXIT2("")
+}
+
+void MapView::renderWaypoints(QPainter *painter)
+{
+    if (!_map) return;
+    if (!_map->isCalibrated()) return;
+
+    ENTER1("")
+    Area a(_map->area());
+    WaypointList w = Database::Instance().Waypoints(a);
+    LOG("render area (" << a.topLeft() << " " << a.bottomRight() << ") contains " << w.count() << " waypoints")
+
+    QPen pen;
+    pen.setWidth(5);
+    pen.setColor(Qt::blue);
+    painter->setPen(pen);
+    for (int i=0; i<w.count(); i++)
+    {
+        QPoint mappt =  Waypoint2MapXY(w[i]);
+        QPoint viewpt = MapXY2ViewXY(mappt);
+        LOG("render waypoint: " << w[i].getName() << w[i] << " " << mappt << " " << viewpt)
+        if ( (viewpt.x()>=0) && (viewpt.x()<=width()) && (viewpt.y()>=0) && (viewpt.y()<=height()))
+        {
+            painter->drawEllipse(viewpt,5,5);
+        }
+    }
+
+/* These items were used to check the conversion routines.
+    pen.setColor(Qt::red);
+    painter->setPen(pen);
+    painter->drawEllipse(MapXY2ViewXY(QPoint(0,0)),10,10);
+    painter->drawEllipse(MapXY2ViewXY(QPoint(0,_filesize.height())),10,10);
+    painter->drawEllipse(MapXY2ViewXY(QPoint(_filesize.width(),0)),10,10);
+    painter->drawEllipse(MapXY2ViewXY(QPoint(_filesize.width(),_filesize.height())),10,10);
+
+    pen.setColor(Qt::green);
+    painter->setPen(pen);
+    painter->drawEllipse ( MapXY2ViewXY ( Waypoint2MapXY ( Waypoint(51.4810253, 5.4591793) ) ), 10, 10 );
+    painter->drawEllipse ( MapXY2ViewXY ( Waypoint2MapXY ( Waypoint(51.4810253, 5.6025814) ) ), 10, 10 );
+    painter->drawEllipse ( MapXY2ViewXY ( Waypoint2MapXY ( Waypoint(51.3639954, 5.4591793) ) ), 10, 10 );
+    painter->drawEllipse ( MapXY2ViewXY ( Waypoint2MapXY ( Waypoint(51.3639954, 5.6025814) ) ), 10, 10 );
+*/
+    EXIT1("")
 }
 
 void MapView::invalidate()
 {
-    ENTER("")
+    ENTER1("")
     QRect r = viewTiles();
     QHash<QPoint,QImage>::iterator i;
     //qDebug() << "invalidate(); valid rect: " << r;
@@ -134,12 +304,12 @@ void MapView::invalidate()
             //qDebug() << "not removing key " << i.key();
         }
     }
-    EXIT("")
+    EXIT1("")
 }
 
 void MapView::clearcache()
 {
-    ENTER("")
+    ENTER1("")
     QRect r = viewTiles();
     QHash<QPoint,QImage>::iterator i;
     //qDebug() << "invalidate(); valid rect: " << r;
@@ -147,12 +317,12 @@ void MapView::clearcache()
     {
         discardTile(i.key());
     }
-    EXIT("")
+    EXIT1("")
 }
 
 void MapView::discardTile(const QPoint& p)
 {
-    ENTER("")
+    ENTER3("")
     if (tiles.contains(p))
         tiles.remove(p);
     else
@@ -161,7 +331,7 @@ void MapView::discardTile(const QPoint& p)
 
 void MapView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    ENTER("")
+    ENTER1("")
     if (_filename.toLocalFile()=="") return;
 
     QRect r = mapTiles().intersected(viewTiles());
@@ -179,27 +349,37 @@ void MapView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
                 emit loadTile(p,_filename);
                 renderEmpty(painter,p);
             }
+            renderWaypoints(painter,p);
         }
     }
+    //renderWaypoints(painter);
     paintdebug = false;
 }
 
 void MapView::setMapX(int v)
 {
-    ENTER("")
+    ENTER3("")
     _mapx = v; update();
 }
 
 void MapView::setMapY(int v)
 {
-    ENTER("")
+    ENTER3("")
     _mapy = v; update();
 }
 
 void MapView::setScale(double v)
 {
-    ENTER("")
+    ENTER2("")
     _scale = v; update();
+}
+
+void MapView::setArea(QVariantMap a)
+{
+    ENTER1(a)
+
+    if (area) delete area;
+    area = new Area(Waypoint(a["top"].toDouble(),a["left"].toDouble()),Waypoint(a["bottom"].toDouble(),a["right"].toDouble()));
 }
 
 void MapView::setTrackid(int id)
@@ -210,7 +390,7 @@ void MapView::setTrackid(int id)
 
 void MapView::onTileLoaded(const QPoint& p, QImage i)
 {
-    ENTER("")
+    ENTER3("")
     tiles[p]=i;
     if (tiles.count()>maxtiles) invalidate();
     update();

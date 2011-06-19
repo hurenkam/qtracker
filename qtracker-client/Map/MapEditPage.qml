@@ -3,12 +3,54 @@ import "../Components"
 
 OptionPage {
     id: root
-    title: "Map"
-    options: mapmodel
-    property string currentmap: ""
+    title: "Map List"
+    options: maplist
     property MapView mapview: null
 
-    signal mapSelected(int index, string baseName, string fileName)
+    signal mapSelected(int mapid, string name)
+
+    Component {
+        id: mapimportsrc;
+        MapImportPage
+        {
+            id: importPage
+            onFileSelected: lst.addMap(text,folder)
+        }
+    }
+
+    Loader {
+        id: pageloader
+    }
+
+    VisualItemModel {
+        id: maplist
+
+        MapList {
+            id: lst
+            onMapSelected: {
+                root.mapSelected(mapid,name)
+                pageStack.pop()
+            }
+            onImportMap: {
+                console.log("MapEditPage.importMap()")
+                pageloader.sourceComponent = mapimportsrc
+                pageStack.push(pageloader.item)
+            }
+        }
+    }
+}
+
+/*
+OptionPage {
+    id: root
+    title: "Map"
+    options: mapmodel
+    property int currentid: -1
+    property string currentmap: "<unknown>"
+    property MapView mapview: null
+    //onMapviewChanged: currentmap = mapview.mapname
+
+    signal mapSelected(int mapid, string name)
 
     Settings { id: settings }
 
@@ -24,16 +66,16 @@ OptionPage {
         MapSelectionPage {
             id: mapselectpage;
             onMapSelected: {
-                mapname.value = baseName
-                root.currentmap = baseName
-                root.mapSelected(index,baseName,fileName)
+                root.currentid = mapid
+                root.currentmap = name
+                mapname.value = name
+                root.mapSelected(mapid,name)
                 pageStack.pop()
             }
         }
     }
 
     function showMapSelectionPage() {
-        //mapview.clearCache()
         pageloader.sourceComponent = pagesource
         pageStack.push(pageloader.item)
     }
@@ -49,32 +91,22 @@ OptionPage {
             DynamicItemModel {
                 id: optionitems
                 name: "optionitems"
-                OptionInputItem  { id: mapname;   text: "Map";          value:"no map"; button: true; onClicked: showMapSelectionPage() } //pageStack.push(mapselectpage) }
-                OptionInputItem  { id: refpoints; text: "Calibration";  value:"";       button: true; onClicked: pageStack.push(calselectpage) }
-                OptionInputItem  { id: datum;     text: "Datum";        value:"Wgs84";  button: true; }
+                OptionInputItem  { id: mapname;   text: "Map";          value:currentmap;   button: true; onClicked: showMapSelectionPage() } //pageStack.push(mapselectpage) }
+                OptionInputItem  { id: refpoints; text: "Calibration";  value:"";           button: true; onClicked: pageStack.push(calselectpage) }
+                OptionInputItem  { id: datum;     text: "Datum";        value:"Wgs84";      button: true; }
             }
-
+//
             function base(filename) {
                 var txt = String(filename);
                 var p1 = txt.lastIndexOf('/');
                 var p2 = txt.lastIndexOf('.');
                 return txt.slice(p1+1,p2);
             }
-
-            Component.onCompleted: {
-                console.log("mapeditpage.edit.onCompleted",settings.database, settings.table, settings.filter)
-                var filename = settings.getProperty("map_filename","")
-                if (filename == "") {
-                    mapname.value = "no map"
-                } else {
-                    currentmap = base(filename)
-                    mapname.value = currentmap
-                }
-                console.log("mapeditpage.edit.onCompleted:",mapname.value)
-            }
+//
         }
     }
     onVisibleChanged: {
         if ((visible==true) && (currentmap=="")) showMapSelectionPage(); //pageStack.push(mapselectpage);
     }
 }
+*/

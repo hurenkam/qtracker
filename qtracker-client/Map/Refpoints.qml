@@ -1,14 +1,15 @@
 import QtQuick 1.0
+import "../Components"
 
 Database {
     id: database
-    table: "refpoints"
+    table: "mappoints"
 
     Component.onCompleted: {
         //console.log("Maps.onCompleted")
-        database.exec("CREATE TABLE IF NOT EXISTS refpoints (refpt INTEGER PRIMARY KEY, " +
-                      "name TEXT, map INTEGER, " +
-                      "latitude REAL, longitude REAL, x REAL, y REAL" +
+        database.exec("CREATE TABLE IF NOT EXISTS mappoints (mappt INTEGER PRIMARY KEY, " +
+                      "mapid INTEGER, name TEXT, " +
+                      "latitude NUMBER, longitude NUMBER, x NUMBER, y NUMBER" +
                       ");")
     }
 }
