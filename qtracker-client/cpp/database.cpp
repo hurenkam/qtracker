@@ -123,7 +123,11 @@ Map* Database::GetMap(int mapid)
     QString s = "SELECT * FROM maps WHERE mapid = "+QString::number(mapid);
     //q.bindValue(":id", mapid);
     q.prepare(s);
-    q.exec();
+    if (!q.exec())
+    {
+        LOG("Database::getMap(): query failed to execure. " << q.lastError());
+        return result;
+    }
 
     QSqlRecord r = q.record();
     int idCol    = r.indexOf("mapid");
@@ -134,19 +138,22 @@ Map* Database::GetMap(int mapid)
     int westCol  = r.indexOf("west");
     int fileCol  = r.indexOf("filename");
     //while (!result && q.next())
-    if (q.next())
+    if (!q.next())
     {
-        mapid = q.value(idCol).toInt();
-        LOG("Database::getMap() found map: " << mapid << " " << q.value(nameCol).toString())
-        result = new Map(q.value(nameCol).toString(),
-                q.value(fileCol).toString(),
-                Area(
-                    Waypoint(q.value(northCol).toDouble(),q.value(westCol).toDouble()),
-                    Waypoint(q.value(southCol).toDouble(),q.value(eastCol).toDouble())
-                ),
-                mapid
-            );
+        LOG("Database::getMap(): query did not produce any results. " << q.lastError());
+        return result;
     }
+
+    mapid = q.value(idCol).toInt();
+    LOG("Database::getMap() found map: " << mapid << " " << q.value(nameCol).toString())
+    result = new Map(q.value(nameCol).toString(),
+            q.value(fileCol).toString(),
+            Area(
+                Waypoint(q.value(northCol).toDouble(),q.value(westCol).toDouble()),
+                Waypoint(q.value(southCol).toDouble(),q.value(eastCol).toDouble())
+            ),
+            mapid
+        );
 
     return result;
 }

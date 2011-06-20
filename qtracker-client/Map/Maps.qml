@@ -56,7 +56,7 @@ Database {
 */
     onLocationChanged: updateFilter()
     Component.onCompleted: {
-        //console.log("Maps.onCompleted")
-        database.exec("CREATE TABLE IF NOT EXISTS maps (mapid INTEGER PRIMARY KEY, name TEXT, filename TEXT, north NUMBER, east NUMBER, south NUMBER, west NUMBER");
+        console.log("Maps.onCompleted")
+        database.exec("CREATE TABLE IF NOT EXISTS maps (mapid INTEGER PRIMARY KEY, name TEXT, filename TEXT, north NUMBER, east NUMBER, south NUMBER, west NUMBER);");
     }
 }
