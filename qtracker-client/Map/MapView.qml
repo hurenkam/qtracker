@@ -16,6 +16,7 @@ Item {
     property alias maplon:   content.lon
     property alias mapscale: content.scale
     property alias mapname:  viewport.name
+    property alias mapid:    content.mapid
 
     function lat2viewy(v) { return (content.lat2mapy(v) - content.y)*content.scale + viewport.height/2 }
     function lon2viewx(v) { return (content.lon2mapx(v) - content.x)*content.scale + viewport.width/2  }
@@ -189,6 +190,10 @@ Item {
         mapx: content.x
         mapy: content.y
         scale: content.scale
+        onFilenameChanged: {
+            console.log("MapView.viewport.onFilenameChanged")
+            root.mapLoaded(content.mapid, viewport.name)
+        }
     }
 
     Timer {

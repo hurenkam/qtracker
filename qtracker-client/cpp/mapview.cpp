@@ -62,6 +62,7 @@ void MapView::setFilename(QUrl u)
     _mapy = 0;
     tiles.clear();
     update();
+    emit filenameChanged();
     EXIT1("")
 }
 
@@ -74,11 +75,10 @@ void MapView::setMapid(int id)
     emit mapidChanged();
     if (_map) delete _map;
     _map = Database::Instance().GetMap(_mapid);
-    emit nameChanged();
     if (_map)
     {
+        emit nameChanged();
         setFilename(_map->url());
-        emit filenameChanged();
         _map->calibrate();
     }
     EXIT1("")

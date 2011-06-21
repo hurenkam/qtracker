@@ -76,7 +76,7 @@ public:
 
     explicit MapView(QDeclarativeItem *parent = 0);
 
-    QString name()              { return _map? _map->name(): "<unknown>"; }
+    QString name()              { return _map? _map->name(): "<no map>"; }
     QUrl    filename()          { return _filename;  }
     QSize   filesize()          { return _filesize;  }
     int     mapx()              { return _mapx;      }

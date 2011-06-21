@@ -4,7 +4,7 @@ import "../Components"
 
 OptionPage {
     id: root
-    title: "Map Files"
+    title: "Import Map"
     options: model
     property MapView mapview: null
 

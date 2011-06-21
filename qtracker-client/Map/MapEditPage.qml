@@ -1,9 +1,11 @@
 import QtQuick 1.0
 import "../Components"
+import "../Main"
 
+/*
 OptionPage {
     id: root
-    title: "Map List"
+    title: "Available Maps"
     options: maplist
     property MapView mapview: null
 
@@ -39,22 +41,37 @@ OptionPage {
         }
     }
 }
+*/
 
-/*
-OptionPage {
+MainOptionPage {
     id: root
     title: "Map"
     options: mapmodel
-    property int currentid: -1
-    property string currentmap: "<unknown>"
-    property MapView mapview: null
-    //onMapviewChanged: currentmap = mapview.mapname
-
+    //property int currentid: mapview? mapview.mapid : -1
+    //property string currentmap: mapview? mapview.mapname : "<unknown>"
+    //property MapView mapview: undefined
+/*
+    onMapviewChanged: {
+        currentmap = mapview.mapname
+        currentid = mapview.mapid
+    }
+*/
     signal mapSelected(int mapid, string name)
+    onMapidChanged:   console.log("MapEditPage.onMapidChanged(",mapid,")")
+    onMapnameChanged: console.log("MapEditPage.onMapnameChanged(",mapname,")")
 
     Settings { id: settings }
 
-    RefpointSelectionPage { id: calselectpage; mapview: root.mapview }
+    RefpointSelectionPage {
+        id: calselectpage;
+        //mapview: root.mapview
+        mapid:   root.mapid
+        mapname: root.mapname
+        maplat:  root.maplat
+        maplon:  root.maplon
+        mapx:    root.mapx
+        mapy:    root.mapy
+    }
 
     Loader {
         id: pageloader
@@ -66,11 +83,12 @@ OptionPage {
         MapSelectionPage {
             id: mapselectpage;
             onMapSelected: {
-                root.currentid = mapid
-                root.currentmap = name
-                mapname.value = name
+                //root.currentid = mapid
+                //root.currentmap = name
+                //root.mapname = name
+                //root.mapid = mapid
                 root.mapSelected(mapid,name)
-                pageStack.pop()
+                //pageStack.pop()
             }
         }
     }
@@ -78,6 +96,10 @@ OptionPage {
     function showMapSelectionPage() {
         pageloader.sourceComponent = pagesource
         pageStack.push(pageloader.item)
+    }
+
+    function showRefpointSelectionPage() {
+        pageStack.push(calselectpage)
     }
 
     VisualItemModel {
@@ -91,8 +113,11 @@ OptionPage {
             DynamicItemModel {
                 id: optionitems
                 name: "optionitems"
-                OptionInputItem  { id: mapname;   text: "Map";          value:currentmap;   button: true; onClicked: showMapSelectionPage() } //pageStack.push(mapselectpage) }
-                OptionInputItem  { id: refpoints; text: "Calibration";  value:"";           button: true; onClicked: pageStack.push(calselectpage) }
+                //OptionInputItem  { id: mapname;   text: "Map";          value:currentmap;   button: true; onClicked: showMapSelectionPage() } //pageStack.push(mapselectpage) }
+                //OptionInputItem  { id: refpoints; text: "Calibration";  value:"";           button: true; onClicked: pageStack.push(calselectpage) }
+                //OptionInputItem  { id: datum;     text: "Datum";        value:"Wgs84";      button: true; }
+                OptionInputItem  { id: map;       text: "Map";          value:mapname;      button: true; onClicked: showMapSelectionPage() } //pageStack.push(mapselectpage) }
+                OptionInputItem  { id: refpoints; text: "Calibration";  value:"";           button: true; onClicked: showRefpointSelectionPage() }
                 OptionInputItem  { id: datum;     text: "Datum";        value:"Wgs84";      button: true; }
             }
 //
@@ -106,7 +131,6 @@ OptionPage {
         }
     }
     onVisibleChanged: {
-        if ((visible==true) && (currentmap=="")) showMapSelectionPage(); //pageStack.push(mapselectpage);
+        if ((visible==true) && (mapname=="")) showMapSelectionPage(); //pageStack.push(mapselectpage);
     }
 }
-*/

@@ -33,7 +33,18 @@ Page {
     Component { id: trkselectsrc;  TrackSelectionPage    { id: trkPage;  mapview: map } }
     Component { id: wptselectsrc;  WaypointSelectionPage { id: wptPage;  mapview: map } }
     Component { id: rteselectsrc;  RouteSelectionPage    { id: rtePage;  mapview: map } }
-    Component { id: mapselectsrc;  MapEditPage           { id: mapPage;  mapview: map; onMapSelected: map.loadMap(mapid); } }
+    Component { id: mapselectsrc;
+        MapEditPage {
+            id: mapPage;
+            //mapview: map;
+            onMapSelected: map.loadMap(mapid);
+            //currentid: map? map.mapid : -1
+            //currentmap: map? map.name : "<?>"
+            mapid:   map? map.mapid : -1
+            mapname: map? map.mapname : ""
+
+        }
+    }
     Component { id: tripselectsrc; TripSelectionPage     { id: tripPage; mapview: map } }
 
     Loader {
@@ -42,7 +53,8 @@ Page {
 
     function showPage(src) {
         pageloader.sourceComponent = src
-        pageloader.item.mapview = map
+        //pageloader.item.mapview = map
+        pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,map.mapx,map.mapy)
         pageStack.push(pageloader.item)
     }
 
@@ -79,9 +91,11 @@ Page {
         }
 
         onMapLoaded: {
-            mapPage.currentmap = name
-            mapPage.currentid = mapid
+            //mapPage.currentmap = name
+            //mapPage.currentid = mapid
             console.log("MapView.onMapLoaded()",mapid,name)
+            //mapPage.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,map.mapx,map.mapy)
+            pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,map.mapx,map.mapy)
         }
     }
 
