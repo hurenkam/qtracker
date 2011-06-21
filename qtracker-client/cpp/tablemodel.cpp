@@ -8,8 +8,9 @@
 
 TableModel::TableModel(QObject *parent)
     : QAbstractListModel(parent)
+    , db(Database::Db())
     , model(0)
-    , _database("")
+    //, _database("")
     , _table("")
     , _filter("")
 {
@@ -50,7 +51,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     else
         return model->data(index,role);
 }
-
+/*
 QString TableModel::database() const
 {
     ENTER("")
@@ -79,7 +80,7 @@ void TableModel::setDatabase(const QString &database)
 
     EXIT("")
 }
-
+*/
 QString TableModel::table() const
 {
     ENTER("")
@@ -91,7 +92,7 @@ void TableModel::setTable(const QString &table)
     ENTER(table)
     _table = table;
 
-    if (_database.isEmpty() || _database.isNull()) return;
+    //if (_database.isEmpty() || _database.isNull()) return;
 
     if (model) delete model;
     model = new QSqlTableModel(0,db);
@@ -137,7 +138,7 @@ void TableModel::setFilter(const QString &filter)
     ENTER(filter)
     _filter = filter;
 
-    if (_database.isEmpty() || _database.isNull()) return;
+    //if (_database.isEmpty() || _database.isNull()) return;
     if (_table.isEmpty() || _table.isNull()) return;
     if (!model) { LOG("TableModel::setFilter: no model set") return; }
 
@@ -150,7 +151,7 @@ void TableModel::setFilter(const QString &filter)
 
     EXIT("")
 }
-
+/*
 QVariant TableModel::platform() const
 {
     ENTER("")
@@ -170,7 +171,7 @@ void TableModel::setPlatform(const QVariant &newplatform)
     ENTER(newplatform.toInt())
     EXIT("")
 }
-
+*/
 void TableModel::classBegin()
 {
     ENTER("")

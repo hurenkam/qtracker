@@ -14,7 +14,25 @@ Database::Database()
     ENTER("")
 
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("c:\\data\\qtracker\\database.sqlite");
+
+    #if defined(Q_OS_SYMBIAN)
+    platform = 0;
+    #elif defined(Q_WS_MAEMO_5)
+    platform = 1;
+    #elif defined(Q_WS_SIMULATOR)
+    platform = 2;
+    #else
+    platform = -1;
+    #endif
+
+    switch (platform)
+    {
+    case 0:  db.setDatabaseName("e:\\data\\qtracker\\database.sqlite"); break;
+    case 1:  db.setDatabaseName("database.sqlite"); break;
+    case 2:  db.setDatabaseName("c:\\data\\qtracker\\database.sqlite"); break;
+    default: db.setDatabaseName("database.sqlite"); break;
+    }
+
     bool result = db.open();
     if (!result)
     {
@@ -201,13 +219,17 @@ bool Map::calibrate()
         _baselon = p1.longitude();
         _basex = p1.x();
         _basey = p1.y();
-        _dx   = (p2.longitude()-p1.longitude())/(p2.x()-p1.x());
-        _dy   = (p2.latitude()-p1.latitude())/(p2.y()-p1.y());
-        _dlon = (p2.x()-p1.x())/(p2.longitude()-p1.longitude());
-        _dlat = (p2.y()-p1.y())/(p2.latitude()-p1.latitude());
+        //_dx   = (p2.longitude()-p1.longitude())/(p2.x()-p1.x());
+        //_dy   = (p2.latitude()-p1.latitude())/(p2.y()-p1.y());
+        //_dlon = (p2.x()-p1.x())/(p2.longitude()-p1.longitude());
+        //_dlat = (p2.y()-p1.y())/(p2.latitude()-p1.latitude());
+        _dlon = p2.longitude()-p1.longitude();
+        _dlat = p2.latitude()-p1.latitude();
+        _dx = p2.x()-p1.x();
+        _dy = p2.y()-p1.y();
         _iscalibrated = true;
-        LOG("Map::calibrate(): " << _baselat << ":" << _dy   << " " << _baselon << ":" << _dx)
-        LOG("Map::calibrate(): " << _basex   << ":" << _dlon << " " << _basey   << ":" << _dlat)
+        LOG("Map::calibrate(): " << _baselat << ":" << _dlat << ":" << mapy2lat(p2.y())         << " " << _baselon << ":" << _dlon << " " << mapx2lon(p2.y()))
+        LOG("Map::calibrate(): " << _basex   << ":" << _dx   << ":" << lon2mapx(p2.longitude()) << " " << _basey   << ":" << _dy   << " " << lat2mapy(p2.latitude()))
     }
     return _iscalibrated;
 }

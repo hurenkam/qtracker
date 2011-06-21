@@ -172,7 +172,7 @@ Item {
             console.log("onLongitudeChanged",lon.value)
             if (root.state == "followgps") {
                 //var x = refpoint.basex + refpoint.lon2x * (lon.value - refpoint.baselon)
-                var x = viewport.lon2x(lat.value)
+                var x = viewport.lon2x(lon.value)
                 flickable.contentX = x
                 console.log("set contentX: ", x)
             }

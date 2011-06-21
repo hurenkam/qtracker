@@ -235,8 +235,8 @@ void GpxFile::parseRefpoint()
     QVariantMap pt;
     pt["latitude"]  = ReadAttributeDouble("lat");
     pt["longitude"] = ReadAttributeDouble("lon");
-    pt["x"] = ReadAttributeInt("x");
-    pt["y"] = ReadAttributeInt("y");
+    pt["x"] = ReadAttributeDouble("x");
+    pt["y"] = ReadAttributeDouble("y");
 
     LOG( "GpxFile::parseRefpoint(): " << pt["latitude"].toDouble() << "," << pt["longitude"].toDouble() << " - " << pt["x"].toInt() << "," << pt["y"].toInt())
     emit refPoint(pt);

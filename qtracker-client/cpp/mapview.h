@@ -69,10 +69,10 @@ public:
     Q_INVOKABLE void clearcache();
     Q_INVOKABLE void invalidate();
     Q_INVOKABLE void setArea(QVariantMap a);
-    Q_INVOKABLE QVariant x2lon(QVariant x)   { return QVariant( _map? _map->mapx2lon(x.toInt())   : 0.0 ); }
-    Q_INVOKABLE QVariant y2lat(QVariant y)   { return QVariant( _map? _map->mapy2lat(y.toInt())   : 0.0 ); }
-    Q_INVOKABLE QVariant lon2x(QVariant lon) { return QVariant( _map? _map->lon2mapx(lon.toInt()) : 0   ); }
-    Q_INVOKABLE QVariant lat2y(QVariant lat) { return QVariant( _map? _map->lat2mapy(lat.toInt()) : 0   ); }
+    Q_INVOKABLE QVariant x2lon(QVariant x)   { return QVariant( _map? _map->mapx2lon(x.toInt())      : 0.0 ); }
+    Q_INVOKABLE QVariant y2lat(QVariant y)   { return QVariant( _map? _map->mapy2lat(y.toInt())      : 0.0 ); }
+    Q_INVOKABLE QVariant lon2x(QVariant lon) { return QVariant( _map? _map->lon2mapx(lon.toDouble()) : 0   ); }
+    Q_INVOKABLE QVariant lat2y(QVariant lat) { return QVariant( _map? _map->lat2mapy(lat.toDouble()) : 0   ); }
 
     explicit MapView(QDeclarativeItem *parent = 0);
 

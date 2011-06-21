@@ -7,6 +7,7 @@
 #include <QAbstractListModel>
 #include <QSqlDatabase>
 #include <QSqlTableModel>
+#include "database.h"
 
 QT_BEGIN_HEADER
 
@@ -20,10 +21,10 @@ class TableModel : public QAbstractListModel, public QDeclarativeParserStatus
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)
 
-    Q_PROPERTY(QString database  READ database WRITE setDatabase NOTIFY databaseChanged)
+    //Q_PROPERTY(QString database  READ database WRITE setDatabase NOTIFY databaseChanged)
     Q_PROPERTY(QString table     READ table    WRITE setTable    NOTIFY tableChanged)
     Q_PROPERTY(QString filter    READ filter   WRITE setFilter   NOTIFY filterChanged)
-    Q_PROPERTY(QVariant platform READ platform                   NOTIFY platformChanged)
+    //Q_PROPERTY(QVariant platform READ platform                   NOTIFY platformChanged)
     Q_PROPERTY(int count         READ count                      NOTIFY countChanged)
 
 public:
@@ -48,8 +49,8 @@ public:
 
     int count() const { return rowCount(QModelIndex()); }
 
-    QString database() const;
-    void setDatabase(const QString &database);
+    //QString database() const;
+    //void setDatabase(const QString &database);
 
     QString table() const;
     void setTable(const QString &table);
@@ -57,14 +58,14 @@ public:
     QString filter() const;
     void setFilter(const QString &table);
 
-    QVariant platform() const;
-    void setPlatform(const QVariant &newplatform);
+    //QVariant platform() const;
+    //void setPlatform(const QVariant &newplatform);
 
     virtual void classBegin();
     virtual void componentComplete();
 
 Q_SIGNALS:
-    void databaseChanged();
+    //void databaseChanged();
     void tableChanged();
     void filterChanged();
     void countChanged();
@@ -80,7 +81,7 @@ private Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(TableModel)
-    QSqlDatabase    db;
+    QSqlDatabase&   db;
     QSqlTableModel* model;
     QString _database;
     QString _table;

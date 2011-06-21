@@ -101,10 +101,10 @@ public:
     QUrl     url()               { return _filename; }
     bool     calibrate();
     bool     isCalibrated()      { return _iscalibrated; }
-    double   mapy2lat(double v)  { return _iscalibrated? _baselat + _dy   * (v - _basey)   : 0; }
-    double   mapx2lon(double v)  { return _iscalibrated? _baselon + _dx   * (v - _basex)   : 0; }
-    double   lat2mapy(double v)  { return _iscalibrated? _basey   + _dlat * (v - _baselat) : 0; }
-    double   lon2mapx(double v)  { return _iscalibrated? _basex   + _dlon * (v - _baselon) : 0; }
+    double   mapy2lat(double v)  { return _iscalibrated? _baselat + _dlat/_dy   * (v - _basey) : 0; }
+    double   mapx2lon(double v)  { return _iscalibrated? _baselon + _dlon/_dx   * (v - _basex) : 0; }
+    double   lat2mapy(double v)  { return _iscalibrated? _basey   + _dy/_dlat * (v - _baselat) : 0; }
+    double   lon2mapx(double v)  { return _iscalibrated? _basex   + _dx/_dlon * (v - _baselon) : 0; }
 
 private:
     QString  _name;
@@ -134,6 +134,8 @@ class Database: public QObject
 
 public:
     static Database& Instance();
+    static QSqlDatabase& Db() { return Instance().db; }
+    static int Platform() { return Instance().platform; }
 
     WaypointList Waypoints(Area area);
     MapList      Maps     (QGeoCoordinate geo=QGeoCoordinate());
@@ -149,7 +151,8 @@ public slots:
 
 private:
     static Database *instance;
-    QSqlDatabase    db;
+    QSqlDatabase db;
+    int platform;
 };
 
 #endif // DATABASE_H
