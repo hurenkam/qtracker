@@ -101,8 +101,8 @@ Item {
         scale: zoomlevels.get(zoom).factor
         //property real lat: refpoint.baselat + refpoint.y2lat * (y - refpoint.basey)
         //property real lon: refpoint.baselon + refpoint.x2lon * (x - refpoint.basex)
-        property double lat: viewport.y2lat(y)
-        property double lon: viewport.x2lon(x)
+        property double lat: viewport.isCalibrated? viewport.y2lat(y) : mapmodel.latitude
+        property double lon: viewport.isCalibrated? viewport.x2lon(x) : mapmodel.longitude
         //property double lat: mapy2lat(y)
         //property double lon: mapx2lon(x)
 

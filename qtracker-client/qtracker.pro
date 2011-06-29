@@ -5,6 +5,8 @@ components.source = Components
 components.target = .
 gauges.source = Gauges
 gauges.target = .
+cat.source = Category
+cat.target = .
 map.source = Map
 map.target = .
 wpt.source = Waypoint
@@ -15,7 +17,7 @@ trk.source = Track
 trk.target = .
 trip.source = Trip
 trip.target = .
-DEPLOYMENTFOLDERS = main components gauges map wpt rte trk trip
+DEPLOYMENTFOLDERS = cat main components gauges map wpt rte trk trip
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH = /imports
@@ -27,7 +29,7 @@ QML_IMPORT_PATH = /imports
 #DEFINES += NETWORKACCESS
 QT       += sql
 
-VERSION = 0.4.412
+VERSION = 0.4.415
 
 symbian {
     # Remove all the existing platform dependencies
@@ -76,7 +78,8 @@ SOURCES += \
     cpp/client.cpp \
     cpp/tablemodel.cpp \
     cpp/gpxfile.cpp \
-    cpp/database.cpp
+    cpp/database.cpp \
+    cpp/qmldatabase.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -90,6 +93,7 @@ HEADERS += \
     cpp/client.h \
     cpp/tablemodel.h \
     cpp/gpxfile.h \
-    cpp/database.h
+    cpp/database.h \
+    cpp/qmldatabase.h
 
 OTHER_FILES += \

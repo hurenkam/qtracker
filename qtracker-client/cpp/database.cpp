@@ -4,7 +4,7 @@
 #include <QVariant>
 #include "database.h"
 
-#define ENABLE_DEBUG
+//#define ENABLE_DEBUG
 #include "helpers.h"
 
 Database* Database::instance = 0;
@@ -25,6 +25,7 @@ Database::Database()
     platform = -1;
     #endif
 
+    LOG("Database::Database() platform: " << platform)
     switch (platform)
     {
     case 0:  db.setDatabaseName("e:\\data\\qtracker\\database.sqlite"); break;

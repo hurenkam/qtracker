@@ -45,14 +45,15 @@ public:
 class MapView : public QDeclarativeItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString name       READ name                          NOTIFY nameChanged)
-    Q_PROPERTY(QUrl    filename   READ filename                      NOTIFY filenameChanged)
-    Q_PROPERTY(QSize   filesize   READ filesize                      NOTIFY filesizeChanged)
-    Q_PROPERTY(int     mapx       READ mapx        WRITE setMapX     NOTIFY mapxChanged)
-    Q_PROPERTY(int     mapy       READ mapy        WRITE setMapY     NOTIFY mapyChanged)
-    Q_PROPERTY(double  scale      READ scale       WRITE setScale    NOTIFY scaleChanged)
-    Q_PROPERTY(int     trackid    READ trackid     WRITE setTrackid  NOTIFY trackidChanged)
-    Q_PROPERTY(int     mapid      READ mapid       WRITE setMapid    NOTIFY mapidChanged)
+    Q_PROPERTY(QString name         READ name                          NOTIFY nameChanged)
+    Q_PROPERTY(QUrl    filename     READ filename                      NOTIFY filenameChanged)
+    Q_PROPERTY(QSize   filesize     READ filesize                      NOTIFY filesizeChanged)
+    Q_PROPERTY(int     mapx         READ mapx        WRITE setMapX     NOTIFY mapxChanged)
+    Q_PROPERTY(int     mapy         READ mapy        WRITE setMapY     NOTIFY mapyChanged)
+    Q_PROPERTY(double  scale        READ scale       WRITE setScale    NOTIFY scaleChanged)
+    Q_PROPERTY(int     trackid      READ trackid     WRITE setTrackid  NOTIFY trackidChanged)
+    Q_PROPERTY(int     mapid        READ mapid       WRITE setMapid    NOTIFY mapidChanged)
+    Q_PROPERTY(bool    isCalibrated READ isCalibrated                  NOTIFY calibrationChanged)
 
 signals:
     void nameChanged();
@@ -64,6 +65,7 @@ signals:
     void mapidChanged();
     void filesizeChanged();
     void loadTile(const QPoint&, const QUrl&);
+    void calibrationChanged();
 
 public:
     Q_INVOKABLE void clearcache();
@@ -84,6 +86,7 @@ public:
     int     scale()             { return _scale;     }
     int     trackid()           { return _trackid;   }
     int     mapid()             { return _mapid;     }
+    bool    isCalibrated()      { return _map? _map->isCalibrated(): false; }
 
     void setMapX(int v);
     void setMapY(int v);

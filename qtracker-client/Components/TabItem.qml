@@ -10,6 +10,7 @@ Item {
     property alias titley: tab.y
     property string imageSource: "options-bg.png"
     default property alias children: content.children
+    width: parent.width
 
     //onXChanged:      console.log("TabItem.onXChanged:      ",x,y,width,height)
     //onYChanged:      console.log("TabItem.onYChanged:      ",x,y,width,height,title)
@@ -46,22 +47,37 @@ Item {
                 source: root.imageSource
                 fillMode: Image.Tile
             }
-
         }
+        Flickable {
+            id: flickable
+            x:0
+            y:0
+            width: root.width
+            height: root.height
+            contentWidth: content.width
+            contentHeight: content.height
+            interactive: contentHeight > height? true: false
+            clip: true
+
+            Item {
+                id: content
+                width: flickable.width
+                height: childrenRect.height+50
+                onWidthChanged: console.log("TabItem.Item.Flickable.Item.onWidthChanged: ",width,height)
+                onHeightChanged: console.log("TabItem.Item.Flickable.Item.onHeightChanged: ",width,height)
+                Component.onCompleted: console.log("TabItem.Item.Flickable.Item.onCompleted: ",width,height)
+            }
+            onWidthChanged: console.log("TabItem.Item.Flickable.onWidthChanged: ",width,height)
+            onHeightChanged: console.log("TabItem.Item.Flickable.onHeightChanged: ",width,height)
+            Component.onCompleted: console.log("TabItem.Item.Flickable.onCompleted: ",width,height)
+        }
+/*
         Item {
             anchors.fill: parent
             anchors.margins: 4
             id: content
         }
-        /*
-        MouseArea {
-            anchors.fill:  parent
-            onClicked: root.clicked(root.index)
-            onPressed: root.pressed(root.index)
-            onCanceled: root.released(root.index)
-            onReleased: root.released(root.index)
-        }
-        */
+*/
     }
 
     Item {
@@ -123,4 +139,7 @@ Item {
             text: "tab"
         }
     }
+    onWidthChanged:        { console.log("TabItem.onWidthChanged()    ",x,y,width,height) }
+    onHeightChanged:       { console.log("TabItem.onHeightChanged()   ",x,y,width,height) }
+    Component.onCompleted: { console.log("TabItem.onCompleted()       ",x,y,width,height) }
 }

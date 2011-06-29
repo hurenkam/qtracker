@@ -3,6 +3,7 @@ import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Gauges"
+import "../Category"
 import "../Map"
 import "../Waypoint"
 import "../Route"
@@ -30,22 +31,17 @@ Page {
 
     Settings              { id: settings }
 
-    Component { id: trkselectsrc;  TrackSelectionPage    { id: trkPage;  mapview: map } }
-    Component { id: wptselectsrc;  WaypointSelectionPage { id: wptPage;  mapview: map } }
-    Component { id: rteselectsrc;  RouteSelectionPage    { id: rtePage;  mapview: map } }
+    Component { id: catselectsrc;  CategoryEditPage  { id: catPage;  } }
+    Component { id: tripselectsrc; TripEditPage      { id: tripPage; } }
+    Component { id: tstselectsrc;  ImExportPage      { id: tstPage;  } }
     Component { id: mapselectsrc;
         MapEditPage {
             id: mapPage;
-            //mapview: map;
             onMapSelected: map.loadMap(mapid);
-            //currentid: map? map.mapid : -1
-            //currentmap: map? map.name : "<?>"
-            mapid:   map? map.mapid : -1
-            mapname: map? map.mapname : ""
-
+            //mapid:   map? map.mapid : -1
+            //mapname: map? map.mapname : ""
         }
     }
-    Component { id: tripselectsrc; TripSelectionPage     { id: tripPage; mapview: map } }
 
     Loader {
         id: pageloader
@@ -53,23 +49,9 @@ Page {
 
     function showPage(src) {
         pageloader.sourceComponent = src
-        //pageloader.item.mapview = map
-        pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,map.mapx,map.mapy)
+        pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,0.0,map.mapx,map.mapy)
         pageStack.push(pageloader.item)
     }
-
-/*
-    TrackSelectionPage    { id: trkselectsrc;  mapview: map }
-    WaypointSelectionPage { id: wptselectsrc;  mapview: map }
-    RouteSelectionPage    { id: rteselectsrc;  mapview: map }
-    MapEditPage           { id: mapselectsrc;  mapview: map; onMapSelected: map.loadMap(mapid); }
-    TripSelectionPage     { id: tripselectsrc; mapview: map }
-
-    function showPage(src) {
-        src.mapview = map
-        pageStack.push(src)
-    }
-*/
 
     MapView {
         id: map
@@ -95,7 +77,8 @@ Page {
             //mapPage.currentid = mapid
             console.log("MapView.onMapLoaded()",mapid,name)
             //mapPage.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,map.mapx,map.mapy)
-            pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,map.mapx,map.mapy)
+            if (pageloader.item)
+                pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,0.0,map.mapx,map.mapy)
         }
     }
 
@@ -113,12 +96,17 @@ Page {
         }
 
         tools: ToolBarLayout {
-            ToolButton { id: mapbutton; source: "options.svg"; onClicked: showPage(mapselectsrc)  } //root.pageStack.push(mapPage); }
-            //ToolButton { id: mapbutton; source: "options.svg"; onClicked: map.loadMap(2);         }
-            ToolButton { id: wptbutton; source: "flag.svg";    onClicked: showPage(wptselectsrc)  } //root.pageStack.push(wptPage); }
-            ToolButton { id: rtebutton; source: "route.svg";   onClicked: showPage(rteselectsrc)  } //root.pageStack.push(rtePage); }
-            ToolButton { id: trkbutton; source: "hiker.svg";   onClicked: showPage(trkselectsrc)  } //root.pageStack.push(trkPage); }
-            ToolButton { id: iobutton;  source: "export.svg";  onClicked: showPage(tripselectsrc) } //root.pageStack.push(options); }
+            id: maintools
+            ToolButton { id: optbutton;  source: "options.svg";  }
+            ToolButton { id: mapbutton;  source: "map.svg";      onClicked: showPage(mapselectsrc)  }
+            ToolButton { id: catbutton;  source: "category.svg"; onClicked: showPage(catselectsrc) }
+            ToolButton { id: tripbutton; source: "trip.svg";     onClicked: showPage(tripselectsrc) }
+            ToolButton { id: tstbutton;  source: "flag.svg";     onClicked: showPage(tstselectsrc)  }
+
+            // Opts => ?
+            // Map  => Meta | Local | All  | Cat | Trip
+            // Cat  => Meta | Wpt   | Rte  | Trk | Map
+            // Trip => Meta | Wpt   | Rte  | Trk | Map
 
             hasRightButton: true
             ToolButton {

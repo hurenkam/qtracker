@@ -6,15 +6,15 @@ Item {
     property alias buttonsource: btn.source
     property bool  hilite: (btn.state=="pressed")
     property color hilitecolor: "#c0c0e0"
-    property int   index: -1
+    property int   index2: -1
     property bool  roundtop: false
     property bool  roundbottom: false
     property bool  underline: true
 
-    signal clicked(int index, string name)
+    signal clicked(int index2, string name)
     //clip: true
     //smooth: true
-
+/*
     Rectangle {
         id: toprect
         visible: root.hilite
@@ -32,12 +32,21 @@ Item {
         radius:  roundbottom ? 13 : 0
         color: root.hilitecolor
     }
+*/
+    Rectangle {
+        id: hiliterect
+        visible: root.hilite
+        x: -9;               width:  parent.width +20
+        y: 0;                height: parent.height
+        color: root.hilitecolor
+    }
 
     Rectangle {
         id: bottomline
         visible: (! roundbottom) && underline
         x: -9;               width:  parent.width +20
-        y: parent.height+9;  height: 1
+        //y: parent.height+9;  height: 1
+        y: parent.height; height:1
         color: "grey"
     }
 
@@ -52,7 +61,7 @@ Item {
         visible: false
         bgcolor: root.hilitecolor
         source: "forward.svg";
-        onClicked: root.clicked(root.index,root.text);
+        onClicked: root.clicked(root.index2,root.text);
     }
 
     MouseArea {

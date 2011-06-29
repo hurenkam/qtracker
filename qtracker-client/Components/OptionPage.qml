@@ -13,12 +13,21 @@ Page {
         pageStack.pop();
     }
 
+    property Item tools: null
+
     Item {
         id: title
         x: 0;
         y: 0;
         width: root.width;
         height: 50;
+
+        ToolBar {
+            id: toolbar
+            tools: root.tools
+            visible: tools? true: false
+        }
+
     }
     Flickable {
         //id: content
@@ -37,6 +46,7 @@ Page {
 
     property Item header: OptionHeader {
         id: hdr
+        visible: root.tools? false: true
         text: "Options"
         leftButtonVisible: true
         onLeftClicked: root.cancel();

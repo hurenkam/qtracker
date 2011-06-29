@@ -80,6 +80,8 @@ private Q_SLOTS:
     void handleDataChanged(const QModelIndex &start, const QModelIndex &end);
 
 private:
+    void select();
+
     Q_DISABLE_COPY(TableModel)
     QSqlDatabase&   db;
     QSqlTableModel* model;

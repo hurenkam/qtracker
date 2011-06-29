@@ -98,13 +98,13 @@ Item {
                 for (var i=0; i<items.count(); ++i) {
                     items.get(i).clicked.disconnect(root.clicked)
                     items.get(i).clicked.connect(root.clicked)
-                    items.get(i).index = i;
+                    items.get(i).index2 = i;
                 }
             }
 
             function connectitem(i) {
                 items.get(i).clicked.connect(root.clicked)
-                items.get(i).index = i;
+                items.get(i).index2 = i;
             }
 
             Connections {

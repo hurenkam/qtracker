@@ -37,7 +37,7 @@ OptionList {
 */
     Refpoints {
         id: database
-        onFilterChanged: update();
+        onMapidChanged: root.update();
     }
 
     items: content

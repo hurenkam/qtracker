@@ -8,6 +8,12 @@ Item {
     onParentChanged: layoutChildren()
     onWidthChanged:  layoutChildren()
     onChildrenChanged: layoutChildren()
+    function hideChildren() {
+        for (var i=0; i<children.length; ++i) {
+            children[i].visible = false
+        }
+    }
+
     function layoutChildren(newparent) {
         if (!newparent) return
         parent = newparent
@@ -19,11 +25,13 @@ Item {
                 children[i].y = 5
                 children[i].width = 40
                 children[i].height = 40
+                children[i].visible = true
             } else {
                 children[i].x = i*50 + 5
                 children[i].y = 5
                 children[i].width = 40
                 children[i].height = 40
+                children[i].visible = true
             }
         }
     }

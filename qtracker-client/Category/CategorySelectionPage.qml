@@ -9,10 +9,10 @@ import "../Track"
 
 MainOptionPage {
     id: root
-    title: "Trip List"
+    title: "Category List"
     property Item mapview
 
-    signal tripSelected(int tripid)
+    signal categorySelected(int tripid)
 
     TDatabase {
         id: database
@@ -30,7 +30,7 @@ MainOptionPage {
     }
 
     Rectangle {
-        id: tripbox
+        id: catbox
         anchors.margins: 10
         x:      10
         y:      60
@@ -45,19 +45,19 @@ MainOptionPage {
         ListView {
             anchors.margins: 10
             anchors.fill: parent
-            id: triplist
+            id: catlist
             delegate: delegate
 
             function itemClicked(index) {
                 pageStack.pop()
-                root.tripSelected(model[index].tripid)
+                root.categorySelected(model[index].catid)
             }
         }
     }
 
     function refreshData() {
-        console.log("TripSelectionPage.refreshData()")
-        triplist.model = database.trips
+        console.log("CategorySelectionPage.refreshData()")
+        catlist.model = database.categories
     }
 
     Component.onCompleted: refreshData()

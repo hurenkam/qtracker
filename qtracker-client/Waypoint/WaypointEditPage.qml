@@ -7,7 +7,7 @@ OptionPage {
     title: index == -1? "New Waypoint" : "Waypoint Edit"
     options: wptoptions
     confirmbutton: true
-    property MapView mapview: null
+    //property MapView mapview: null
     property int index: -1
     property alias latitude:  wptlat.value
     property alias longitude: wptlon.value
@@ -25,7 +25,7 @@ OptionPage {
         id: settings
     }
 
-    CategorySelectionPage { id: catselpage }
+    //CategorySelectionPage { id: catselpage }
 
     VisualItemModel {
         id: wptoptions
@@ -39,17 +39,10 @@ OptionPage {
                 id: wptitems
                 name: "wptitems"
 
-                OptionInputItem {
-                    id: category;
-                    text: "Category:";
-                    value: "Waypoints";
-                    button: true;
-                    onClicked: root.pageStack.push(catselpage)
-                }
                 OptionInputItem { id: wptname;        text: "Name:";      onValueChanged: settings.setProperty("wpt_defaultname",value) }
-                OptionInputItem { id: wptlat;         text: "Latitude:";  value: mapview.maplat }
-                OptionInputItem { id: wptlon;         text: "Longitude:"; value: mapview.maplon }
-                OptionInputItem { id: wptalt;         text: "Altitude:";  value: "0.0"          }
+                OptionInputItem { id: wptlat;         text: "Latitude:";  value: "0.0" }
+                OptionInputItem { id: wptlon;         text: "Longitude:"; value: "0.0" }
+                OptionInputItem { id: wptalt;         text: "Altitude:";  value: "0.0" }
                 //OptionInputItem { id: notes;       text: "Notes:";     value: ""              }
 
                 Component.onCompleted: {

@@ -2,12 +2,15 @@ import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
 import "../Components"
 import "../Map"
+import "../Main"
 
-OptionPage {
+MainOptionPage {
     id: root
     title: "Track List"
     options: trkoptions
-    property MapView mapview: null
+    //property MapView mapview: null
+    property int catid: -1
+    property int tripid: -1
 
     TrackRecordingPage {
         id: trkrecord;

@@ -98,11 +98,7 @@ void TableModel::setTable(const QString &table)
     model = new QSqlTableModel(0,db);
     model->setTable(table);
 
-    if (!_filter.isEmpty() && !_filter.isNull())
-        setFilter(_filter);
-    else
-        model->select();
-
+    select();
 
     QHash<int, QByteArray> roles;
     for (int i=0; i< columnCount(QModelIndex()); ++i)
@@ -133,21 +129,25 @@ QString TableModel::filter() const
     return _filter;
 }
 
+void TableModel::select()
+{
+    if (!model) { LOG("TableModel::setFilter: no model set") return; }
+
+    if (!_filter.isEmpty() && !_filter.isNull())
+        model->setFilter(_filter);
+
+    model->select();
+    while (model->canFetchMore()) model->fetchMore();
+    emit countChanged();
+}
+
 void TableModel::setFilter(const QString &filter)
 {
     ENTER(filter)
+
     _filter = filter;
-
-    //if (_database.isEmpty() || _database.isNull()) return;
-    if (_table.isEmpty() || _table.isNull()) return;
-    if (!model) { LOG("TableModel::setFilter: no model set") return; }
-
-
-    model->setFilter(_filter);
-    model->select();
     emit filterChanged();
-    emit countChanged();
-
+    select();
 
     EXIT("")
 }

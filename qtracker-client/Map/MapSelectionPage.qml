@@ -6,6 +6,8 @@ OptionPage {
     title: "Available Maps"
     options: maplist
     //property MapView mapview: null
+    property int catid: -1
+    property int tripid: -1
 
     signal mapSelected(int mapid, string name)
 

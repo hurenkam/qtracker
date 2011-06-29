@@ -22,7 +22,13 @@ Rectangle {
 
     property Item tools: null
 
+    function setTools(newtools) {
+        tools.hideChildren()
+        if (tools) tools.parent = null
+        tools = newtools
+        tools.layoutChildren(root)
+    }
+
     onWidthChanged:        if (tools) tools.layoutChildren(root)
-    onToolsChanged:        if (tools) tools.layoutChildren(root)
     Component.onCompleted: if (tools) tools.layoutChildren(root)
 }

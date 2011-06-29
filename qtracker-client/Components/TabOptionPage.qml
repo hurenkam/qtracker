@@ -5,17 +5,23 @@ Page {
     //imageSource: "options-bg.png"
     property alias backbutton: hdr.leftButtonVisible
     property alias confirmbutton: hdr.rightButtonVisible
+    property alias rightbutton: hdr.rightButtonVisible
+    property alias rightbuttonsrc: hdr.rightButtonSource
     property alias title: hdr.text
     property alias showheader: titlebar.visible
     property Item tabs
     property Item background
     property int raised: -1
-    height: parent.height
-    width: parent.width
-    x: 0
-    y: 0
+    //height: parent.height    // TODO: this seem to be undefined for several pages, how to fix?
+    //width: parent.width      // TODO: this seem to be undefined for several pages, how to fix?
+    //height: parent? parent.height : 0
+    //width:  parent? parent.width  : 0
+    //x: 0
+    //y: 0
+    property alias mycontent: content
 
     signal confirm()
+    signal rightClicked()
 
     function cancel() {
         pageStack.pop();
@@ -45,6 +51,26 @@ Page {
         onHeightChanged: root.layoutPage()
     }
 
+/*
+    Flickable {
+        x: 0
+        y: titlebar.height
+        z: 10
+        width: root.width
+        height: root.height-titlebar.height
+        contentWidth: content.width
+        contentHeight: content.height
+        interactive: contentHeight > height? true: false
+        clip: true
+
+        Item {
+            id: content
+            anchors.fill: parent
+            onWidthChanged: root.layoutPage()
+            onHeightChanged: root.layoutPage()
+        }
+    }
+*/
     property Item header: OptionHeader {
         id: hdr
         visible: true
@@ -53,7 +79,7 @@ Page {
         onLeftClicked: root.cancel();
         rightButtonVisible: false
         rightButtonSource: "visible.svg"
-        onRightClicked: root.confirm();
+        onRightClicked: { root.confirm(); root.rightClicked(); }
     }
 
     function layoutPage() {
@@ -73,7 +99,7 @@ Page {
     }
 
     function layoutTabs() {
-        console.log("TabOptionPage.layoutTabs(): got", tabs.children.length, "tabs")
+        console.log("TabOptionPage.layoutTabs(): got", tabs.children.length, "tabs", tabs.width, tabs.height)
         var count = tabs.children.length
         var tx = 13
 
@@ -130,4 +156,5 @@ Page {
     //onTabsChanged:         { initTabs();   console.log("TabOptionPage.onTabsChanged()     ",x,y,width,height) }
     //Component.onCompleted: { layoutPage(); console.log("TabOptionPage.onCompletedChanged()",x,y,width,height) }
     onTabsChanged:         initTabs()
+    //Component.onCompleted: initTabs()
 }

@@ -5,7 +5,7 @@
 #include <QDir>
 #include <math.h>
 
-#define ENABLE_DEBUG
+//#define ENABLE_DEBUG
 #include "helpers.h"
 #define ENTER1(a) ENTER(a)
 #define ENTER2(a)
@@ -80,6 +80,7 @@ void MapView::setMapid(int id)
         emit nameChanged();
         setFilename(_map->url());
         _map->calibrate();
+        emit calibrationChanged();
     }
     EXIT1("")
 }
