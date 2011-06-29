@@ -52,6 +52,8 @@ int getIntField(const QSqlQuery& q, const QString& fieldName)
     return q.value(fieldNo).toInt();
 }
 
+//================================
+
 qmlWaypoint::qmlWaypoint()
     : _name("wpt")
     , _wptid(-1)
@@ -168,6 +170,53 @@ qmlTrack::qmlTrack(const QSqlQuery& q)
     _left      = getDoubleField(q,"left");
     _bottom    = getDoubleField(q,"bottom");
     _right     = getDoubleField(q,"right");
+    EXIT("")
+}
+
+//================================
+
+qmlRefpoint::qmlRefpoint()
+    : _name("wpt")
+    , _refid(-1)
+    , _latitude(0)
+    , _longitude(0)
+{
+    ENTER("")
+    EXIT("")
+}
+
+qmlRefpoint::qmlRefpoint(int id)
+    : _name("refpt")
+    , _refid(-1)
+    , _latitude(0)
+    , _longitude(0)
+    , _x(0)
+    , _y(0)
+{
+    ENTER("")
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q("SELECT * FROM mappoints WHERE mappt='" + QString::number(id) + "'",db);
+    if (q.next())
+    {
+        _refid = id;
+        _name = getStringField(q,"name");
+        _latitude  = getDoubleField(q,"latitude");
+        _longitude = getDoubleField(q,"longitude");
+        _x = getDoubleField(q,"x");
+        _y = getDoubleField(q,"y");
+    }
+    EXIT("")
+}
+
+qmlRefpoint::qmlRefpoint(const QSqlQuery& q)
+{
+    ENTER("")
+    _refid     = getIntField(q,"mappt");
+    _name      = getStringField(q,"name");
+    _latitude  = getDoubleField(q,"latitude");
+    _longitude = getDoubleField(q,"longitude");
+    _x = getDoubleField(q,"x");
+    _y = getDoubleField(q,"y");
     EXIT("")
 }
 
@@ -443,6 +492,63 @@ qmlCategory::select()
     EXIT("")
 }
 
+//================================
+
+qmlMap::qmlMap()
+    : _name("map")
+    , _mapid(0)
+{
+    ENTER("")
+}
+
+qmlMap::qmlMap(int id)
+{
+    ENTER("")
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q("SELECT * FROM maps WHERE mapid='" + QString::number(id) + "'",db);
+    if (q.next())
+    {
+        _mapid     = getIntField(q,"mapid");
+        _name      = getStringField(q,"name");
+        _top       = getDoubleField(q,"north");
+        _left      = getDoubleField(q,"west");
+        _bottom    = getDoubleField(q,"south");
+        _right     = getDoubleField(q,"east");
+    }
+    EXIT("")
+}
+
+qmlMap::qmlMap(const QSqlQuery& q)
+{
+    ENTER("")
+    _mapid     = getIntField(q,"mapid");
+    _name      = getStringField(q,"name");
+    _top       = getDoubleField(q,"north");
+    _left      = getDoubleField(q,"west");
+    _bottom    = getDoubleField(q,"south");
+    _right     = getDoubleField(q,"east");
+    EXIT("")
+}
+
+QDeclarativeListProperty<qmlRefpoint>
+qmlMap::refpoints()
+{
+    ENTER("")
+    return QDeclarativeListProperty<qmlRefpoint>(this, _refpts);
+}
+
+void
+qmlMap::selectRefpoints(int offset, int limit)
+{
+    ENTER("")
+    QDeclarativeListReference r(this,"refpoints");
+    r.clear();
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q("SELECT mappt FROM mappoints WHERE mapid='" + QString::number(_mapid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
+    while (q.next()) { r.append(new qmlRefpoint(q.value(0).toInt())); }
+    EXIT("")
+}
+
 //=================================
 
 qmlDatabase::qmlDatabase()
@@ -469,6 +575,13 @@ qmlDatabase::trips()
     return QDeclarativeListProperty<qmlTrip>(this, _trips);
 }
 
+QDeclarativeListProperty<qmlMap>
+qmlDatabase::maps()
+{
+    ENTER("")
+    return QDeclarativeListProperty<qmlMap>(this, _maps);
+}
+
 qmlCategory*
 qmlDatabase::getCategory(int id)
 {
@@ -481,6 +594,20 @@ qmlDatabase::getTrip(int id)
 {
     ENTER("")
     return new qmlTrip(id);
+}
+
+qmlMap*
+qmlDatabase::getMap(int id)
+{
+    ENTER("")
+    return new qmlMap(id);
+}
+
+qmlRefpoint*
+qmlDatabase::getRefpoint(int id)
+{
+    ENTER("")
+    return new qmlRefpoint(id);
 }
 
 qmlWaypoint*
@@ -566,6 +693,9 @@ qmlDatabase::select()
 
     q.exec("SELECT * FROM categories LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
     while (q.next()) _categories.append(new qmlCategory(q));
+
+    q.exec("SELECT * FROM maps LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
+    while (q.next()) _maps.append(new qmlMap(q));
 
     EXIT("")
 }

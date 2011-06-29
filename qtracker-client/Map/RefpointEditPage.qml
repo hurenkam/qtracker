@@ -1,107 +1,79 @@
 import QtQuick 1.0
+import QmlTrackerExtensions 1.0
 import "../Components"
-import "../Waypoint"
-import "../Main"
 
-MainOptionPage {
+OptionPage {
     id: root
-    title: index==-1? "New Calibration Point": "Edit Calibration Point"
-    options: caloptions
+    title: (refid==-1) ? "New Refpoint" : "Edit Refpoint"
+    options: refoptions
     confirmbutton: true
-    property int index: -1
-    property int mappt: -1
-    onMapidChanged:   console.log("RefpointEditPage.onMapidChanged(",mapid,")")
-    onMapnameChanged: console.log("RefpointEditPage.onMapnameChanged(",mapname,")")
+    property int refid: -1
+    property TRefpoint dbrecord
 
-    onIndexChanged: {
-        if (index==-1) {
-            refname.value = settings.getProperty("refpt_name","cal")
-            reflat.value = mapview.maplat
-            reflon.value = mapview.maplon
-            refx.value = mapview.x
-            refy.value = mapview.y
-        } else {
-        }
-    }
+    signal refpointSaved(int refid)
 
-    property alias editname: refname.value
-    property alias editlat:  reflat.value
-    property alias editlon:  reflon.value
-    property alias editx:    refx.value
-    property alias edity:    refy.value
-
-    //property MapView mapview: undefined
-
-    signal refpointChanged(int index, int mapid, string name, real lat, real lon, real x, real y)
-/*
-    function saveCalibrationPoint(index,mapid,name,lat,lon,x,y) {
-        console.log("RefpointEditPage.addCalibrationPoint",index,mapid,name,lat,lon,x,y)
-        calibrationPointSaved(index,mapid,name,lat,lon,x,y)
-    }
-*/
-    OptionPage {
-        id: wptselect
-        title: "Waypoint List"
-        options: wptoptions
-
-        WaypointEditPage { id: wptedit }
-
-        VisualItemModel {
-            id: wptoptions
-
-            WaypointList {
-                id: lst
-                //title: "Waypoint List"
-                onWaypointSelected: {
-                    if (index >= 0) {
-                        refname.value = name
-                        reflat.value = lat
-                        reflon.value = lon
-                    }
-                    pageStack.pop()
-                }
-            }
-        }
+    Settings {
+        id: settings
     }
 
     VisualItemModel {
-        id: caloptions
+        id: refoptions
 
         OptionList {
-            id: editrefpoint
-            title: "Edit"
-            items: refedititems
+            id: refbox
+            items: refitems
 
             DynamicItemModel {
-                id: refedititems
-                name: "refedititems"
-                OptionInputItem { id: refname;        text: "Name:";      value: "cal"          }
-                OptionInputItem { id: reflat;         text: "Latitude:";  value: mapview.maplat }
-                OptionInputItem { id: reflon;         text: "Longitude:"; value: mapview.maplon }
-                OptionInputItem { id: refx;           text: "X:";         value: mapview.mapx   }
-                OptionInputItem { id: refy;           text: "Y:";         value: mapview.mapy   }
-            }
-        }
+                id: refitems
+                name: "refitems"
 
-        OptionList {
-            id: fromwpt
-            items: fromwptitems
+                OptionInputItem { id: refname;        text: "Name:     "; onValueChanged: settings.setProperty("refpt_defaultname",value) }
+                OptionInputItem { id: reflat;         text: "Latitude: "; value: "0.0" }
+                OptionInputItem { id: reflon;         text: "Longitude:"; value: "0.0" }
+                OptionInputItem { id: refx;           text: "X:        "; value: "0" }
+                OptionInputItem { id: refy;           text: "Y:        "; value: "0" }
 
-            DynamicItemModel {
-                id: fromwptitems
-                name: "fromwptitems"
-                OptionTextItem {
-                    text: "From Waypoint";
-                    button: true;
-                    onClicked: pageStack.push(wptselect)
+                Component.onCompleted: {
+                    refname.value = settings.getProperty("refpt_defaultname","refpt-000")
                 }
             }
         }
     }
+
+    function refreshData() {
+        if (refid==-1) {
+            refname.value = settings.getProperty("refpt_defaultname","refpt-000")
+            reflat.value  = 0.0
+            reflon.value  = 0.0
+            refx.value = 0
+            refy.value = 0
+        } else {
+            dbrecord = database.getRefpoint(refid)
+            refname.value = dbrecord.name
+            reflat.value = dbrecord.latitude
+            reflon.value = dbrecord.longitude
+            refx.value = dbrecord.x
+            refy.value = dbrecord.y
+        }
+    }
+
+    function saveWaypoint() {
+        if (refid>0) {
+            dbrecord.name = refname.value
+            dbrecord.latitde = reflat.value
+            dbrecord.longitude = reflon.value
+            dbrecord.x = refx.value
+            dbrecord.y = refy.value
+            //dbrecord.save()
+            //root.waypointSaved(root.wptid);
+        }
+    }
+
+    onRefidChanged: refreshData()
+    Component.onCompleted: refreshData()
     onConfirm: {
-        console.log("RefpointEditPage.onConfirm")
-        //saveCalibrationPoint(root.index,mapview.mapid,refname,reflat.value,reflon.value,refx.value,refy.value)
-        refpointChanged(root.index,root.mapid,refname.value,reflat.value,reflon.value,refx.value,refy.value)
+        console.log("RefpointEditPage.onConfirm",refname.value,reflat.value,reflon.value,refx.value,refy.value)
+        saveRefpoint()
         pageStack.pop()
     }
 }

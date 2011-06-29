@@ -103,10 +103,12 @@ void registerTypes()
     qmlRegisterType<GpxFile>("QmlTrackerExtensions",1,0,"GpxFile");
     qmlRegisterType<qmlDatabase>("QmlTrackerExtensions",1,0,"TDatabase");
     qmlRegisterType<qmlCategory>("QmlTrackerExtensions",1,0,"TCategory");
+    qmlRegisterType<qmlMap>("QmlTrackerExtensions",1,0,"TMap");
     qmlRegisterType<qmlTrip>("QmlTrackerExtensions",1,0,"TTrip");
     qmlRegisterType<qmlWaypoint>("QmlTrackerExtensions",1,0,"TWaypoint");
     qmlRegisterType<qmlRoute>("QmlTrackerExtensions",1,0,"TRoute");
     qmlRegisterType<qmlTrack>("QmlTrackerExtensions",1,0,"TTrack");
+    qmlRegisterType<qmlRefpoint>("QmlTrackerExtensions",1,0,"TRefpoint");
     LOG("Exit: registerTypes()")
 }
 

@@ -18,32 +18,8 @@ TabOptionPage {
     property int catid: 1
     property TCategory dbrecord
 
-// COMPAT {
-    property int    mapid:   -1
-    property string mapname: "<no map>"
-    property double maplat:  0.0
-    property double maplon:  0.0
-    property double mapalt:  0.0
-    property int    mapx:    0
-    property int    mapy:    0
-
-    function setupMapArguments(id, name, lat, lon, alt, x, y) {
-        console.log("MainOptionPage.setupMapArguments(",id,name,lat,lon,alt,x,y,")")
-        mapid = id
-        mapname = name
-        maplat = lat
-        maplon = lon
-        mapalt = alt
-        mapx = x
-        mapy = y
-    }
-
     function wptSelected(id) {
-        var wpt = database.getWaypoint(id)
-        wptedit.name = wpt.name;
-        wptedit.latitude = wpt.latitude;
-        wptedit.longitude = wpt.longitude;
-        wptedit.altitude = wpt.altitude;
+        wptedit.wptid = id
         pageStack.push(wptedit);
     }
 
@@ -54,8 +30,6 @@ TabOptionPage {
     function trkSelected(id) {
         var trk = database.getTrack(id)
     }
-
-// } COMPAT
 
     TDatabase {
         id: database

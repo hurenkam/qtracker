@@ -1,65 +1,63 @@
 import QtQuick 1.0
+import QtMobility.publishsubscribe 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
+import "../Main"
+import "../Waypoint"
+import "../Route"
+import "../Track"
 
-OptionPage {
-    id: root
-    title: "Available Maps"
-    options: maplist
-    //property MapView mapview: null
-    property int catid: -1
-    property int tripid: -1
-
-    signal mapSelected(int mapid, string name)
-
-    Component {
-        id: mapimportsrc;
-        MapImportPage
-        {
-            id: importPage
-            onFileSelected: lst.addMap(text,folder)
-        }
-    }
-
-    Loader {
-        id: pageloader
-    }
-
-    VisualItemModel {
-        id: maplist
-
-        MapList {
-            id: lst
-            onMapSelected: {
-                root.mapSelected(mapid,name)
-                pageStack.pop()
-            }
-            onImportMap: {
-                console.log("MapEditPage.importMap()")
-                pageloader.sourceComponent = mapimportsrc
-                pageStack.push(pageloader.item)
-            }
-        }
-    }
-}
-
-/*
 OptionPage {
     id: root
     title: "Map List"
-    options: maplist
 
-    //signal mapSelected(int index, string baseName, string fileName)
-    signal mapSelected(int mapid, string name)
+    signal mapSelected(int mapid)
 
-    VisualItemModel {
-        id: maplist
+    TDatabase {
+        id: database
+    }
 
-        MapList {
-            id: lst
-            //title: "List"
-            //onMapSelected: { root.mapSelected(index,baseName,fileName) }
-            onMapSelected: { root.mapSelected(mapid, name) }
+    Component {
+        id: delegate
+        OptionTextItem {
+            id: txt;
+            width: parent.width
+            text: modelData.name;
+            button: true
+            onClicked: ListView.view.itemClicked(index)
         }
     }
+
+    Rectangle {
+        id: mapbox
+        anchors.margins: 10
+        x:      10
+        y:      60
+        width:  root.width - 20
+        height: root.height - 70
+        radius: 12
+        color: "white"
+        border.color: "grey"
+        border.width: 1
+        clip: true
+        smooth: true
+        ListView {
+            anchors.margins: 10
+            anchors.fill: parent
+            id: maplist
+            delegate: delegate
+
+            function itemClicked(index) {
+                pageStack.pop()
+                root.mapSelected(model[index].mapid)
+            }
+        }
+    }
+
+    function refreshData() {
+        console.log("MapSelectionPage.refreshData()")
+        maplist.model = database.maps
+    }
+
+    Component.onCompleted: refreshData()
 }
-*/

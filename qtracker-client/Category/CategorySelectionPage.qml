@@ -7,7 +7,7 @@ import "../Waypoint"
 import "../Route"
 import "../Track"
 
-MainOptionPage {
+OptionPage {
     id: root
     title: "Category List"
     property Item mapview

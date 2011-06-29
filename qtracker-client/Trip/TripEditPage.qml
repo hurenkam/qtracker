@@ -16,50 +16,16 @@ TabOptionPage {
     property int tripid: 1
     property TTrip dbrecord
 
-// COMPAT {
-    property int    mapid:   -1
-    property string mapname: "<no map>"
-    property double maplat:  0.0
-    property double maplon:  0.0
-    property double mapalt:  0.0
-    property int    mapx:    0
-    property int    mapy:    0
-
-    function setupMapArguments(id, name, lat, lon, alt, x, y) {
-        console.log("MainOptionPage.setupMapArguments(",id,name,lat,lon,alt,x,y,")")
-        mapid = id
-        mapname = name
-        maplat = lat
-        maplon = lon
-        mapalt = alt
-        mapx = x
-        mapy = y
-    }
-
     function wptSelected(id) {
-        var wpt = database.getWaypoint(id)
-        //if (index >= 0) {
-            wptedit.name = wpt.name;
-            wptedit.latitude = wpt.latitude;
-            wptedit.longitude = wpt.longitude;
-            wptedit.altitude = wpt.altitude;
-        //} else {
-        //    wptedit.latitude = maplat;
-        //    wptedit.longitude = maplon;
-        //    wptedit.altitude = mapalt;
-        //}
-        pageStack.push(wptedit);
+        wptedit.wptid = id
+        pageStack.push(wptedit)
     }
 
     function rteSelected(id) {
-        var rte = database.getRoute(id)
     }
 
     function trkSelected(id) {
-        var trk = database.getTrack(id)
     }
-
-// } COMPAT
 
     ValueSpaceSubscriber  {
         id: vcurrenttrip;
@@ -168,6 +134,8 @@ TabOptionPage {
         height: root.height - 120
         id: tablayout
 
+        WaypointSelectionTab { id: wptselect; height: root.height-140; onWaypointSelected: root.wptSelected(wptid) }
+/*
         TabItem {
             title: "Waypoints"
             Rectangle {
@@ -176,7 +144,7 @@ TabOptionPage {
                 x: 0
                 y: 0
                 width: parent.width
-                height: root.height - 200
+                height: root.height - 140
                 radius: 12
                 color: "white"
                 border.color: "grey"
@@ -195,6 +163,7 @@ TabOptionPage {
                 }
             }
         }
+*/
         TabItem {
             title: "Routes"
             Rectangle {
@@ -203,7 +172,7 @@ TabOptionPage {
                 x: 0
                 y: 0
                 width: parent.width
-                height: root.height - 200
+                height: root.height - 140
                 radius: 12
                 color: "white"
                 border.color: "grey"
@@ -230,7 +199,7 @@ TabOptionPage {
                 x: 0
                 y: 0
                 width: parent.width
-                height: root.height - 200
+                height: root.height - 140
                 radius: 12
                 color: "white"
                 border.color: "grey"

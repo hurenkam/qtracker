@@ -61,19 +61,148 @@ private:
     double     _altitude;
 };
 
+class qmlRefpoint: public QObject
+{
+    Q_OBJECT
+
+public:
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    void     setName(QString value)
+    { _name = value; emit nameChanged(); }
+    QString  name()
+    { return _name; }
+
+    Q_PROPERTY(int refid READ refid WRITE setRefid NOTIFY refidChanged)
+    void setRefid(int value)
+    { _refid = value; emit refidChanged(); }
+    int      refid()
+    { return _refid; }
+
+    Q_PROPERTY(double latitude READ latitude WRITE setLatitude NOTIFY latitudeChanged)
+    void setLatitude(double value)
+    { _latitude = value; emit latitudeChanged(); }
+    double latitude()
+    { return _latitude; }
+
+    Q_PROPERTY(double longitude READ longitude WRITE setLongitude NOTIFY longitudeChanged)
+    void setLongitude(double value)
+    { _longitude = value; emit longitudeChanged(); }
+    double longitude()
+    { return _longitude; }
+
+    Q_PROPERTY(int x READ x WRITE setX NOTIFY xChanged)
+    void setX(int value)
+    { _x = value; emit xChanged(); }
+    int x()
+    { return _x; }
+
+    Q_PROPERTY(int y READ y WRITE setY NOTIFY yChanged)
+    void setY(int value)
+    { _y = value; emit yChanged(); }
+    int y()
+    { return _y; }
+
+    qmlRefpoint();
+    qmlRefpoint(int id);
+    qmlRefpoint(const QSqlQuery& q);
+
+signals:
+    void nameChanged();
+    void refidChanged();
+    void latitudeChanged();
+    void longitudeChanged();
+    void xChanged();
+    void yChanged();
+
+private:
+    QString    _name;
+    int        _refid;
+    double     _latitude;
+    double     _longitude;
+    int        _x;
+    int        _y;
+};
+
+class qmlMap: public QObject
+{
+    Q_OBJECT
+public:
+    Q_PROPERTY(QString name  READ name  WRITE setName  NOTIFY nameChanged)
+    void     setName(QString value)
+    { _name = value; emit nameChanged(); }
+    QString  name()
+    { return _name; }
+
+    Q_PROPERTY(int mapid READ mapid WRITE setMapid NOTIFY mapidChanged)
+    void setMapid(int value)
+    { _mapid = value; }
+    int mapid()
+    { return _mapid; }
+
+    Q_PROPERTY(double top READ top WRITE setTop NOTIFY topChanged)
+    void setTop(double value)
+    { _top = value; emit topChanged(); }
+    double top()
+    { return _top; }
+
+    Q_PROPERTY(double left READ left WRITE setLeft NOTIFY leftChanged)
+    void setLeft(double value)
+    { _left = value; emit leftChanged(); }
+    double left()
+    { return _left; }
+
+    Q_PROPERTY(double bottom READ bottom WRITE setBottom NOTIFY bottomChanged)
+    void setBottom(double value)
+    { _bottom = value; emit bottomChanged(); }
+    double bottom()
+    { return _bottom; }
+
+    Q_PROPERTY(double right READ right WRITE setRight NOTIFY rightChanged)
+    void setRight(double value)
+    { _right = value; emit rightChanged(); }
+    double right()
+    { return _right; }
+
+    Q_PROPERTY(QDeclarativeListProperty<qmlRefpoint> refpoints READ refpoints CONSTANT)
+    QDeclarativeListProperty<qmlRefpoint> refpoints();
+
+    Q_INVOKABLE void selectRefpoints(int offset, int limit);
+
+    qmlMap();
+    qmlMap(int id);
+    qmlMap(const QSqlQuery& q);
+
+signals:
+    void nameChanged();
+    void mapidChanged();
+    void topChanged();
+    void leftChanged();
+    void bottomChanged();
+    void rightChanged();
+
+private:
+    QString _name;
+    int     _mapid;
+    double  _top;
+    double  _left;
+    double  _bottom;
+    double  _right;
+    QList<qmlRefpoint*> _refpts;
+};
+
 class qmlRoute: public QObject
 {
     Q_OBJECT
 public:
     Q_PROPERTY(QString name  READ name  WRITE setName  NOTIFY nameChanged)
     void     setName(QString value)
-    { _name = value; emit rteidChanged(); }
+    { _name = value; emit nameChanged(); }
     QString  name()
     { return _name; }
 
     Q_PROPERTY(int     rteid READ rteid WRITE setRteid NOTIFY rteidChanged)
     void     setRteid(int value)
-    { _rteid = value; }
+    { _rteid = value; emit rteidChanged(); }
     int      rteid()
     { return _rteid; }
 
@@ -419,6 +548,9 @@ public:
     Q_PROPERTY(QDeclarativeListProperty<qmlTrip> trips READ trips CONSTANT)
     QDeclarativeListProperty<qmlTrip> trips();
 
+    Q_PROPERTY(QDeclarativeListProperty<qmlMap> maps READ maps CONSTANT)
+    QDeclarativeListProperty<qmlMap> maps();
+
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
     void     setLimit(int value);
     int      limit()
@@ -431,6 +563,8 @@ public:
 
     Q_INVOKABLE qmlCategory* getCategory(int catid);
     Q_INVOKABLE qmlTrip*     getTrip(int tripid);
+    Q_INVOKABLE qmlMap*      getMap(int mapid);
+    Q_INVOKABLE qmlRefpoint* getRefpoint(int id);
     Q_INVOKABLE qmlWaypoint* getWaypoint(int id);
     Q_INVOKABLE qmlRoute*    getRoute(int id);
     Q_INVOKABLE qmlTrack*    getTrack(int id);
@@ -449,6 +583,7 @@ private:
     int                 _limit;
     QList<qmlTrip*>     _trips;
     QList<qmlCategory*> _categories;
+    QList<qmlMap*>      _maps;
 };
 
 #endif // QMLDATABASE_H

@@ -37,9 +37,8 @@ Page {
     Component { id: mapselectsrc;
         MapEditPage {
             id: mapPage;
+            mapid: map.mapid
             onMapSelected: map.loadMap(mapid);
-            //mapid:   map? map.mapid : -1
-            //mapname: map? map.mapname : ""
         }
     }
 
@@ -49,7 +48,7 @@ Page {
 
     function showPage(src) {
         pageloader.sourceComponent = src
-        pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,0.0,map.mapx,map.mapy)
+        //pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,0.0,map.mapx,map.mapy)
         pageStack.push(pageloader.item)
     }
 
@@ -75,10 +74,10 @@ Page {
         onMapLoaded: {
             //mapPage.currentmap = name
             //mapPage.currentid = mapid
-            console.log("MapView.onMapLoaded()",mapid,name)
+            console.log("MapView.onMapLoaded()",mapid)
             //mapPage.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,map.mapx,map.mapy)
-            if (pageloader.item)
-                pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,0.0,map.mapx,map.mapy)
+            //if (pageloader.item)
+            //    pageloader.item.setupMapArguments(map.mapid,map.mapname,map.maplat,map.maplon,0.0,map.mapx,map.mapy)
         }
     }
 
