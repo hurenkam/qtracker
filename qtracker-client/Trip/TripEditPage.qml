@@ -16,17 +16,6 @@ TabOptionPage {
     property int tripid: 1
     property TTrip dbrecord
 
-    function wptSelected(id) {
-        wptedit.wptid = id
-        pageStack.push(wptedit)
-    }
-
-    function rteSelected(id) {
-    }
-
-    function trkSelected(id) {
-    }
-
     ValueSpaceSubscriber  {
         id: vcurrenttrip;
         path: "/server/trip/id"
@@ -80,12 +69,6 @@ TabOptionPage {
         id: database
     }
 
-    WaypointEditPage {
-        id: wptedit;
-        //mapview: root.mapview;
-        onWaypointSaved: lst.saveWaypoint(index,name,lat,lon,alt)
-    }
-
     Component {
         id: delegate
         OptionTextItem {
@@ -134,8 +117,8 @@ TabOptionPage {
         height: root.height - 120
         id: tablayout
 
-        WaypointSelectionTab { id: wptselect; height: root.height-140; onWaypointSelected: root.wptSelected(wptid) }
-/*
+        //WaypointSelectionTab { id: wptselect; height: root.height-140; onWaypointSelected: root.wptSelected(wptid) }
+
         TabItem {
             title: "Waypoints"
             Rectangle {
@@ -163,7 +146,6 @@ TabOptionPage {
                 }
             }
         }
-*/
         TabItem {
             title: "Routes"
             Rectangle {
@@ -220,6 +202,20 @@ TabOptionPage {
         }
     }
 
+    TripSelectionPage { id: tripSelectPage; onTripSelected: root.tripid = tripid; }
+    WaypointEditPage  { id: wptedit; }
+
+    function wptSelected(id) {
+        wptedit.wptid = id
+        pageStack.push(wptedit)
+    }
+
+    function rteSelected(id) {
+    }
+
+    function trkSelected(id) {
+    }
+
     function refreshData() {
         console.log("TripEditPage.refreshData(",root.tripid,")")
         dbrecord = database.getTrip(root.tripid)
@@ -233,7 +229,6 @@ TabOptionPage {
         trklist.model = dbrecord.tracks
     }
 
-    TripSelectionPage { id: tripSelectPage; onTripSelected: root.tripid = tripid; }
     function selectTrip() {
         pageStack.push(tripSelectPage)
     }
