@@ -12,7 +12,7 @@ Item {
 
     Image {
         id: bgimage
-        source: landscape? "dash-bg-landscape.ico": "dash-bg-portrait.ico"
+        source: landscape? "../Images/dash-bg-landscape.ico": "../Images/dash-bg-portrait.ico"
         anchors.bottom: parent.bottom
         height: sourceSize.height*w
         width: sourceSize.width*w
@@ -82,7 +82,7 @@ Item {
     }
 
     Image {
-        source: landscape? "dash-fg-landscape.ico": "dash-fg-portrait.ico"
+        source: landscape? "../Images/dash-fg-landscape.ico": "../Images/dash-fg-portrait.ico"
         anchors.bottom: parent.bottom
         height: sourceSize.height*w
         width: sourceSize.width*w
