@@ -43,7 +43,7 @@ Item {
     }
 
     Image {
-        source: "compassring.svg"
+        source: "../Images/compassring.svg"
         anchors.fill: parent
         transform: Rotation {
             id: ring
@@ -62,7 +62,7 @@ Item {
         }
     }
     Image {
-        source: "compass.svg"
+        source: "../Images/compass.svg"
         anchors.fill: parent
         transform: Rotation {
             id: compass
@@ -81,7 +81,7 @@ Item {
         }
     }
     Image {
-        source: "compassneedle.svg"
+        source: "../Images/compassneedle.svg"
         anchors.fill: parent
         transform: Rotation {
             id: needle

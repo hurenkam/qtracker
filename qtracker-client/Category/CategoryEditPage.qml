@@ -12,9 +12,10 @@ import "../Trip"
 TabOptionPage {
     id: root
     title: "Category"
-    imageSource: "../Components/options-bg.png"
+    imageSource: "../Images/options-bg.png"
     rightbutton: true
-    rightbuttonsrc: "../Main/options.svg"
+    rightbuttonsrc: "../Images/options.svg"
+    allowalldown: false
     property int catid: 1
     property TCategory dbrecord
 
@@ -71,9 +72,9 @@ TabOptionPage {
     tabs: TabLayout {
         //anchors.fill: parent
         x:      10
-        y:      120
+        y:      100
         width:  root.width - 20
-        height: root.height - 180
+        height: root.height - 160
         id: tablayout
 
         TabItem {
@@ -84,7 +85,7 @@ TabOptionPage {
                 x: 0
                 y: 0
                 width: parent.width
-                height: root.height - 200
+                height: root.height - 180
                 radius: 12
                 color: "white"
                 border.color: "grey"
@@ -111,7 +112,7 @@ TabOptionPage {
                 x: 0
                 y: 0
                 width: parent.width
-                height: root.height - 200
+                height: root.height - 180
                 radius: 12
                 color: "white"
                 border.color: "grey"
@@ -138,7 +139,7 @@ TabOptionPage {
                 x: 0
                 y: 0
                 width: parent.width
-                height: root.height - 200
+                height: root.height - 180
                 radius: 12
                 color: "white"
                 border.color: "grey"
@@ -164,11 +165,11 @@ TabOptionPage {
         dbrecord = database.getCategory(root.catid)
         console.log("dbrecord: ",dbrecord.catid, dbrecord.name)
 
-        dbrecord.selectWaypoints(0,15)
+        dbrecord.selectWaypoints(0,100)
         wptlist.model = dbrecord.waypoints
-        dbrecord.selectRoutes(0,15)
+        dbrecord.selectRoutes(0,100)
         rtelist.model = dbrecord.routes
-        dbrecord.selectTracks(0,15)
+        dbrecord.selectTracks(0,100)
         trklist.model = dbrecord.tracks
     }
 

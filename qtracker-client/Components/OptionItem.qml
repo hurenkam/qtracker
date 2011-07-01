@@ -60,7 +60,7 @@ Item {
 
         visible: false
         bgcolor: root.hilitecolor
-        source: "forward.svg";
+        source: "../Images/forward.svg";
         onClicked: root.clicked(root.index2,root.text);
     }
 

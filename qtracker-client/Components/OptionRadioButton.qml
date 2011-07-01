@@ -4,5 +4,5 @@ OptionTextItem {
     id: root
     property bool ticked: false
     button: true
-    buttonsource: ticked? "ticked.svg" : "unticked.svg"
+    buttonsource: ticked? "../Images/ticked.svg" : "../Images/unticked.svg"
 }

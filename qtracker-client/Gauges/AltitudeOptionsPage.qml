@@ -169,7 +169,7 @@ TabOptionPage {
             height: width
 
             bgcolor: "white"
-            source: "backc.svg";
+            source: "../Images/backc.svg";
             onClicked: root.cancel();
         }
 
@@ -180,7 +180,7 @@ TabOptionPage {
             width: 50
             height: width
 
-            source: "confirmc.svg";
+            source: "../Images/confirmc.svg";
             bgcolor: "white"
             //onClicked: root.optionsChanged();
 

@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
     client.startServer();
 
     LOG("main(): splash.show()")
-    QPixmap pixmap(QLatin1String("Main/splash.svg"));
+    QPixmap pixmap(QLatin1String("Images/splash.svg"));
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("qTracker v" VERSION,Qt::AlignLeft,Qt::white);

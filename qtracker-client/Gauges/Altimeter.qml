@@ -26,7 +26,7 @@ Item {
     }
 
     Image {
-        source: "speed10.svg"
+        source: "../Images/speed10.svg"
         anchors.fill: parent
     }
 
@@ -101,7 +101,7 @@ Item {
     }
 
     Image {
-        source: "shorthand.svg"
+        source: "../Images/shorthand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: shorthand
@@ -119,7 +119,7 @@ Item {
     }
 
     Image {
-        source: "longhand.svg"
+        source: "../Images/longhand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: longhand

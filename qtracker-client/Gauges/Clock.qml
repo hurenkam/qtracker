@@ -67,7 +67,7 @@ Item {
     }
 
     Image {
-        source: "clock.svg";
+        source: "../Images/clock.svg";
         anchors.fill: parent
     }
 
@@ -97,7 +97,7 @@ Item {
     }
 
     Image {
-        source: "shorthand.svg"
+        source: "../Images/shorthand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: shorthand
@@ -114,7 +114,7 @@ Item {
         }
     }
     Image {
-        source: "longhand.svg"
+        source: "../Images/longhand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: longhand
@@ -131,7 +131,7 @@ Item {
         }
     }
     Image {
-        source: "secondhand.svg"
+        source: "../Images/secondhand.svg"
         anchors.fill: parent
         transform: Rotation {
             id: secondhand

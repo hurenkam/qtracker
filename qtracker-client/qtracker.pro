@@ -17,7 +17,9 @@ trk.source = Track
 trk.target = .
 trip.source = Trip
 trip.target = .
-DEPLOYMENTFOLDERS = cat main components gauges map wpt rte trk trip
+img.source = Images
+img.target = .
+DEPLOYMENTFOLDERS = cat main components gauges map wpt rte trk trip img
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH = /imports
@@ -79,6 +81,13 @@ SOURCES += \
     cpp/tablemodel.cpp \
     cpp/gpxfile.cpp \
     cpp/database.cpp \
+    cpp/qmlwaypoint.cpp \
+    cpp/qmlroute.cpp \
+    cpp/qmltrack.cpp \
+    cpp/qmltrip.cpp \
+    cpp/qmlcategory.cpp \
+    cpp/qmlmap.cpp \
+    cpp/qmlrefpoint.cpp \
     cpp/qmldatabase.cpp
 
 # Please do not modify the following two lines. Required for deployment.
@@ -94,6 +103,13 @@ HEADERS += \
     cpp/tablemodel.h \
     cpp/gpxfile.h \
     cpp/database.h \
+    cpp/qmlwaypoint.h \
+    cpp/qmlroute.h \
+    cpp/qmltrack.h \
+    cpp/qmltrip.h \
+    cpp/qmlcategory.h \
+    cpp/qmlmap.h \
+    cpp/qmlrefpoint.h \
     cpp/qmldatabase.h
 
 OTHER_FILES += \

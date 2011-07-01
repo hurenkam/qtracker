@@ -64,7 +64,7 @@ Page {
 
         Image {
             id: locator
-            source: map.state == "scrolling"? "locator_red.svg" : "locator_green.svg"
+            source: map.state == "scrolling"? "../Images/locator_red.svg" : "../Images/locator_green.svg"
             width: sourceSize.width/2
             height: sourceSize.height/2
             x: (parent.width-width)/2
@@ -96,11 +96,11 @@ Page {
 
         tools: ToolBarLayout {
             id: maintools
-            ToolButton { id: optbutton;  source: "options.svg";  }
-            ToolButton { id: mapbutton;  source: "map.svg";      onClicked: showPage(mapselectsrc)  }
-            ToolButton { id: catbutton;  source: "category.svg"; onClicked: showPage(catselectsrc) }
-            ToolButton { id: tripbutton; source: "trip.svg";     onClicked: showPage(tripselectsrc) }
-            ToolButton { id: tstbutton;  source: "flag.svg";     onClicked: showPage(tstselectsrc)  }
+            ToolButton { id: optbutton;  source: "../Images/options.svg";  }
+            ToolButton { id: mapbutton;  source: "../Images/map.svg";      onClicked: showPage(mapselectsrc)  }
+            ToolButton { id: catbutton;  source: "../Images/category.svg"; onClicked: showPage(catselectsrc) }
+            ToolButton { id: tripbutton; source: "../Images/trip.svg";     onClicked: showPage(tripselectsrc) }
+            ToolButton { id: tstbutton;  source: "../Images/flag.svg";     onClicked: showPage(tstselectsrc)  }
 
             // Opts => ?
             // Map  => Meta | Local | All  | Cat | Trip
@@ -110,7 +110,7 @@ Page {
             hasRightButton: true
             ToolButton {
                 id: quitbutton
-                source: "exit.svg"
+                source: "../Images/exit.svg"
                 onClicked: exitClient();
                 onRepeat:  exitClientAndServer();
                 interval: 5000;
@@ -149,7 +149,7 @@ Page {
         height: 60*h
         width: 60*w
         id: hidebutton;
-        source: "export.svg";
+        source: "../Images/export.svg";
         onClicked: {
             root.animate = true;
             dashboard.toggleHide();
@@ -164,7 +164,7 @@ Page {
         height: 40*h
         width: 40*w
         id: zoominbutton;
-        source: "zoom-in.svg";
+        source: "../Images/zoom-in.svg";
         onClicked: map.zoomIn()
     }
 
@@ -174,7 +174,7 @@ Page {
         height: 40*h
         width: 40*w
         id: zoomoutbutton;
-        source: "zoom-out.svg";
+        source: "../Images/zoom-out.svg";
         onClicked: map.zoomOut()
     }
 }

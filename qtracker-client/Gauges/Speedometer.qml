@@ -71,7 +71,7 @@ Item {
 
     Image {
         //source: if (analog.value < 10) "speed10.svg"; else "speed200.svg"
-        source: (analogvalue && (analogvalue>10))? "speed200.svg" : "speed10.svg"
+        source: (analogvalue && (analogvalue>10))? "../Images/speed200.svg" : "../Images/speed10.svg"
         width: parent.width
         height: parent.height
     }
@@ -107,7 +107,7 @@ Item {
     }
 
     Image {
-        source: "speedneedle.svg"
+        source: "../Images/speedneedle.svg"
         width: parent.width
         height: parent.height
         transform: Rotation {

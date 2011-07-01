@@ -53,7 +53,7 @@ int getIntField(const QSqlQuery& q, const QString& fieldName)
 }
 
 //================================
-
+/*
 qmlWaypoint::qmlWaypoint()
     : _name("wpt")
     , _wptid(-1)
@@ -443,13 +443,6 @@ void
 qmlCategory::selectWaypoints(int offset, int limit)
 {
     ENTER("")
-/*
-    qmlWaypoint* wpt;
-    while (_wpts.length()) { delete _wpts.first(); _wpts.removeFirst(); }
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT wpt FROM catwaypoints WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { _wpts.append(new qmlWaypoint(q.value(0).toInt())); }
-*/
     QDeclarativeListReference r(this,"waypoints");
     r.clear();
     QSqlDatabase& db = Database::Db();
@@ -550,10 +543,10 @@ qmlMap::selectRefpoints(int offset, int limit)
 }
 
 //=================================
-
+*/
 qmlDatabase::qmlDatabase()
     : _offset(0)
-    , _limit(10)
+    , _limit(50)
 {
     ENTER("")
     create();
@@ -688,13 +681,13 @@ qmlDatabase::select()
     QSqlQuery q(db);
     clear();
 
-    q.exec("SELECT * FROM trips LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
+    q.exec("SELECT * FROM trips ORDER BY trip DESC LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
     while (q.next()) _trips.append(new qmlTrip(q));
 
-    q.exec("SELECT * FROM categories LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
+    q.exec("SELECT * FROM categories ORDER BY name LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
     while (q.next()) _categories.append(new qmlCategory(q));
 
-    q.exec("SELECT * FROM maps LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
+    q.exec("SELECT * FROM maps ORDER BY name LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
     while (q.next()) _maps.append(new qmlMap(q));
 
     EXIT("")

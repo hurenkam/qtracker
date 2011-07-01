@@ -220,10 +220,6 @@ bool Map::calibrate()
         _baselon = p1.longitude();
         _basex = p1.x();
         _basey = p1.y();
-        //_dx   = (p2.longitude()-p1.longitude())/(p2.x()-p1.x());
-        //_dy   = (p2.latitude()-p1.latitude())/(p2.y()-p1.y());
-        //_dlon = (p2.x()-p1.x())/(p2.longitude()-p1.longitude());
-        //_dlat = (p2.y()-p1.y())/(p2.latitude()-p1.latitude());
         _dlon = p2.longitude()-p1.longitude();
         _dlat = p2.latitude()-p1.latitude();
         _dx = p2.x()-p1.x();
@@ -234,8 +230,3 @@ bool Map::calibrate()
     }
     return _iscalibrated;
 }
-
-//double   mapy2lat(double v)  { return _iscalibrated? _baselat + _dlat * (v - _basey)   : 0; }
-//double   mapx2lon(double v)  { return _iscalibrated? _baselon + _dlon * (v - _basex)   : 0; }
-//double   lat2mapy(double v)  { return _iscalibrated? _basey   + _dy   * (v - _baselat) : 0; }
-//double   lon2mapx(double v)  { return _iscalibrated? _basex   + _dx   * (v - _baselon) : 0; }

@@ -11,7 +11,8 @@ Page {
     property alias showheader: titlebar.visible
     property Item tabs
     property Item background
-    property int raised: -1
+    property bool allowalldown: true
+    property int raised: allowalldown? -1 : 0
     //height: parent.height    // TODO: this seem to be undefined for several pages, how to fix?
     //width: parent.width      // TODO: this seem to be undefined for several pages, how to fix?
     //height: parent? parent.height : 0
@@ -78,7 +79,7 @@ Page {
         leftButtonVisible: true
         onLeftClicked: root.cancel();
         rightButtonVisible: false
-        rightButtonSource: "visible.svg"
+        rightButtonSource: "../Images/visible.svg"
         onRightClicked: { root.confirm(); root.rightClicked(); }
     }
 
@@ -139,7 +140,7 @@ Page {
     }
 
     function tabSelected(index) {
-        if (root.raised === index) {
+        if (allowalldown && (root.raised === index)) {
             console.log("TabOptionPage.tabSelected(): unselect",index,tabs.children[index].title)
             root.raised = -1
         } else {

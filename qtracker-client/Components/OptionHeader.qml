@@ -51,7 +51,7 @@ Item {
 
             visible: false
             bgcolor: "black"
-            source: "back.svg";
+            source: "../Images/back.svg";
             onClicked: root.leftClicked();
         }
 
@@ -74,7 +74,7 @@ Item {
             height: visible? root.buttonheight *0.8 : 0
 
             visible: false
-            source: "forward.svg";
+            source: "../Images/forward.svg";
             bgcolor: "black"
             onClicked: root.rightClicked();
         }

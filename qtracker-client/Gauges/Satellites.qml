@@ -19,7 +19,7 @@ Item {
 
     Image {
         id: background
-        source: "satview.svg"
+        source: "../Images/satview.svg"
         anchors.fill: parent
     }
 

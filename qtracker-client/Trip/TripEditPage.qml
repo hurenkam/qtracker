@@ -12,7 +12,7 @@ TabOptionPage {
     title: "Trip"
     imageSource: "../Components/options-bg.png"
     rightbutton: true
-    rightbuttonsrc: "../Main/options.svg"
+    rightbuttonsrc: "../Images/options.svg"
     property int tripid: 1
     property TTrip dbrecord
 
@@ -221,11 +221,11 @@ TabOptionPage {
         dbrecord = database.getTrip(root.tripid)
         console.log("dbrecord: ",dbrecord.tripid, dbrecord.name)
 
-        dbrecord.selectWaypoints(0,15)
+        dbrecord.selectWaypoints(0,50)
         wptlist.model = dbrecord.waypoints
-        dbrecord.selectRoutes(0,15)
+        dbrecord.selectRoutes(0,50)
         rtelist.model = dbrecord.routes
-        dbrecord.selectTracks(0,15)
+        dbrecord.selectTracks(0,50)
         trklist.model = dbrecord.tracks
     }
 

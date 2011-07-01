@@ -51,7 +51,7 @@ Page {
         leftButtonVisible: true
         onLeftClicked: root.cancel();
         rightButtonVisible: false
-        rightButtonSource: "visible.svg"
+        rightButtonSource: "../Images/visible.svg"
         onRightClicked: root.confirm();
     }
 
