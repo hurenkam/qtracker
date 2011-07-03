@@ -8,7 +8,7 @@ Item {
     property alias titleheight: tab.height
     property alias titlex: tab.x
     property alias titley: tab.y
-    property string imageSource: "options-bg.png"
+    property string imageSource: "../Images/options-bg.png"
     default property alias children: content.children
     width: parent.width
 

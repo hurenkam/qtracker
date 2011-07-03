@@ -14,31 +14,31 @@ class qmlWaypoint: public QObject
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     void     setName(QString value)
-    { _name = value; emit nameChanged(); }
+    { _name = value; _dirty=true; emit nameChanged(); }
     QString  name()
     { return _name; }
 
     Q_PROPERTY(int wptid READ wptid WRITE setWptid NOTIFY wptidChanged)
     void setWptid(int value)
-    { _wptid = value; emit wptidChanged(); }
+    { _wptid = value; _dirty=true; emit wptidChanged(); }
     int      wptid()
     { return _wptid; }
 
     Q_PROPERTY(double latitude READ latitude WRITE setLatitude NOTIFY latitudeChanged)
     void setLatitude(double value)
-    { _latitude = value; emit latitudeChanged(); }
+    { _latitude = value; _dirty=true; emit latitudeChanged(); }
     double latitude()
     { return _latitude; }
 
     Q_PROPERTY(double longitude READ longitude WRITE setLongitude NOTIFY longitudeChanged)
     void setLongitude(double value)
-    { _longitude = value; emit longitudeChanged(); }
+    { _longitude = value; _dirty=true; emit longitudeChanged(); }
     double longitude()
     { return _longitude; }
 
     Q_PROPERTY(double altitude READ altitude WRITE setAltitude NOTIFY altitudeChanged)
     void setAltitude(double value)
-    { _altitude = value; emit altitudeChanged(); }
+    { _altitude = value; _dirty=true; emit altitudeChanged(); }
     double altitude()
     { return _altitude; }
 
@@ -53,12 +53,16 @@ signals:
     void longitudeChanged();
     void altitudeChanged();
 
+public slots:
+    void save();
+
 private:
     QString    _name;
     int        _wptid;
     double     _latitude;
     double     _longitude;
     double     _altitude;
+    bool       _dirty;
 };
 
 #endif

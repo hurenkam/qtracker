@@ -13,7 +13,6 @@
 #include "deviceinfomodel.h"
 #include "mapview.h"
 #include "client.h"
-#include "tablemodel.h"
 #include "gpxfile.h"
 #include "qmldatabase.h"
 
@@ -99,7 +98,6 @@ void registerTypes()
     qmlRegisterType<QDeclarativeFolderListModel>("QmlTrackerExtensions",1,0,"FolderListModel");
     qmlRegisterType<DeviceInfoModel>("QmlTrackerExtensions",1,0,"DeviceInfoModel");
     qmlRegisterType<MapView>("QmlTrackerExtensions",1,0,"MapView2");
-    qmlRegisterType<TableModel>("QmlTrackerExtensions",1,0,"TableModel");
     qmlRegisterType<GpxFile>("QmlTrackerExtensions",1,0,"GpxFile");
     qmlRegisterType<qmlDatabase>("QmlTrackerExtensions",1,0,"TDatabase");
     qmlRegisterType<qmlCategory>("QmlTrackerExtensions",1,0,"TCategory");

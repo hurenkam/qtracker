@@ -60,13 +60,18 @@ signals:
     void xChanged();
     void yChanged();
 
+public slots:
+    void save();
+
 private:
     QString    _name;
     int        _refid;
+    int        _mapid;
     double     _latitude;
     double     _longitude;
     int        _x;
     int        _y;
+    bool       _dirty;
 };
 
 #endif // QMLREFPOINT_H

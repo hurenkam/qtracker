@@ -5,6 +5,7 @@
 #include <QString>
 #include <QSqlQuery>
 #include <QDateTime>
+#include <QTimer>
 #include <QDeclarativeListProperty>
 
 #include "qmlwaypoint.h"
@@ -19,6 +20,40 @@ extern QString getStringField(const QSqlQuery& q, const QString& fieldName);
 extern double getDoubleField(const QSqlQuery& q, const QString& fieldName);
 extern QDateTime getDateTimeField(const QSqlQuery& q, const QString& fieldName);
 extern int getIntField(const QSqlQuery& q, const QString& fieldName);
+
+class qmlDatabasePrivate: public QObject
+{
+    Q_OBJECT
+public:
+    qmlDatabasePrivate();
+
+    void create();
+    void select();
+    void clear();
+    void setLimit(int value);
+    void setOffset(int value);
+
+public slots:
+    void set(const QString& key, const QVariant& value);
+    QVariant get(const QString& key, const QVariant& defaultValue);
+    void readSettings();
+    void saveSettings();
+
+signals:
+    void limitChanged();
+    void offsetChanged();
+    void settingChanged(QString key, QVariant value);
+
+public:
+    int                    _offset;
+    int                    _limit;
+    QList<qmlTrip*>        _trips;
+    QList<qmlCategory*>    _categories;
+    QList<qmlMap*>         _maps;
+    QMap<QString,QVariant> _settings;
+    QList<QString>         _dirtysettings;
+    QTimer                 _timer;
+};
 
 class qmlDatabase: public QObject
 {
@@ -37,13 +72,11 @@ public:
 
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
     void     setLimit(int value);
-    int      limit()
-    { return _limit; }
+    int      limit();
 
     Q_PROPERTY(int offset READ offset WRITE setOffset NOTIFY offsetChanged)
     void     setOffset(int value);
-    int      offset()
-    { return _offset; }
+    int      offset();
 
     Q_INVOKABLE qmlCategory* getCategory(int catid);
     Q_INVOKABLE qmlTrip*     getTrip(int tripid);
@@ -53,21 +86,16 @@ public:
     Q_INVOKABLE qmlRoute*    getRoute(int id);
     Q_INVOKABLE qmlTrack*    getTrack(int id);
 
+    Q_INVOKABLE void set(const QString& key, const QVariant& value);
+    Q_INVOKABLE QVariant get(const QString& key, const QVariant& defaultValue);
+
 signals:
     void limitChanged();
     void offsetChanged();
+    void settingChanged(QString key, QVariant value);
 
 private:
-    void create();
-    void select();
-    void clear();
-
-private:
-    int                 _offset;
-    int                 _limit;
-    QList<qmlTrip*>     _trips;
-    QList<qmlCategory*> _categories;
-    QList<qmlMap*>      _maps;
+    static qmlDatabasePrivate* p;
 };
 
 #endif // QMLDATABASE_H

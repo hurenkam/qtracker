@@ -12,7 +12,7 @@ import "../Trip"
 TabOptionPage {
     id: root
     title: "Category"
-    imageSource: "../Components/options-bg.png"
+    imageSource: "../Images/options-bg.png"
 
 // COMPAT {
     property int    mapid:   -1

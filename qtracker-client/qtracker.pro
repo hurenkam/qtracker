@@ -78,7 +78,6 @@ SOURCES += \
     cpp/main.cpp \
     cpp/mapview.cpp \
     cpp/client.cpp \
-    cpp/tablemodel.cpp \
     cpp/gpxfile.cpp \
     cpp/database.cpp \
     cpp/qmlwaypoint.cpp \
@@ -100,7 +99,6 @@ HEADERS += \
     cpp/mapview.h \
     cpp/helpers.h \
     cpp/client.h \
-    cpp/tablemodel.h \
     cpp/gpxfile.h \
     cpp/database.h \
     cpp/qmlwaypoint.h \

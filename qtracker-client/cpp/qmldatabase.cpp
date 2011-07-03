@@ -2,6 +2,7 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QStringList>
+#include <QTimer>
 #include "database.h"
 #include "qmldatabase.h"
 
@@ -24,533 +25,184 @@ const QStringList dbsetup = QStringList()
     << "CREATE TABLE IF NOT EXISTS tripwaypoints (tripwpt INTEGER PRIMARY KEY, trip  INTEGER, wpt  INTEGER);"
     << "CREATE TABLE IF NOT EXISTS triproutes    (triprte INTEGER PRIMARY KEY, trip  INTEGER, rte  INTEGER);"
     << "CREATE TABLE IF NOT EXISTS triptracks    (triptrk INTEGER PRIMARY KEY, trip  INTEGER, trk  INTEGER);"
+    << "CREATE TABLE IF NOT EXISTS settings      (setting TEXT UNIQUE,         value TEXT);"
     ;
 
 //================================
 
-QString getStringField(const QSqlQuery& q, const QString& fieldName)
+QVariant getVariantField(const QSqlQuery& q, const QString& fieldName)
 {
     int fieldNo = q.record().indexOf(fieldName);
-    return q.value(fieldNo).toString();
+    return q.value(fieldNo);
+}
+
+QString getStringField(const QSqlQuery& q, const QString& fieldName)
+{
+    return getVariantField(q,fieldName).toString();
 }
 
 double getDoubleField(const QSqlQuery& q, const QString& fieldName)
 {
-    int fieldNo = q.record().indexOf(fieldName);
-    return q.value(fieldNo).toDouble();
-}
-
-QDateTime getDateTimeField(const QSqlQuery& q, const QString& fieldName)
-{
-    int fieldNo = q.record().indexOf(fieldName);
-    return q.value(fieldNo).toDateTime();
+    return getVariantField(q,fieldName).toDouble();
 }
 
 int getIntField(const QSqlQuery& q, const QString& fieldName)
 {
-    int fieldNo = q.record().indexOf(fieldName);
-    return q.value(fieldNo).toInt();
+    return getVariantField(q,fieldName).toInt();
 }
 
-//================================
-/*
-qmlWaypoint::qmlWaypoint()
-    : _name("wpt")
-    , _wptid(-1)
-    , _latitude(0)
-    , _longitude(0)
-    , _altitude(0)
+QDateTime getDateTimeField(const QSqlQuery& q, const QString& fieldName)
 {
-    ENTER("")
-    EXIT("")
-}
-
-qmlWaypoint::qmlWaypoint(int id)
-    : _name("wpt")
-    , _wptid(-1)
-    , _latitude(0)
-    , _longitude(0)
-    , _altitude(0)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM waypoints WHERE wpt='" + QString::number(id) + "'",db);
-    if (q.next())
-    {
-        _wptid = id;
-        _name = getStringField(q,"name");
-        _latitude  = getDoubleField(q,"latitude");
-        _longitude = getDoubleField(q,"longitude");
-        _altitude  = getDoubleField(q,"altitude");
-    }
-    EXIT("")
-}
-
-qmlWaypoint::qmlWaypoint(const QSqlQuery& q)
-{
-    ENTER("")
-    _wptid     = getIntField(q,"wpt");
-    _name      = getStringField(q,"name");
-    _latitude  = getDoubleField(q,"latitude");
-    _longitude = getDoubleField(q,"longitude");
-    _altitude  = getDoubleField(q,"altitude");
-    EXIT("")
+    return getVariantField(q,fieldName).toDateTime();
 }
 
 //================================
 
-qmlRoute::qmlRoute()
-    : _name("rte")
-    , _rteid(0)
-{
-    ENTER("")
-}
-
-qmlRoute::qmlRoute(int id)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM routes WHERE rte='" + QString::number(id) + "'",db);
-    if (q.next())
-    {
-        _rteid     = getIntField(q,"rte");
-        _name      = getStringField(q,"name");
-        _top       = getDoubleField(q,"top");
-        _left      = getDoubleField(q,"left");
-        _bottom    = getDoubleField(q,"bottom");
-        _right     = getDoubleField(q,"right");
-    }
-    EXIT("")
-}
-
-qmlRoute::qmlRoute(const QSqlQuery& q)
-{
-    ENTER("")
-    _rteid     = getIntField(q,"rte");
-    _name      = getStringField(q,"name");
-    _top       = getDoubleField(q,"top");
-    _left      = getDoubleField(q,"left");
-    _bottom    = getDoubleField(q,"bottom");
-    _right     = getDoubleField(q,"right");
-    EXIT("")
-}
-
-//================================
-
-qmlTrack::qmlTrack()
-    : _name("trk")
-    , _trkid(0)
-{
-    ENTER("")
-}
-
-qmlTrack::qmlTrack(int id)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM tracks WHERE trk='" + QString::number(id) + "'",db);
-    if (q.next())
-    {
-        _trkid     = getIntField(q,"trk");
-        _name      = getStringField(q,"name");
-        _top       = getDoubleField(q,"top");
-        _left      = getDoubleField(q,"left");
-        _bottom    = getDoubleField(q,"bottom");
-        _right     = getDoubleField(q,"right");
-    }
-    EXIT("")
-}
-
-qmlTrack::qmlTrack(const QSqlQuery& q)
-{
-    ENTER("")
-    _trkid     = getIntField(q,"trk");
-    _name      = getStringField(q,"name");
-    _top       = getDoubleField(q,"top");
-    _left      = getDoubleField(q,"left");
-    _bottom    = getDoubleField(q,"bottom");
-    _right     = getDoubleField(q,"right");
-    EXIT("")
-}
-
-//================================
-
-qmlRefpoint::qmlRefpoint()
-    : _name("wpt")
-    , _refid(-1)
-    , _latitude(0)
-    , _longitude(0)
-{
-    ENTER("")
-    EXIT("")
-}
-
-qmlRefpoint::qmlRefpoint(int id)
-    : _name("refpt")
-    , _refid(-1)
-    , _latitude(0)
-    , _longitude(0)
-    , _x(0)
-    , _y(0)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM mappoints WHERE mappt='" + QString::number(id) + "'",db);
-    if (q.next())
-    {
-        _refid = id;
-        _name = getStringField(q,"name");
-        _latitude  = getDoubleField(q,"latitude");
-        _longitude = getDoubleField(q,"longitude");
-        _x = getDoubleField(q,"x");
-        _y = getDoubleField(q,"y");
-    }
-    EXIT("")
-}
-
-qmlRefpoint::qmlRefpoint(const QSqlQuery& q)
-{
-    ENTER("")
-    _refid     = getIntField(q,"mappt");
-    _name      = getStringField(q,"name");
-    _latitude  = getDoubleField(q,"latitude");
-    _longitude = getDoubleField(q,"longitude");
-    _x = getDoubleField(q,"x");
-    _y = getDoubleField(q,"y");
-    EXIT("")
-}
-
-//================================
-
-qmlTrip::qmlTrip()
-    : _name("trip")
-    , _tripid(6)
-    , _limit(10)
+qmlDatabasePrivate::qmlDatabasePrivate()
+    : _limit(50)
     , _offset(0)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q(db);
-}
-
-qmlTrip::qmlTrip(int id)
-    : _limit(10)
-    , _offset(0)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM trips WHERE trip='" + QString::number(id) + "'",db);
-    if (q.next())
-        load(q);
-    EXIT("")
-}
-
-qmlTrip::qmlTrip(const QSqlQuery& q)
-    : _limit(10)
-    , _offset(0)
-{
-    ENTER("")
-    load(q);
-    EXIT("")
-}
-
-void qmlTrip::load(const QSqlQuery& q)
-{
-    ENTER("")
-    _tripid = getIntField(q,"trip");
-    _name = getStringField(q,"name");
-    _triptime = getDateTimeField(q,"triptime");
-    _tripdist = getDoubleField(q,"tripdist");
-    _ascent = getDoubleField(q,"ascent");
-    _descent = getDoubleField(q,"descent");
-    _altmin = getDoubleField(q,"altmin");
-    _altmax = getDoubleField(q,"altmax");
-    _altavg = getDoubleField(q,"altavg");
-    _speedmin = getDoubleField(q,"speedmin");
-    _speedmax = getDoubleField(q,"speedmax");
-    _speedavg = getDoubleField(q,"speedavg");
-    EXIT("")
-}
-
-QDeclarativeListProperty<qmlWaypoint>
-qmlTrip::waypoints()
-{
-    ENTER("")
-    return QDeclarativeListProperty<qmlWaypoint>(this, _wpts);
-}
-
-QDeclarativeListProperty<qmlRoute>
-qmlTrip::routes()
-{
-    ENTER("")
-    return QDeclarativeListProperty<qmlRoute>(this, _rtes);
-}
-
-QDeclarativeListProperty<qmlTrack>
-qmlTrip::tracks()
-{
-    ENTER("")
-    return QDeclarativeListProperty<qmlTrack>(this, _trks);
-}
-
-void
-qmlTrip::setLimit(int value)
-{
-    ENTER("")
-    _limit = value;
-    emit limitChanged();
-    EXIT("")
-}
-
-void
-qmlTrip::setOffset(int value)
-{
-    ENTER("")
-    _offset = value;
-    emit offsetChanged();
-    EXIT("")
-}
-
-void
-qmlTrip::selectWaypoints(int offset, int limit)
-{
-    ENTER("")
-    QDeclarativeListReference r(this,"waypoints");
-    r.clear();
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT wpt FROM tripwaypoints WHERE trip='" + QString::number(_tripid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { r.append(new qmlWaypoint(q.value(0).toInt())); }
-    EXIT("")
-}
-
-void
-qmlTrip::selectRoutes(int offset, int limit)
-{
-    ENTER("")
-    QDeclarativeListReference r(this,"routes");
-    r.clear();
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT rte FROM triproutes WHERE trip='" + QString::number(_tripid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { r.append(new qmlRoute(q.value(0).toInt())); }
-    EXIT("")
-}
-
-void
-qmlTrip::selectTracks(int offset, int limit)
-{
-    ENTER("")
-    QDeclarativeListReference r(this,"tracks");
-    r.clear();
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT trk FROM triptracks WHERE trip='" + QString::number(_tripid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { r.append(new qmlTrack(q.value(0).toInt())); }
-    EXIT("")
-}
-
-void
-qmlTrip::select()
-{
-    ENTER("")
-    selectWaypoints();
-    selectRoutes();
-    selectTracks();
-    EXIT("")
-}
-
-//================================
-
-qmlCategory::qmlCategory()
-    : _name("cat")
-    , _catid(-1)
-    , _limit(10)
-    , _offset(0)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q(db);
-    EXIT("")
-}
-
-qmlCategory::qmlCategory(int catid)
-    : _limit(10)
-    , _offset(0)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM categories WHERE cat='" + QString::number(catid) + "'",db);
-    if (q.next())
-        load(q);
-    EXIT("")
-}
-
-qmlCategory::qmlCategory(const QSqlQuery& q)
-    : _limit(10)
-    , _offset(0)
-{
-    ENTER("")
-    load(q);
-    EXIT("")
-}
-
-void qmlCategory::load(const QSqlQuery& q)
-{
-    ENTER("")
-    _catid = getIntField(q,"cat");
-    _name = getStringField(q,"name");
-    EXIT("")
-}
-
-QDeclarativeListProperty<qmlWaypoint>
-qmlCategory::waypoints()
-{
-    ENTER("")
-    return QDeclarativeListProperty<qmlWaypoint>(this, _wpts);
-}
-
-QDeclarativeListProperty<qmlRoute>
-qmlCategory::routes()
-{
-    ENTER("")
-    return QDeclarativeListProperty<qmlRoute>(this, _rtes);
-}
-
-QDeclarativeListProperty<qmlTrack>
-qmlCategory::tracks()
-{
-    ENTER("")
-    return QDeclarativeListProperty<qmlTrack>(this, _trks);
-}
-
-void
-qmlCategory::setLimit(int value)
-{
-    ENTER("")
-    _limit = value;
-    emit limitChanged();
-    EXIT("")
-}
-
-void
-qmlCategory::setOffset(int value)
-{
-    ENTER("")
-    _offset = value;
-    emit offsetChanged();
-    EXIT("")
-}
-
-void
-qmlCategory::selectWaypoints(int offset, int limit)
-{
-    ENTER("")
-    QDeclarativeListReference r(this,"waypoints");
-    r.clear();
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT wpt FROM catwaypoints WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { r.append(new qmlWaypoint(q.value(0).toInt())); }
-    EXIT("")
-}
-
-void
-qmlCategory::selectRoutes(int offset, int limit)
-{
-    ENTER("")
-    QDeclarativeListReference r(this,"tracks");
-    r.clear();
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT trk FROM cattracks WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { r.append(new qmlRoute(q.value(0).toInt())); }
-    EXIT("")
-}
-
-void
-qmlCategory::selectTracks(int offset, int limit)
-{
-    ENTER("")
-    QDeclarativeListReference r(this,"tracks");
-    r.clear();
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT trk FROM cattracks WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { r.append(new qmlTrack(q.value(0).toInt())); }
-    EXIT("")
-}
-
-void
-qmlCategory::select()
-{
-    ENTER("")
-    selectWaypoints();
-    selectRoutes();
-    selectTracks();
-    EXIT("")
-}
-
-//================================
-
-qmlMap::qmlMap()
-    : _name("map")
-    , _mapid(0)
-{
-    ENTER("")
-}
-
-qmlMap::qmlMap(int id)
-{
-    ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM maps WHERE mapid='" + QString::number(id) + "'",db);
-    if (q.next())
-    {
-        _mapid     = getIntField(q,"mapid");
-        _name      = getStringField(q,"name");
-        _top       = getDoubleField(q,"north");
-        _left      = getDoubleField(q,"west");
-        _bottom    = getDoubleField(q,"south");
-        _right     = getDoubleField(q,"east");
-    }
-    EXIT("")
-}
-
-qmlMap::qmlMap(const QSqlQuery& q)
-{
-    ENTER("")
-    _mapid     = getIntField(q,"mapid");
-    _name      = getStringField(q,"name");
-    _top       = getDoubleField(q,"north");
-    _left      = getDoubleField(q,"west");
-    _bottom    = getDoubleField(q,"south");
-    _right     = getDoubleField(q,"east");
-    EXIT("")
-}
-
-QDeclarativeListProperty<qmlRefpoint>
-qmlMap::refpoints()
-{
-    ENTER("")
-    return QDeclarativeListProperty<qmlRefpoint>(this, _refpts);
-}
-
-void
-qmlMap::selectRefpoints(int offset, int limit)
-{
-    ENTER("")
-    QDeclarativeListReference r(this,"refpoints");
-    r.clear();
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT mappt FROM mappoints WHERE mapid='" + QString::number(_mapid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { r.append(new qmlRefpoint(q.value(0).toInt())); }
-    EXIT("")
-}
-
-//=================================
-*/
-qmlDatabase::qmlDatabase()
-    : _offset(0)
-    , _limit(50)
 {
     ENTER("")
     create();
     select();
+    readSettings();
+    _timer.setSingleShot(true);
+    _timer.setInterval(5000);
+    connect(&_timer, SIGNAL(timeout()), this, SLOT(saveSettings()));
+    EXIT("")
+}
+
+void
+qmlDatabasePrivate::setLimit(int value)
+{
+    ENTER("")
+    _limit = value;
+    select();
+    emit limitChanged();
+}
+
+void
+qmlDatabasePrivate::setOffset(int value)
+{
+    ENTER("")
+    _offset = value;
+    select();
+    emit offsetChanged();
+}
+
+void
+qmlDatabasePrivate::clear()
+{
+    ENTER("")
+    for (int i=0; i<_categories.length(); i++) delete _categories[i];
+    for (int i=0; i<_trips.length(); i++) delete _trips[i];
+    _categories.clear();
+    _trips.clear();
+    EXIT("")
+}
+
+void
+qmlDatabasePrivate::create()
+{
+    ENTER("")
+
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+
+    for (int i=0; i<dbsetup.length(); i++)
+    {
+        if (!q.exec(dbsetup[i]))
+        { LOG("qmlDatabase::create() cmd: " << dbsetup[i] << " error: " << q.lastError() ) }
+    }
+
+    EXIT("")
+}
+
+void
+qmlDatabasePrivate::select()
+{
+    ENTER("")
+
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+    clear();
+
+    q.exec("SELECT * FROM trips ORDER BY trip DESC LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
+    while (q.next()) _trips.append(new qmlTrip(q));
+
+    q.exec("SELECT * FROM categories ORDER BY name LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
+    while (q.next()) _categories.append(new qmlCategory(q));
+
+    q.exec("SELECT * FROM maps ORDER BY name LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
+    while (q.next()) _maps.append(new qmlMap(q));
+
+    EXIT("")
+}
+
+void qmlDatabasePrivate::readSettings()
+{
+    ENTER("")
+
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+
+    q.exec("SELECT setting, value FROM settings");
+    while (q.next())
+    {
+        QString  key   = getStringField(q,"setting");
+        QVariant value = getVariantField(q,"value");
+        _settings[key] = value;
+        //LOG("found setting: " << key << " = " << value);
+    }
+
+    EXIT("")
+}
+
+void qmlDatabasePrivate::saveSettings()
+{
+    ENTER("")
+
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+
+    for (int i=0; i < _dirtysettings.count(); i++)
+    {
+        q.exec("INSERT OR REPLACE INTO settings (setting,value) VALUES (\"" + _dirtysettings[i] + "\",\"" + _settings[_dirtysettings[i]].toString() + "\")");
+    }
+    _dirtysettings.clear();
+
+    EXIT("")
+}
+
+void qmlDatabasePrivate::set(const QString& key, const QVariant& value)
+{
+    _settings[key]=value;
+    if (!_dirtysettings.contains(key))
+    { _dirtysettings.append(key); }
+    _timer.start();
+    emit settingChanged(key,value);
+}
+
+QVariant qmlDatabasePrivate::get(const QString& key, const QVariant& defaultValue)
+{
+    if (_settings.contains(key))
+        return _settings[key];
+
+    set(key,defaultValue);
+    return defaultValue;
+}
+
+//================================
+
+qmlDatabasePrivate* qmlDatabase::p = 0;
+
+qmlDatabase::qmlDatabase()
+{
+    ENTER("")
+    if (!p) p = new qmlDatabasePrivate();
+    connect(p, SIGNAL(offsetChanged()), this, SLOT(offsetChanged()));
+    connect(p, SIGNAL(limitChanged()), this, SLOT(limitChanged()));
+    connect(p, SIGNAL(settingChanged(QString, QVariant)), this, SLOT(settingChanged(QString,QVariant)));
     EXIT("")
 }
 
@@ -558,21 +210,21 @@ QDeclarativeListProperty<qmlCategory>
 qmlDatabase::categories()
 {
     ENTER("")
-    return QDeclarativeListProperty<qmlCategory>(this, _categories);
+    return QDeclarativeListProperty<qmlCategory>(this, p->_categories);
 }
 
 QDeclarativeListProperty<qmlTrip>
 qmlDatabase::trips()
 {
     ENTER("")
-    return QDeclarativeListProperty<qmlTrip>(this, _trips);
+    return QDeclarativeListProperty<qmlTrip>(this, p->_trips);
 }
 
 QDeclarativeListProperty<qmlMap>
 qmlDatabase::maps()
 {
     ENTER("")
-    return QDeclarativeListProperty<qmlMap>(this, _maps);
+    return QDeclarativeListProperty<qmlMap>(this, p->_maps);
 }
 
 qmlCategory*
@@ -628,68 +280,26 @@ void
 qmlDatabase::setLimit(int value)
 {
     ENTER("")
-    _limit = value;
-    select();
-    emit limitChanged();
-    EXIT("")
+    p->setLimit(value);
 }
+
+int
+qmlDatabase::limit()
+{ return p->_limit; }
 
 void
 qmlDatabase::setOffset(int value)
 {
     ENTER("")
-    _offset = value;
-    select();
-    emit offsetChanged();
-    EXIT("")
+    p->setOffset(value);
 }
 
-void
-qmlDatabase::clear()
-{
-    ENTER("")
-    for (int i=0; i<_categories.length(); i++) delete _categories[i];
-    for (int i=0; i<_trips.length(); i++) delete _trips[i];
-    _categories.clear();
-    _trips.clear();
-    EXIT("")
-}
+int
+qmlDatabase::offset()
+{ return p->_offset; }
 
-void
-qmlDatabase::create()
-{
-    ENTER("")
+void qmlDatabase::set(const QString& key, const QVariant& value)
+{ p->set(key,value); }
 
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q(db);
-
-    for (int i=0; i<dbsetup.length(); i++)
-    {
-        if (!q.exec(dbsetup[i]))
-        { LOG("qmlDatabase::create() cmd: " << dbsetup[i] << " error: " << q.lastError() ) }
-    }
-
-    EXIT("")
-}
-
-void
-qmlDatabase::select()
-{
-    ENTER("")
-
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q(db);
-    clear();
-
-    q.exec("SELECT * FROM trips ORDER BY trip DESC LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
-    while (q.next()) _trips.append(new qmlTrip(q));
-
-    q.exec("SELECT * FROM categories ORDER BY name LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
-    while (q.next()) _categories.append(new qmlCategory(q));
-
-    q.exec("SELECT * FROM maps ORDER BY name LIMIT " + QString::number(_limit) + " OFFSET " + QString::number(_offset));
-    while (q.next()) _maps.append(new qmlMap(q));
-
-    EXIT("")
-}
-
+QVariant qmlDatabase::get(const QString& key, const QVariant& defaultValue)
+{ return p->get(key,defaultValue); }

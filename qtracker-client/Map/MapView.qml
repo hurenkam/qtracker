@@ -115,14 +115,14 @@ Item {
         {
             var mx = x; var my = y;
             zoom = zoom<6? zoom+1: zoom;
-            //settings.setProperty("map_zoom", zoom)
+            settings.setProperty("map_zoom", zoom)
             flickable.setpos(mx,my)
             root.zoomChanged()
         }
         function zoomOut()  {
             var mx = x; var my = y;
             zoom = zoom>0? zoom-1: zoom;
-            //settings.setProperty("map_zoom", zoom)
+            settings.setProperty("map_zoom", zoom)
             flickable.setpos(mx,my)
             root.zoomChanged()
         }
@@ -195,10 +195,10 @@ Item {
             root.mapLoaded(content.mapid, viewport.name)
         }
     }
-
+/*
     Timer {
         id: timer
-        interval: 5000
+        interval: 500
         running: false
         repeat: false
         onTriggered: {
@@ -207,7 +207,7 @@ Item {
             settings.setProperty("map_zoom", content.zoom)
         }
     }
-
+*/
     Flickable {
         id: flickable
         width:  0
@@ -220,8 +220,11 @@ Item {
         contentY: 0
         contentWidth:      content.width + root.width
         contentHeight:     content.height + root.height
-        onMovementStarted: { timer.stop(); root.state = "scrolling" }
-        onMovementEnded:   { timer.start(); }
+        onMovementStarted: { /*timer.stop();*/ root.state = "scrolling" }
+        onMovementEnded:   { /*timer.start();*/
+            settings.setProperty("map_x",flickable.contentX)
+            settings.setProperty("map_y",flickable.contentY)
+        }
 
         clip: true
         property bool initialized: false

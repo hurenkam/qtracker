@@ -33,7 +33,7 @@ OptionPage {
                 OptionInputItem { id: wptalt;         text: "Longitude:"; value: "0.0" }
 
                 Component.onCompleted: {
-                    refname.value = settings.getProperty("wpt_defaultname","wpt-000")
+                    wptname.value = settings.getProperty("wpt_defaultname","wpt-000")
                 }
             }
         }

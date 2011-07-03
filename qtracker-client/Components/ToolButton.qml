@@ -7,14 +7,16 @@ Item {
     smooth: true
     state: "released"
     property int interval: 0
-    property alias selected: bg.visible
+    property bool selected: false
     property alias source: img.source
     property alias bgcolor: bg.color
+    property alias bgradius: bg.radius
+    property bool showbg: true
 
     Rectangle {
         id: bg
-        visible: false
-        x: 1; y:1; width: parent.width-2; height: parent.height-2
+        visible: showbg? root.selected: false
+        x: -3; y:-3; width: parent.width+6; height: parent.height+6
         radius: height/2
         color: "white"
     }

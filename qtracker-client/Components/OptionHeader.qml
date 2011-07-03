@@ -5,8 +5,10 @@ Item {
 
     property alias leftButtonVisible:  leftbutton.visible
     property alias leftButtonSource:   leftbutton.source
+    property alias leftButtonRadius:   leftbutton.bgradius
     property alias rightButtonVisible: rightbutton.visible
     property alias rightButtonSource:  rightbutton.source
+    property alias rightButtonRadius:  rightbutton.bgradius
     property alias text:               label.text
     property real  buttonheight:       50
 
@@ -44,10 +46,10 @@ Item {
         ToolButton {
             id: leftbutton
 
-            x: visible? root.buttonheight * 0.1 : 0
-            y: visible? root.buttonheight * 0.1 : 0
-            width:  visible? root.buttonheight *0.8 : 0
-            height: visible? root.buttonheight *0.8 : 0
+            x: visible? 5 : 0
+            y: visible? 5 : 0
+            width:  visible? root.buttonheight -10 : 0
+            height: visible? root.buttonheight -10 : 0
 
             visible: false
             bgcolor: "black"
@@ -68,10 +70,10 @@ Item {
         ToolButton {
             id: rightbutton
 
-            x: visible? parent.width - root.buttonheight * 1.1 : parent.width
-            y: visible? root.buttonheight * 0.1 : 0
-            width:  visible? root.buttonheight *0.8 : 0
-            height: visible? root.buttonheight *0.8 : 0
+            x: visible? parent.width - root.buttonheight +5 : parent.width
+            y: visible? 5 : 0
+            width:  visible? root.buttonheight -10 : 0
+            height: visible? root.buttonheight -10 : 0
 
             visible: false
             source: "../Images/forward.svg";

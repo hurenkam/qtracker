@@ -76,7 +76,7 @@ Item {
                     var item = items.get(i)
                     item.roundtop = false
                     item.roundbottom = false
-                    h = layoutOptionItem(item,w,h+10) + 10;
+                    h = layoutOptionItem(item,w,h+4) + 4;
                 }
                 items.get(0).roundtop = true
                 items.get(items.count()-1).roundbottom = true

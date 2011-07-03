@@ -2,43 +2,37 @@ import QtQuick 1.0
 import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
-import "../Gauges"
-import "../Map"
+import "../Main"
 import "../Waypoint"
 import "../Route"
 import "../Track"
-import "../Trip"
 
-TabOptionPage {
+OptionPage {
     id: root
     title: "Category"
     imageSource: "../Images/options-bg.png"
     rightbutton: true
-    rightbuttonsrc: "../Images/options.svg"
-    allowalldown: false
+    rightbuttonsrc: "../Images/options-plain.svg"
+    rightbuttonradius: 0
+    leftbutton: true
+    leftbuttonsrc: "../Images/left-plain.svg"
+    leftbuttonradius: 0
     property int catid: 1
     property TCategory dbrecord
 
-    function wptSelected(id) {
-        wptedit.wptid = id
-        pageStack.push(wptedit);
-    }
-
-    function rteSelected(id) {
-        var rte = database.getRoute(id)
-    }
-
-    function trkSelected(id) {
-        var trk = database.getTrack(id)
+    tools: ToolBarLayout {
+        id: maintools
+        ToolButton { id: okbutton;   source: "../Images/visible-plain.svg";   bgcolor: "black"; bgradius: 0 }
+        ToolButton { visible: false; showbg: false }
+        ToolButton { visible: false; showbg: false }
+        ToolButton { id: wptbutton;  source: "../Images/flag-plain.svg";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
+        ToolButton { id: rtebutton;  source: "../Images/route-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
+        ToolButton { id: trkbutton;  source: "../Images/hiker-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
+        height: 60
     }
 
     TDatabase {
         id: database
-    }
-
-    WaypointEditPage {
-        id: wptedit;
-        onWaypointSaved: lst.saveWaypoint(index,name,lat,lon,alt)
     }
 
     Component {
@@ -53,127 +47,190 @@ TabOptionPage {
     }
 
     OptionList {
-        id: catbox
+        id: catdata
+        title: "Category Data"
+        items: catitems
         x:      0
         y:      50
         width:  root.width
-        height: root.height - 100
-        title: "Category"
-        items: catitems
+        height: 170
 
         DynamicItemModel {
             id: catitems
             name: "catitems"
 
-            OptionInputItem { id: catname; text: "Name:"; value: dbrecord.name }
+            OptionInputItem { id: catname; text: "Name: "; value: dbrecord.name; onValueChanged: settings.setProperty("cat_defaultname",value) }
         }
     }
 
-    tabs: TabLayout {
-        //anchors.fill: parent
-        x:      10
-        y:      100
-        width:  root.width - 20
-        height: root.height - 160
-        id: tablayout
+    OptionSubPage {
+        id: wptpage
+        title: "Waypoints"
+        z: 20
+        y: root.height
+        Behavior on y {
+            NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
+        }
+        visible: false
+        onRightClicked: { root.wptAdd()    }
+        onLeftClicked:  { y = root.height; }
 
-        TabItem {
-            title: "Waypoints"
-            Rectangle {
-                id: wptbox
+        Rectangle {
+            id: wptbox
+            anchors.margins: 10
+            x: 10
+            y: 70
+            width: parent.width - 20
+            height: root.height - 80
+            radius: 12
+            color: "white"
+            border.color: "grey"
+            border.width: 1
+            clip: true
+            smooth: true
+            ListView {
                 anchors.margins: 10
-                x: 0
-                y: 0
-                width: parent.width
-                height: root.height - 180
-                radius: 12
-                color: "white"
-                border.color: "grey"
-                border.width: 1
-                clip: true
-                smooth: true
-                ListView {
-                    anchors.margins: 10
-                    anchors.fill: parent
-                    id: wptlist
-                    delegate: delegate
+                anchors.fill: parent
+                id: wptlist
+                delegate: delegate
 
-                    function itemClicked(index) {
-                        root.wptSelected(model[index].wptid)
-                    }
+                function itemClicked(index) {
+                    root.wptSelected(model[index].wptid)
                 }
             }
         }
-        TabItem {
-            title: "Routes"
-            Rectangle {
-                id: rtebox
-                anchors.margins: 10
-                x: 0
-                y: 0
-                width: parent.width
-                height: root.height - 180
-                radius: 12
-                color: "white"
-                border.color: "grey"
-                border.width: 1
-                clip: true
-                smooth: true
-                ListView {
-                    anchors.margins: 10
-                    anchors.fill: parent
-                    id: rtelist
-                    delegate: delegate
+    }
 
-                    function itemClicked(index) {
-                        root.rteSelected(model[index].rteid)
-                    }
+    OptionSubPage {
+        id: rtepage
+        title: "Routes"
+        z: 20
+        y: root.height
+        Behavior on y {
+            NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
+        }
+        visible: false
+        onRightClicked: {}
+        onLeftClicked: { y = root.height; }
+
+        Rectangle {
+            id: rtebox
+            anchors.margins: 10
+            x: 10
+            y: 70
+            width: parent.width - 20
+            height: root.height - 80
+            radius: 12
+            color: "white"
+            border.color: "grey"
+            border.width: 1
+            clip: true
+            smooth: true
+            ListView {
+                anchors.margins: 10
+                anchors.fill: parent
+                id: rtelist
+                delegate: delegate
+
+                function itemClicked(index) {
+                    root.rteSelected(model[index].rteid)
                 }
             }
         }
-        TabItem {
-            title: "Tracks"
-            Rectangle {
-                id: trkbox
-                anchors.margins: 10
-                x: 0
-                y: 0
-                width: parent.width
-                height: root.height - 180
-                radius: 12
-                color: "white"
-                border.color: "grey"
-                border.width: 1
-                clip: true
-                smooth: true
-                ListView {
-                    anchors.margins: 10
-                    anchors.fill: parent
-                    id: trklist
-                    delegate: delegate
+    }
 
-                    function itemClicked(index) {
-                        root.trkSelected(model[index].trkid)
-                    }
+    OptionSubPage {
+        id: trkpage
+        title: "Tracks"
+        z: 20
+        y: root.height
+        Behavior on y {
+            NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
+        }
+        visible: false
+        onRightClicked: {}
+        onLeftClicked: { y = root.height; }
+
+        Rectangle {
+            id: trkbox
+            anchors.margins: 10
+            x: 10
+            y: 70
+            width: parent.width - 20
+            height: root.height - 80
+            radius: 12
+            color: "white"
+            border.color: "grey"
+            border.width: 1
+            clip: true
+            smooth: true
+            ListView {
+                anchors.margins: 10
+                anchors.fill: parent
+                id: trklist
+                delegate: delegate
+
+                function itemClicked(index) {
+                    root.trkSelected(model[index].trkid)
                 }
             }
         }
+    }
+
+    CategorySelectionPage  { id: catSelectPage; onCategorySelected: root.catid = catid; }
+    WaypointEditPage       { id: wptedit; }
+
+    function wptShowList() {
+        root.refreshData()
+        wptpage.visible = true;
+        wptpage.y = 0
+    }
+
+    function wptAdd() {
+        wptedit.wptid = -1
+        pageStack.push(wptedit)
+    }
+
+    function wptSelected(id) {
+        wptedit.wptid = id
+        pageStack.push(wptedit)
+    }
+
+    function rteShowList() {
+        rtepage.visible = true;
+        rtepage.y = 0
+    }
+
+    function rteAdd() {
+    }
+
+    function rteSelected(id) {
+    }
+
+    function trkShowList() {
+        trkpage.visible = true;
+        trkpage.y = 0
+    }
+
+    function trkAdd() {
+    }
+
+    function trkSelected(id) {
     }
 
     function refreshData() {
         console.log("CategoryEditPage.refreshData(",root.catid,")")
         dbrecord = database.getCategory(root.catid)
-        console.log("dbrecord: ",dbrecord.catid, dbrecord.name)
+        console.log("dbrecord: ",dbrecord.tripid, dbrecord.name)
 
-        dbrecord.selectWaypoints(0,100)
+        dbrecord.selectWaypoints(0,50)
         wptlist.model = dbrecord.waypoints
-        dbrecord.selectRoutes(0,100)
+        dbrecord.selectRoutes(0,50)
         rtelist.model = dbrecord.routes
-        dbrecord.selectTracks(0,100)
+        dbrecord.selectTracks(0,50)
         trklist.model = dbrecord.tracks
     }
 
-    CategorySelectionPage { id: catSelectPage; onCategorySelected: root.catid = catid; }
     function selectCategory() {
         pageStack.push(catSelectPage)
     }
