@@ -26,18 +26,22 @@ qmlWaypoint::qmlWaypoint(int id)
     , _latitude(0)
     , _longitude(0)
     , _altitude(0)
-    , _dirty(false)
+    , _dirty(true)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM waypoints WHERE wpt='" + QString::number(id) + "'",db);
-    if (q.next())
+    if (id > 0)
     {
-        _wptid = id;
-        _name = getStringField(q,"name");
-        _latitude  = getDoubleField(q,"latitude");
-        _longitude = getDoubleField(q,"longitude");
-        _altitude  = getDoubleField(q,"altitude");
+        QSqlDatabase& db = Database::Db();
+        QSqlQuery q("SELECT * FROM waypoints WHERE wpt='" + QString::number(id) + "'",db);
+        if (q.next())
+        {
+            _wptid     = id;
+            _name      = getStringField(q,"name");
+            _latitude  = getDoubleField(q,"latitude");
+            _longitude = getDoubleField(q,"longitude");
+            _altitude  = getDoubleField(q,"altitude");
+            _dirty     = false;
+        }
     }
     EXIT("")
 }
@@ -59,8 +63,14 @@ void qmlWaypoint::save()
     QSqlDatabase& db = Database::Db();
     QSqlQuery q(db);
     if (_wptid>0)
+    {
         q.exec("REPLACE INTO waypoints (wpt,name,latitude,longitude,altitude) VALUES (\"" + QString::number(_wptid) + "\",\"" + _name  + "\",\"" + QString::number(_latitude)  + "\",\"" + QString::number(_longitude)  + "\",\"" + QString::number(_altitude) + "\")");
+    }
     else
+    {
         q.exec("INSERT  INTO waypoints (name,latitude,longitude,altitude) VALUES (\""  + _name  + "\",\"" + QString::number(_latitude)  + "\",\"" + QString::number(_longitude)  + "\",\"" + QString::number(_altitude) + "\")");
+        _wptid = q.lastInsertId().toInt();
+        emit wptidChanged();
+    }
     _dirty = false;
 }

@@ -52,6 +52,12 @@ public:
     qmlRefpoint(int id);
     qmlRefpoint(const QSqlQuery& q);
 
+private:
+    void load(const QSqlQuery& q);
+
+public slots:
+    void save();
+
 signals:
     void nameChanged();
     void refidChanged();
@@ -59,9 +65,6 @@ signals:
     void longitudeChanged();
     void xChanged();
     void yChanged();
-
-public slots:
-    void save();
 
 private:
     QString    _name;

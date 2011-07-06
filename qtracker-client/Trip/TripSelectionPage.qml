@@ -7,10 +7,11 @@ import "../Waypoint"
 import "../Route"
 import "../Track"
 
-MainOptionPage {
+OptionPage {
     id: root
     title: "Trip List"
     property Item mapview
+    leftbuttonsrc: "../Images/left-plain.svg"
 
     signal tripSelected(int tripid)
 
@@ -25,7 +26,11 @@ MainOptionPage {
             width: parent.width
             text: modelData.name;
             button: true
-            onClicked: ListView.view.itemClicked(index)
+            index2: index
+            onClicked: {
+                console.log("TripSelectionPage.delegate ",index)
+                ListView.view.itemClicked(index)
+            }
         }
     }
 
@@ -33,9 +38,9 @@ MainOptionPage {
         id: tripbox
         anchors.margins: 10
         x:      10
-        y:      60
+        y:      70
         width:  root.width - 20
-        height: root.height - 70
+        height: root.height - 80
         radius: 12
         color: "white"
         border.color: "grey"
@@ -49,6 +54,7 @@ MainOptionPage {
             delegate: delegate
 
             function itemClicked(index) {
+                console.log("TripSelectionPage.triplist.itemClicked(",index,")")
                 pageStack.pop()
                 root.tripSelected(model[index].tripid)
             }

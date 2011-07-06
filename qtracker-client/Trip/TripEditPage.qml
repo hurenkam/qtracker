@@ -17,7 +17,7 @@ OptionPage {
     leftbutton: true
     leftbuttonsrc: "../Images/left-plain.svg"
     leftbuttonradius: 0
-    property int tripid: 1
+    property int tripid: vcurrenttrip.value
     property TTrip dbrecord
 
     tools: ToolBarLayout {
@@ -67,7 +67,7 @@ OptionPage {
         property bool current: ((vcurrenttrip.tripid == root.tripid) || !dbrecord)
         //property bool current: true
         property int     tripid:   (current)? vcurrenttrip.tripid : root.tripid
-        property string  name:     (current)? vcurrentname.text   : dbrecord.name
+        property string  name:     (current)? vcurrentname.name   : dbrecord.name
         property string  triptime: (current)? vtriptime.text  : Qt.formatTime(dbrecord.triptime,"hh:mm:ss")
         property string  tripdist: (current)? vdistance.d     : dbrecord.tripdist
         property double  speedavg: (current)? vspeedavg.d     : dbrecord.speedavg
@@ -88,9 +88,10 @@ OptionPage {
         id: delegate
         OptionTextItem {
             id: txt;
-            width: parent.width
+            width: parent? parent.width : 0
             text: modelData.name;
             button: true
+            index2: index
             onClicked: ListView.view.itemClicked(index)
         }
     }
@@ -239,8 +240,27 @@ OptionPage {
             NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
         }
         visible: false
-        onRightClicked: { root.trkAdd()    }
+        onRightClicked: { if (trackstatus.status == "idle") root.trkAdd(); else root.trkStop() }
         onLeftClicked:  { y = root.height; }
+        rightbuttonsrc: trackstatus.status=="idle"? "../Images/add-plain.svg" : "../Images/stop-plain.svg"
+
+        ValueSpaceSubscriber  {
+                id: trackstatus;
+                path: "/server/track/status"
+                property string status: value
+        }
+
+        ValueSpaceSubscriber  {
+                id: trackname;
+                path: "/server/track/name"
+                property string name: value
+        }
+
+        ValueSpaceSubscriber  {
+            id: trip;
+            path: "/server/trip/id"
+            property int tripid: value
+        }
 
         Rectangle {
             id: trkbox
@@ -268,9 +288,9 @@ OptionPage {
         }
     }
 
-    TripSelectionPage { id: tripSelectPage; onTripSelected: root.tripid = tripid; }
-    WaypointEditPage  { id: wptedit; }
-
+    TripSelectionPage  { id: tripSelectPage; onTripSelected:  root.tripid = tripid; }
+    WaypointEditPage   { id: wptedit;        onWaypointSaved: wptSaved(wptid);      }
+    TrackRecordingPage { id: trkedit;        onTrackSaved:    trkSaved(trkid);      }
 
     function wptShowList() {
         root.refreshData()
@@ -288,6 +308,12 @@ OptionPage {
         pageStack.push(wptedit)
     }
 
+    function wptSaved(id) {
+        console.log("adding reference from trip: ", tripid, "to wpt: ", id)
+        dbrecord.addWaypointReference(id)
+        refreshData()
+    }
+
     function rteShowList() {
         rtepage.visible = true;
         rtepage.y = 0
@@ -299,15 +325,35 @@ OptionPage {
     function rteSelected(id) {
     }
 
+    function rteSaved(id) {
+    }
+
     function trkShowList() {
         trkpage.visible = true;
         trkpage.y = 0
     }
 
+    function trkStop() {
+        trkedit.stopTrack(-1)
+    }
+
     function trkAdd() {
+        trkedit.trkid = -1
+        pageStack.push(trkedit)
     }
 
     function trkSelected(id) {
+        trkedit.trkid = id
+        pageStack.push(trkedit)
+    }
+
+    function trkSaved(id) {
+        console.log("adding reference from trip: ", tripid, "to trk: ", id)
+        dbrecord.addTrackReference(id)
+        refreshData()
+    }
+
+    function trkStopped(id) {
     }
 
     function refreshData() {

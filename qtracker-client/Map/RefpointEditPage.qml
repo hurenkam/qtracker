@@ -64,8 +64,8 @@ OptionPage {
             dbrecord.longitude = reflon.value
             dbrecord.x = refx.value
             dbrecord.y = refy.value
-            //dbrecord.save()
-            //root.waypointSaved(root.wptid);
+            dbrecord.save()
+            root.refpointSaved(root.refid);
         }
     }
 

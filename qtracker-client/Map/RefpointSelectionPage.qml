@@ -8,6 +8,9 @@ OptionPage {
     title: "Refpoint List"
     property int mapid: -1
     property TMap dbrecord
+    leftbuttonsrc: "../Images/left-plain.svg"
+    rightbutton: true
+    rightbuttonsrc: "../Images/add-plain.svg"
 
     RefpointEditPage {
         id: refpointEditPage
@@ -21,7 +24,7 @@ OptionPage {
         id: delegate
         OptionTextItem {
             id: txt;
-            width: parent.width
+            width: parent? parent.width : 0
             text: modelData.name;
             button: true
             onClicked: ListView.view.itemClicked(index)
@@ -32,9 +35,9 @@ OptionPage {
         id: refbox
         anchors.margins: 10
         x:      10
-        y:      60
+        y:      70
         width:  root.width - 20
-        height: root.height - 70
+        height: root.height - 80
         radius: 12
         color: "white"
         border.color: "grey"

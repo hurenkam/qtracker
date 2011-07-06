@@ -11,7 +11,7 @@ Item {
     property bool  roundbottom: false
     property bool  underline: true
 
-    signal clicked(int index2, string name)
+    signal clicked(int index, string name)
     //clip: true
     //smooth: true
 /*
@@ -61,7 +61,10 @@ Item {
         visible: false
         bgcolor: root.hilitecolor
         source: "../Images/forward.svg";
-        onClicked: root.clicked(root.index2,root.text);
+        onClicked: {
+            console.log("OptionItem.btn.onClicked: ",root.index2,root.text)
+            root.clicked(root.index2,root.text);
+        }
     }
 
     MouseArea {

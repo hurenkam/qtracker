@@ -114,6 +114,12 @@ public:
     Q_INVOKABLE void selectWaypoints(int offset=0, int limit=10);
     Q_INVOKABLE void selectRoutes(int offset=0, int limit=10);
     Q_INVOKABLE void selectTracks(int offset=0, int limit=10);
+    Q_INVOKABLE void addWaypointReference(int wptid);
+    Q_INVOKABLE void addRouteReference(int wptid);
+    Q_INVOKABLE void addTrackReference(int wptid);
+
+public slots:
+    void save();
 
 private:
     void load(const QSqlQuery& q);

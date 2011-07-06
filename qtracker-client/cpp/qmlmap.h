@@ -58,6 +58,12 @@ public:
     qmlMap(int id);
     qmlMap(const QSqlQuery& q);
 
+public slots:
+    void save();
+
+private:
+    void load(const QSqlQuery& q);
+
 signals:
     void nameChanged();
     void mapidChanged();

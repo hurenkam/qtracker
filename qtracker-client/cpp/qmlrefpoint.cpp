@@ -36,21 +36,25 @@ qmlRefpoint::qmlRefpoint(int id)
     QSqlDatabase& db = Database::Db();
     QSqlQuery q("SELECT * FROM mappoints WHERE mappt='" + QString::number(id) + "'",db);
     if (q.next())
-    {
-        _refid = id;
-        _mapid     = getIntField(q,"mapid");
-        _name      = getStringField(q,"name");
-        _latitude  = getDoubleField(q,"latitude");
-        _longitude = getDoubleField(q,"longitude");
-        _x         = getDoubleField(q,"x");
-        _y         = getDoubleField(q,"y");
-        _dirty     = false;
-    }
+        load(q);
+
     EXIT("")
 }
 
 qmlRefpoint::qmlRefpoint(const QSqlQuery& q)
-    : _dirty(false)
+    : _name("refpt")
+    , _mapid(-1)
+    , _refid(-1)
+    , _latitude(0)
+    , _longitude(0)
+    , _x(0)
+    , _y(0)
+    , _dirty(true)
+{
+    load(q);
+}
+
+void qmlRefpoint::load(const QSqlQuery& q)
 {
     ENTER("")
     _refid     = getIntField(q,"mappt");
@@ -60,6 +64,7 @@ qmlRefpoint::qmlRefpoint(const QSqlQuery& q)
     _longitude = getDoubleField(q,"longitude");
     _x         = getDoubleField(q,"x");
     _y         = getDoubleField(q,"y");
+    _dirty     = false;
     EXIT("")
 }
 

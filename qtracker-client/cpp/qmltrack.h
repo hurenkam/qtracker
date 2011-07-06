@@ -23,6 +23,12 @@ public:
     int      trkid()
     { return _trkid; }
 
+    Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
+    void     setInterval(int value)
+    { _interval = value; emit intervalChanged(); }
+    int      interval()
+    { return _interval; }
+
     Q_PROPERTY(double top READ top WRITE setTop NOTIFY topChanged)
     void setTop(double value)
     { _top = value; emit topChanged(); }
@@ -51,6 +57,12 @@ public:
     qmlTrack(int id);
     qmlTrack(const QSqlQuery& q);
 
+public slots:
+    void save();
+
+private:
+    void load(const QSqlQuery& q);
+
 signals:
     void nameChanged();
     void trkidChanged();
@@ -58,6 +70,7 @@ signals:
     void leftChanged();
     void bottomChanged();
     void rightChanged();
+    void intervalChanged();
 
 private:
     QString _name;
@@ -66,6 +79,7 @@ private:
     double  _left;
     double  _bottom;
     double  _right;
+    int     _interval;
 };
 
 #endif // QMLTRACK_H

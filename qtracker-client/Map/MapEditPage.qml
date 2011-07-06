@@ -9,6 +9,9 @@ OptionPage {
     options: mapmodel
     property int mapid: -1
     property TMap dbrecord
+    leftbuttonsrc: "../Images/left-plain.svg"
+    rightbutton: true
+    rightbuttonsrc: "../Images/visible-plain.svg"
 
     signal mapSelected(int mapid)
 

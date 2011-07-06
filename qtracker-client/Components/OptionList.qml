@@ -74,11 +74,11 @@ Item {
                 var h = 2;
                 for (var i=0; i<items.count(); ++i) {
                     var item = items.get(i)
-                    item.roundtop = false
-                    item.roundbottom = false
+                    //item.roundtop = false
+                    //item.roundbottom = false
                     h = layoutOptionItem(item,w,h+4) + 4;
                 }
-                items.get(0).roundtop = true
+                //items.get(0).roundtop = true
                 items.get(items.count()-1).roundbottom = true
                 return h+2;
             }

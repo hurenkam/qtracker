@@ -25,7 +25,7 @@ Item {
         var length = children.length
         if (length<1) return;
         for (var i=0; i<length; i++) {
-            console.log(children,children[i])
+            console.log("DynamicItemModel.movechildren",children,children[i])
             append(children[i])
         }
         childrenMoved(length)

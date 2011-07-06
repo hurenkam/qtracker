@@ -9,6 +9,8 @@ OptionPage {
     confirmbutton: true
     property int wptid: -1
     property TWaypoint dbrecord
+    leftbuttonsrc: "../Images/left-plain.svg"
+    rightbuttonsrc: "../Images/visible-plain.svg"
 
     signal waypointSaved(int wptid)
 
@@ -40,13 +42,13 @@ OptionPage {
     }
 
     function refreshData() {
+        dbrecord = database.getWaypoint(wptid)
         if (wptid==-1) {
             wptname.value = settings.getProperty("wpt_defaultname","wpt-000")
             wptlat.value  = 0.0
             wptlon.value  = 0.0
             wptalt.value  = 0.0
         } else {
-            dbrecord = database.getWaypoint(wptid)
             wptname.value = dbrecord.name
             wptlat.value = dbrecord.latitude
             wptlon.value = dbrecord.longitude
@@ -55,20 +57,19 @@ OptionPage {
     }
 
     function saveWaypoint() {
-        if (wptid>0) {
-            dbrecord.name = wptname.value
-            dbrecord.latitde = wptlat.value
-            dbrecord.longitude = wptlon.value
-            dbrecord.altitude = wptalt.value
-            //dbrecord.save()
-            //root.waypointSaved(root.wptid);
-        }
+        dbrecord.name = wptname.value
+        dbrecord.latitude = wptlat.value
+        dbrecord.longitude = wptlon.value
+        dbrecord.altitude = wptalt.value
+        dbrecord.save()
+        root.waypointSaved(dbrecord.wptid);
+        root.wptid = dbrecord.wptid
     }
 
     onWptidChanged: refreshData()
     Component.onCompleted: refreshData()
     onConfirm: {
-        console.log("WaypointEditPage.onConfirm",wptname.value,wptlat.value,wptlon.value,wptx.value,wpty.value)
+        console.log("WaypointEditPage.onConfirm",wptname.value,wptlat.value,wptlon.value,wptalt.value)
         saveWaypoint()
         pageStack.pop()
     }

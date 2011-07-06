@@ -10,6 +10,7 @@ import "../Track"
 OptionPage {
     id: root
     title: "Map List"
+    leftbuttonsrc: "../Images/left-plain.svg"
 
     signal mapSelected(int mapid)
 
@@ -24,6 +25,7 @@ OptionPage {
             width: parent.width
             text: modelData.name;
             button: true
+            index2: index
             onClicked: ListView.view.itemClicked(index)
         }
     }
@@ -32,9 +34,9 @@ OptionPage {
         id: mapbox
         anchors.margins: 10
         x:      10
-        y:      60
+        y:      70
         width:  root.width - 20
-        height: root.height - 70
+        height: root.height - 80
         radius: 12
         color: "white"
         border.color: "grey"

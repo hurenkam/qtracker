@@ -49,6 +49,23 @@ void qmlCategory::load(const QSqlQuery& q)
     EXIT("")
 }
 
+void qmlCategory::save()
+{
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+    if (_catid>0)
+    {
+        q.exec("REPLACE INTO categories (cat,name) VALUES (\"" + QString::number(_catid) + "\",\"" + _name  + "\")");
+    }
+    else
+    {
+        q.exec("INSERT  INTO categories (name) VALUES (\""  + _name + "\")");
+        _catid = q.lastInsertId().toInt();
+        emit catidChanged();
+    }
+    //_dirty = false;
+}
+
 QDeclarativeListProperty<qmlWaypoint>
 qmlCategory::waypoints()
 {
@@ -92,13 +109,6 @@ void
 qmlCategory::selectWaypoints(int offset, int limit)
 {
     ENTER("")
-/*
-    qmlWaypoint* wpt;
-    while (_wpts.length()) { delete _wpts.first(); _wpts.removeFirst(); }
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT wpt FROM catwaypoints WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
-    while (q.next()) { _wpts.append(new qmlWaypoint(q.value(0).toInt())); }
-*/
     QDeclarativeListReference r(this,"waypoints");
     r.clear();
     QSqlDatabase& db = Database::Db();
@@ -139,4 +149,25 @@ qmlCategory::select()
     selectRoutes();
     selectTracks();
     EXIT("")
+}
+
+void qmlCategory::addWaypointReference(int wptid)
+{
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+    q.exec("INSERT OR REPLACE INTO catwaypoints (cat,wpt) VALUES (\""  + QString::number(_catid)  + "\",\"" + QString::number(wptid) + "\")");
+}
+
+void qmlCategory::addRouteReference(int rteid)
+{
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+    q.exec("INSERT OR REPLACE INTO catroutes (cat,rte) VALUES (\""  + QString::number(_catid)  + "\",\"" + QString::number(rteid) + "\")");
+}
+
+void qmlCategory::addTrackReference(int trkid)
+{
+    QSqlDatabase& db = Database::Db();
+    QSqlQuery q(db);
+    q.exec("INSERT OR REPLACE INTO cattracks (cat,trk) VALUES (\""  + QString::number(_catid)  + "\",\"" + QString::number(trkid) + "\")");
 }

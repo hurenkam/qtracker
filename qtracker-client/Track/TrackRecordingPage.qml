@@ -1,23 +1,22 @@
 import QtQuick 1.0
+import QtMobility.publishsubscribe 1.1
 import "../Components"
 
 OptionPage {
     id: root
-    title: index == -1? "New Track" : "Resume Track"
+    title: trkid == -1? "New Track" : "Resume Track"
     options: trkoptions
-    confirmbutton: true
-    property int index: -1
+    property int trkid: -1
+    leftbuttonsrc: "../Images/left-plain.svg"
+    rightbutton: true
+    rightbuttonsrc: "../Images/visible-plain.svg"
+    //rightbuttonsrc: trackstatus.status=="idle"? "../Images/visible-plain.svg" : "../Images/stop-plain.svg"
 
     Settings {
         id: settings
     }
 
-    signal trackSaved(int index, string name, int interval)
-
-    function saveTrack(index,name,interval) {
-        console.log("TrackRecordingPage.saveTrack",index,name,interval)
-        trackSaved(index,name,interval)
-    }
+    signal trackSaved(int trkid, string name, int interval)
 
     VisualItemModel {
         id: trkoptions
@@ -117,7 +116,7 @@ OptionPage {
         client.sendCommand(cmd);
     }
 
-    onConfirm: {
+    function startOrSaveTrack() {
         var times = [ 5, 15, 60, 5*60, 15*60, 60*60 ]
         var time = times[timeitems.ticked]
         var dists = [ 10, 30, 100, 300, 1000 ]
@@ -129,7 +128,17 @@ OptionPage {
         if (type == 1) message += " " + time + " seconds"
         if (type == 2) message += " " + dist + " meters"
         console.log(message)
-        saveTrack(root.index,trkname.value,(type==0)? 0 : ((type==1)? time: -1 * dist))
+        var dbrecord = database.getTrack(root.trkid)
+        dbrecord.name = trkname.value
+        dbrecord.interval = (type==0)? 0 : ((type==1)? time: -1 * dist)
+        dbrecord.save()
+        if (root.trkid==-1)
+            startTrack(dbrecord.trkid,dbrecord.interval)
+        trackSaved(dbrecord.trkid,dbrecord.name,dbrecord.interval)
+    }
+
+    onConfirm: {
+        startOrSaveTrack()
         pageStack.pop()
     }
 }

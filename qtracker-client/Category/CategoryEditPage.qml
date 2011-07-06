@@ -22,12 +22,12 @@ OptionPage {
 
     tools: ToolBarLayout {
         id: maintools
-        ToolButton { id: okbutton;   source: "../Images/visible-plain.svg";   bgcolor: "black"; bgradius: 0 }
-        ToolButton { visible: false; showbg: false }
-        ToolButton { visible: false; showbg: false }
-        ToolButton { id: wptbutton;  source: "../Images/flag-plain.svg";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
-        ToolButton { id: rtebutton;  source: "../Images/route-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
-        ToolButton { id: trkbutton;  source: "../Images/hiker-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
+        ToolButton { id: okbutton;     source: "../Images/visible-plain.svg";   bgcolor: "black"; bgradius: 0 }
+        ToolButton { id: exportbutton; source: "../Images/export-plain.svg";    bgcolor: "black"; bgradius: 0; onClicked: gpxExport()   }
+        ToolButton { visible: false;   showbg: false; }
+        ToolButton { id: wptbutton;    source: "../Images/flag-plain.svg";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
+        ToolButton { id: rtebutton;    source: "../Images/route-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
+        ToolButton { id: trkbutton;    source: "../Images/hiker-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
         height: 60
     }
 
@@ -39,9 +39,10 @@ OptionPage {
         id: delegate
         OptionTextItem {
             id: txt;
-            width: parent.width
+            width: parent? parent.width : 0
             text: modelData.name;
             button: true
+            index2: index
             onClicked: ListView.view.itemClicked(index)
         }
     }
@@ -110,8 +111,8 @@ OptionPage {
             NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
         }
         visible: false
-        onRightClicked: {}
-        onLeftClicked: { y = root.height; }
+        onRightClicked: { root.rteAdd();   }
+        onLeftClicked:  { y = root.height; }
 
         Rectangle {
             id: rtebox
@@ -148,8 +149,8 @@ OptionPage {
             NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
         }
         visible: false
-        onRightClicked: {}
-        onLeftClicked: { y = root.height; }
+        onRightClicked: { root.trkStart(); }
+        onLeftClicked:  { y = root.height; }
 
         Rectangle {
             id: trkbox
@@ -179,6 +180,7 @@ OptionPage {
 
     CategorySelectionPage  { id: catSelectPage; onCategorySelected: root.catid = catid; }
     WaypointEditPage       { id: wptedit; }
+    TrackRecordingPage     { id: trkedit;        onTrackSaved:    trkSaved(trkid);      }
 
     function wptShowList() {
         root.refreshData()
@@ -212,10 +214,23 @@ OptionPage {
         trkpage.y = 0
     }
 
-    function trkAdd() {
+    function trkStart() {
+        trkedit.trkid = -1
+        pageStack.push(trkedit)
+    }
+
+    function trkStop() {
     }
 
     function trkSelected(id) {
+        trkedit.trkid = id
+        pageStack.push(trkedit)
+    }
+
+    function trkSaved(id) {
+    }
+
+    function gpxExport() {
     }
 
     function refreshData() {

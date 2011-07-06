@@ -11,6 +11,9 @@ OptionPage {
     id: root
     title: "Category List"
     property Item mapview
+    rightbutton: true
+    rightbuttonsrc: "../Images/add-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.svg"
 
     signal categorySelected(int tripid)
 
@@ -25,6 +28,7 @@ OptionPage {
             width: parent.width
             text: modelData.name;
             button: true
+            index2: index
             onClicked: ListView.view.itemClicked(index)
         }
     }
@@ -33,9 +37,9 @@ OptionPage {
         id: catbox
         anchors.margins: 10
         x:      10
-        y:      60
+        y:      70
         width:  root.width - 20
-        height: root.height - 70
+        height: root.height - 80
         radius: 12
         color: "white"
         border.color: "grey"
