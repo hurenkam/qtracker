@@ -200,7 +200,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Actual: ";
-            value: altcur.value;
+            value: altcur.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -216,7 +216,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Minimum: ";
-            value: altmin.value;
+            value: altmin.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -232,7 +232,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Maximum: ";
-            value: altmax.value;
+            value: altmax.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -248,7 +248,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Average: ";
-            value: altavg.value;
+            value: altavg.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -264,7 +264,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip ascent: ";
-            value: ascent.value;
+            value: ascent.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -280,7 +280,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip descent: ";
-            value: descent.value;
+            value: descent.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

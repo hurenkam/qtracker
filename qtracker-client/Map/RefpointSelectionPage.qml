@@ -51,8 +51,8 @@ OptionPage {
             delegate: delegate
 
             function itemClicked(index) {
-                refpointEditPage.refid = model[index].refid
-                pageStack.push(refpointEditPage)
+                root.editRefpoint(model[index].refid)
+                //pageStack.push(refpointEditPage)
             }
         }
     }
@@ -65,6 +65,17 @@ OptionPage {
         console.log("dbrecord: ",dbrecord.mapid, dbrecord.name)
     }
 
+    function addRefpoint() {
+        refpointEditPage.refid = -1
+        pageStack.push(refpointEditPage)
+    }
+
+    function editRefpoint(id) {
+        refpointEditPage.refid = id
+        pageStack.push(refpointEditPage)
+    }
+
+    onRightClicked: addRefpoint()
     onMapidChanged: refreshData()
     Component.onCompleted: refreshData()
 }

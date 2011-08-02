@@ -200,7 +200,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Actual: ";
-            value: speedcur.value;
+            value: speedcur.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -216,7 +216,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Minimum: ";
-            value: speedmin.value;
+            value: speedmin.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -232,7 +232,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Maximum: ";
-            value: speedmax.value;
+            value: speedmax.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -248,7 +248,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Average: ";
-            value: speedavg.value;
+            value: speedavg.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -264,7 +264,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip distance: ";
-            value: distance.value;
+            value: distance.value.toFixed(0);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -280,7 +280,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Monitor distance: ";
-            value: monitor.value;
+            value: monitor.value.toFixed(0);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

@@ -217,7 +217,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Azimuth: ";
-            value: azimuth.value;
+            value: azimuth.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -234,7 +234,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Heading: ";
-            value: heading.value;
+            value: heading.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -250,7 +250,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Bearing: ";
-            value: bearing.value;
+            value: bearing.value.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -266,7 +266,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Latitude: ";
-            value: latitude.value;
+            value: latitude.value.toFixed(5);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -282,7 +282,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Longitude: ";
-            value: longitude.value;
+            value: longitude.value.toFixed(5);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

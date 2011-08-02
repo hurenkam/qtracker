@@ -31,7 +31,7 @@ QML_IMPORT_PATH = /imports
 #DEFINES += NETWORKACCESS
 QT       += sql
 
-VERSION = 0.4.422
+VERSION = 0.4.423
 
 symbian {
     # Remove all the existing platform dependencies

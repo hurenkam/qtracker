@@ -58,15 +58,19 @@ OptionPage {
     }
 
     function saveWaypoint() {
-        if (refid>0) {
-            dbrecord.name = refname.value
-            dbrecord.latitde = reflat.value
-            dbrecord.longitude = reflon.value
-            dbrecord.x = refx.value
-            dbrecord.y = refy.value
-            dbrecord.save()
-            root.refpointSaved(root.refid);
+        if (refid==-1) {
+            dbrecord = database.getRefpoint(refid)
         }
+
+        dbrecord.name = refname.value
+        dbrecord.latitude = reflat.value
+        dbrecord.longitude = reflon.value
+        dbrecord.x = refx.value
+        dbrecord.y = refy.value
+        dbrecord.save()
+        root.refpointSaved(dbrecord.mappt);
+
+        refid = dbrecord.mappt
     }
 
     onRefidChanged: refreshData()

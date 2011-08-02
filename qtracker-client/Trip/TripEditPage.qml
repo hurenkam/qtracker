@@ -111,7 +111,7 @@ OptionPage {
 
             OptionInputItem { id: tripname;     text: "Name:     "; value: record.name;     onValueChanged: settings.setProperty("trip_defaultname",value) }
             OptionInputItem { id: triptime;     text: "Time:     "; value: record.triptime; readOnly: true }
-            OptionInputItem { id: tripdist;     text: "Distance: "; value: record.tripdist; readOnly: true }
+            OptionInputItem { id: tripdist;     text: "Distance: "; value: record.tripdist.toFixed(0); readOnly: true }
         }
     }
 
@@ -128,9 +128,9 @@ OptionPage {
             id: speeditems
             name: "speeditems"
 
-            OptionInputItem { id: tripavgspeed; text: "Average:  "; value: record.speedavg; readOnly: true }
-            OptionInputItem { id: tripminspeed; text: "Minimum:  "; value: record.speedmin; readOnly: true }
-            OptionInputItem { id: tripmaxspeed; text: "Maximum:  "; value: record.speedmax; readOnly: true }
+            OptionInputItem { id: tripavgspeed; text: "Average:  "; value: record.speedavg.toFixed(1); readOnly: true }
+            OptionInputItem { id: tripminspeed; text: "Minimum:  "; value: record.speedmin.toFixed(1); readOnly: true }
+            OptionInputItem { id: tripmaxspeed; text: "Maximum:  "; value: record.speedmax.toFixed(1); readOnly: true }
         }
     }
 
@@ -147,11 +147,11 @@ OptionPage {
             id: altitems
             name: "altitems"
 
-            OptionInputItem { id: tripascent;   text: "Ascent:   "; value: record.ascent;   readOnly: true }
-            OptionInputItem { id: tripdescent;  text: "Descent:  "; value: record.descent;  readOnly: true }
-            OptionInputItem { id: tripavgalt;   text: "Average:  "; value: record.altavg;   readOnly: true }
-            OptionInputItem { id: tripminalt;   text: "Minimum:  "; value: record.altmin;   readOnly: true }
-            OptionInputItem { id: tripmaxalt;   text: "Maximum:  "; value: record.altmax;   readOnly: true }
+            OptionInputItem { id: tripascent;   text: "Ascent:   "; value: record.ascent.toFixed(0);   readOnly: true }
+            OptionInputItem { id: tripdescent;  text: "Descent:  "; value: record.descent.toFixed(0);  readOnly: true }
+            OptionInputItem { id: tripavgalt;   text: "Average:  "; value: record.altavg.toFixed(1);   readOnly: true }
+            OptionInputItem { id: tripminalt;   text: "Minimum:  "; value: record.altmin.toFixed(1);   readOnly: true }
+            OptionInputItem { id: tripmaxalt;   text: "Maximum:  "; value: record.altmax.toFixed(1);   readOnly: true }
         }
     }
 
