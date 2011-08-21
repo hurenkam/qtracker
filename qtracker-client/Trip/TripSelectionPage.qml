@@ -1,5 +1,4 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Main"
@@ -11,7 +10,7 @@ OptionPage {
     id: root
     title: "Trip List"
     property Item mapview
-    leftbuttonsrc: "../Images/left-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.png"
 
     signal tripSelected(int tripid)
 
