@@ -1,5 +1,6 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+//import QtMobility.publishsubscribe 1.1
+import QtMobility.location 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 
@@ -155,25 +156,37 @@ Item {
     Item {
         id: mapmodel
 
-        ValueSpaceSubscriber { id: lat;  path: "/server/location/latitude" }
-        property double latitude: lat.value
+        PositionSource {
+            id: gps
+            updateInterval: 1000
+            active: true
+            onPositionChanged: {
+                mapmodel.latitude  = position.coordinate.latitude
+                mapmodel.longitude = position.coordinate.longitude
+            }
+        }
+
+        //ValueSpaceSubscriber { id: lat;  path: "/server/location/latitude" }
+        //property double latitude: lat.value
+        property double latitude: 0.0
         onLatitudeChanged: {
-            console.log("onLatitudeChanged",lat.value)
+            console.log("onLatitudeChanged",mapmodel.latitude)
             if (root.state == "followgps") {
                 //var y = refpoint.basey + refpoint.lat2y * (lat.value  - refpoint.baselat)
-                var y = viewport.lat2y(lat.value)
+                var y = viewport.lat2y(mapmodel.latitude)
                 flickable.contentY = y
                 console.log("set contentY: ", y)
             }
         }
 
-        ValueSpaceSubscriber { id: lon; path: "/server/location/longitude" }
-        property double longitude: lon.value
+        //ValueSpaceSubscriber { id: lon; path: "/server/location/longitude" }
+        //property double longitude: lon.value
+        property double longitude: 0.0
         onLongitudeChanged: {
-            console.log("onLongitudeChanged",lon.value)
+            console.log("onLongitudeChanged",mapmodel.longitude)
             if (root.state == "followgps") {
                 //var x = refpoint.basex + refpoint.lon2x * (lon.value - refpoint.baselon)
-                var x = viewport.lon2x(lon.value)
+                var x = viewport.lon2x(mapmodel.longitude)
                 flickable.contentX = x
                 console.log("set contentX: ", x)
             }

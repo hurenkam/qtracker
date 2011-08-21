@@ -1,5 +1,4 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 
@@ -8,9 +7,9 @@ OptionPage {
     title: "Refpoint List"
     property int mapid: -1
     property TMap dbrecord
-    leftbuttonsrc: "../Images/left-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.png"
     rightbutton: true
-    rightbuttonsrc: "../Images/add-plain.svg"
+    rightbuttonsrc: "../Images/add-plain.png"
 
     RefpointEditPage {
         id: refpointEditPage
