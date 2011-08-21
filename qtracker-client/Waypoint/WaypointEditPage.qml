@@ -9,8 +9,8 @@ OptionPage {
     confirmbutton: true
     property int wptid: -1
     property TWaypoint dbrecord
-    leftbuttonsrc: "../Images/left-plain.svg"
-    rightbuttonsrc: "../Images/visible-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.png"
+    rightbuttonsrc: "../Images/visible-plain.png"
 
     signal waypointSaved(int wptid)
 
