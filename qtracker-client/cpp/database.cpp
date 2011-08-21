@@ -21,6 +21,8 @@ Database::Database()
     platform = 1;
     #elif defined(Q_WS_SIMULATOR)
     platform = 2;
+    #elif defined(Q_OS_ANDROID)
+    platform = 3;
     #else
     platform = -1;
     #endif
@@ -31,6 +33,7 @@ Database::Database()
     case 0:  db.setDatabaseName("e:\\data\\qtracker\\database.sqlite"); break;
     case 1:  db.setDatabaseName("database.sqlite"); break;
     case 2:  db.setDatabaseName("c:\\data\\qtracker\\database.sqlite"); break;
+    case 3:  db.setDatabaseName("/mnt/sdcard/qtracker/database.sqlite"); break;
     default: db.setDatabaseName("database.sqlite"); break;
     }
 
