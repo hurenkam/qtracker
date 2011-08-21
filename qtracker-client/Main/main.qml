@@ -1,16 +1,16 @@
 import QtQuick 1.0
 import "../Components"
 
-import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
-
 Item {
     id: qTracker
-    SystemPalette { id: activePalette }
+    Item {
+        id: activePalette
+        property color light: "#505050"
+        property color dark: "#101010"
+    }
 
     PageStack {
         id: pageStack
-        platform: client.platform
     }
 
     MainPage {
