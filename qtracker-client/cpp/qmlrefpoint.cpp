@@ -33,11 +33,7 @@ qmlRefpoint::qmlRefpoint(int id)
     , _dirty(true)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM mappoints WHERE mappt='" + QString::number(id) + "'",db);
-    if (q.next())
-        load(q);
-
+    setRefid(id);
     EXIT("")
 }
 
@@ -52,6 +48,24 @@ qmlRefpoint::qmlRefpoint(const QSqlQuery& q)
     , _dirty(true)
 {
     load(q);
+}
+
+void qmlRefpoint::setRefid(int value)
+{
+    ENTER("")
+    if (value > 0)
+    {
+        QSqlDatabase& db = Database::Db();
+        QSqlQuery q("SELECT * FROM mappoints WHERE mappt='" + QString::number(value) + "'",db);
+        if (q.next())
+            load(q);
+    }
+    else
+    {
+        _refid = value;
+    }
+    emit refidChanged();
+    EXIT("")
 }
 
 void qmlRefpoint::load(const QSqlQuery& q)
@@ -70,6 +84,7 @@ void qmlRefpoint::load(const QSqlQuery& q)
 
 void qmlRefpoint::save()
 {
+    ENTER("")
     QSqlDatabase& db = Database::Db();
     QSqlQuery q(db);
     if (_refid>0)
@@ -77,4 +92,5 @@ void qmlRefpoint::save()
     else
         q.exec("INSERT  INTO mappoints (mapid,name,latitude,longitude,x,y) VALUES (\"" + QString::number(_mapid) + "\",\"" + _name  + "\",\"" + QString::number(_latitude)  + "\",\"" + QString::number(_longitude)  + "\",\"" + QString::number(_x) + "\",\"" + QString::number(_y) + "\")");
     _dirty = false;
+    EXIT("")
 }

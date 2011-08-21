@@ -19,9 +19,14 @@ public:
     QString  name()
     { return _name; }
 
+    Q_PROPERTY(QString filename  READ filename  WRITE setFilename  NOTIFY filenameChanged)
+    void     setFilename(QString value)
+    { _filename = value; emit filenameChanged(); }
+    QString  filename()
+    { return _filename; }
+
     Q_PROPERTY(int mapid READ mapid WRITE setMapid NOTIFY mapidChanged)
-    void setMapid(int value)
-    { _mapid = value; }
+    void setMapid(int value);
     int mapid()
     { return _mapid; }
 
@@ -66,6 +71,7 @@ private:
 
 signals:
     void nameChanged();
+    void filenameChanged();
     void mapidChanged();
     void topChanged();
     void leftChanged();
@@ -74,6 +80,7 @@ signals:
 
 private:
     QString _name;
+    QString _filename;
     int     _mapid;
     double  _top;
     double  _left;

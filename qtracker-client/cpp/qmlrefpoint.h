@@ -19,10 +19,15 @@ public:
     { return _name; }
 
     Q_PROPERTY(int refid READ refid WRITE setRefid NOTIFY refidChanged)
-    void setRefid(int value)
-    { _refid = value; emit refidChanged(); }
+    void setRefid(int value);
     int      refid()
     { return _refid; }
+
+    Q_PROPERTY(int mapid READ mapid WRITE setMapid NOTIFY mapidChanged)
+    void setMapid(int value)
+    { _mapid = value; emit mapidChanged(); }
+    int      mapid()
+    { return _mapid; }
 
     Q_PROPERTY(double latitude READ latitude WRITE setLatitude NOTIFY latitudeChanged)
     void setLatitude(double value)
@@ -61,6 +66,7 @@ public slots:
 signals:
     void nameChanged();
     void refidChanged();
+    void mapidChanged();
     void latitudeChanged();
     void longitudeChanged();
     void xChanged();

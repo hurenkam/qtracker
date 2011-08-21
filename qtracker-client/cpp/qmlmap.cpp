@@ -20,11 +20,7 @@ qmlMap::qmlMap(int id)
     , _mapid(-1)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM maps WHERE mapid='" + QString::number(id) + "'",db);
-    if (q.next())
-        load(q);
-
+    setMapid(id);
     EXIT("")
 }
 
@@ -32,7 +28,26 @@ qmlMap::qmlMap(const QSqlQuery& q)
     : _name("map")
     , _mapid(-1)
 {
+    ENTER("")
     load(q);
+    EXIT("")
+}
+
+void qmlMap::setMapid(int value)
+{
+    ENTER("")
+    if (value>0)
+    {
+        QSqlDatabase& db = Database::Db();
+        QSqlQuery q("SELECT * FROM maps WHERE mapid='" + QString::number(value) + "'",db);
+        if (q.next())
+            load(q);
+    }
+    else
+    {
+        _mapid = value;
+    }
+    EXIT("")
 }
 
 void
@@ -50,19 +65,20 @@ qmlMap::load(const QSqlQuery& q)
 
 void qmlMap::save()
 {
+    ENTER("")
     QSqlDatabase& db = Database::Db();
     QSqlQuery q(db);
     if (_mapid>0)
     {
-        q.exec("REPLACE INTO maps (mapid,name,north,west,south,east) VALUES (\"" + QString::number(_mapid) + "\",\"" + _name  + "\",\"" + QString::number(_top)  + "\",\"" + QString::number(_left)  + "\",\"" + QString::number(_bottom)  + "\",\"" + QString::number(_right) + "\")");
+        q.exec("REPLACE INTO maps (mapid,name,filename,north,west,south,east) VALUES (\"" + QString::number(_mapid) + "\",\"" + _name  + "\",\"" + _filename  + "\",\"" + QString::number(_top)  + "\",\"" + QString::number(_left)  + "\",\"" + QString::number(_bottom)  + "\",\"" + QString::number(_right) + "\")");
     }
     else
     {
-        q.exec("INSERT  INTO categories (name) VALUES (\"" + _name  + "\",\"" + QString::number(_top)  + "\",\"" + QString::number(_left)  + "\",\"" + QString::number(_bottom)  + "\",\"" + QString::number(_right) + "\")");
+        q.exec("INSERT  INTO maps       (name,filename,north,west,south,east) VALUES                                    (\""  + _name  + "\",\"" + _filename  + "\",\"" + QString::number(_top)  + "\",\"" + QString::number(_left)  + "\",\"" + QString::number(_bottom)  + "\",\"" + QString::number(_right) + "\")");
         _mapid = q.lastInsertId().toInt();
         emit mapidChanged();
     }
-    //_dirty = false;
+    EXIT("")
 }
 
 QDeclarativeListProperty<qmlRefpoint>
