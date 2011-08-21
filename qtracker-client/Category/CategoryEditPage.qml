@@ -1,5 +1,4 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Main"
@@ -12,22 +11,22 @@ OptionPage {
     title: "Category"
     imageSource: "../Images/options-bg.png"
     rightbutton: true
-    rightbuttonsrc: "../Images/options-plain.svg"
+    rightbuttonsrc: "../Images/options-plain.png"
     rightbuttonradius: 0
     leftbutton: true
-    leftbuttonsrc: "../Images/left-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.png"
     leftbuttonradius: 0
     property int catid: 1
     property TCategory dbrecord
 
     tools: ToolBarLayout {
         id: maintools
-        ToolButton { id: okbutton;     source: "../Images/visible-plain.svg";   bgcolor: "black"; bgradius: 0 }
-        ToolButton { id: exportbutton; source: "../Images/export-plain.svg";    bgcolor: "black"; bgradius: 0; onClicked: gpxExport()   }
+        ToolButton { id: okbutton;     source: "../Images/visible-plain.png";   bgcolor: "black"; bgradius: 0 }
+        ToolButton { id: exportbutton; source: "../Images/export-plain.png";    bgcolor: "black"; bgradius: 0; onClicked: gpxExport()   }
         ToolButton { visible: false;   showbg: false; }
-        ToolButton { id: wptbutton;    source: "../Images/flag-plain.svg";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
-        ToolButton { id: rtebutton;    source: "../Images/route-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
-        ToolButton { id: trkbutton;    source: "../Images/hiker-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
+        ToolButton { id: wptbutton;    source: "../Images/flag-plain.png";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
+        ToolButton { id: rtebutton;    source: "../Images/route-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
+        ToolButton { id: trkbutton;    source: "../Images/hiker-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
         height: 60
     }
 

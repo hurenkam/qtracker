@@ -1,5 +1,5 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+//import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Main"
@@ -12,8 +12,8 @@ OptionPage {
     title: "Category List"
     property Item mapview
     rightbutton: true
-    rightbuttonsrc: "../Images/add-plain.svg"
-    leftbuttonsrc: "../Images/left-plain.svg"
+    rightbuttonsrc: "../Images/add-plain.png"
+    leftbuttonsrc: "../Images/left-plain.png"
 
     signal categorySelected(int tripid)
 
