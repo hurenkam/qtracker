@@ -12,12 +12,20 @@
 #include "folderlistmodel.h"
 #include "deviceinfomodel.h"
 #include "mapview.h"
-#include "client.h"
 #include "gpxfile.h"
 #include "qmldatabase.h"
 
-#define ENABLE_DEBUG
+#if defined(Q_OS_SYMBIAN)
+#include "client.h"
+#elif defined (Q_WS_SIMULATOR)
+#include "client.h"
+#elif defined(Q_OS_ANDROID)
+#include "../tripdataserver/tripserverinterface.h"
+#endif
+
+//#define ENABLE_DEBUG
 #include "helpers.h"
+
 
 static QFile file;
 static QTextStream out(&file);
@@ -34,6 +42,8 @@ QString getStoragePath()
     return ".";
 #elif defined(Q_WS_SIMULATOR)
     return "c:/data/qTracker";
+#elif defined(Q_OS_ANDROID)
+    return "/mnt/sdcard/qtracker";
 #else
     return ".";
 #endif
@@ -50,18 +60,7 @@ void debugOutput(QtMsgType type, const char *msg)
 void debugOpen()
 {
     file.setFileName(getStoragePath() + "/qtracker-debug.txt");
-/*
-#if   defined(Q_OS_SYMBIAN)
-    file.setFileName("e:/data/qtracker-debug.txt");
-#elif defined(Q_WS_MAEMO_5)
-    file.setFileName("qtracker-debug.txt");
-#elif defined(Q_WS_SIMULATOR)
-    file.setFileName("c:/data/qtracker-debug.txt");
-#else
-    file.setFileName("qtracker-debug.txt");
-#endif
-*/
-    //file.setFileName("e:/data/qtracker-debug.txt");
+
     if (file.exists())
         fileopen = file.open(QIODevice::Append | QIODevice::Text);
     else
@@ -91,7 +90,6 @@ void debugClose()
         file.close();
 }
 
-
 void registerTypes()
 {
     LOG("Enter: registerTypes()")
@@ -107,6 +105,9 @@ void registerTypes()
     qmlRegisterType<qmlRoute>("QmlTrackerExtensions",1,0,"TRoute");
     qmlRegisterType<qmlTrack>("QmlTrackerExtensions",1,0,"TTrack");
     qmlRegisterType<qmlRefpoint>("QmlTrackerExtensions",1,0,"TRefpoint");
+#if defined(Q_OS_ANDROID)
+    qmlRegisterType<TripServerInterface>("QmlTrackerExtensions",1,0,"TripServer");
+#endif
     LOG("Exit: registerTypes()")
 }
 
@@ -116,6 +117,7 @@ int main(int argc, char *argv[])
     registerTypes();
     QApplication app(argc, argv);
 
+#if !defined(Q_OS_ANDROID)
     Client client;
     client.startServer();
 
@@ -124,22 +126,26 @@ int main(int argc, char *argv[])
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("qTracker v" VERSION,Qt::AlignLeft,Qt::white);
+#endif
 
     LOG("main(): app.processEvents()")
     app.processEvents();
 
     QmlApplicationViewer viewer;
+    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+#if defined(Q_OS_ANDROID)
+    viewer.setSource(QUrl("qrc:///Main/main.qml"));
+    viewer.showFullScreen();
+#else
     QString dataPath = getStoragePath();
     LOG("engine.offlineStoragePath() old: " << viewer.engine()->offlineStoragePath())
     viewer.engine()->setOfflineStoragePath(dataPath);
     LOG("engine.offlineStoragePath() new: " << viewer.engine()->offlineStoragePath())
-
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    //viewer.setSource(QUrl("qrc:///qml/qTracker.qml"));
     viewer.rootContext()->setContextProperty("client",&client);
     viewer.setMainQmlFile(QLatin1String("Main/main.qml"));
     splash.finish(&viewer);
     viewer.showFullScreen();
+#endif
 
     LOG("main(): app.exec()")
     int result = app.exec();
