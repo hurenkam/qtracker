@@ -1,5 +1,5 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+//import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Main"
@@ -10,7 +10,9 @@ import "../Track"
 OptionPage {
     id: root
     title: "Map List"
-    leftbuttonsrc: "../Images/left-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.png"
+    rightbutton: true
+    rightbuttonsrc: "../Images/add-plain.png"
 
     signal mapSelected(int mapid)
 
@@ -61,5 +63,48 @@ OptionPage {
         maplist.model = database.maps
     }
 
+    TMap {
+        id: importmap
+        onMapidChanged: {
+            console.log("MapSelectionPage.importmap.onMapidChanged(",mapid,")")
+        }
+    }
+
+    TRefpoint {
+        id: importref
+    }
+
+    GpxFile {
+        id: importfile
+        onRefPoint: {
+            console.log("MapSelectionPage.importfile.onRefPoint(",refpt,")")
+            importref.refid = -1
+            importref.mapid = importmap.mapid
+            importref.latitude  = refpt["latitude"]
+            importref.longitude = refpt["longitude"]
+            importref.x = refpt["x"]
+            importref.y = refpt["y"]
+            importref.save()
+        }
+        onResolution: {
+            console.log("MapSelectionPage.importfile.onResolution(",resolution,")")
+        }
+    }
+
+    MapImportPage {
+        id: importpage
+        onFileSelected: {
+            console.log("MapSelectionPage.importpage.onFileSelected(",text,",",filename,")")
+            pageStack.pop();
+            importmap.name = text
+            importmap.filename = filename
+            importmap.save();
+            refreshData();
+            importfile.fileName = folder + text + ".xml"
+            importfile.parseGpx();
+        }
+    }
+
+    onRightClicked: pageStack.push(importpage)
     Component.onCompleted: refreshData()
 }

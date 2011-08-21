@@ -6,7 +6,8 @@ OptionPage {
     id: root
     title: "Import Map"
     options: model
-    property MapView mapview: null
+    //property MapView mapview: null
+    leftbuttonsrc: "../Images/left-plain.png"
 
     signal fileSelected(int index, string text,string folder,string filename);
 
@@ -25,7 +26,8 @@ OptionPage {
                 id: maplist
                 //folder: (platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
                 //folder: "file:///c:/data/qtracker/maps/"
-                //folder: "file:///e:/data/qtracker/maps/"
+                folder: "file:///e:/data/qtracker/maps/"
+                //folder: "file:///mnt/sdcard/qtracker/maps/"
                 nameFilters: ["*.jpg"]
             }
 
@@ -59,7 +61,7 @@ OptionPage {
                     content.append(item)
                 }
                 console.log("content contains",content.count(),"items",content.get(0),content.get(0).text)
-                lst.layout()
+                //lst.layout()
             }
 
             //Component.onCompleted: update()
