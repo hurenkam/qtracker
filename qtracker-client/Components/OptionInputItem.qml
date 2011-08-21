@@ -14,6 +14,7 @@ OptionItem {
         id: txt
         color: "black"
         font.bold: true
+        font.pointSize: 20
         text: ""
     }
 
@@ -33,7 +34,8 @@ OptionItem {
         activeFocusOnPress: (!root.button)
         x: root.width - width - root.height - 5
         y: txt.height - height
-        font.pointSize: root.height/5
+        //font.pointSize: root.height/5
+        font.pointSize: 20
         text: "<content>"
         color: focus? "white" : "blue"
         onAccepted: {

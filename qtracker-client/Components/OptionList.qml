@@ -16,7 +16,8 @@ Item {
         style: Text.Sunken
         styleColor: "black"
         text: ""
-        property int offset: (text=="")? 10 : 40
+        font.pointSize: 22
+        property int offset: (text=="")? 10 : header.height + 20
     }
 
     Flickable {

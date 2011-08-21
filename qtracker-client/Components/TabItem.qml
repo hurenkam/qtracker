@@ -137,6 +137,7 @@ Item {
             y: 3
             color: "black"
             text: "tab"
+            font.pointSize: 22
         }
     }
     onWidthChanged:        { console.log("TabItem.onWidthChanged()    ",x,y,width,height) }

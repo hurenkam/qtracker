@@ -8,6 +8,7 @@ OptionItem {
         id: txt
         color: "black"
         font.bold: true
+        font.pointSize: 20
         text: ""
     }
 }

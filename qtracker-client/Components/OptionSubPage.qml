@@ -43,9 +43,9 @@ Item {
             text: "Options"
             leftButtonVisible: true
             onLeftClicked: root.leftClicked();
-            leftButtonSource: "../Images/down-plain.svg"
+            leftButtonSource: "../Images/down-plain.png"
             rightButtonVisible: true
-            rightButtonSource: "../Images/add-plain.svg"
+            rightButtonSource: "../Images/add-plain.png"
             onRightClicked: root.rightClicked();
             buttonheight: title.height
         }

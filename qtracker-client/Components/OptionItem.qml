@@ -60,7 +60,7 @@ Item {
 
         visible: false
         bgcolor: root.hilitecolor
-        source: "../Images/forward.svg";
+        source: "../Images/forward.png";
         onClicked: {
             console.log("OptionItem.btn.onClicked: ",root.index2,root.text)
             root.clicked(root.index2,root.text);

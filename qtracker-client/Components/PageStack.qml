@@ -14,7 +14,7 @@ Rectangle {
     onPheightChanged: resizeHeight()
     property bool animate: false
     property int animationDuration: 300
-    property int platform: 0
+    //property int platform: 0
     Behavior on x {
         enabled: root.animate
         NumberAnimation { easing.type: Easing.InOutQuart; duration: animationDuration }
