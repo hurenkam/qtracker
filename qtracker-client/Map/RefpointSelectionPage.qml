@@ -24,9 +24,9 @@ OptionPage {
         OptionTextItem {
             id: txt;
             width: parent? parent.width : 0
-            text: modelData.name;
+            text: modelData.name
             button: true
-            onClicked: ListView.view.itemClicked(index)
+            onClicked: ListView.view.itemClicked(refid)
         }
     }
 
@@ -49,9 +49,9 @@ OptionPage {
             id: reflist
             delegate: delegate
 
-            function itemClicked(index) {
-                root.editRefpoint(model[index].refid)
-                //pageStack.push(refpointEditPage)
+            function itemClicked(refid,data) {
+                console.log("itemClicked()", refid, data)
+                root.editRefpoint(refid)
             }
         }
     }

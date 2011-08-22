@@ -95,14 +95,14 @@ OptionPage {
         id: importpage
         onFileSelected: {
             console.log("MapSelectionPage.importpage.onFileSelected(",text,",",filename,")")
-            pageStack.pop();
             importmap.mapid = -1
             importmap.name = text
             importmap.filename = filename
             importmap.save();
-            refreshData();
             importfile.fileName = folder + text + ".xml"
             importfile.parseGpx();
+            pageStack.pop();
+            root.refreshData();
         }
     }
 
