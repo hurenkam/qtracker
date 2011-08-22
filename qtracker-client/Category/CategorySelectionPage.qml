@@ -15,7 +15,8 @@ OptionPage {
     rightbuttonsrc: "../Images/add-plain.png"
     leftbuttonsrc: "../Images/left-plain.png"
 
-    signal categorySelected(int tripid)
+    signal categorySelected(int catid)
+    signal newCatagory()
 
     TDatabase {
         id: database
@@ -64,5 +65,12 @@ OptionPage {
         catlist.model = database.categories
     }
 
-    Component.onCompleted: refreshData()
+    onRightClicked: {
+        pageStack.pop()
+        root.newCategory()
+    }
+
+    Component.onCompleted: {
+        refreshData()
+    }
 }

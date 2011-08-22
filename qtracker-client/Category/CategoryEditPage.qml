@@ -16,22 +16,26 @@ OptionPage {
     leftbutton: true
     leftbuttonsrc: "../Images/left-plain.png"
     leftbuttonradius: 0
-    property int catid: 1
+    property int catid: 0
     property TCategory dbrecord
 
     tools: ToolBarLayout {
         id: maintools
-        ToolButton { id: okbutton;     source: "../Images/visible-plain.png";   bgcolor: "black"; bgradius: 0 }
-        ToolButton { id: exportbutton; source: "../Images/export-plain.png";    bgcolor: "black"; bgradius: 0; onClicked: gpxExport()   }
+        ToolButton { id: okbutton;     source: "../Images/visible-plain.png";   bgcolor: "black"; bgradius: 0; onClicked: saveCategory() }
+        ToolButton { id: exportbutton; source: "../Images/export-plain.png";    bgcolor: "black"; bgradius: 0; onClicked: gpxExport()    }
         ToolButton { visible: false;   showbg: false; }
-        ToolButton { id: wptbutton;    source: "../Images/flag-plain.png";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
-        ToolButton { id: rtebutton;    source: "../Images/route-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
-        ToolButton { id: trkbutton;    source: "../Images/hiker-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
+        ToolButton { id: wptbutton;    source: "../Images/flag-plain.png";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList()  }
+        ToolButton { id: rtebutton;    source: "../Images/route-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList()  }
+        ToolButton { id: trkbutton;    source: "../Images/hiker-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList()  }
         height: 60
     }
 
     TDatabase {
         id: database
+    }
+
+    Settings {
+        id: settings
     }
 
     Component {
@@ -59,7 +63,15 @@ OptionPage {
             id: catitems
             name: "catitems"
 
-            OptionInputItem { id: catname; text: "Name: "; value: dbrecord.name; onValueChanged: settings.setProperty("cat_defaultname",value) }
+            OptionInputItem {
+                id: catname
+                text: "Name: "
+                value: "<newname>"
+                onValueChanged: {
+                    dbrecord.name = value
+                    settings.setProperty("cat_defaultname",value)
+                }
+            }
         }
     }
 
@@ -177,7 +189,12 @@ OptionPage {
         }
     }
 
-    CategorySelectionPage  { id: catSelectPage; onCategorySelected: root.catid = catid; }
+    CategorySelectionPage  {
+        id: catSelectPage
+        onCategorySelected: root.categorySelected(catid)
+        onNewCatagory: root.newCategory()
+    }
+
     WaypointEditPage       { id: wptedit; }
     TrackRecordingPage     { id: trkedit;        onTrackSaved:    trkSaved(trkid);      }
 
@@ -243,13 +260,37 @@ OptionPage {
         rtelist.model = dbrecord.routes
         dbrecord.selectTracks(0,50)
         trklist.model = dbrecord.tracks
+
+        catname.value = dbrecord.name
     }
 
     function selectCategory() {
+        console.log("CategoryEditPage.selectCategory()")
         pageStack.push(catSelectPage)
     }
 
+    function saveCategory() {
+        console.log("CategoryEditPage.saveCategory()")
+        dbrecord.save()
+    }
+
+    function newCategory() {
+        console.log("CategoryEditPage.newCategory()")
+        root.catid = -1
+    }
+
+    function categorySelected(id) {
+        console.log("CategoryEditPage.categorySelected(",id,")")
+        root.catid = id
+    }
+
     onRightClicked: selectCategory()
-    onCatidChanged: refreshData()
-    Component.onCompleted: refreshData()
+    onCatidChanged: {
+        settings.setProperty("cat_id",root.catid)
+        refreshData()
+    }
+    Component.onCompleted: {
+        var i = settings.getProperty("cat_id",-1)
+        root.catid = i
+    }
 }
