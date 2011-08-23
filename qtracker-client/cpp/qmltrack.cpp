@@ -20,7 +20,7 @@ qmlTrack::qmlTrack(int id)
     , _trkid(-1)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT * FROM tracks WHERE trk='" + QString::number(id) + "'",db);
     if (q.next())
         load(q);
@@ -53,7 +53,7 @@ void
 qmlTrack::save()
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     if (_trkid>0)
     {

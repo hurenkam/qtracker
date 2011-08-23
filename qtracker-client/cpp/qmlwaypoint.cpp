@@ -31,7 +31,7 @@ qmlWaypoint::qmlWaypoint(int id)
     ENTER("")
     if (id > 0)
     {
-        QSqlDatabase& db = Database::Db();
+        QSqlDatabase& db = qmlDatabase::Db();
         QSqlQuery q("SELECT * FROM waypoints WHERE wpt='" + QString::number(id) + "'",db);
         if (q.next())
         {
@@ -60,7 +60,7 @@ qmlWaypoint::qmlWaypoint(const QSqlQuery& q)
 
 void qmlWaypoint::save()
 {
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     if (_wptid>0)
     {

@@ -15,7 +15,7 @@ qmlTrip::qmlTrip()
     , _offset(0)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
 }
 
@@ -24,7 +24,7 @@ qmlTrip::qmlTrip(int id)
     , _offset(0)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT * FROM trips WHERE trip='" + QString::number(id) + "'",db);
     if (q.next())
         load(q);
@@ -60,7 +60,7 @@ void qmlTrip::load(const QSqlQuery& q)
 
 void qmlTrip::save()
 {
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     if (_tripid>0)
     {
@@ -143,7 +143,7 @@ qmlTrip::selectWaypoints(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"waypoints");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT wpt FROM tripwaypoints WHERE trip='" + QString::number(_tripid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlWaypoint(q.value(0).toInt())); }
     EXIT("")
@@ -155,7 +155,7 @@ qmlTrip::selectRoutes(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"routes");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT rte FROM triproutes WHERE trip='" + QString::number(_tripid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlRoute(q.value(0).toInt())); }
     EXIT("")
@@ -167,7 +167,7 @@ qmlTrip::selectTracks(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"tracks");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT trk FROM triptracks WHERE trip='" + QString::number(_tripid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlTrack(q.value(0).toInt())); }
     EXIT("")
@@ -186,7 +186,7 @@ qmlTrip::select()
 void qmlTrip::addWaypointReference(int wptid)
 {
     ENTER(wptid)
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     q.exec("SELECT tripwpt FROM tripwaypoints WHERE trip='" + QString::number(_tripid) + "' AND wpt='" + QString::number(wptid) + "'");
     if (!q.next())
@@ -197,7 +197,7 @@ void qmlTrip::addWaypointReference(int wptid)
 void qmlTrip::addRouteReference(int rteid)
 {
     ENTER(rteid)
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     q.exec("SELECT triprte FROM triproutes WHERE trip='" + QString::number(_tripid) + "' AND rte='" + QString::number(rteid) + "'");
     if (!q.next())
@@ -208,7 +208,7 @@ void qmlTrip::addRouteReference(int rteid)
 void qmlTrip::addTrackReference(int trkid)
 {
     ENTER(trkid)
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     q.exec("SELECT triptrk FROM triptracks WHERE trip='" + QString::number(_tripid) + "' AND trk='" + QString::number(trkid) + "'");
     if (!q.next())

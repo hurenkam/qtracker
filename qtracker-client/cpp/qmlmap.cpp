@@ -38,7 +38,7 @@ void qmlMap::setMapid(int value)
     ENTER("")
     if (value>0)
     {
-        QSqlDatabase& db = Database::Db();
+        QSqlDatabase& db = qmlDatabase::Db();
         QSqlQuery q("SELECT * FROM maps WHERE mapid='" + QString::number(value) + "'",db);
         if (q.next())
             load(q);
@@ -66,7 +66,7 @@ qmlMap::load(const QSqlQuery& q)
 void qmlMap::save()
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     if (_mapid>0)
     {
@@ -94,7 +94,7 @@ qmlMap::selectRefpoints(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"refpoints");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT mappt FROM mappoints WHERE mapid='" + QString::number(_mapid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlRefpoint(q.value(0).toInt())); }
     EXIT("")

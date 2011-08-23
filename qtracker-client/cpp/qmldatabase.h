@@ -15,6 +15,7 @@
 #include "qmlmap.h"
 #include "qmlrefpoint.h"
 #include "qmlcategory.h"
+#include "database.h"
 
 extern QString getStringField(const QSqlQuery& q, const QString& fieldName);
 extern double getDoubleField(const QSqlQuery& q, const QString& fieldName);
@@ -60,6 +61,7 @@ class qmlDatabase: public QObject
     Q_OBJECT
 public:
     qmlDatabase();
+    static QSqlDatabase& Db() { return Database::Db(); }
 
     Q_PROPERTY(QDeclarativeListProperty<qmlCategory> categories READ categories CONSTANT)
     QDeclarativeListProperty<qmlCategory> categories();

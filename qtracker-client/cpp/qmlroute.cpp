@@ -20,7 +20,7 @@ qmlRoute::qmlRoute(int id)
     , _rteid(-1)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT * FROM routes WHERE rte='" + QString::number(id) + "'",db);
     if (q.next())
         load(q);
@@ -50,7 +50,7 @@ qmlRoute::load(const QSqlQuery& q)
 
 void qmlRoute::save()
 {
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     if (_rteid>0)
     {
@@ -78,7 +78,7 @@ qmlRoute::selectRoutepoints(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"routepoints");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT wpt FROM routepoints WHERE rte='" + QString::number(_rteid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlWaypoint(q.value(0).toInt())); }
     EXIT("")

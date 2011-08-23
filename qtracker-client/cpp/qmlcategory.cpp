@@ -2,7 +2,7 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QStringList>
-#include "database.h"
+//#include "database.h"
 #include "qmldatabase.h"
 
 #define ENABLE_DEBUG
@@ -15,7 +15,7 @@ qmlCategory::qmlCategory()
     , _offset(0)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     EXIT("")
 }
@@ -25,7 +25,7 @@ qmlCategory::qmlCategory(int catid)
     , _offset(0)
 {
     ENTER("")
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     if (catid > 0)
     {
         QSqlQuery q("SELECT * FROM categories WHERE cat='" + QString::number(catid) + "'",db);
@@ -58,7 +58,7 @@ void qmlCategory::load(const QSqlQuery& q)
 
 void qmlCategory::save()
 {
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     if (_catid>0)
     {
@@ -118,7 +118,7 @@ qmlCategory::selectWaypoints(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"waypoints");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT wpt FROM catwaypoints WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlWaypoint(q.value(0).toInt())); }
     EXIT("")
@@ -130,7 +130,7 @@ qmlCategory::selectRoutes(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"tracks");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT trk FROM cattracks WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlRoute(q.value(0).toInt())); }
     EXIT("")
@@ -142,7 +142,7 @@ qmlCategory::selectTracks(int offset, int limit)
     ENTER("")
     QDeclarativeListReference r(this,"tracks");
     r.clear();
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT trk FROM cattracks WHERE cat='" + QString::number(_catid) + "' LIMIT " + QString::number(limit) + " OFFSET " + QString::number(offset),db);
     while (q.next()) { r.append(new qmlTrack(q.value(0).toInt())); }
     EXIT("")
@@ -160,21 +160,21 @@ qmlCategory::select()
 
 void qmlCategory::addWaypointReference(int wptid)
 {
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     q.exec("INSERT OR REPLACE INTO catwaypoints (cat,wpt) VALUES (\""  + QString::number(_catid)  + "\",\"" + QString::number(wptid) + "\")");
 }
 
 void qmlCategory::addRouteReference(int rteid)
 {
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     q.exec("INSERT OR REPLACE INTO catroutes (cat,rte) VALUES (\""  + QString::number(_catid)  + "\",\"" + QString::number(rteid) + "\")");
 }
 
 void qmlCategory::addTrackReference(int trkid)
 {
-    QSqlDatabase& db = Database::Db();
+    QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     q.exec("INSERT OR REPLACE INTO cattracks (cat,trk) VALUES (\""  + QString::number(_catid)  + "\",\"" + QString::number(trkid) + "\")");
 }
