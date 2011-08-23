@@ -26,9 +26,16 @@ qmlCategory::qmlCategory(int catid)
 {
     ENTER("")
     QSqlDatabase& db = Database::Db();
-    QSqlQuery q("SELECT * FROM categories WHERE cat='" + QString::number(catid) + "'",db);
-    if (q.next())
-        load(q);
+    if (catid > 0)
+    {
+        QSqlQuery q("SELECT * FROM categories WHERE cat='" + QString::number(catid) + "'",db);
+        if (q.next())
+            load(q);
+    }
+    else
+    {
+        QSqlQuery q(db);
+    }
     EXIT("")
 }
 
