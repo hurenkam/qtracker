@@ -1,5 +1,5 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 
 TabOptionPage {
@@ -127,13 +127,21 @@ TabOptionPage {
             }
         }
     }
+/*
+    Timer {
+        id: requestTimer; interval: 1000; running: true; repeat: true;
+        onTriggered: {
+            server.requestData()
+        }
+    }
 
-    ValueSpaceSubscriber { id: altcur;  path: "/server/altitude/current" }
-    ValueSpaceSubscriber { id: altmin;  path: "/server/altitude/min"     }
-    ValueSpaceSubscriber { id: altmax;  path: "/server/altitude/max"     }
-    ValueSpaceSubscriber { id: altavg;  path: "/server/altitude/average" }
-    ValueSpaceSubscriber { id: ascent;  path: "/server/altitude/ascent"  }
-    ValueSpaceSubscriber { id: descent; path: "/server/altitude/descent" }
+    TripServer {
+        id: server
+    }
+*/
+    AltitudeModel {
+        id: server
+    }
 
     background: Rectangle {
         id: gauge
@@ -145,11 +153,11 @@ TabOptionPage {
         gradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: Qt.lighter(activePalette.light)
+                color: Qt.darker(activePalette.light)
             }
             GradientStop {
                 position:  1.0
-                color: Qt.lighter(activePalette.dark)
+                color: Qt.darker(activePalette.dark)
             }
         }
 
@@ -165,11 +173,11 @@ TabOptionPage {
         ToolButton {
             id: leftbutton
             x: 10; y:10
-            width: 50
+            width: root.width/7
             height: width
 
             bgcolor: "white"
-            source: "../Images/backc.svg";
+            source: "../Images/backc.png";
             onClicked: root.cancel();
         }
 
@@ -177,10 +185,10 @@ TabOptionPage {
             id: rightbutton
 
             x: landscape? root.height -10 -width: root.width - 10 -width; y:10
-            width: 50
+            width: root.width/7
             height: width
 
-            source: "../Images/confirmc.svg";
+            source: "../Images/confirmc.png";
             bgcolor: "white"
             //onClicked: root.optionsChanged();
 
@@ -200,7 +208,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Actual: ";
-            value: altcur.value.toFixed(1);
+            value: server.current.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -216,7 +224,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Minimum: ";
-            value: altmin.value.toFixed(1);
+            value: server.minimum.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -232,7 +240,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Maximum: ";
-            value: altmax.value.toFixed(1);
+            value: server.maximum.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -248,7 +256,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Average: ";
-            value: altavg.value.toFixed(1);
+            value: server.average.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -264,7 +272,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip ascent: ";
-            value: ascent.value.toFixed(1);
+            value: server.ascent.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -280,7 +288,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip descent: ";
-            value: descent.value.toFixed(1);
+            value: server.descent.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

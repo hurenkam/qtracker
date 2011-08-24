@@ -1,5 +1,5 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 
 TabOptionPage {
@@ -128,12 +128,13 @@ TabOptionPage {
         }
     }
 
-    ValueSpaceSubscriber { id: speedcur; path: "/server/speed/current"     }
-    ValueSpaceSubscriber { id: speedmin; path: "/server/speed/min"         }
-    ValueSpaceSubscriber { id: speedmax; path: "/server/speed/max"         }
-    ValueSpaceSubscriber { id: speedavg; path: "/server/speed/average"     }
-    ValueSpaceSubscriber { id: distance; path: "/server/location/distance" }
-    ValueSpaceSubscriber { id: monitor;  path: "/server/monitor/distance"  }
+    SpeedModel {
+        id: server
+    }
+
+    DistanceModel {
+        id: distancemodel
+    }
 
     background: Rectangle {
         id: gauge
@@ -145,11 +146,11 @@ TabOptionPage {
         gradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: Qt.lighter(activePalette.light)
+                color: Qt.darker(activePalette.light)
             }
             GradientStop {
                 position:  1.0
-                color: Qt.lighter(activePalette.dark)
+                color: Qt.darker(activePalette.dark)
             }
         }
 
@@ -165,11 +166,11 @@ TabOptionPage {
         ToolButton {
             id: leftbutton
             x: 10; y:10
-            width: 50
+            width: root.width/7
             height: width
 
             bgcolor: "white"
-            source: "../Images/backc.svg";
+            source: "../Images/backc.png";
             onClicked: root.cancel();
         }
 
@@ -177,10 +178,10 @@ TabOptionPage {
             id: rightbutton
 
             x: landscape? root.height -10 -width: root.width - 10 -width; y:10
-            width: 50
+            width: root.width/7
             height: width
 
-            source: "../Images/confirmc.svg";
+            source: "../Images/confirmc.png";
             bgcolor: "white"
             //onClicked: root.optionsChanged();
 
@@ -200,7 +201,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Actual: ";
-            value: speedcur.value.toFixed(1);
+            value: server.current.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -216,7 +217,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Minimum: ";
-            value: speedmin.value.toFixed(1);
+            value: server.minimum.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -232,7 +233,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Maximum: ";
-            value: speedmax.value.toFixed(1);
+            value: server.maximum.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -248,7 +249,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Average: ";
-            value: speedavg.value.toFixed(1);
+            value: server.average.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -264,7 +265,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip distance: ";
-            value: distance.value.toFixed(0);
+            value: distancemodel.current.toFixed(0);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -280,7 +281,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Monitor distance: ";
-            value: monitor.value.toFixed(0);
+            value: distancemodel.monitor.toFixed(0);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

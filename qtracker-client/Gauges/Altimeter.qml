@@ -1,5 +1,6 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+import QtMobility.location 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 
 Item {
@@ -26,7 +27,7 @@ Item {
     }
 
     Image {
-        source: "../Images/speed10.svg"
+        source: "../Images/speed10.png"
         anchors.fill: parent
     }
 
@@ -38,38 +39,43 @@ Item {
 
     Component.onCompleted: update()
 
+    PositionSource {
+        id: gps
+        updateInterval: 1000
+        active: true
+        onPositionChanged: if (gps.position.altitudeValid) current.value = gps.position.coordinate.altitude
+    }
+
+    AltitudeModel {
+        id: server
+    }
+
     property list<QtObject> values: [
-        ValueSpaceSubscriber { id: current; path: "/server/altitude/current" },
-        ValueSpaceSubscriber { id: min;     path: "/server/altitude/min"     },
-        ValueSpaceSubscriber { id: max;     path: "/server/altitude/max"     },
-        ValueSpaceSubscriber { id: average; path: "/server/altitude/average" },
-        ValueSpaceSubscriber { id: ascent;  path: "/server/altitude/ascent"  },
-        ValueSpaceSubscriber { id: descent; path: "/server/altitude/descent" }
+        Item { id: current; property double value: server.current },
+        Item { id: min;     property double value: server.minimum },
+        Item { id: max;     property double value: server.maximum },
+        Item { id: average; property double value: server.average },
+        Item { id: ascent;  property double value: server.ascent  },
+        Item { id: descent; property double value: server.descent }
     ]
     property double analogvalue: values[analogindex].value? values[analogindex].value : 0
     property double topvalue:    values[topindex].value?    values[topindex].value    : 0
     property double bottomvalue: values[bottomindex].value? values[bottomindex].value : 0
 
     function reset() {
-        console.log("altimeter.reset()")
-        var cmd = { "class": "altitude", "method": "reset", "args": [] }
-        client.sendCommand(cmd);
+        server.reset()
     }
 
     property int count: 10
     onCountChanged: setCount(count)
     function setCount(c) {
-        console.log("altimeter.setCount(",c,")")
-        var cmd = { "class": "altitude", "method": "setcount", "args": [ c ] }
-        client.sendCommand(cmd);
+        server.setCount(c)
     }
 
     property real hysteresis: 25.0
     onHysteresisChanged: setHysteresis(hysteresis)
     function setHysteresis(h) {
-        console.log("altimeter.setHysteresis(",h,")")
-        var cmd = { "class": "altitude", "method": "sethysteresis", "args": [ h ] }
-        client.sendCommand(cmd);
+        server.setHysteresis(h)
     }
 
     Rectangle {
@@ -101,7 +107,7 @@ Item {
     }
 
     Image {
-        source: "../Images/shorthand.svg"
+        source: "../Images/shorthand.png"
         anchors.fill: parent
         transform: Rotation {
             id: shorthand
@@ -119,7 +125,7 @@ Item {
     }
 
     Image {
-        source: "../Images/longhand.svg"
+        source: "../Images/longhand.png"
         anchors.fill: parent
         transform: Rotation {
             id: longhand

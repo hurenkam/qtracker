@@ -1,5 +1,6 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+import QtMobility.location 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 
 Item {
@@ -33,45 +34,51 @@ Item {
 
     Component.onCompleted: update()
 
+    PositionSource {
+        id: gps
+        updateInterval: 1000
+        active: true
+    }
+
+    SpeedModel {
+        id: speedmodel
+    }
+
+    DistanceModel {
+        id: distancemodel
+    }
+
     property list<QtObject> values: [
-        ValueSpaceSubscriber { id: speedcur; path: "/server/speed/current"     },
-        ValueSpaceSubscriber { id: speedmin; path: "/server/speed/min"         },
-        ValueSpaceSubscriber { id: speedmax; path: "/server/speed/max"         },
-        ValueSpaceSubscriber { id: speedavg; path: "/server/speed/average"     },
-        ValueSpaceSubscriber { id: distance; path: "/server/location/distance" },
-        ValueSpaceSubscriber { id: monitor;  path: "/server/monitor/distance"  }
+        Item { property double value: gps.position.speedValid? gps.position.speed : 0 },
+        Item { property double value: speedmodel.average },
+        Item { property double value: speedmodel.minimum },
+        Item { property double value: speedmodel.maximum },
+        Item { property double value: distancemodel.current },
+        Item { property double value: distancemodel.monitor }
     ]
     property double analogvalue: values[analogindex].value? values[analogindex].value : -180
     property double topvalue:    values[topindex].value?    values[topindex].value    : 0
     property double bottomvalue: values[bottomindex].value? values[bottomindex].value : 0
 
-
     function reset() {
-        console.log("speedometer.reset()")
-        var cmd = { "class": "speed", "method": "reset", "args": [] }
-        client.sendCommand(cmd);
-
-        cmd = { "class": "location", "method": "reset", "args": [] }
-        client.sendCommand(cmd);
+        speedmodel.reset()
+        distancemodel.reset()
     }
+
     property int count: 5
     onCountChanged: setCount(count)
     function setCount(c) {
-        console.log("speedometer.setCount(",c,")")
-        var cmd = { "class": "speed", "method": "setcount", "args": [ c ] }
-        client.sendCommand(cmd);
+        speedmodel.setCount(c)
     }
     property real hysteresis: 25.0
     onHysteresisChanged: setHysteresis(hysteresis)
     function setHysteresis(h) {
-        console.log("speedometer.setHysteresis(",h,")")
-        var cmd = { "class": "location", "method": "sethysteresis", "args": [ h ] }
-        client.sendCommand(cmd);
+        distancemodel.setHysteresis(h)
     }
 
     Image {
-        //source: if (analog.value < 10) "speed10.svg"; else "speed200.svg"
-        source: (analogvalue && (analogvalue>10))? "../Images/speed200.svg" : "../Images/speed10.svg"
+        //source: if (analog.value < 10) "speed10.png"; else "speed200.png"
+        source: (analogvalue && (analogvalue>10))? "../Images/speed200.png" : "../Images/speed10.png"
         width: parent.width
         height: parent.height
     }
@@ -107,7 +114,7 @@ Item {
     }
 
     Image {
-        source: "../Images/speedneedle.svg"
+        source: "../Images/speedneedle.png"
         width: parent.width
         height: parent.height
         transform: Rotation {
