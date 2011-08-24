@@ -1,5 +1,5 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 
 Item {
@@ -30,44 +30,20 @@ Item {
         onDoubleTap: root.options()
     }
 
+    TimeModel {
+        id: timemodel
+    }
     property list<QtObject> values: [
-        ValueSpaceSubscriber {
-            id: currenttime
-            path: "/server/time/current"
-            property int hour:   value? value.hour   : 0
-            property int minute: value? value.minute : 0
-            property int second: value? value.second : 0
-            property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
-            //onTextChanged: console.log("current:   ", text)
-        },
-        ValueSpaceSubscriber {
-            id: triptime
-            path: "/server/time/trip"
-            property int hour:   value? value.hour   : 0
-            property int minute: value? value.minute : 0
-            property int second: value? value.second : 0
-            property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
-            //onTextChanged: console.log("trip:      ", text)
-        },
-        ValueSpaceSubscriber {
-            id: monitortime
-            path: "/server/monitor/time"
-            property int hour:   value? value.hour   : 0
-            property int minute: value? value.minute : 0
-            property int second: value? value.second : 0
-            property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
-            //onTextChanged: console.log("monitor:   ", text)
-        }
+        Item { property variant value: timemodel.current; property string text: Qt.formatDateTime(value,"hh:mm:ss"); }
+        Item { property variant value: timemodel.elapsed; property string text: Qt.formatDateTime(value,"hh:mm:ss"); }
+        Item { property variant value: timemodel.monitor; property string text: Qt.formatDateTime(value,"hh:mm:ss"); }
     ]
-
     function reset() {
-        console.log("clock.reset()")
-        var cmd = { "class": "time", "method": "reset", "args": [] }
-        client.sendCommand(cmd);
+        timemodel.reset()
     }
 
     Image {
-        source: "../Images/clock.svg";
+        source: "../Images/clock.png";
         anchors.fill: parent
     }
 
@@ -97,7 +73,7 @@ Item {
     }
 
     Image {
-        source: "../Images/shorthand.svg"
+        source: "../Images/shorthand.png"
         anchors.fill: parent
         transform: Rotation {
             id: shorthand
@@ -114,7 +90,7 @@ Item {
         }
     }
     Image {
-        source: "../Images/longhand.svg"
+        source: "../Images/longhand.png"
         anchors.fill: parent
         transform: Rotation {
             id: longhand
@@ -131,7 +107,7 @@ Item {
         }
     }
     Image {
-        source: "../Images/secondhand.svg"
+        source: "../Images/secondhand.png"
         anchors.fill: parent
         transform: Rotation {
             id: secondhand
