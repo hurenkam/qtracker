@@ -1,5 +1,4 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Main"
@@ -12,72 +11,50 @@ OptionPage {
     title: "Trip"
     imageSource: "../Images/options-bg.png"
     rightbutton: true
-    rightbuttonsrc: "../Images/options-plain.svg"
+    rightbuttonsrc: "../Images/options-plain.png"
     rightbuttonradius: 0
     leftbutton: true
-    leftbuttonsrc: "../Images/left-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.png"
     leftbuttonradius: 0
-    property int tripid: vcurrenttrip.value
+    property int tripid: server.trip
     property TTrip dbrecord
 
-    tools: ToolBarLayout {
+     tools: ToolBarLayout {
         id: maintools
-        ToolButton { id: okbutton;   source: "../Images/visible-plain.svg";   bgcolor: "black"; bgradius: 0 }
+        ToolButton { id: okbutton;   source: "../Images/visible-plain.png";   bgcolor: "black"; bgradius: 0 }
         ToolButton { visible: false; showbg: false }
         ToolButton { visible: false; showbg: false }
-        ToolButton { id: wptbutton;  source: "../Images/flag-plain.svg";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
-        ToolButton { id: rtebutton;  source: "../Images/route-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
-        ToolButton { id: trkbutton;  source: "../Images/hiker-plain.svg";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
+        ToolButton { id: wptbutton;  source: "../Images/flag-plain.png";      bgcolor: "black"; bgradius: 0; onClicked: wptShowList() }
+        ToolButton { id: rtebutton;  source: "../Images/route-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: rteShowList() }
+        ToolButton { id: trkbutton;  source: "../Images/hiker-plain.png";     bgcolor: "black"; bgradius: 0; onClicked: trkShowList() }
         height: 60
     }
 
-    ValueSpaceSubscriber  {
-        id: vcurrenttrip;
-        path: "/server/trip/id"
-        property int tripid: value
+    ServerModel {
+        id: server
     }
 
-    ValueSpaceSubscriber  {
-        id: vcurrentname;
-        path: "/server/trip/name"
-        property string name: value
-    }
-
-    ValueSpaceSubscriber {
-        id: vtriptime
-        path: "/server/time/trip"
-        property int hour:   value? value.hour   : 0
-        property int minute: value? value.minute : 0
-        property int second: value? value.second : 0
-        property string text: hour.toString() + ":" + minute.toString() + "." + second.toString()
-        //property string text: Qt.formatTime(value,"hh:mm:ss")
-    }
-    ValueSpaceSubscriber { id: vdistance; path: "/server/location/distance"; property double d: value }
-    ValueSpaceSubscriber { id: vspeedmin; path: "/server/speed/min";         property double d: value }
-    ValueSpaceSubscriber { id: vspeedmax; path: "/server/speed/max";         property double d: value }
-    ValueSpaceSubscriber { id: vspeedavg; path: "/server/speed/average";     property double d: value }
-    ValueSpaceSubscriber { id: valtmin;   path: "/server/altitude/min";      property double d: value }
-    ValueSpaceSubscriber { id: valtmax;   path: "/server/altitude/max";      property double d: value }
-    ValueSpaceSubscriber { id: valtavg;   path: "/server/altitude/average";  property double d: value }
-    ValueSpaceSubscriber { id: vascent;   path: "/server/altitude/ascent";   property double d: value }
-    ValueSpaceSubscriber { id: vdescent;  path: "/server/altitude/descent";  property double d: value }
+    AltitudeModel { id: altitude }
+    SpeedModel    { id: speed }
+    DistanceModel { id: distance }
+    TimeModel     { id: time }
 
     QtObject {
         id: record
-        property bool current: ((vcurrenttrip.tripid == root.tripid) || !dbrecord)
+        property bool current: ((server.trip == root.tripid) || !dbrecord)
         //property bool current: true
-        property int     tripid:   (current)? vcurrenttrip.tripid : root.tripid
-        property string  name:     (current)? vcurrentname.name   : dbrecord.name
-        property string  triptime: (current)? vtriptime.text  : Qt.formatTime(dbrecord.triptime,"hh:mm:ss")
-        property string  tripdist: (current)? vdistance.d     : dbrecord.tripdist
-        property double  speedavg: (current)? vspeedavg.d     : dbrecord.speedavg
-        property double  speedmin: (current)? vspeedmin.d     : dbrecord.speedmin
-        property double  speedmax: (current)? vspeedmax.d     : dbrecord.speedmax
-        property double  ascent:   (current)? vascent.d       : dbrecord.ascent
-        property double  descent:  (current)? vdescent.d      : dbrecord.descent
-        property double  altavg:   (current)? valtavg.d       : dbrecord.altavg
-        property double  altmin:   (current)? valtmin.d       : dbrecord.altmin
-        property double  altmax:   (current)? valtmax.d       : dbrecord.altmax
+        property int     tripid:   (current)? server.tripid    : root.tripid
+        //property string  name:     (current)? server.tripname  : dbrecord.name
+        property string  triptime: (current)? Qt.formatTime(time.elapsed,"hh:mm:ss") : Qt.formatTime(dbrecord.triptime,"hh:mm:ss")
+        property string  tripdist: (current)? distance.current : dbrecord.tripdist
+        property double  speedavg: (current)? speed.average    : dbrecord.speedavg
+        property double  speedmin: (current)? speed.minimum    : dbrecord.speedmin
+        property double  speedmax: (current)? speed.maximum    : dbrecord.speedmax
+        property double  ascent:   (current)? altitude.ascent  : dbrecord.ascent
+        property double  descent:  (current)? altitude.descent : dbrecord.descent
+        property double  altavg:   (current)? altitude.average : dbrecord.altavg
+        property double  altmin:   (current)? altitude.minimum : dbrecord.altmin
+        property double  altmax:   (current)? altitude.maximum : dbrecord.altmax
     }
 
     TDatabase {
@@ -103,7 +80,7 @@ OptionPage {
         x:      0
         y:      50
         width:  root.width
-        height: 170
+        height: 210
 
         DynamicItemModel {
             id: tripitems
@@ -120,9 +97,9 @@ OptionPage {
         title: "Speed Data"
         items: speeditems
         x:      0
-        y:      200
+        y:      255
         width:  root.width
-        height: 170
+        height: 210
 
         DynamicItemModel {
             id: speeditems
@@ -139,9 +116,9 @@ OptionPage {
         title: "Altitude Data"
         items: altitems
         x:      0
-        y:      350
+        y:      450
         width:  root.width
-        height: 270
+        height: 320
 
         DynamicItemModel {
             id: altitems
@@ -242,25 +219,8 @@ OptionPage {
         visible: false
         onRightClicked: { if (trackstatus.status == "idle") root.trkAdd(); else root.trkStop() }
         onLeftClicked:  { y = root.height; }
-        rightbuttonsrc: trackstatus.status=="idle"? "../Images/add-plain.svg" : "../Images/stop-plain.svg"
-
-        ValueSpaceSubscriber  {
-                id: trackstatus;
-                path: "/server/track/status"
-                property string status: value
-        }
-
-        ValueSpaceSubscriber  {
-                id: trackname;
-                path: "/server/track/name"
-                property string name: value
-        }
-
-        ValueSpaceSubscriber  {
-            id: trip;
-            path: "/server/trip/id"
-            property int tripid: value
-        }
+        //rightbuttonsrc: trackstatus.status=="idle"? "../Images/add-plain.png" : "../Images/stop-plain.png"
+        rightbuttonsrc: "../Images/add-plain.png"
 
         Rectangle {
             id: trkbox
