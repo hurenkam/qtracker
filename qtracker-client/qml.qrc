@@ -1,0 +1,135 @@
+<RCC>
+    <qresource prefix="/Main">
+        <file alias="main.qml">Main/main.qml</file>
+        <file alias="DashBoard.qml">Main/DashBoard.qml</file>
+        <file alias="Gauge.qml">Main/Gauge.qml</file>
+        <file alias="ImExportPage.qml">Main/ImExportPage.qml</file>
+        <file alias="MainOptionPage.qml">Main/MainOptionPage.qml</file>
+        <file alias="MainPage.qml">Main/MainPage.qml</file>
+    </qresource>
+    <qresource prefix="/Category">
+        <file alias="CategoryEditPage.qml">Category/CategoryEditPage.qml</file>
+        <file alias="CategorySelectionPage.qml">Category/CategorySelectionPage.qml</file>
+    </qresource>
+    <qresource prefix="/Components">
+        <file alias="DynamicItemModel.qml">Components/DynamicItemModel.qml</file>
+        <file alias="DynamicItemView.qml">Components/DynamicItemView.qml</file>
+        <file alias="DynamicList.js">Components/DynamicList.js</file>
+        <file alias="MouseHandler.qml">Components/MouseHandler.qml</file>
+        <file alias="OptionHeader.qml">Components/OptionHeader.qml</file>
+        <file alias="OptionInputItem.qml">Components/OptionInputItem.qml</file>
+        <file alias="OptionItem.qml">Components/OptionItem.qml</file>
+        <file alias="OptionList.qml">Components/OptionList.qml</file>
+        <file alias="OptionPage.qml">Components/OptionPage.qml</file>
+        <file alias="OptionRadioButton.qml">Components/OptionRadioButton.qml</file>
+        <file alias="OptionSubPage.qml">Components/OptionSubPage.qml</file>
+        <file alias="OptionTextItem.qml">Components/OptionTextItem.qml</file>
+        <file alias="Page.qml">Components/Page.qml</file>
+        <file alias="PageStack.js">Components/PageStack.js</file>
+        <file alias="PageStack.qml">Components/PageStack.qml</file>
+        <file alias="RadioBox.qml">Components/RadioBox.qml</file>
+        <file alias="Settings.qml">Components/Settings.qml</file>
+        <file alias="TabItem.qml">Components/TabItem.qml</file>
+        <file alias="TabLayout.qml">Components/TabLayout.qml</file>
+        <file alias="TabOptionPage.qml">Components/TabOptionPage.qml</file>
+        <file alias="ToolBar.qml">Components/ToolBar.qml</file>
+        <file alias="ToolBarLayout.qml">Components/ToolBarLayout.qml</file>
+        <file alias="ToolButton.qml">Components/ToolButton.qml</file>
+        <file alias="ValueSpaceSubscriber.qml">Components/ValueSpaceSubscriber.qml</file>
+    </qresource>
+    <qresource prefix="/Gauges">
+        <file alias="Altimeter.qml">Gauges/Altimeter.qml</file>
+        <file alias="AltitudeOptionsPage.qml">Gauges/AltitudeOptionsPage.qml</file>
+        <file alias="Clock.qml">Gauges/Clock.qml</file>
+        <file alias="ClockOptionsPage.qml">Gauges/ClockOptionsPage.qml</file>
+        <file alias="CompassOptionsPage.qml">Gauges/CompassOptionsPage.qml</file>
+        <file alias="Levels.qml">Gauges/Levels.qml</file>
+        <file alias="SatelliteOptionsPage.qml">Gauges/SatelliteOptionsPage.qml</file>
+        <file alias="Satellites.qml">Gauges/Satellites.qml</file>
+        <file alias="Speedometer.qml">Gauges/Speedometer.qml</file>
+        <file alias="SpeedOptionsPage.qml">Gauges/SpeedOptionsPage.qml</file>
+        <file alias="Compass2.qml">Gauges/Compass2.qml</file>
+    </qresource>
+    <qresource prefix="/Map">
+        <file alias="Filesystem.js">Map/Filesystem.js</file>
+        <file alias="MapEditPage.qml">Map/MapEditPage.qml</file>
+        <file alias="MapImportPage.qml">Map/MapImportPage.qml</file>
+        <file alias="MapSelectionPage.qml">Map/MapSelectionPage.qml</file>
+        <file alias="MapView.qml">Map/MapView.qml</file>
+        <file alias="RefpointEditPage.qml">Map/RefpointEditPage.qml</file>
+        <file alias="RefpointSelectionPage.qml">Map/RefpointSelectionPage.qml</file>
+    </qresource>
+    <qresource prefix="/Route">
+        <file alias="RouteEditPage.qml">Route/RouteEditPage.qml</file>
+        <file alias="RoutePointEditPage.qml">Route/RoutePointEditPage.qml</file>
+        <file alias="RouteSelectionPage.qml">Route/RouteSelectionPage.qml</file>
+    </qresource>
+    <qresource prefix="/Track">
+        <file alias="TrackRecordingPage.qml">Track/TrackRecordingPage.qml</file>
+        <file alias="TrackSelectionPage.qml">Track/TrackSelectionPage.qml</file>
+    </qresource>
+    <qresource prefix="/Trip">
+        <file alias="TripEditPage.qml">Trip/TripEditPage.qml</file>
+        <file alias="TripSelectionPage.qml">Trip/TripSelectionPage.qml</file>
+    </qresource>
+    <qresource prefix="/Waypoint">
+        <file alias="WaypointEditPage.qml">Waypoint/WaypointEditPage.qml</file>
+    </qresource>
+    <qresource prefix="/Images">
+        <file alias="add-plain.png">Images/add-plain.png</file>
+        <file alias="back.png">Images/back.png</file>
+        <file alias="backc.png">Images/backc.png</file>
+        <file alias="category.png">Images/category.png</file>
+        <file alias="clock.png">Images/clock.png</file>
+        <file alias="compass.png">Images/compass.png</file>
+        <file alias="compassneedle.png">Images/compassneedle.png</file>
+        <file alias="compassring.png">Images/compassring.png</file>
+        <file alias="confirm-plain.png">Images/confirm-plain.png</file>
+        <file alias="confirmc.png">Images/confirmc.png</file>
+        <file alias="dash-bg-landscape.ico">Images/dash-bg-landscape.ico</file>
+        <file alias="dash-bg-portrait.ico">Images/dash-bg-portrait.ico</file>
+        <file alias="dash-fg-landscape.ico">Images/dash-fg-landscape.ico</file>
+        <file alias="dash-fg-portrait.ico">Images/dash-fg-portrait.ico</file>
+        <file alias="down-plain.png">Images/down-plain.png</file>
+        <file alias="exit.png">Images/exit.png</file>
+        <file alias="export-plain.png">Images/export-plain.png</file>
+        <file alias="export.png">Images/export.png</file>
+        <file alias="flag-plain.png">Images/flag-plain.png</file>
+        <file alias="flag.png">Images/flag.png</file>
+        <file alias="forward.png">Images/forward.png</file>
+        <file alias="globalmap.png">Images/globalmap.png</file>
+        <file alias="heading.png">Images/heading.png</file>
+        <file alias="hiker-plain.png">Images/hiker-plain.png</file>
+        <file alias="hiker.png">Images/hiker.png</file>
+        <file alias="import-plain.png">Images/import-plain.png</file>
+        <file alias="import.png">Images/import.png</file>
+        <file alias="left-plain.png">Images/left-plain.png</file>
+        <file alias="level.png">Images/level.png</file>
+        <file alias="levelhand.png">Images/levelhand.png</file>
+        <file alias="localmap.png">Images/localmap.png</file>
+        <file alias="locator_green.png">Images/locator_green.png</file>
+        <file alias="locator_red.png">Images/locator_red.png</file>
+        <file alias="longhand.png">Images/longhand.png</file>
+        <file alias="map.png">Images/map.png</file>
+        <file alias="options-bg.png">Images/options-bg.png</file>
+        <file alias="options-plain.png">Images/options-plain.png</file>
+        <file alias="options.png">Images/options.png</file>
+        <file alias="route-plain.png">Images/route-plain.png</file>
+        <file alias="route.png">Images/route.png</file>
+        <file alias="satview.png">Images/satview.png</file>
+        <file alias="secondhand.png">Images/secondhand.png</file>
+        <file alias="shorthand.png">Images/shorthand.png</file>
+        <file alias="speed10.png">Images/speed10.png</file>
+        <file alias="speed200.png">Images/speed200.png</file>
+        <file alias="speedneedle.png">Images/speedneedle.png</file>
+        <file alias="splash.png">Images/splash.png</file>
+        <file alias="Terestrial_globe.png">Images/Terrestrial_globe.png</file>
+        <file alias="ticked.png">Images/ticked.png</file>
+        <file alias="trip.png">Images/trip.png</file>
+        <file alias="unticked.png">Images/unticked.png</file>
+        <file alias="visible-plain.png">Images/visible-plain.png</file>
+        <file alias="visible.png">Images/visible.png</file>
+        <file alias="zoom-in.png">Images/zoom-in.png</file>
+        <file alias="zoom-out.png">Images/zoom-out.png</file>
+    </qresource>
+</RCC>
