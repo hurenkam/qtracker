@@ -33,10 +33,11 @@ Item {
     TimeModel {
         id: timemodel
     }
+
     property list<QtObject> values: [
-        Item { property variant value: timemodel.current; property string text: Qt.formatDateTime(value,"hh:mm:ss"); }
-        Item { property variant value: timemodel.elapsed; property string text: Qt.formatDateTime(value,"hh:mm:ss"); }
-        Item { property variant value: timemodel.monitor; property string text: Qt.formatDateTime(value,"hh:mm:ss"); }
+        Item { property date value: timemodel.current; property string text: Qt.formatDateTime(value,"hh:mm:ss"); },
+        Item { property date value: timemodel.elapsed; property string text: Qt.formatDateTime(value,"hh:mm:ss"); },
+        Item { property date value: timemodel.monitor; property string text: Qt.formatDateTime(value,"hh:mm:ss"); }
     ]
     function reset() {
         timemodel.reset()
@@ -79,7 +80,8 @@ Item {
             id: shorthand
             origin.x: width/2
             origin.y: height/2
-            angle: values[analogindex].hour*360/12 +  values[analogindex].minute/2
+            angle: values[analogindex].value.getHours()*360/12 +  values[analogindex].value.getMinutes()/2
+/*
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -87,6 +89,7 @@ Item {
                     modulus: 360
                 }
             }
+*/
         }
     }
     Image {
@@ -96,7 +99,8 @@ Item {
             id: longhand
             origin.x: width/2
             origin.y: height/2
-            angle: values[analogindex].minute*360/60
+            angle: values[analogindex].value.getMinutes()*360/60
+/*
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -104,6 +108,7 @@ Item {
                     modulus: 360
                 }
             }
+*/
         }
     }
     Image {
@@ -113,7 +118,7 @@ Item {
             id: secondhand
             origin.x: width/2
             origin.y: height/2
-            angle: values[analogindex].second*360/60
+            angle: values[analogindex].value.getSeconds()*360/60
 
 /* Disabled for now due to performance reasons
    http://code.google.com/p/qtracker/issues/detail?id=11
