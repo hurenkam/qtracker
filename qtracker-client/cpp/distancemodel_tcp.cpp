@@ -12,9 +12,7 @@ qmlDistanceModel::qmlDistanceModel(QObject *parent): QObject(parent)
     p = &PrivateDistanceModel::Instance();
     connect(p,SIGNAL(dataChanged),this,SIGNAL(maskChanged));
     connect(p,SIGNAL(dataChanged),this,SIGNAL(currentChanged));
-    connect(p,SIGNAL(dataChanged),this,SIGNAL(averageChanged));
-    connect(p,SIGNAL(dataChanged),this,SIGNAL(minimumChanged));
-    connect(p,SIGNAL(dataChanged),this,SIGNAL(maximumChanged));
+    connect(p,SIGNAL(dataChanged),this,SIGNAL(monitorChanged));
 }
 
 int    qmlDistanceModel::mask()       { return p->mask();       }
@@ -63,7 +61,10 @@ void PrivateDistanceModel::commandExecuted(Command* cmd)
     LOG( "PrivateSpeedModel::commandExecuted()" )
     switch (cmd->cmd())
     {
-        case cmdResetDistanceData: break;
+        case cmdResetDistanceData: {
+            emit dataChanged();
+            break;
+        }
         case cmdRequestDistanceData:
         {
             RequestDistanceData* rq = dynamic_cast<RequestDistanceData*>(cmd);

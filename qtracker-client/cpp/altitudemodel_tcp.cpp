@@ -78,7 +78,11 @@ void PrivateAltitudeModel::commandExecuted(Command* cmd)
     LOG( "PrivateAltitudeModel::commandExecuted()" )
     switch (cmd->cmd())
     {
-        case cmdResetAltitudeData: break;
+        case cmdResetAltitudeData:
+        {
+            emit dataChanged();
+            break;
+        }
         case cmdRequestAltitudeData:
         {
             RequestAltitudeData* rq = dynamic_cast<RequestAltitudeData*>(cmd);

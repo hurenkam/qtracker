@@ -20,10 +20,12 @@
 #elif defined (Q_WS_SIMULATOR)
 #include "client.h"
 #elif defined(Q_OS_ANDROID)
-#include "../tripdataserver/tripserverinterface.h"
+//#include "../tripdataserver/tripserverinterface.h"
 #include "qmlaltitudemodel.h"
 #include "qmlspeedmodel.h"
 #include "qmldistancemodel.h"
+#include "qmltimemodel.h"
+#include "qmltripserverinterface.h"
 #endif
 
 //#define ENABLE_DEBUG
@@ -109,10 +111,12 @@ void registerTypes()
     qmlRegisterType<qmlTrack>("QmlTrackerExtensions",1,0,"TTrack");
     qmlRegisterType<qmlRefpoint>("QmlTrackerExtensions",1,0,"TRefpoint");
 #if defined(Q_OS_ANDROID)
-    qmlRegisterType<TripServerInterface>("QmlTrackerExtensions",1,0,"TripServer");
+    //qmlRegisterType<TripServerInterface>("QmlTrackerExtensions",1,0,"TripServer");
     qmlRegisterType<qmlAltitudeModel>("QmlTrackerExtensions",1,0,"AltitudeModel");
     qmlRegisterType<qmlSpeedModel>("QmlTrackerExtensions",1,0,"SpeedModel");
     qmlRegisterType<qmlDistanceModel>("QmlTrackerExtensions",1,0,"DistanceModel");
+    qmlRegisterType<qmlTimeModel>("QmlTrackerExtensions",1,0,"TimeModel");
+    qmlRegisterType<qmlTripServerInterface>("QmlTrackerExtensions",1,0,"ServerModel");
 #endif
     LOG("Exit: registerTypes()")
 }

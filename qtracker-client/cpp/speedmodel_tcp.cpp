@@ -66,7 +66,11 @@ void PrivateSpeedModel::commandExecuted(Command* cmd)
     LOG( "PrivateSpeedModel::commandExecuted()" )
     switch (cmd->cmd())
     {
-        case cmdResetSpeedData: break;
+        case cmdResetSpeedData:
+        {
+            emit dataChanged();
+            break;
+        }
         case cmdRequestSpeedData:
         {
             RequestSpeedData* rq = dynamic_cast<RequestSpeedData*>(cmd);
