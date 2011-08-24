@@ -1,5 +1,4 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
 import QmlTrackerExtensions 1.0
 import "../Components"
 import "../Gauges"
@@ -14,10 +13,12 @@ Page {
     id: root
     property bool animate: false
 
+    ServerModel {
+        id: server
+    }
+
     function exitServer() {
-        console.log("exitServer()")
-        var cmd = { "class": "server", "method": "stop", "args": [] }
-        client.sendCommand(cmd);
+        server.stop();
     }
     function exitClient() {
         console.log("exitClient()")
@@ -64,7 +65,7 @@ Page {
 
         Image {
             id: locator
-            source: map.state == "scrolling"? "../Images/locator_red.svg" : "../Images/locator_green.svg"
+            source: map.state == "scrolling"? "../Images/locator_red.png" : "../Images/locator_green.png"
             width: sourceSize.width/2
             height: sourceSize.height/2
             x: (parent.width-width)/2
@@ -96,11 +97,11 @@ Page {
 
         tools: ToolBarLayout {
             id: maintools
-            ToolButton { id: optbutton;  source: "../Images/options.svg";  }
-            ToolButton { id: mapbutton;  source: "../Images/map.svg";      onClicked: showPage(mapselectsrc)  }
-            ToolButton { id: catbutton;  source: "../Images/category.svg"; onClicked: showPage(catselectsrc) }
-            ToolButton { id: tripbutton; source: "../Images/trip.svg";     onClicked: showPage(tripselectsrc) }
-            ToolButton { id: tstbutton;  source: "../Images/flag.svg";     onClicked: showPage(tstselectsrc)  }
+            ToolButton { id: optbutton;  source: "../Images/options.png";  }
+            ToolButton { id: mapbutton;  source: "../Images/map.png";      onClicked: showPage(mapselectsrc)  }
+            ToolButton { id: catbutton;  source: "../Images/category.png"; onClicked: showPage(catselectsrc) }
+            ToolButton { id: tripbutton; source: "../Images/trip.png";     onClicked: showPage(tripselectsrc) }
+            //ToolButton { id: tstbutton;  source: "../Images/flag.png";     onClicked: showPage(tstselectsrc)  }
 
             // Opts => ?
             // Map  => Meta | Local | All  | Cat | Trip
@@ -110,7 +111,7 @@ Page {
             hasRightButton: true
             ToolButton {
                 id: quitbutton
-                source: "../Images/exit.svg"
+                source: "../Images/exit.png"
                 onClicked: exitClient();
                 onRepeat:  exitClientAndServer();
                 interval: 5000;
@@ -149,7 +150,7 @@ Page {
         height: 60*h
         width: 60*w
         id: hidebutton;
-        source: "../Images/export.svg";
+        source: "../Images/export.png";
         onClicked: {
             root.animate = true;
             dashboard.toggleHide();
@@ -164,7 +165,7 @@ Page {
         height: 40*h
         width: 40*w
         id: zoominbutton;
-        source: "../Images/zoom-in.svg";
+        source: "../Images/zoom-in.png";
         onClicked: map.zoomIn()
     }
 
@@ -174,7 +175,7 @@ Page {
         height: 40*h
         width: 40*w
         id: zoomoutbutton;
-        source: "../Images/zoom-out.svg";
+        source: "../Images/zoom-out.png";
         onClicked: map.zoomOut()
     }
 }
