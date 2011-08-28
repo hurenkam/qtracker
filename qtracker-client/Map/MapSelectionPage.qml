@@ -60,6 +60,7 @@ OptionPage {
 
     function refreshData() {
         console.log("MapSelectionPage.refreshData()")
+        database.refresh()
         maplist.model = database.maps
     }
 
