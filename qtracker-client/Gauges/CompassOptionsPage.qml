@@ -1,5 +1,7 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+//import QtMobility.publishsubscribe 1.1
+import QtMobility.sensors 1.1
+import QtMobility.location 1.1
 import "../Components"
 
 TabOptionPage {
@@ -142,11 +144,33 @@ TabOptionPage {
         }
     }
 
-    ValueSpaceSubscriber { id: latitude;  path: "/server/location/latitude"  }
-    ValueSpaceSubscriber { id: longitude; path: "/server/location/longitude" }
-    ValueSpaceSubscriber { id: altitude;  path: "/server/location/altitude"  }
+    PositionSource {
+        id: gps
+        updateInterval: 1000
+        active: true
+        onPositionChanged: {
+            if (gps.position.altitudeValid) altitude.value = gps.position.coordinate.altitude
+            latitude.value  = position.coordinate.latitude
+            longitude.value = position.coordinate.longitude
+        }
+    }
 
-    ValueSpaceSubscriber { id: azimuth;   path: "/server/compass/azimuth"    }
+    Compass {
+        id: sensor
+        //dataRate: 4
+        Component.onCompleted: sensor.start()
+        //onReadingChanged: azimuth.value = reading.azimuth
+    }
+    Timer {
+        id: currenttimer; interval: 250; running: true; repeat: true;
+        onTriggered: azimuth.value = sensor.reading.azimuth
+    }
+
+    ValueSpaceSubscriber { id: latitude;  path: "/server/location/latitude";  property double value: 0.0 }
+    ValueSpaceSubscriber { id: longitude; path: "/server/location/longitude"; property double value: 0.0 }
+    ValueSpaceSubscriber { id: altitude;  path: "/server/location/altitude";  property double value: 0.0 }
+
+    ValueSpaceSubscriber { id: azimuth;   path: "/server/compass/azimuth";    property double value: 0.0 }
     ValueSpaceSubscriber { id: heading;   path: "/server/location/heading"   }
     ValueSpaceSubscriber { id: bearing;   path: "/server/monitor/bearing"    }
 
@@ -160,15 +184,15 @@ TabOptionPage {
         gradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: Qt.lighter(activePalette.light)
+                color: Qt.darker(activePalette.light)
             }
             GradientStop {
                 position:  1.0
-                color: Qt.lighter(activePalette.dark)
+                color: Qt.darker(activePalette.dark)
             }
         }
 
-        Compass {
+        Compass2 {
             id: compass
             objectName: "compass"
             x: gauge.margin
@@ -180,11 +204,11 @@ TabOptionPage {
         ToolButton {
             id: leftbutton
             x: 10; y:10
-            width: 50
+            width: root.width/7
             height: width
 
             bgcolor: "black"
-            source: "../Images/backc.svg";
+            source: "../Images/backc.png";
             onClicked: root.cancel();
         }
 
@@ -192,10 +216,10 @@ TabOptionPage {
             id: rightbutton
 
             x: root.width - 10 -width; y:10
-            width: 50
+            width: root.width/7
             height: width
 
-            source: "../Images/confirmc.svg";
+            source: "../Images/confirmc.png";
             bgcolor: "black"
             //onClicked: root.optionsChanged();
 

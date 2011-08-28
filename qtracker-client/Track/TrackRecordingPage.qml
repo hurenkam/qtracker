@@ -1,5 +1,6 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+//import QtMobility.publishsubscribe 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 
 OptionPage {
@@ -7,10 +8,10 @@ OptionPage {
     title: trkid == -1? "New Track" : "Resume Track"
     options: trkoptions
     property int trkid: -1
-    leftbuttonsrc: "../Images/left-plain.svg"
+    leftbuttonsrc: "../Images/left-plain.png"
     rightbutton: true
-    rightbuttonsrc: "../Images/visible-plain.svg"
-    //rightbuttonsrc: trackstatus.status=="idle"? "../Images/visible-plain.svg" : "../Images/stop-plain.svg"
+    rightbuttonsrc: "../Images/visible-plain.png"
+    //rightbuttonsrc: trackstatus.status=="idle"? "../Images/visible-plain.png" : "../Images/stop-plain.png"
 
     Settings {
         id: settings
@@ -104,16 +105,22 @@ OptionPage {
         }
     }
 
+    ServerModel {
+        id: server
+    }
+
     function startTrack(id,interval) {
-        var cmd = { "class": "server", "method": "trackstart", "args": [ id, interval ] }
-        console.log("TrackRecordingPage.startTrack(): ",cmd)
-        client.sendCommand(cmd);
+        console.log("TrackRecordingPage.startTrack()")
+        //var cmd = { "class": "server", "method": "trackstart", "args": [ id, interval ] }
+        //client.sendCommand(cmd);
+        server.startTrack(id,interval)
     }
 
     function stopTrack(id) {
-        console.log("TrackRecordingPage.startTrack()")
-        var cmd = { "class": "server", "method": "trackstop", "args": [ id ] }
-        client.sendCommand(cmd);
+        console.log("TrackRecordingPage.stopTrack()")
+        //var cmd = { "class": "server", "method": "trackstop", "args": [ id ] }
+        //client.sendCommand(cmd);
+        server.stopTrack()
     }
 
     function startOrSaveTrack() {

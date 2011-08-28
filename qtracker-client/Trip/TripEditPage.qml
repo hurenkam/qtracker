@@ -42,11 +42,10 @@ OptionPage {
     QtObject {
         id: record
         property bool current: ((server.trip == root.tripid) || !dbrecord)
-        //property bool current: true
-        property int     tripid:   (current)? server.tripid    : root.tripid
-        //property string  name:     (current)? server.tripname  : dbrecord.name
+        property int     tripid:   (current)? server.trip      : root.tripid
+        property string  name:     (current)? server.tripname  : dbrecord.name
         property string  triptime: (current)? Qt.formatTime(time.elapsed,"hh:mm:ss") : Qt.formatTime(dbrecord.triptime,"hh:mm:ss")
-        property string  tripdist: (current)? distance.current : dbrecord.tripdist
+        property double  tripdist: (current)? distance.current : dbrecord.tripdist
         property double  speedavg: (current)? speed.average    : dbrecord.speedavg
         property double  speedmin: (current)? speed.minimum    : dbrecord.speedmin
         property double  speedmax: (current)? speed.maximum    : dbrecord.speedmax
@@ -217,10 +216,10 @@ OptionPage {
             NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
         }
         visible: false
-        onRightClicked: { if (trackstatus.status == "idle") root.trkAdd(); else root.trkStop() }
+        onRightClicked: { if (server.trackstate == "idle") root.trkAdd(); else root.trkStop() }
         onLeftClicked:  { y = root.height; }
-        //rightbuttonsrc: trackstatus.status=="idle"? "../Images/add-plain.png" : "../Images/stop-plain.png"
-        rightbuttonsrc: "../Images/add-plain.png"
+        rightbuttonsrc: server.trackstate=="idle"? "../Images/add-plain.png" : "../Images/stop-plain.png"
+        //rightbuttonsrc: "../Images/add-plain.png"
 
         Rectangle {
             id: trkbox

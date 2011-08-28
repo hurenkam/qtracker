@@ -1,5 +1,6 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+import QtMobility.sensors 1.1
+import QmlTrackerExtensions 1.0
 import "../Components"
 
 Item {
@@ -27,10 +28,32 @@ Item {
         onDoubleTap: root.options()
     }
 
+    Timer {
+        id: currenttimer; interval: 250; running: true; repeat: true;
+        onTriggered: azm.value = sensor.reading.azimuth
+    }
+    Compass {
+        id: sensor
+        Component.onCompleted: sensor.start()
+    }
+/*
+    Timer {
+        id: requestTimer; interval: 1000; running: true; repeat: true;
+        onTriggered: {
+            server.requestData()
+        }
+    }
+    TripServer {
+        id: server
+        onDataChanged: {
+            heading.value = server.course;
+        }
+    }
+*/
     property list<QtObject> values: [
-        ValueSpaceSubscriber { path: "/server/compass/azimuth"  },
-        ValueSpaceSubscriber { path: "/server/location/heading" },
-        ValueSpaceSubscriber { path: "/server/monitor/bearing"  }
+        ValueSpaceSubscriber { id: azm;     path: "/server/compass/azimuth";  property double value: 0 },
+        ValueSpaceSubscriber { id: heading; path: "/server/location/heading"; property double value: 0 },
+        ValueSpaceSubscriber { id: bearing; path: "/server/monitor/bearing";  property double value: 0 }
     ]
     property double azimuth: (sourceindex==0)? (values[0].value? values[0].value: 0) : (values[1].value? values[1].value : 0)
     property double bearing: values[2].value? values[2].value : 0
@@ -43,7 +66,7 @@ Item {
     }
 
     Image {
-        source: "../Images/compassring.svg"
+        source: "../Images/compassring.png"
         anchors.fill: parent
         transform: Rotation {
             id: ring
@@ -51,7 +74,8 @@ Item {
             origin.y: height/2
             //angle: 360 - azimuth.value
             //angle: (bearing.value && azimuth.value)? bearing.value - azimuth.value : 0
-            angle: northup? bearing : bearing - azimuth
+            //angle: northup? bearing : bearing - azimuth
+            angle: northup? 0 : 360 - azimuth
             Behavior on angle {
                 SpringAnimation {
                     spring: 1.4
@@ -62,7 +86,7 @@ Item {
         }
     }
     Image {
-        source: "../Images/compass.svg"
+        source: "../Images/compass.png"
         anchors.fill: parent
         transform: Rotation {
             id: compass
@@ -81,7 +105,7 @@ Item {
         }
     }
     Image {
-        source: "../Images/compassneedle.svg"
+        source: "../Images/compassneedle.png"
         anchors.fill: parent
         transform: Rotation {
             id: needle

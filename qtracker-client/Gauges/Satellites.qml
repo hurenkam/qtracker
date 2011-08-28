@@ -1,5 +1,5 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+//import QtMobility.publishsubscribe 1.1
 import "../Components"
 
 Item {
@@ -19,7 +19,7 @@ Item {
 
     Image {
         id: background
-        source: "../Images/satview.svg"
+        source: "../Images/satview.png"
         anchors.fill: parent
     }
 

@@ -1,5 +1,5 @@
 import QtQuick 1.0
-import QtMobility.publishsubscribe 1.1
+//import QtMobility.publishsubscribe 1.1
 import "../Components"
 
 TabOptionPage {
@@ -20,11 +20,11 @@ TabOptionPage {
         gradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: Qt.lighter(activePalette.light)
+                color: Qt.darker(activePalette.light)
             }
             GradientStop {
                 position:  1.0
-                color: Qt.lighter(activePalette.dark)
+                color: Qt.darker(activePalette.dark)
             }
         }
 
@@ -40,11 +40,11 @@ TabOptionPage {
         ToolButton {
             id: leftbutton
             x: 10; y:10
-            width: 50
+            width: root.width/7
             height: width
 
             bgcolor: "black"
-            source: "../Images/backc.svg";
+            source: "../Images/backc.png";
             onClicked: root.cancel();
         }
 
@@ -52,10 +52,10 @@ TabOptionPage {
             id: rightbutton
 
             x: root.width - 10 -width; y:10
-            width: 50
+            width: root.width/7
             height: width
 
-            source: "../Images/confirmc.svg";
+            source: "../Images/confirmc.png";
             bgcolor: "black"
             //onClicked: root.optionsChanged();
 

@@ -26,8 +26,8 @@ OptionPage {
                 id: maplist
                 //folder: (platform==0) ? "file:///e:/data/qtracker/maps/" : "file:///c:/data/qtracker/maps/"
                 //folder: "file:///c:/data/qtracker/maps/"
-                folder: "file:///e:/data/qtracker/maps/"
-                //folder: "file:///mnt/sdcard/qtracker/maps/"
+                //folder: "file:///e:/data/qtracker/maps/"
+                folder: "file:///mnt/sdcard/qtracker/maps/"
                 nameFilters: ["*.jpg"]
             }
 

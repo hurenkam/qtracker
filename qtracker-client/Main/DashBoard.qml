@@ -28,7 +28,7 @@ Item {
 
     property list<Item> gaugelist: [
         Clock       { id: clock;     anchors.fill: parent; onOptions: pageStack.push(clockoptions)     },
-        Compass     { id: compass;   anchors.fill: parent; onOptions: pageStack.push(compassoptions)   },
+        Compass2    { id: compass;   anchors.fill: parent; onOptions: pageStack.push(compassoptions)   },
         Satellites  { id: sats;      anchors.fill: parent; onOptions: pageStack.push(satsoptions)      },
         Speedometer { id: speed;     anchors.fill: parent; onOptions: pageStack.push(speedoptions)     },
         Altimeter   { id: altimeter; anchors.fill: parent; onOptions: pageStack.push(altimeteroptions) }
