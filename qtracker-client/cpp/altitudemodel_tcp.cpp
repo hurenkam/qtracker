@@ -4,7 +4,7 @@
 
 #include "qmlaltitudemodel.h"
 #include "altitudemodel_tcp.h"
-#include "../../tripdataserver/tripservercommands.h"
+#include "../../tripdataserver/interface/tripservercommands.h"
 
 //#define ENABLE_DEBUG
 #include "helpers.h"

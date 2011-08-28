@@ -5,6 +5,13 @@
 #include <QDir>
 #include <math.h>
 
+#include "qmldatabase.h"
+#include "qmlwaypoint.h"
+#include <QGeoBoundingBox>
+#include <QGeoCoordinate>
+
+using namespace QtMobility;
+
 //#define ENABLE_DEBUG
 #include "helpers.h"
 #define ENTER1(a) ENTER(a)
@@ -28,13 +35,27 @@ static bool paintdebug = false;
 //const int minzoom = 0;
 //const int maxzoom = 4;
 
+Area::Area(qmlWaypoint* topleft, qmlWaypoint* bottomright)
+    : QGeoBoundingBox()
+{
+    setTopLeft(QGeoCoordinate(topleft->latitude(),topleft->longitude(),topleft->altitude()));
+    setBottomRight(QGeoCoordinate(bottomright->latitude(),bottomright->longitude(),bottomright->altitude()));
+}
+
+Area::Area(const qmlWaypoint& topleft, const qmlWaypoint& bottomright)
+    : QGeoBoundingBox()
+{
+    setTopLeft(QGeoCoordinate(topleft.latitude(),topleft.longitude(),topleft.altitude()));
+    setBottomRight(QGeoCoordinate(bottomright.latitude(),bottomright.longitude(),bottomright.altitude()));
+}
+
 MapView::MapView(QDeclarativeItem *parent)
     : QDeclarativeItem(parent)
     , _filename("")
     , _trackid(-1)
     , _mapid(-1)
     , _map(0)
-    , area(0)
+    //, area(0)
 {
     ENTER1("")
     _scale = 0.5;
@@ -74,11 +95,12 @@ void MapView::setMapid(int id)
     _mapid = id;
     emit mapidChanged();
     if (_map) delete _map;
-    _map = Database::Instance().GetMap(_mapid);
+    _map = new qmlMap(_mapid);
     if (_map)
     {
         emit nameChanged();
-        setFilename(_map->url());
+        //setFilename(_map->url());
+        setFilename(QUrl(_map->filename()));
         _map->calibrate();
         emit calibrationChanged();
     }
@@ -131,7 +153,7 @@ QRect MapView::targetArea(const QPoint& p)
     return QRect(QPoint(dx,dy),QSize(tilesize*_scale,tilesize*_scale));
 }
 
-Waypoint MapView::MapXY2Waypoint(const QPoint& p)
+qmlWaypoint* MapView::MapXY2Waypoint(const QPoint& p)
 {
     double lon=0;
     double lat=0;
@@ -147,10 +169,10 @@ Waypoint MapView::MapXY2Waypoint(const QPoint& p)
         lat = area->topLeft().latitude()  + p.y()/_filesize.height() * (area->bottomRight().latitude()  - area->topLeft().latitude());
     }
 */
-    return Waypoint(lat,lon);
+    return new qmlWaypoint(lat,lon);
 }
 
-QPoint MapView::Waypoint2MapXY(const Waypoint& w)
+QPoint MapView::Waypoint2MapXY(const qmlWaypoint& w)
 {
     int x=0;
     int y=0;
@@ -190,9 +212,13 @@ Area MapView::geoArea(const QPoint& p)
 */
     QPoint topleft(     p.x()   *tilesize-5, p.y()   *tilesize-5);
     QPoint bottomright((p.x()+1)*tilesize+5,(p.y()+1)*tilesize+5);
-    Area result(MapXY2Waypoint(topleft),MapXY2Waypoint(bottomright));
+    qmlWaypoint *tl = MapXY2Waypoint(topleft);
+    qmlWaypoint *br = MapXY2Waypoint(bottomright);
+    Area result(tl,br);
 
     LOG1("MapView::geoArea() " << result.topLeft().latitude() << ", " <<  result.topLeft().longitude() << ", " << result.bottomRight().latitude() << ", " << result.bottomRight().longitude() )
+    delete tl;
+    delete br;
     return result;
 }
 
@@ -217,7 +243,7 @@ void MapView::renderEmpty(QPainter *painter, QPoint& p)
 void MapView::renderWaypoints(QPainter *painter, QPoint& p)
 {
     if (!_map || !_map->isCalibrated()) return;
-
+/*
     ENTER2(p)
     QRect s(sourceArea(p));
     Area a(geoArea(p));
@@ -239,7 +265,7 @@ void MapView::renderWaypoints(QPainter *painter, QPoint& p)
         }
     }
     //painter->drawEllipse(QPoint(100,100),5,5);
-
+*/
     EXIT2("")
 }
 
@@ -249,6 +275,7 @@ void MapView::renderWaypoints(QPainter *painter)
     if (!_map->isCalibrated()) return;
 
     ENTER1("")
+/*
     Area a(_map->area());
     WaypointList w = Database::Instance().Waypoints(a);
     LOG("render area (" << a.topLeft() << " " << a.bottomRight() << ") contains " << w.count() << " waypoints")
@@ -267,7 +294,7 @@ void MapView::renderWaypoints(QPainter *painter)
             painter->drawEllipse(viewpt,5,5);
         }
     }
-
+*/
 /* These items were used to check the conversion routines.
     pen.setColor(Qt::red);
     painter->setPen(pen);
@@ -380,7 +407,7 @@ void MapView::setArea(QVariantMap a)
     ENTER1(a)
 
     if (area) delete area;
-    area = new Area(Waypoint(a["top"].toDouble(),a["left"].toDouble()),Waypoint(a["bottom"].toDouble(),a["right"].toDouble()));
+    area = new Area(qmlWaypoint(a["top"].toDouble(),a["left"].toDouble()),qmlWaypoint(a["bottom"].toDouble(),a["right"].toDouble()));
 }
 
 void MapView::setTrackid(int id)

@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTimer>
 
-#include "../../tripdataserver/commandcaller.h"
+#include "interface/commandcaller.h"
 
 class PrivateTripServerInterface : public CommandCaller
 {
@@ -17,6 +17,7 @@ public:
 
     int     trip()              { return _trip; }
     int     track()             { return _track; }
+    QString tripname()          { return _tripname; }
     QString trackname()         { return _trackname; }
     QString trackstate()        { return _trackstate; }
 
@@ -44,6 +45,7 @@ private:
     QTimer  _timer;
     int     _trip;
     int     _track;
+    QString _tripname;
     QString _trackname;
     QString _trackstate;
     Q_DISABLE_COPY(PrivateTripServerInterface)

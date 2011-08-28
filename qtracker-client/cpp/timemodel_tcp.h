@@ -5,8 +5,9 @@
 #include <QUrl>
 #include <QObject>
 #include <QTimer>
+#include <QDateTime>
 
-#include "../../tripdataserver/commandcaller.h"
+#include "interface/commandcaller.h"
 
 class PrivateTimeModel : public CommandCaller
 {
@@ -15,10 +16,10 @@ class PrivateTimeModel : public CommandCaller
 public:
     static PrivateTimeModel& Instance();
 
-    int   mask()              { return _mask; }
-    QTime current()           { return _current; }
-    QTime elapsed()           { return _elapsed; }
-    QTime monitor()           { return _monitor; }
+    int  mask()                   { return _mask; }
+    QDateTime current()           { return _current; }
+    QDateTime elapsed()           { return _elapsed; }
+    QDateTime monitor()           { return _monitor; }
 
     ~PrivateTimeModel();
 
@@ -38,11 +39,11 @@ private:
 
 private:
     static PrivateTimeModel* instance;
-    QTimer _timer;
-    int    _mask;
-    QTime  _current;
-    QTime  _elapsed;
-    QTime  _monitor;
+    QTimer      _timer;
+    int         _mask;
+    QDateTime   _current;
+    QDateTime   _elapsed;
+    QDateTime   _monitor;
     Q_DISABLE_COPY(PrivateTimeModel)
 };
 

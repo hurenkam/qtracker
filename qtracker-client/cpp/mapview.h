@@ -4,9 +4,26 @@
 #include <QDeclarativeItem>
 #include <QImageReader>
 #include <QThread>
-#include "database.h"
+#include <QGeoBoundingBox>
+#include "qmlwaypoint.h"
+#include "qmlmap.h"
 
 uint qHash(const QPoint& p);
+
+using namespace QtMobility;
+
+class Area : public QGeoBoundingBox
+{
+public:
+    explicit Area(qmlWaypoint* topleft, qmlWaypoint* bottomright);
+    explicit Area(const qmlWaypoint& topleft, const qmlWaypoint& bottomright);
+    //: QGeoBoundingBox(topleft,bottomright) {}
+
+signals:
+
+public slots:
+
+};
 
 class Request
 {
@@ -104,8 +121,8 @@ private:
     void renderWaypoints(QPainter *painter);
     void renderWaypoints(QPainter *painter, QPoint& p);
     void discardTile(const QPoint& p);
-    Waypoint MapXY2Waypoint(const QPoint& p);
-    QPoint Waypoint2MapXY(const Waypoint& w);
+    qmlWaypoint* MapXY2Waypoint(const QPoint& p);
+    QPoint Waypoint2MapXY(const qmlWaypoint& w);
     QPoint MapXY2ViewXY(const QPoint& p);
     QRect viewTiles();
     QRect mapTiles();
@@ -121,13 +138,14 @@ private:
     int                    _mapid;
     double                 _scale;
     QSize                  _filesize;
-    Map*                   _map;
+    qmlMap*                _map;
     QImageReader           reader;
     QImage                 empty;
     QHash<QPoint, QImage>  tiles;
     TileLoader*            mythread;
     Area*                  area;
-    WaypointList           waypoints;
+    //WaypointList           waypoints;
+    QList<qmlWaypoint*>    waypoints;
 
 public slots:
     void onInvalidate() { invalidate(); }

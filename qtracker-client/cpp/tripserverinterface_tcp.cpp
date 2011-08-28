@@ -2,9 +2,10 @@
 #include <QDebug>
 #include <QTimer>
 
-#include "qmltripserverinterface.h"
+#include "interface/qmltripserverinterface.h"
 #include "tripserverinterface_tcp.h"
-#include "../../tripdataserver/tripservercommands.h"
+#include "interface/tripservercommands.h"
+//#define ENABLE_DEBUG
 #include "helpers.h"
 
 qmlTripServerInterface::qmlTripServerInterface(QObject *parent): QObject(parent)
@@ -12,12 +13,14 @@ qmlTripServerInterface::qmlTripServerInterface(QObject *parent): QObject(parent)
     p = &PrivateTripServerInterface::Instance();
     connect(p,SIGNAL(dataChanged),this,SIGNAL(tripChanged));
     connect(p,SIGNAL(dataChanged),this,SIGNAL(trackChanged));
+    connect(p,SIGNAL(dataChanged),this,SIGNAL(tripnameChanged));
     connect(p,SIGNAL(dataChanged),this,SIGNAL(tracknameChanged));
     connect(p,SIGNAL(dataChanged),this,SIGNAL(trackstateChanged));
 }
 
 int     qmlTripServerInterface::trip()       { return p->trip();        }
 int     qmlTripServerInterface::track()      { return p->track();       }
+QString qmlTripServerInterface::tripname()   { return p->tripname();    }
 QString qmlTripServerInterface::trackname()  { return p->trackname();   }
 QString qmlTripServerInterface::trackstate() { return p->trackstate();  }
 void    qmlTripServerInterface::reset()      {        p->resetServer(); }
@@ -34,7 +37,7 @@ void    qmlTripServerInterface::stopTrack()
 PrivateTripServerInterface* PrivateTripServerInterface::instance = 0;
 PrivateTripServerInterface::PrivateTripServerInterface(QObject* parent): CommandCaller(11120,parent)
 {
-    _timer.setSingleShot(true);
+    _timer.setSingleShot(false);
     _timer.setInterval(1000);
     _timer.start();
     connect(&_timer, SIGNAL(timeout()), this, SLOT(requestData()));
@@ -72,7 +75,7 @@ void PrivateTripServerInterface::stopTrack()
 
 void PrivateTripServerInterface::requestData()
 {
-    executeCommand(new RequestDistanceData());
+    executeCommand(new RequestTripInterfaceData());
 }
 
 void PrivateTripServerInterface::commandFailed(QAbstractSocket::SocketError error)
@@ -82,7 +85,7 @@ void PrivateTripServerInterface::commandFailed(QAbstractSocket::SocketError erro
 
 void PrivateTripServerInterface::commandExecuted(Command* cmd)
 {
-    LOG( "PrivateSpeedModel::commandExecuted()" )
+    LOG( "PrivateTripServerInterface::commandExecuted()" )
     switch (cmd->cmd())
     {
         case cmdStop:
@@ -106,8 +109,10 @@ void PrivateTripServerInterface::commandExecuted(Command* cmd)
             RequestTripInterfaceData* rq = dynamic_cast<RequestTripInterfaceData*>(cmd);
             _trip       = rq->trip();
             _track      = rq->track();
+            _tripname   = rq->tripname();
             _trackname  = rq->trackname();
             _trackstate = rq->trackstate();
+            LOG("PrivateTripServerInterface::onCommandExecuted() cmdRequestTripInterfaceData: " << _trip << _track << _tripname << _trackname << _trackstate)
             emit dataChanged();
             break;
         }

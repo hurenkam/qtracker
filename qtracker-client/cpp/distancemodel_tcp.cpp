@@ -4,7 +4,7 @@
 
 #include "qmldistancemodel.h"
 #include "distancemodel_tcp.h"
-#include "../../tripdataserver/tripservercommands.h"
+#include "../../tripdataserver/interface/tripservercommands.h"
 #include "helpers.h"
 
 qmlDistanceModel::qmlDistanceModel(QObject *parent): QObject(parent)
@@ -25,7 +25,7 @@ void   qmlDistanceModel::reset()      {        p->resetData();  }
 PrivateDistanceModel* PrivateDistanceModel::instance = 0;
 PrivateDistanceModel::PrivateDistanceModel(QObject* parent): CommandCaller(11120,parent)
 {
-    _timer.setSingleShot(true);
+    _timer.setSingleShot(false);
     _timer.setInterval(1000);
     _timer.start();
     connect(&_timer, SIGNAL(timeout()), this, SLOT(requestData()));

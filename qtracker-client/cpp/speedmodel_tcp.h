@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTimer>
 
-#include "../../tripdataserver/commandcaller.h"
+#include "interface/commandcaller.h"
 
 class PrivateSpeedModel : public CommandCaller
 {

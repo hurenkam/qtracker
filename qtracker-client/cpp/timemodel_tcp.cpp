@@ -4,30 +4,32 @@
 
 #include "qmltimemodel.h"
 #include "timemodel_tcp.h"
-#include "../../tripdataserver/tripservercommands.h"
+#include "../../tripdataserver/interface/tripservercommands.h"
+//#define ENABLE_DEBUG
 #include "helpers.h"
 
 qmlTimeModel::qmlTimeModel(QObject *parent): QObject(parent)
 {
     p = &PrivateTimeModel::Instance();
-    connect(p,SIGNAL(dataChanged),this,SIGNAL(maskChanged));
-    connect(p,SIGNAL(dataChanged),this,SIGNAL(currentChanged));
-    connect(p,SIGNAL(dataChanged),this,SIGNAL(elapsedChanged));
-    connect(p,SIGNAL(dataChanged),this,SIGNAL(monitorChanged));
+    LOG("qmlTimeModel::qmlTimeModel(): p=" << p << this)
+    connect(p,SIGNAL(dataChanged()),this,SIGNAL(maskChanged()));
+    connect(p,SIGNAL(dataChanged()),this,SIGNAL(currentChanged()));
+    connect(p,SIGNAL(dataChanged()),this,SIGNAL(elapsedChanged()));
+    connect(p,SIGNAL(dataChanged()),this,SIGNAL(monitorChanged()));
 }
 
-int    qmlTimeModel::mask()       { return p->mask();       }
-QTime  qmlTimeModel::current()    { return p->current();    }
-QTime  qmlTimeModel::elapsed()    { return p->elapsed();    }
-QTime  qmlTimeModel::monitor()    { return p->monitor();    }
-void   qmlTimeModel::reset()      {        p->resetData();  }
+int       qmlTimeModel::mask()       { return p->mask();       }
+QDateTime qmlTimeModel::current()    { return p->current();    }
+QDateTime qmlTimeModel::elapsed()    { return p->elapsed();    }
+QDateTime qmlTimeModel::monitor()    { return p->monitor();    }
+void      qmlTimeModel::reset()      {        p->resetData();  }
 
 
 
 PrivateTimeModel* PrivateTimeModel::instance = 0;
 PrivateTimeModel::PrivateTimeModel(QObject* parent): CommandCaller(11120,parent)
 {
-    _timer.setSingleShot(true);
+    _timer.setSingleShot(false);
     _timer.setInterval(1000);
     _timer.start();
     connect(&_timer, SIGNAL(timeout()), this, SLOT(requestData()));
@@ -60,7 +62,7 @@ void PrivateTimeModel::commandFailed(QAbstractSocket::SocketError error)
 
 void PrivateTimeModel::commandExecuted(Command* cmd)
 {
-    LOG( "PrivateSpeedModel::commandExecuted()" )
+    LOG( "PrivateTimeModel::commandExecuted()" )
     switch (cmd->cmd())
     {
         case cmdResetTimeData:
@@ -75,6 +77,7 @@ void PrivateTimeModel::commandExecuted(Command* cmd)
             _current = rq->current();
             _elapsed = rq->elapsed();
             _monitor = rq->monitor();
+            LOG("PrivateTimeModel::onCommandExecuted(): cmdRequestTimeData " << _current << _elapsed << _monitor)
             emit dataChanged();
             break;
         }

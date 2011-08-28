@@ -4,7 +4,7 @@
 
 #include "qmlspeedmodel.h"
 #include "speedmodel_tcp.h"
-#include "../../tripdataserver/tripservercommands.h"
+#include "../../tripdataserver/interface/tripservercommands.h"
 #include "helpers.h"
 
 qmlSpeedModel::qmlSpeedModel(QObject *parent): QObject(parent)
