@@ -1,4 +1,5 @@
 #include <QtGui/QApplication>
+#include <QDeclarativeContext>
 #include "qmlapplicationviewer.h"
 #include "daemon.h"
 
@@ -21,6 +22,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QString address= "10.0.2.15";
     quint16 port= 8280;
     Daemon  daemon( address, port );
+    viewer->rootContext()->setContextProperty("daemon", &daemon);
 
     return app->exec();
 }

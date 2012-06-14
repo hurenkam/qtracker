@@ -26,8 +26,6 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
         QHostAddress( address ).toString().toStdString()
         << " Port:" << port << std::endl;
     }
-    _trip.name="Trip 1";
-    _trip.state="Idle";
 }
 
 Daemon::~Daemon()

@@ -14,7 +14,14 @@ public:
     QString name;
     QString state;
 
-    QVariant toVariant() {
+    TripStatus()
+        : id(0)
+        , name("trip")
+        , state("idle")
+    {}
+
+    QVariant toVariant()
+    {
         QMap<QString, QVariant> r;
 	r["id"]    = id;
 	r["name"]  = name;
@@ -29,6 +36,12 @@ public:
     int     id;
     QString name;
     QString state;
+
+    TrackStatus()
+        : id(0)
+        , name("track")
+        , state("idle")
+    {}
 
     QVariant toVariant() {
         QMap<QString, QVariant> r;
@@ -50,6 +63,17 @@ public:
     double  ascent;
     double  descent;
     double  monitor;
+
+    AltitudeData()
+        : mask(0)
+        , current(0.0)
+        , average(0.0)
+        , minimum(0.0)
+        , maximum(0.0)
+        , ascent (0.0)
+        , descent(0.0)
+        , monitor(0.0)
+    {}
 
     QVariant toVariant() {
         QMap<QString, QVariant> r;
@@ -74,6 +98,14 @@ public:
     double  minimum;
     double  maximum;
 
+    SpeedData()
+        : mask(0)
+        , current(0.0)
+        , average(0.0)
+        , minimum(0.0)
+        , maximum(0.0)
+    {}
+
     QVariant toVariant() {
         QMap<QString, QVariant> r;
 	r["mask"]    = mask;
@@ -93,6 +125,13 @@ public:
     double  average;
     double  monitor;
 
+    CourseData()
+        : mask(0)
+        , current(0.0)
+        , average(0.0)
+        , monitor(0.0)
+    {}
+
     QVariant toVariant() {
         QMap<QString, QVariant> r;
 	r["mask"]    = mask;
@@ -110,6 +149,13 @@ public:
     double  latitude;
     double  longitude;
     double  altitude;
+
+    LocationData()
+        : mask(0)
+        , latitude(0.0)
+        , longitude(0.0)
+        , altitude(0.0)
+    {}
 
     QVariant toVariant() {
         QMap<QString, QVariant> r;
@@ -129,6 +175,13 @@ public:
     QDateTime  elapsed;
     QDateTime  monitor;
 
+    TimeData()
+        : mask(0)
+        , current(QDateTime::currentDateTime())
+        , elapsed(QDateTime::currentDateTime())
+        , monitor(QDateTime::currentDateTime())
+    {}
+
     QVariant toVariant() {
         QMap<QString, QVariant> r;
 	r["mask"]    = mask;
@@ -146,6 +199,12 @@ public:
     double current;
     double monitor;
 
+    DistanceData()
+        : mask(0)
+        , current(0.0)
+        , monitor(0.0)
+    {}
+
     QVariant toVariant() {
         QMap<QString, QVariant> r;
 	r["mask"]    = mask;
@@ -156,7 +215,7 @@ public:
 };
 
 class Daemon :
-    QObject
+    public QObject
 {
     Q_OBJECT
 
@@ -164,11 +223,16 @@ public:
     Daemon( const QString &address, quint16 port, QObject *parent= 0 );
     ~Daemon();
 
+signals:
+    void startTrack( int id, double interval );
+    void stopTrack();
+    void quit();
+
 private slots :
     QVariant start( const QVariant &id, const QVariant &interval )
-                            { qDebug() << "Daemon::start()";    return 0; }
-    QVariant stop()         { qDebug() << "Daemon::stop()";     return 0; }
-    QVariant exit()         { qDebug() << "Daemon::exit()";     return 0; }
+                            { qDebug() << "Daemon::start()";    startTrack( id.toInt(), interval.toDouble() ); return QVariant(0); }
+    QVariant stop()         { qDebug() << "Daemon::stop()";     stopTrack(); return QVariant(0); }
+    QVariant exit()         { qDebug() << "Daemon::exit()";     quit(); return QVariant(0); }
 
     QVariant trip()         { qDebug() << "Daemon::trip()";     return _trip.toVariant(); }
     QVariant track()        { qDebug() << "Daemon::track()";    return _track.toVariant(); }
