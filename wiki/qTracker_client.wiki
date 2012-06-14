@@ -6,15 +6,15 @@ WishList | KnownBugs | RoadMap |
 [http://code.google.com/p/qtracker/wiki/qTracker_client qTracker Client] | 
 [http://code.google.com/p/qtracker/wiki/qTracker_server qTracker Server] 
 ----
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000097.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000096.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000099.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000085.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000087.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000092.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000093.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000094.jpg" height="160" width="90" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000095.jpg" height="160" width="90" border="0" /><br>
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000097.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000096.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000099.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000085.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000087.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000092.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000093.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000094.jpg" height="160" width="90" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000095.jpg" height="160" width="90" border="0" /><br>
 ----
 = qTracker v0.3 & v0.4 series (unstable) =
 

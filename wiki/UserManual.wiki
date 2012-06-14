@@ -3,10 +3,10 @@
 [http://code.google.com/p/qtracker/wiki/InstallManual Installation Manual] | 
 WishList | KnownBugs | RoadMap | QmlTracker
 ----
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000048.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000041.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000048.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000053.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
 = Introduction =
@@ -21,7 +21,7 @@ First, there is no menu (yet), this is because up to now, i've been able to mana
 all functionality using dedicated widgets on the screen. 
 
 == Gauges ==
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000041.jpg" height="180" width="320" border="0" />
 
 qTracker by default starts out with 6 minimized gauges, and a map widget that
 occupies about half the screen. There are 4 types of event supported by the widgets
@@ -37,8 +37,8 @@ solved in a future release.
 
 == Maps ==
 
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000038.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000048.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000038.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000048.jpg" height="180" width="320" border="0" />
 
 A map can be loaded by pressing the button in the bottom left of the map widget, this
 will bring up a list of available maps in (!:/data/qtracker/maps), maps of type .xml and
@@ -67,8 +67,8 @@ SingleTap the maximized gauge, and the map will come back.
 
 
 == Tracks ==
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="180" width="320" border="0" /><br>
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000053.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000054.jpg" height="180" width="320" border="0" /><br>
 
 A track can be recorded by pressing the hiker logo (2nd item on the topleft of the screen), it will bringup the track dialog box, with as default the tab 'new' highlighted.
 You can fill in a name, and set a time or distance based interval. Press the Start button to start recording. The tab will change name to 'Current', and the start button is replaced with a stop, and an update button.
