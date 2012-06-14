@@ -40,25 +40,25 @@ QT += sql
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
     main.cpp \
-    ../tripdatabase/qmlcategory.cpp \
-    ../tripdatabase/qmldatabase.cpp \
-    ../tripdatabase/qmlmap.cpp \
-    ../tripdatabase/qmlrefpoint.cpp \
-    ../tripdatabase/qmlroute.cpp \
-    ../tripdatabase/qmltrack.cpp \
-    ../tripdatabase/qmltrip.cpp \
-    ../tripdatabase/qmlwaypoint.cpp
+    tripdatabase/qmlcategory.cpp \
+    tripdatabase/qmldatabase.cpp \
+    tripdatabase/qmlmap.cpp \
+    tripdatabase/qmlrefpoint.cpp \
+    tripdatabase/qmlroute.cpp \
+    tripdatabase/qmltrack.cpp \
+    tripdatabase/qmltrip.cpp \
+    tripdatabase/qmlwaypoint.cpp
 
 INCLUDEPATH += database
 HEADERS += \
-    ../tripdatabase/qmlcategory.h \
-    ../tripdatabase/qmldatabase.h \
-    ../tripdatabase/qmlmap.h \
-    ../tripdatabase/qmlrefpoint.h \
-    ../tripdatabase/qmlroute.h \
-    ../tripdatabase/qmltrack.h \
-    ../tripdatabase/qmltrip.h \
-    ../tripdatabase/qmlwaypoint.h
+    tripdatabase/qmlcategory.h \
+    tripdatabase/qmldatabase.h \
+    tripdatabase/qmlmap.h \
+    tripdatabase/qmlrefpoint.h \
+    tripdatabase/qmlroute.h \
+    tripdatabase/qmltrack.h \
+    tripdatabase/qmltrip.h \
+    tripdatabase/qmlwaypoint.h
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
