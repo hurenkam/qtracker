@@ -3,10 +3,10 @@
 [http://code.google.com/p/qtracker/wiki/InstallManual Installation Manual] | 
 WishList | KnownBugs | RoadMap | QmlTracker
 ----
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000041.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000048.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="90" width="160" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="90" width="160" border="0" /><br>
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000041.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000048.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000053.jpg" height="90" width="160" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000054.jpg" height="90" width="160" border="0" /><br>
 ----
 
 Software aimed at helping hikers & geocachers to determine their position, and record & monitoring tracks, routes and waypoints. 
@@ -42,13 +42,13 @@ functionality is available then, e.g. GPS/Sensors/Messaging).
 
 * Screenshots *
 
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000058.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000060.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/screenshot-124-1.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000040.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000058.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000060.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/screenshot-124-1.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000040.jpg" height="180" width="320" border="0" />
 <br>
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000056.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000057.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000056.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000057.jpg" height="180" width="320" border="0" />
 <br>
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000053.jpg" height="180" width="320" border="0" />
-<img src="http://qtracker.googlecode.com/svn/trunk/screenshots/Scr000054.jpg" height="180" width="320" border="0" /><br>
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000053.jpg" height="180" width="320" border="0" />
+<img src="http://qtracker.googlecode.com/svn/wiki/images/Scr000054.jpg" height="180" width="320" border="0" /><br>
