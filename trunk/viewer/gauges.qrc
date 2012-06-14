@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/gauges">
+        <file alias="Altimeter.qml">gauges/Altimeter.qml</file>
+        <file alias="AltitudeOptionsPage.qml">gauges/AltitudeOptionsPage.qml</file>
+        <file alias="ClockOptionsPage.qml">gauges/ClockOptionsPage.qml</file>
+        <file alias="clock.png">gauges/clock.png</file>
+        <file alias="Clock.qml">gauges/Clock.qml</file>
+        <file alias="Compass2.qml">gauges/Compass2.qml</file>
+        <file alias="compassneedle.png">gauges/compassneedle.png</file>
+        <file alias="CompassOptionsPage.qml">gauges/CompassOptionsPage.qml</file>
+        <file alias="compass.png">gauges/compass.png</file>
+        <file alias="compassring.png">gauges/compassring.png</file>
+        <file alias="heading.png">gauges/heading.png</file>
+        <file alias="Levels.qml">gauges/Levels.qml</file>
+        <file alias="longhand.png">gauges/longhand.png</file>
+        <file alias="SatelliteOptionsPage.qml">gauges/SatelliteOptionsPage.qml</file>
+        <file alias="Satellites.qml">gauges/Satellites.qml</file>
+        <file alias="satview.png">gauges/satview.png</file>
+        <file alias="secondhand.png">gauges/secondhand.png</file>
+        <file alias="shorthand.png">gauges/shorthand.png</file>
+        <file alias="speed10.png">gauges/speed10.png</file>
+        <file alias="speed200.png">gauges/speed200.png</file>
+        <file alias="speedneedle.png">gauges/speedneedle.png</file>
+        <file alias="Speedometer.qml">gauges/Speedometer.qml</file>
+        <file alias="SpeedOptionsPage.qml">gauges/SpeedOptionsPage.qml</file>
+    </qresource>
+</RCC>
+
