@@ -40,25 +40,25 @@ QT += sql
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
     main.cpp \
-    database/qmlcategory.cpp \
-    database/qmldatabase.cpp \
-    database/qmlmap.cpp \
-    database/qmlrefpoint.cpp \
-    database/qmlroute.cpp \
-    database/qmltrack.cpp \
-    database/qmltrip.cpp \
-    database/qmlwaypoint.cpp
+    ../tripdatabase/qmlcategory.cpp \
+    ../tripdatabase/qmldatabase.cpp \
+    ../tripdatabase/qmlmap.cpp \
+    ../tripdatabase/qmlrefpoint.cpp \
+    ../tripdatabase/qmlroute.cpp \
+    ../tripdatabase/qmltrack.cpp \
+    ../tripdatabase/qmltrip.cpp \
+    ../tripdatabase/qmlwaypoint.cpp
 
 INCLUDEPATH += database
 HEADERS += \
-    database/qmlcategory.h \
-    database/qmldatabase.h \
-    database/qmlmap.h \
-    database/qmlrefpoint.h \
-    database/qmlroute.h \
-    database/qmltrack.h \
-    database/qmltrip.h \
-    database/qmlwaypoint.h
+    ../tripdatabase/qmlcategory.h \
+    ../tripdatabase/qmldatabase.h \
+    ../tripdatabase/qmlmap.h \
+    ../tripdatabase/qmlrefpoint.h \
+    ../tripdatabase/qmlroute.h \
+    ../tripdatabase/qmltrack.h \
+    ../tripdatabase/qmltrip.h \
+    ../tripdatabase/qmlwaypoint.h
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
