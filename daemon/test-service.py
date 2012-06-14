@@ -14,4 +14,7 @@ print proxy.course()
 print proxy.location()
 print proxy.time()
 print proxy.distance()
+proxy.start(1,15)
+proxy.stop()
+proxy.exit()
 
