@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/model">
+        <file alias="TripModel.qml">model/TripModel.qml</file>
+        <file alias="TrackModel.qml">model/TrackModel.qml</file>
+        <file alias="AltitudeModel.qml">model/AltitudeModel.qml</file>
+        <file alias="SpeedModel.qml">model/SpeedModel.qml</file>
+        <file alias="CourseModel.qml">model/CourseModel.qml</file>
+        <file alias="LocationModel.qml">model/LocationModel.qml</file>
+        <file alias="TimeModel.qml">model/TimeModel.qml</file>
+        <file alias="DistanceModel.qml">model/DistanceModel.qml</file>
+    </qresource>
+</RCC>
