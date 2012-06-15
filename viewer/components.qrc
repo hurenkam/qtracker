@@ -1,28 +1,28 @@
 <RCC>
     <qresource prefix="/components">
-        <file>components/Button.qml</file>
-        <file>components/DynamicItemModel.qml</file>
-        <file>components/DynamicItemView.qml</file>
-        <file>components/DynamicList.js</file>
-        <file>components/MouseHandler.qml</file>
+        <file alias="Button.qml">components/Button.qml</file>
+        <file alias="DynamicItemModel.qml">components/DynamicItemModel.qml</file>
+        <file alias="DynamicItemView.qml">components/DynamicItemView.qml</file>
+        <file alias="DynamicList.js">components/DynamicList.js</file>
+        <file alias="MouseHandler.qml">components/MouseHandler.qml</file>
         <file alias="OptionHeader.qml">components/OptionHeader.qml</file>
-        <file>components/OptionInputItem.qml</file>
-        <file>components/OptionItem.qml</file>
-        <file>components/OptionList.qml</file>
+        <file alias="OptionInputItem.qml">components/OptionInputItem.qml</file>
+        <file alias="OptionItem.qml">components/OptionItem.qml</file>
+        <file alias="OptionList.qml">components/OptionList.qml</file>
         <file alias="OptionPage.qml">components/OptionPage.qml</file>
-        <file>components/OptionRadioButton.qml</file>
-        <file>components/OptionSubPage.qml</file>
-        <file>components/OptionTextItem.qml</file>
+        <file alias="OptionRadioButton.qml">components/OptionRadioButton.qml</file>
+        <file alias="OptionSubPage.qml">components/OptionSubPage.qml</file>
+        <file alias="OptionTextItem.qml">components/OptionTextItem.qml</file>
         <file alias="Page.qml">components/Page.qml</file>
         <file alias="PageStack.js">components/PageStack.js</file>
         <file alias="PageStack.qml">components/PageStack.qml</file>
-        <file>components/RadioBox.qml</file>
-        <file>components/Settings.qml</file>
-        <file>components/TabItem.qml</file>
-        <file>components/TabLayout.qml</file>
-        <file>components/TabOptionPage.qml</file>
+        <file alias="RadioBox.qml">components/RadioBox.qml</file>
+        <file alias="Settings.qml">components/Settings.qml</file>
+        <file alias="TabItem.qml">components/TabItem.qml</file>
+        <file alias="TabLayout.qml">components/TabLayout.qml</file>
+        <file alias="TabOptionPage.qml">components/TabOptionPage.qml</file>
         <file alias="ToolBar.qml">components/ToolBar.qml</file>
-        <file>components/ToolBarLayout.qml</file>
+        <file alias="ToolBarLayout.qml">components/ToolBarLayout.qml</file>
         <file alias="ToolButton.qml">components/ToolButton.qml</file>
         <file alias="back.png">components/back.png</file>
         <file alias="forward.png">components/forward.png</file>
@@ -35,5 +35,6 @@
         <file alias="ticked.png">components/ticked.png</file>
         <file alias="unticked.png">components/unticked.png</file>
         <file alias="XmlRpc.qml">components/XmlRpc.qml</file>
+        <file alias="XmlRpcMap.qml">components/XmlRpcMap.qml</file>
     </qresource>
 </RCC>
