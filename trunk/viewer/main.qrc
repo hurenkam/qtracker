@@ -2,5 +2,19 @@
     <qresource prefix="/main">
         <file alias="Main.qml">main/Main.qml</file>
         <file alias="MainPage.qml">main/MainPage.qml</file>
+        <file alias="dash-bg-portrait.ico">main/dash-bg-portrait.ico</file>
+        <file alias="DashBoard.qml">main/DashBoard.qml</file>
+        <file alias="dash-fg-landscape.ico">main/dash-fg-landscape.ico</file>
+        <file alias="dash-fg-portrait.ico">main/dash-fg-portrait.ico</file>
+        <file alias="export.png">main/export.png</file>
+        <file alias="Gauge.qml">main/Gauge.qml</file>
+        <file alias="locator_green.png">main/locator_green.png</file>
+        <file alias="locator_red.png">main/locator_red.png</file>
+        <file alias="map.png">main/map.png</file>
+        <file alias="trip.png">main/trip.png</file>
+        <file alias="zoom-in.png">main/zoom-in.png</file>
+        <file alias="zoom-out.png">main/zoom-out.png</file>
+        <file alias="category.png">main/category.png</file>
+        <file alias="dash-bg-landscape.ico">main/dash-bg-landscape.ico</file>
     </qresource>
 </RCC>

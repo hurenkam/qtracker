@@ -51,8 +51,6 @@ Page {
         }
     }
 
-    Settings      { id: settings }
-
     XmlRpc        { id: rpc;      url: root.url }
     TripModel     { id: trip;     url: root.url }
     TrackModel    { id: track;    url: root.url }
@@ -62,6 +60,9 @@ Page {
     AltitudeModel { id: altitude; url: root.url }
     CourseModel   { id: course;   url: root.url }
     TimeModel     { id: time;     url: root.url }
+
+    Settings      { id: settings }
+
 /*
     Rectangle {
         id: box

@@ -49,7 +49,7 @@ SOURCES += \
     tripdatabase/qmltrip.cpp \
     tripdatabase/qmlwaypoint.cpp
 
-INCLUDEPATH += database
+INCLUDEPATH += tripdatabase
 HEADERS += \
     tripdatabase/qmlcategory.h \
     tripdatabase/qmldatabase.h \
@@ -135,5 +135,7 @@ OTHER_FILES += \
 RESOURCES += \
     components.qrc \
     model.qrc \
-    main.qrc
+    main.qrc \
+    gauges.qrc
+
 
