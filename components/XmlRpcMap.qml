@@ -11,7 +11,7 @@ XmlRpc {
     XmlRole { name: "int";         query: "value/int/string()" }
     XmlRole { name: "double";      query: "value/double/string()" }
     XmlRole { name: "string";      query: "value/string/string()" }
-    XmlRole { name: "date";        query: "value/datetime/string()" }
+    XmlRole { name: "date";        query: "value/dateTime.iso8601/string()" }
 
     function refresh() {
         call(command,[])
