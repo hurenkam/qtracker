@@ -3,7 +3,7 @@ import QtQuick 1.0
 XmlListModel {
     id: root
     query: "/methodResponse/params"
-    property string url: "http://127.0.0.1:8080/RPC2"
+    property string url: "http://127.0.0.1:8280/RPC2"
     property string user: ""
     property string passwd: ""
 
