@@ -5,7 +5,11 @@
 #include <QVariant>
 #include <QString>
 #include <QTime>
+#include <QGeoPositionInfo>
+#include <QGeoPositionInfoSource>
 #include "xmlrpcserver.h"
+
+QTM_USE_NAMESPACE
 
 class TripStatus
 {
@@ -142,29 +146,48 @@ public:
     }
 };
 
-class LocationData
+#define LATMASK  0x01
+#define LONMASK  0x02
+#define ALTMASK  0x04
+#define SPDMASK  0x08
+#define CRSMASK  0x10
+#define DSTMASK  0x20
+class LocationData: public QObject
 {
+    Q_OBJECT
+
+public:
+    LocationData()
+        : mask(0)
+        , latitude(0.0)
+        , longitude(0.0)
+        , altitude(0.0)
+    { start(); }
+
+    void start();
+    void stop();
+
+    QVariant toVariant() {
+        QMap<QString, QVariant> r;
+        r["mask"]      = mask;
+        r["latitude"]  = latitude;
+        r["longitude"] = longitude;
+        r["altitude"]  = altitude;
+        return r;
+    }
+
+private slots:
+    void onPositionChanged(const QGeoPositionInfo& info);
+
 public:
     int     mask;
     double  latitude;
     double  longitude;
     double  altitude;
 
-    LocationData()
-        : mask(0)
-        , latitude(0.0)
-        , longitude(0.0)
-        , altitude(0.0)
-    {}
+private:
+    QGeoPositionInfoSource* source;
 
-    QVariant toVariant() {
-        QMap<QString, QVariant> r;
-	r["mask"]      = mask;
-	r["latitude"]  = latitude;
-	r["longitude"] = longitude;
-	r["altitude"]  = altitude;
-	return r;
-    }
 };
 
 class TimeData
@@ -180,15 +203,16 @@ public:
         , current(QDateTime::currentDateTime())
         , elapsed(QDateTime::currentDateTime())
         , monitor(QDateTime::currentDateTime())
-    {}
+    {
+    }
 
     QVariant toVariant() {
         QMap<QString, QVariant> r;
-	r["mask"]    = mask;
+        r["mask"]    = mask;
         r["current"] = current;
         r["elapsed"] = elapsed;
         r["monitor"] = monitor;
-	return r;
+        return r;
     }
 };
 
@@ -207,10 +231,10 @@ public:
 
     QVariant toVariant() {
         QMap<QString, QVariant> r;
-	r["mask"]    = mask;
-	r["current"] = current;
-	r["monitor"] = monitor;
-	return r;
+        r["mask"]    = mask;
+        r["current"] = current;
+        r["monitor"] = monitor;
+        return r;
     }
 };
 
