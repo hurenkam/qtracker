@@ -16,5 +16,30 @@
         <file alias="zoom-out.png">main/zoom-out.png</file>
         <file alias="category.png">main/category.png</file>
         <file alias="dash-bg-landscape.ico">main/dash-bg-landscape.ico</file>
+        <file alias="Filesystem.js">main/Filesystem.js</file>
+        <file alias="MapEditPage.qml">main/MapEditPage.qml</file>
+        <file alias="MapImportPage.qml">main/MapImportPage.qml</file>
+        <file alias="MapSelectionPage.qml">main/MapSelectionPage.qml</file>
+        <file alias="MapView.qml">main/MapView.qml</file>
+        <file alias="RefpointEditPage.qml">main/RefpointEditPage.qml</file>
+        <file alias="RefpointSelectionPage.qml">main/RefpointSelectionPage.qml</file>
+        <file alias="RouteEditPage.qml">main/RouteEditPage.qml</file>
+        <file alias="RoutePointEditPage.qml">main/RoutePointEditPage.qml</file>
+        <file alias="RouteSelectionPage.qml">main/RouteSelectionPage.qml</file>
+        <file alias="TrackRecordingPage.qml">main/TrackRecordingPage.qml</file>
+        <file alias="TrackSelectionPage.qml">main/TrackSelectionPage.qml</file>
+        <file alias="TripEditPage.qml">main/TripEditPage.qml</file>
+        <file alias="TripSelectionPage.qml">main/TripSelectionPage.qml</file>
+        <file alias="WaypointEditPage.qml">main/WaypointEditPage.qml</file>
+        <file alias="CategorySelectionPage.qml">main/CategorySelectionPage.qml</file>
+        <file alias="CategoryEditPage.qml">main/CategoryEditPage.qml</file>
+        <file alias="visible-plain.png">main/visible-plain.png</file>
+        <file alias="add-plain.png">main/add-plain.png</file>
+        <file alias="left-plain.png">main/left-plain.png</file>
+        <file alias="hiker-plain.png">main/hiker-plain.png</file>
+        <file alias="options-plain.png">main/options-plain.png</file>
+        <file alias="route-plain.png">main/route-plain.png</file>
+        <file alias="export-plain.png">main/export-plain.png</file>
+        <file alias="flag-plain.png">main/flag-plain.png</file>
     </qresource>
 </RCC>

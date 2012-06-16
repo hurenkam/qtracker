@@ -1,6 +1,6 @@
 import QtQuick 1.0
-import QtMobility.sensors 1.1
-import QtMobility.location 1.1
+import QtMobility.sensors 1.2
+import QtMobility.location 1.2
 import "../components"
 import "../model"
 
