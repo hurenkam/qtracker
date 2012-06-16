@@ -4,12 +4,13 @@
 #include <QObject>
 #include <QVariant>
 #include <QString>
-#include <QTime>
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
 #include "xmlrpcserver.h"
 
 QTM_USE_NAMESPACE
+
+#include "timedata.h"
 
 class TripStatus
 {
@@ -188,32 +189,6 @@ public:
 private:
     QGeoPositionInfoSource* source;
 
-};
-
-class TimeData
-{
-public:
-    int        mask;
-    QDateTime  current;
-    QDateTime  elapsed;
-    QDateTime  monitor;
-
-    TimeData()
-        : mask(0)
-        , current(QDateTime::currentDateTime())
-        , elapsed(QDateTime::currentDateTime())
-        , monitor(QDateTime::currentDateTime())
-    {
-    }
-
-    QVariant toVariant() {
-        QMap<QString, QVariant> r;
-        r["mask"]    = mask;
-        r["current"] = current;
-        r["elapsed"] = elapsed;
-        r["monitor"] = monitor;
-        return r;
-    }
 };
 
 class DistanceData

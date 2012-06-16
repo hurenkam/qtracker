@@ -46,11 +46,13 @@ QT       += network
 SOURCES += \
     main/main.cpp \
     main/daemon.cpp \
+    main/timedata.cpp \
     main/xmlrpcconv.cpp \
     main/xmlrpcserver.cpp
 
 HEADERS += \
     main/daemon.h \
+    main/timedata.h \
     main/xmlrpcconv.h \
     main/xmlrpcserver.h
 
