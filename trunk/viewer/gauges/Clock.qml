@@ -32,6 +32,7 @@ Item {
 
     TimeModel {
         id: timemodel
+        interval: 1000
     }
 
     property list<QtObject> values: [

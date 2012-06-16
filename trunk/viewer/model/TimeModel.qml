@@ -9,7 +9,6 @@ XmlRpcMap {
     property date current
     property date elapsed
     property date monitor
-    property int interval: 0
 
     function parseDate(d) {
         var date = new Date()

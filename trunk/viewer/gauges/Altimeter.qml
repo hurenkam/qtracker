@@ -48,6 +48,7 @@ Item {
 
     AltitudeModel {
         id: server
+        interval: 5000
     }
 
     property list<QtObject> values: [
