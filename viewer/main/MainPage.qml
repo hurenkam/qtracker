@@ -5,13 +5,6 @@ import "../model"
 Page {
     id: root
     imageSource: "../components/options-bg.png"
-    //rightbutton: true
-    //rightbuttonsrc: "../components/options.png"
-    //rightbuttonradius: 0
-    //leftbutton: true
-    //leftbuttonsrc: "../components/exit.png"
-    //leftbuttonradius: 0
-    //title: "ViewTrack"
     property bool animate: false
     property string url: "http://127.0.0.1:8280/RPC2"
 
@@ -25,7 +18,17 @@ Page {
     function exitClientAndServer() {
         console.log("exitClientAndServer()")
         root.exitServer();
-        root.exitClient();
+        exittimer.start();
+    }
+
+    Timer {
+        id: exittimer
+        interval: 300
+        running: false
+        repeat: false
+        onTriggered: {
+            root.exitClient()
+        }
     }
 
     Item {
@@ -51,7 +54,23 @@ Page {
         }
     }
 
-    XmlRpc        { id: rpc;      url: root.url }
+    XmlRpc {
+        id: rpc;
+        url: root.url
+
+        function exit() {
+            rpc.call("exit",[])
+        }
+
+        function startTrack(id,interval) {
+            rpc.call("start",[id,interval])
+        }
+
+        function stopTrack() {
+            rpc.call("stop",[])
+        }
+    }
+
     TripModel     { id: trip;     url: root.url }
     TrackModel    { id: track;    url: root.url }
     LocationModel { id: location; url: root.url }
