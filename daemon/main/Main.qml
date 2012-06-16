@@ -18,8 +18,8 @@ Rectangle {
 
     Connections {
         target:       daemon
-        onQuit:       Qt.quit()
-        onStartTrack: console.log("daemon.onStartTrack(",id,",",interval,")")
-        onStopTrack:  console.log("daemon.onStopTrack()")
+        onQuit:       { console.log("daemon.onQuit()"); Qt.quit() }
+        onStartTrack: { console.log("daemon.onStartTrack(",id,",",interval,")") }
+        onStopTrack:  { console.log("daemon.onStopTrack()") }
     }
 }
