@@ -6,6 +6,15 @@ XmlRpc {
     signal itemFound(string name, int index)
     signal updateComplete()
     property string command: "echo"
+    property int interval: 0
+
+    property QtObject _timer: Timer {
+        id: refreshtimer
+        interval: root.interval
+        repeat: true
+        running: interval > 0
+        onTriggered: root.refresh()
+    }
 
     XmlRole { name: "name";        query: "name/string()" }
     XmlRole { name: "int";         query: "value/int/string()" }
@@ -15,6 +24,11 @@ XmlRpc {
 
     function refresh() {
         call(command,[])
+    }
+
+    function monitor(interval) {
+        refreshtimer.interval = interval
+        refreshtimer.start()
     }
 
     onStatusChanged: {
@@ -27,4 +41,6 @@ XmlRpc {
             updateComplete()
         }
     }
+
+    //Component.onCompleted: root.refresh()
 }
