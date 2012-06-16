@@ -2,7 +2,6 @@
 #include <QtDeclarative>
 #include <QDeclarativeEngine>
 #include "qmlapplicationviewer.h"
-
 #include "qmldatabase.h"
 
 void registerTypes()
@@ -27,15 +26,15 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QScopedPointer<QmlApplicationViewer> viewer(QmlApplicationViewer::create());
 
     registerTypes();
-#if !defined(Q_OS_ANDROID)
+#if defined(Q_OS_ANDROID) || defined(Q_WS_SIMULATOR) || defined(Q_OS_SYMBIAN) || defined(Q_WS_MAEMO_5)
+    viewer->setSource(QUrl("qrc:///main/Main.qml"));
+    viewer->showFullScreen();
+#else
     viewer->setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
     viewer->setMainQmlFile(QLatin1String("main/Main.qml"));
     viewer->resize(QSize(540,960)); // HTC Evo 3D
     //viewer->resize(QSize(480,800)); // Galaxy S2
     viewer->showExpanded();
-#else
-    viewer->setSource(QUrl("qrc:///main/Main.qml"));
-    viewer->showFullScreen();
 #endif
 
     return app->exec();

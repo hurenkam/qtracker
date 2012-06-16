@@ -63,32 +63,16 @@ Page {
 
     Settings      { id: settings }
 
-/*
-    Rectangle {
-        id: box
-
-        x: 10
-        y: 10 + root.height/16
-        width: root.width -20
-        height: root.height - 10 -y
-        radius: 12
-        color: "white"
-        border.color: "grey"
-        border.width: 1
-        clip: true
-        smooth: true
-    }
-*/
-    //Component { id: catselectsrc;  CategoryEditPage  { id: catPage;  } }
-    //Component { id: tripselectsrc; TripEditPage      { id: tripPage; } }
+    Component { id: catselectsrc;  CategoryEditPage  { id: catPage;  } }
+    Component { id: tripselectsrc; TripEditPage      { id: tripPage; } }
     //Component { id: tstselectsrc;  ImExportPage      { id: tstPage;  } }
-    //Component { id: mapselectsrc;
-    //    MapEditPage {
-    //        id: mapPage;
-    //        mapid: map.mapid
-    //        onMapSelected: map.loadMap(mapid);
-    //    }
-    //}
+    Component { id: mapselectsrc;
+        MapEditPage {
+            id: mapPage;
+            mapid: map.mapid
+            onMapSelected: map.loadMap(mapid);
+        }
+    }
 
     Loader {
         id: pageloader
