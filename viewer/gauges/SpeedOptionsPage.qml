@@ -128,14 +128,35 @@ TabOptionPage {
         }
     }
 
-    SpeedModel {
-        id: speedmodel
-        interval: 1000
+    function updateSpeed(cur,avg,min,max) {
+        speedometer.updateSpeed(cur,avg,min,max)
+        speedmodel.update(cur,avg,min,max)
     }
-
-    DistanceModel {
+    Item {
+        id: speedmodel
+        property double current: 0
+        property double average: 0
+        property double minimum: 0
+        property double maximum: 0
+        function update(cur,avg,min,max) {
+            current = cur
+            average = avg
+            minimum = min
+            maximum = max
+        }
+    }
+    function updateDistance(cur,mon) {
+        speedometer.updateDistance(cur,mon)
+        distancemodel.update(cur,mon)
+    }
+    Item {
         id: distancemodel
-        interval: 1000
+        property double current: 0
+        property double monitor: 0
+        function update(cur,mon) {
+            current = cur
+            monitor = mon
+        }
     }
 
     background: Rectangle {

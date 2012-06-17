@@ -8,6 +8,24 @@ Item {
     height: hide? bgimage.height : (landscape? 70*h: 200*w)
     property Item pageStack: null
 
+    function updateAltitude(current,average,minimum,maximum,ascent,descent) {
+        console.log("DashBoard.updateAltitude()",current,average,minimum,maximum,ascent,descent)
+        altimeter.updateAltitude(current,average,minimum,maximum,ascent,descent)
+        altimeteroptions.updateAltitude(current,average,minimum,maximum,ascent,descent)
+    }
+
+    function updateSpeed(current,average,minimum,maximum) {
+        console.log("DashBoard.updateSpeed()",current,average,minimum,maximum)
+        speed.updateSpeed(current,average,minimum,maximum)
+        speedoptions.updateSpeed(current,average,minimum,maximum)
+    }
+
+    function updateDistance(current,monitor) {
+        console.log("DashBoard.updateDistance()",current,monitor)
+        speed.updateDistance(current,monitor)
+        speedoptions.updateDistance(current,monitor)
+    }
+
     Settings { id: settings }
 
     Image {

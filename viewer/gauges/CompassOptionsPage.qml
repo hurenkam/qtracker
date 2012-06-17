@@ -276,7 +276,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Bearing: ";
-            value: course.monitor.toFixed(1);
+            value: coursemodel.monitor.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

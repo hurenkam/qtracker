@@ -39,7 +39,7 @@ Item {
         updateInterval: 500
         active: true
     }
-
+/*
     SpeedModel {
         id: speedmodel
         interval: 500
@@ -49,14 +49,26 @@ Item {
         id: distancemodel
         interval: 1000
     }
-
+*/
+    function updateSpeed(cur,avg,min,max)
+    {
+        //speed.value = cur
+        minimum.value = min
+        maximum.value = max
+        average.value = avg
+    }
+    function updateDistance(cur,mon)
+    {
+        distance.value = cur
+        monitor.value = mon
+    }
     property list<QtObject> values: [
-        Item { property double value: gps.position.speedValid? gps.position.speed : 0 },
-        Item { property double value: speedmodel.average },
-        Item { property double value: speedmodel.minimum },
-        Item { property double value: speedmodel.maximum },
-        Item { property double value: distancemodel.current },
-        Item { property double value: distancemodel.monitor }
+        Item { id: speed;    property double value: gps.position.speedValid? gps.position.speed : 0 },
+        Item { id: average;  property double value: 0 },
+        Item { id: minimum;  property double value: 0 },
+        Item { id: maximum;  property double value: 0 },
+        Item { id: distance; property double value: 0 },
+        Item { id: monitor;  property double value: 0 }
     ]
     property double analogvalue: values[analogindex].value? values[analogindex].value : -180
     property double topvalue:    values[topindex].value?    values[topindex].value    : 0

@@ -5,6 +5,8 @@ XmlRpcMap {
     id: root
     path: "/speed"
 
+    signal dataChanged(double current, double average, double minimum, double maximum);
+
     property int mask: 0
     property double current: 0.0
     property double average: 0.0
@@ -20,6 +22,9 @@ XmlRpcMap {
         if (name == "maximum") root.maximum = root.get(index).double
     }
 
-    onUpdateComplete: console.log("SpeedModel.onUpdateComplete()",mask,current,average,minimum,maximum)
+    onUpdateComplete: {
+        dataChanged(current,average,minimum,maximum)
+        //console.log("SpeedModel.onUpdateComplete()",mask,current,average,minimum,maximum)
+    }
 }
 
