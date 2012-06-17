@@ -5,7 +5,7 @@ XmlRpc {
     query: "/methodResponse/params/param/value/struct/member"
     signal itemFound(string name, int index)
     signal updateComplete()
-    property string command: "echo"
+    property string command: "data"
     property int interval: 0
 
     property QtObject _timer: Timer {
@@ -24,11 +24,6 @@ XmlRpc {
 
     function refresh() {
         call(command,[])
-    }
-
-    function monitor(interval) {
-        refreshtimer.interval = interval
-        refreshtimer.start()
     }
 
     onStatusChanged: {
