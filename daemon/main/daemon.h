@@ -12,51 +12,8 @@
 #include "speeddata.h"
 #include "coursedata.h"
 #include "distancedata.h"
-
-class TripStatus
-{
-public:
-    int     id;
-    QString name;
-    QString state;
-
-    TripStatus()
-        : id(0)
-        , name("trip")
-        , state("idle")
-    {}
-
-    QVariant toVariant()
-    {
-        QMap<QString, QVariant> r;
-	r["id"]    = id;
-	r["name"]  = name;
-	r["state"] = state;
-	return r;
-    }
-};
-
-class TrackStatus
-{
-public:
-    int     id;
-    QString name;
-    QString state;
-
-    TrackStatus()
-        : id(0)
-        , name("track")
-        , state("idle")
-    {}
-
-    QVariant toVariant() {
-        QMap<QString, QVariant> r;
-	r["id"]    = id;
-	r["name"]  = name;
-	r["state"] = state;
-	return r;
-    }
-};
+#include "tripstatus.h"
+#include "trackstatus.h"
 
 class Daemon :
     public QObject
