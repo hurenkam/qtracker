@@ -3,7 +3,7 @@ import "../components"
 
 XmlRpcMap {
     id: root
-    command: "altitude"
+    path: "/altitude"
 
     property int mask: 0
     property double current: 0.0
@@ -28,4 +28,3 @@ XmlRpcMap {
 
     onUpdateComplete: console.log("AltitudeModel.onUpdateComplete()",root.mask,root.current,root.average,root.minimum,root.maximum,ascent,root.descent)
 }
-

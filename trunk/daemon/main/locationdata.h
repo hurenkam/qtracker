@@ -2,6 +2,7 @@
 #define LOCATIONDATA_H
 
 #include <QObject>
+#include <QVariant>
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
 
@@ -30,6 +31,8 @@ signals:
 public slots:
     void start();
     void stop();
+    QVariant data()                           { return toVariant(); }
+    QVariant reset()                          { return QVariant(0); }
 
 private slots:
     void onPositionChanged(const QGeoPositionInfo& info);

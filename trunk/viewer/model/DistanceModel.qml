@@ -3,7 +3,7 @@ import "../components"
 
 XmlRpcMap {
     id: root
-    command: "distance"
+    path: "/distance"
 
     property int mask: 0
     property double current: 0.0

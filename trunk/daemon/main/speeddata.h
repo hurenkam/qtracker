@@ -19,6 +19,9 @@ signals:
     
 public slots:
     void onSpeedChanged(double s);
+    QVariant data()                           { return toVariant(); }
+    QVariant reset()                          { return QVariant(0); }
+    QVariant setBufferSize(const QVariant& s) { return QVariant(0); }
 
 public:
     QVariant toVariant();

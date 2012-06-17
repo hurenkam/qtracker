@@ -3,7 +3,8 @@ import "../components"
 
 XmlRpcMap {
     id: root
-    command: "time"
+    //command: "time"
+    path: "/time"
 
     property int mask: 0
     property date current
