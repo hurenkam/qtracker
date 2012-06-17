@@ -36,7 +36,7 @@ Page {
         property color light: "#505050"
         property color dark: "#101010"
     }
-
+/*
     Timer {
         id: update
         interval: 1000
@@ -53,7 +53,7 @@ Page {
             location.refresh()
         }
     }
-
+*/
     XmlRpc {
         id: rpc;
         url: root.url
@@ -70,15 +70,6 @@ Page {
             rpc.call("stop",[])
         }
     }
-
-    TripModel     { id: trip;     url: root.url }
-    TrackModel    { id: track;    url: root.url }
-    LocationModel { id: location; url: root.url }
-    SpeedModel    { id: speed;    url: root.url }
-    DistanceModel { id: distance; url: root.url }
-    AltitudeModel { id: altitude; url: root.url }
-    CourseModel   { id: course;   url: root.url }
-    TimeModel     { id: time;     url: root.url }
 
     Settings      { id: settings }
 
@@ -173,6 +164,28 @@ Page {
         }
     }
 
+    TripModel     { id: tripmodel;     url: root.url; interval: 1000 }
+    TrackModel    { id: trackmodel;    url: root.url; interval: 1000 }
+    LocationModel { id: locationmodel; url: root.url; interval: 1000 }
+    CourseModel   { id: coursemodel;   url: root.url; interval: 1000 }
+    TimeModel     { id: timemodel;     url: root.url; interval: 1000 }
+
+    SpeedModel    {
+        id: speedmodel;
+        interval: 1000
+        onDataChanged: dashboard.updateSpeed(current,average,minimum,maximum)
+    }
+    DistanceModel {
+        id: distancemodel;
+        interval: 1000
+        onDataChanged: dashboard.updateDistance(current,monitor)
+    }
+    AltitudeModel {
+        id: altitudemodel
+        interval: 1000
+        onDataChanged: dashboard.updateAltitude(current,average,minimum,maximum,ascent,descent)
+    }
+
     DashBoard {
         id: dashboard
         y: hide? (landscape? 360*h: 640*h) : (landscape? 360*h-height: 640*h-height)
@@ -229,5 +242,5 @@ Page {
         onClicked: map.zoomOut()
     }
 
-    Component.onCompleted: update.restart()
+    //Component.onCompleted: update.restart()
 }

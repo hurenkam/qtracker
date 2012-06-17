@@ -9,9 +9,11 @@ Item {
     property int analogindex: -1
     property int topindex:    -1
     property int bottomindex: -1
+    property QtObject altitudemodel: null
 
     signal clicked()
     signal options()
+    signal reset()
 
     function toFixed(num,count) {
         var s = num.toFixed(count).toString();
@@ -46,37 +48,37 @@ Item {
         onPositionChanged: if (gps.position.altitudeValid) current.value = gps.position.coordinate.altitude
     }
 
-    AltitudeModel {
-        id: server
-        interval: 5000
+    function updateAltitude(cur,avg,min,max,asc,des)
+    {
+        current.value = cur
+        minimum.value = min
+        maximum.value = max
+        average.value = avg
+        ascent.value  = asc
+        descent.value = des
     }
-
     property list<QtObject> values: [
-        Item { id: current; property double value: server.current },
-        Item { id: min;     property double value: server.minimum },
-        Item { id: max;     property double value: server.maximum },
-        Item { id: average; property double value: server.average },
-        Item { id: ascent;  property double value: server.ascent  },
-        Item { id: descent; property double value: server.descent }
+        Item { id: current; property double value: 0 },
+        Item { id: minimum; property double value: 0 },
+        Item { id: maximum; property double value: 0 },
+        Item { id: average; property double value: 0 },
+        Item { id: ascent;  property double value: 0 },
+        Item { id: descent; property double value: 0 }
     ]
     property double analogvalue: values[analogindex].value? values[analogindex].value : 0
     property double topvalue:    values[topindex].value?    values[topindex].value    : 0
     property double bottomvalue: values[bottomindex].value? values[bottomindex].value : 0
 
-    function reset() {
-        server.reset()
-    }
-
     property int count: 10
     onCountChanged: setCount(count)
     function setCount(c) {
-        server.setCount(c)
+        altitudemodel.setCount(c)
     }
 
     property real hysteresis: 25.0
     onHysteresisChanged: setHysteresis(hysteresis)
     function setHysteresis(h) {
-        server.setHysteresis(h)
+        altitudemodel.setHysteresis(h)
     }
 
     Rectangle {

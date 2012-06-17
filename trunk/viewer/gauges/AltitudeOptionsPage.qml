@@ -13,6 +13,28 @@ TabOptionPage {
     property alias topindex:    topitems.ticked
     property alias bottomindex: bottomitems.ticked
 
+    function updateAltitude(cur,avg,min,max,asc,des) {
+        altimeter.updateAltitude(cur,avg,min,max,asc,des)
+        altitudemodel.update(cur,avg,min,max,asc,des)
+    }
+    Item {
+        id: altitudemodel
+        property double current: 0
+        property double average: 0
+        property double minimum: 0
+        property double maximum: 0
+        property double ascent:  0
+        property double descent: 0
+        function update(cur,avg,min,max,asc,des) {
+            current = cur
+            average = avg
+            minimum = min
+            maximum = max
+            ascent  = asc
+            descent = des
+        }
+    }
+
     signal optionsChanged()
 
     tabs: TabLayout {
@@ -139,11 +161,12 @@ TabOptionPage {
         id: server
     }
 */
+/*
     AltitudeModel {
-        id: server
+        id: altitudemodel
         interval: 5000
     }
-
+*/
     background: Rectangle {
         id: gauge
         objectName: "gauge"
@@ -209,7 +232,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Actual: ";
-            value: server.current.toFixed(1);
+            value: altitudemodel.current.toFixed(1)
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -225,7 +248,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Minimum: ";
-            value: server.minimum.toFixed(1);
+            value: altitudemodel.minimum.toFixed(1)
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -241,7 +264,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Maximum: ";
-            value: server.maximum.toFixed(1);
+            value: altitudemodel.maximum.toFixed(1)
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -257,7 +280,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Average: ";
-            value: server.average.toFixed(1);
+            value: altitudemodel.average.toFixed(1)
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -273,7 +296,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip ascent: ";
-            value: server.ascent.toFixed(1);
+            value: altitudemodel.ascent.toFixed(1)
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -289,7 +312,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Trip descent: ";
-            value: server.descent.toFixed(1);
+            value: altitudemodel.descent.toFixed(1)
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

@@ -4,6 +4,7 @@ import "../components"
 XmlRpcMap {
     id: root
     path: "/distance"
+    signal dataChanged(double current, double monitor)
 
     property int mask: 0
     property double current: 0.0
@@ -16,6 +17,9 @@ XmlRpcMap {
         if (name == "monitor") root.monitor = root.get(index).double
     }
 
-    onUpdateComplete: console.log("DistanceModel.onUpdateComplete()",mask,current,monitor)
+    onUpdateComplete: {
+        dataChanged(current,monitor)
+        console.log("DistanceModel.onUpdateComplete()",mask,current,monitor)
+    }
 }
 
