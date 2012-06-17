@@ -22,6 +22,7 @@ public:
     QVariant toVariant();
 
 signals:
+    void positionChanged(const QGeoPositionInfo& info);
     void positionChanged(double latitude, double longitude, double altitude);
     void speedChanged(double speed);
     void courseChanged(double course);

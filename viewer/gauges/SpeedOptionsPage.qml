@@ -38,9 +38,9 @@ TabOptionPage {
                     name: "speed_analog"
 
                     OptionRadioButton { text: "Current Speed";      }
+                    OptionRadioButton { text: "Average Speed";      }
                     OptionRadioButton { text: "Minimum Speed";      }
                     OptionRadioButton { text: "Maximum Speed";      }
-                    OptionRadioButton { text: "Average Speed";      }
                 }
                 onClicked: {
                     console.log("analogitems.onClicked",index)
@@ -64,9 +64,9 @@ TabOptionPage {
                     name: "speed_top"
 
                     OptionRadioButton { text: "Current Speed";      }
+                    OptionRadioButton { text: "Average Speed";      }
                     OptionRadioButton { text: "Minimum Speed";      }
                     OptionRadioButton { text: "Maximum Speed";      }
-                    OptionRadioButton { text: "Average Speed";      }
                     OptionRadioButton { text: "Trip Distance";      }
                     OptionRadioButton { text: "Monitor Distance";   }
                 }
@@ -93,9 +93,9 @@ TabOptionPage {
                     name: "speed_bottom"
 
                     OptionRadioButton { text: "Current Speed";      }
+                    OptionRadioButton { text: "Average Speed";      }
                     OptionRadioButton { text: "Minimum Speed";      }
                     OptionRadioButton { text: "Maximum Speed";      }
-                    OptionRadioButton { text: "Average Speed";      }
                     OptionRadioButton { text: "Trip Distance";      }
                     OptionRadioButton { text: "Monitor Distance";   }
                 }
@@ -129,7 +129,7 @@ TabOptionPage {
     }
 
     SpeedModel {
-        id: server
+        id: speedmodel
         interval: 1000
     }
 
@@ -203,7 +203,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Actual: ";
-            value: server.current.toFixed(1);
+            value: speedmodel.current.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -219,7 +219,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Minimum: ";
-            value: server.minimum.toFixed(1);
+            value: speedmodel.minimum.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -235,7 +235,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Maximum: ";
-            value: server.maximum.toFixed(1);
+            value: speedmodel.maximum.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -251,7 +251,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Average: ";
-            value: server.average.toFixed(1);
+            value: speedmodel.average.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true

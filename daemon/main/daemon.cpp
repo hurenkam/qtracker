@@ -27,6 +27,7 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
         << " Port:" << port << std::endl;
     }
 
+    connect(&_location,SIGNAL(positionChanged(const QGeoPositionInfo &)),&_distance,SLOT(onPositionChanged(const QGeoPositionInfo &)));
     connect(&_location,SIGNAL(positionChanged(double,double,double)),&_altitude,SLOT(onPositionChanged(double,double,double)));
     connect(&_location,SIGNAL(positionChanged(double,double,double)),&_course,SLOT(onPositionChanged(double,double,double)));
     connect(&_location,SIGNAL(courseChanged(double)),&_course,SLOT(onCourseChanged(double)));
