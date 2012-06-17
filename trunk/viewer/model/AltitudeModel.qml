@@ -26,6 +26,6 @@ XmlRpcMap {
         if (name == "monitor") root.monitor = root.get(index).double
     }
 
-    onUpdateComplete: console.log("AltitudeModel.onUpdateComplete()",mask,current,average,minimum,maximum,ascent,descent)
+    onUpdateComplete: console.log("AltitudeModel.onUpdateComplete()",root.mask,root.current,root.average,root.minimum,root.maximum,ascent,root.descent)
 }
 
