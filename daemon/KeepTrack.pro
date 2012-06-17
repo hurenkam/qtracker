@@ -48,13 +48,21 @@ SOURCES += \
     main/daemon.cpp \
     main/timedata.cpp \
     main/xmlrpcconv.cpp \
-    main/xmlrpcserver.cpp
+    main/xmlrpcserver.cpp \
+    main/locationdata.cpp \
+    main/speeddata.cpp \
+    main/coursedata.cpp \
+    main/altitudedata.cpp
 
 HEADERS += \
     main/daemon.h \
     main/timedata.h \
     main/xmlrpcconv.h \
-    main/xmlrpcserver.h
+    main/xmlrpcserver.h \
+    main/locationdata.h \
+    main/speeddata.h \
+    main/coursedata.h \
+    main/altitudedata.h
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

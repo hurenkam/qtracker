@@ -3,51 +3,6 @@
 #include <QHostAddress>
 #include <QTime>
 
-void LocationData::start()
-{
-    source = QGeoPositionInfoSource::createDefaultSource(this);
-    if (source) {
-        source->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
-        source->setUpdateInterval(1000);
-        connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(onPositionChanged(QGeoPositionInfo)));
-        source->startUpdates();
-    }
-}
-
-void LocationData::stop()
-{
-    if (source) source->stopUpdates();
-    source = 0;
-    mask = 0;
-}
-
-void LocationData::onPositionChanged(const QGeoPositionInfo& info)
-{
-    if (info.isValid())
-    {
-        const QGeoCoordinate& c = info.coordinate();
-        if (c.isValid())
-        {
-            double lat = c.latitude();
-            double lon = c.longitude();
-            double alt = c.altitude();
-            if ((latitude != lat) || (longitude != lon))
-            {
-                latitude  = lat;
-                mask |= LATMASK;
-                longitude = lon;
-                mask |= LONMASK;
-            }
-            if (altitude != alt)
-            {
-                altitude = alt;
-                mask |= ALTMASK;
-            }
-        }
-    }
-}
-
-
 Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
     QObject( parent )
 {
@@ -71,10 +26,14 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
         QHostAddress( address ).toString().toStdString()
         << " Port:" << port << std::endl;
     }
+
+    connect(&_location,SIGNAL(positionChanged(double,double,double)),&_altitude,SLOT(onPositionChanged(double,double,double)));
+    connect(&_location,SIGNAL(positionChanged(double,double,double)),&_course,SLOT(onPositionChanged(double,double,double)));
+    connect(&_location,SIGNAL(courseChanged(double)),&_course,SLOT(onCourseChanged(double)));
+    connect(&_location,SIGNAL(speedChanged(double)),&_speed,SLOT(onSpeedChanged(double)));
 }
 
 Daemon::~Daemon()
 {
     std::cout << "Delete XML-RPC server..." << std::endl;
 }
-
