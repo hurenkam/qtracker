@@ -71,7 +71,7 @@ Item {
             }
 
             function layoutItems(w) {
-                console.log("OptionList.layoutItems(): got", items.count(), "items for model",items.name)
+                //console.log("OptionList.layoutItems(): got", items.count(), "items for model",items.name)
                 var h = 2;
                 for (var i=0; i<items.count(); ++i) {
                     var item = items.get(i)
@@ -95,7 +95,7 @@ Item {
             }
 
             function initialise() {
-                console.log("OptionList.initialise():",items.name,items.count());
+                //console.log("OptionList.initialise():",items.name,items.count());
                 for (var i=0; i<items.count(); ++i) {
                     items.get(i).clicked.disconnect(root.clicked)
                     items.get(i).clicked.connect(root.clicked)

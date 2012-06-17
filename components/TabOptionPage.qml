@@ -100,7 +100,7 @@ Page {
     }
 
     function layoutTabs() {
-        console.log("TabOptionPage.layoutTabs(): got", tabs.children.length, "tabs", tabs.width, tabs.height)
+        //console.log("TabOptionPage.layoutTabs(): got", tabs.children.length, "tabs", tabs.width, tabs.height)
         var count = tabs.children.length
         var tx = 13
 
@@ -141,10 +141,10 @@ Page {
 
     function tabSelected(index) {
         if (allowalldown && (root.raised === index)) {
-            console.log("TabOptionPage.tabSelected(): unselect",index,tabs.children[index].title)
+            //console.log("TabOptionPage.tabSelected(): unselect",index,tabs.children[index].title)
             root.raised = -1
         } else {
-            console.log("TabOptionPage.tabSelected(): select  ",index,tabs.children[index].title)
+            //console.log("TabOptionPage.tabSelected(): select  ",index,tabs.children[index].title)
             root.raised = index
         }
         layoutTabs()
