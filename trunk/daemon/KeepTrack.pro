@@ -20,8 +20,6 @@ symbian:TARGET.CAPABILITY += NetworkServices
 
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
-CONFIG += mobility
-MOBILITY += location
 
 # Speed up launching on MeeGo/Harmattan when using applauncherd daemon
 # CONFIG += qdeclarative-boostable
@@ -35,12 +33,10 @@ QT       += network
 #QT       -= gui
 #QT       += declarative
 
-#CONFIG   += console
-#CONFIG   -= app_bundle
-#CONFIG   += mobility
-
-#MOBILITY  = \
-#    location
+CONFIG   += console
+CONFIG   -= app_bundle
+CONFIG   += mobility
+MOBILITY += location
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -53,7 +49,9 @@ SOURCES += \
     main/speeddata.cpp \
     main/coursedata.cpp \
     main/altitudedata.cpp \
-    main/distancedata.cpp
+    main/distancedata.cpp \
+    main/tripstatus.cpp \
+    main/trackstatus.cpp
 
 HEADERS += \
     main/daemon.h \
@@ -64,7 +62,9 @@ HEADERS += \
     main/speeddata.h \
     main/coursedata.h \
     main/altitudedata.h \
-    main/distancedata.h
+    main/distancedata.h \
+    main/tripstatus.h \
+    main/trackstatus.h
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
