@@ -2,6 +2,7 @@
 #define COURSEDATA_H
 
 #include <QObject>
+#include <QVariant>
 
 #define CURMASK 0x01
 #define AVGMASK 0x02
@@ -17,6 +18,9 @@ signals:
 public slots:
     void onCourseChanged(double c);
     void onPositionChanged(double lat, double lon, double alt);
+    QVariant data()                           { return toVariant(); }
+    QVariant reset()                          { return QVariant(0); }
+    QVariant setBufferSize(const QVariant& s) { return QVariant(0); }
 
 public:
     QVariant toVariant();

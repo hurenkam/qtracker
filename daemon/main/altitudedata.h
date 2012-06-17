@@ -2,6 +2,7 @@
 #define ALTITUDEDATA_H
 
 #include <QObject>
+#include <QVariant>
 
 #define CURMASK 0x01
 #define AVGMASK 0x02
@@ -20,6 +21,10 @@ signals:
     
 public slots:
     void onPositionChanged(double lat, double lon, double alt);
+    QVariant data()                           { return toVariant(); }
+    QVariant reset()                          { return QVariant(0); }
+    QVariant setHysteresis(const QVariant& h) { return QVariant(0); }
+    QVariant setBufferSize(const QVariant& s) { return QVariant(0); }
 
 public:
     QVariant toVariant();

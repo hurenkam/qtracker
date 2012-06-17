@@ -3,7 +3,7 @@ import "../components"
 
 XmlRpcMap {
     id: root
-    command: "course"
+    path: "/course"
 
     property int mask: 0
     property double current: 0.0
@@ -20,4 +20,3 @@ XmlRpcMap {
 
     onUpdateComplete: console.log("CourseModel.onUpdateComplete()",mask,current,average,monitor)
 }
-

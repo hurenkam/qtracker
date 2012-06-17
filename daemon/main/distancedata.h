@@ -2,6 +2,7 @@
 #define DISTANCEDATA_H
 
 #include <QObject>
+#include <QVariant>
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
 
@@ -17,6 +18,9 @@ signals:
     
 public slots:
     void onPositionChanged(const QGeoPositionInfo& info);
+    QVariant data()                           { return toVariant(); }
+    QVariant reset()                          { return QVariant(0); }
+    QVariant setHysteresis(const QVariant& h) { return QVariant(0); }
 
 public:
     QVariant toVariant();

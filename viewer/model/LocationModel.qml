@@ -3,7 +3,8 @@ import "../components"
 
 XmlRpcMap {
     id: root
-    command: "location"
+    //command: "location"
+    path: "/location"
 
     property int mask: 0
     property double latitude:  0.0
