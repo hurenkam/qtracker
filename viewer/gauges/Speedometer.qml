@@ -36,12 +36,13 @@ Item {
 
     PositionSource {
         id: gps
-        updateInterval: 1000
+        updateInterval: 500
         active: true
     }
 
     SpeedModel {
         id: speedmodel
+        interval: 500
     }
 
     DistanceModel {

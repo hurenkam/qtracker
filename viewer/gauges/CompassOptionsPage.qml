@@ -165,14 +165,16 @@ TabOptionPage {
         id: currenttimer; interval: 250; running: true; repeat: true;
         onTriggered: azimuth.value = sensor.reading.azimuth
     }
+    CourseModel {
+        id: coursemodel
+        interval: 5000
+    }
 
     Item { id: latitude;  property double value: 0.0 }
     Item { id: longitude; property double value: 0.0 }
     Item { id: altitude;  property double value: 0.0 }
 
     Item { id: azimuth;   property double value: 0.0 }
-    Item { id: heading;   property double value: 0.0 }
-    Item { id: bearing;   property double value: 0.0 }
 
     background: Rectangle {
         id: gauge
@@ -258,7 +260,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Heading: ";
-            value: heading.value.toFixed(1);
+            value: coursemodel.average.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -274,7 +276,7 @@ TabOptionPage {
             anchors.left: parent.left
             anchors.right:  parent.right
             text: "Bearing: ";
-            value: bearing.value.toFixed(1);
+            value: course.monitor.toFixed(1);
             textcolor: "white"
             valuecolor: "yellow"
             readOnly: true
@@ -314,64 +316,3 @@ TabOptionPage {
         }
     }
 }
-/*
-import QtQuick 1.0
-import "../Components"
-
-OptionPage {
-    id: root
-    title: "Compass Options"
-    options: compassoptions
-    confirmbutton: true
-    signal optionsChanged()
-    property alias sourceindex:      sourceitems.ticked
-    property alias orientationindex: orientationitems.ticked
-
-    onConfirm: {
-        console.log("CompassOptionsPage.onConfirm")
-        optionsChanged()
-        pageStack.pop()
-    }
-
-    VisualItemModel {
-        id: compassoptions
-
-        OptionList {
-            id: sourcebox
-            title: "Source"
-            items: sourceitems
-
-            RadioBox {
-                id: sourceitems
-                name: "compass_source"
-
-                OptionRadioButton { text: "Magnetic North Sensor"; }
-                OptionRadioButton { text: "GPS Heading";           }
-            }
-            onClicked: {
-                console.log("sourceitems.onClicked",index)
-                sourceitems.ticked = index
-            }
-        }
-
-        OptionList {
-            id: orientationbox
-            title: "Orientation"
-            items: orientationitems
-
-            RadioBox {
-                id: orientationitems
-                name: "compass_orientation"
-
-                OptionRadioButton { text: "Heading up";         }
-                OptionRadioButton { text: "North up";           }
-            }
-
-            onClicked: {
-                console.log("orientationitems.onClicked",index)
-                orientationitems.ticked = index
-            }
-        }
-    }
-}
-*/

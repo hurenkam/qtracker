@@ -141,6 +141,7 @@ TabOptionPage {
 */
     AltitudeModel {
         id: server
+        interval: 5000
     }
 
     background: Rectangle {

@@ -130,10 +130,12 @@ TabOptionPage {
 
     SpeedModel {
         id: server
+        interval: 1000
     }
 
     DistanceModel {
         id: distancemodel
+        interval: 1000
     }
 
     background: Rectangle {
