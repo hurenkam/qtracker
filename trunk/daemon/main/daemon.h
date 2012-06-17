@@ -11,6 +11,7 @@
 #include "altitudedata.h"
 #include "speeddata.h"
 #include "coursedata.h"
+#include "distancedata.h"
 
 class TripStatus
 {
@@ -54,28 +55,6 @@ public:
 	r["name"]  = name;
 	r["state"] = state;
 	return r;
-    }
-};
-
-class DistanceData
-{
-public:
-    int    mask;
-    double current;
-    double monitor;
-
-    DistanceData()
-        : mask(0)
-        , current(0.0)
-        , monitor(0.0)
-    {}
-
-    QVariant toVariant() {
-        QMap<QString, QVariant> r;
-        r["mask"]    = mask;
-        r["current"] = current;
-        r["monitor"] = monitor;
-        return r;
     }
 };
 

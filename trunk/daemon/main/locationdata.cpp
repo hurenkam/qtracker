@@ -35,6 +35,7 @@ void LocationData::stop()
 
 void LocationData::onPositionChanged(const QGeoPositionInfo& info)
 {
+    emit positionChanged(info);
     if (info.isValid())
     {
         const QGeoCoordinate& c = info.coordinate();

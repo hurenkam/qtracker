@@ -52,7 +52,8 @@ SOURCES += \
     main/locationdata.cpp \
     main/speeddata.cpp \
     main/coursedata.cpp \
-    main/altitudedata.cpp
+    main/altitudedata.cpp \
+    main/distancedata.cpp
 
 HEADERS += \
     main/daemon.h \
@@ -62,7 +63,8 @@ HEADERS += \
     main/locationdata.h \
     main/speeddata.h \
     main/coursedata.h \
-    main/altitudedata.h
+    main/altitudedata.h \
+    main/distancedata.h
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

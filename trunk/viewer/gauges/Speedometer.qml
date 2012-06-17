@@ -47,6 +47,7 @@ Item {
 
     DistanceModel {
         id: distancemodel
+        interval: 1000
     }
 
     property list<QtObject> values: [
