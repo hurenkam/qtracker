@@ -19,7 +19,7 @@ TimeData::TimeData(QObject *parent)
 
 void TimeData::refresh()
 {
-    qDebug() << "TimeData::refresh()";
+    //qDebug() << "TimeData::refresh()";
     current = QDateTime::currentDateTime();
 }
 
