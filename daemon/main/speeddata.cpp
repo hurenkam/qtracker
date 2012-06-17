@@ -29,7 +29,7 @@ void SpeedData::onSpeedChanged(double s)
     mask |= CURMASK;
     updateAverage();
     updateMinMax();
-    qDebug() << "SpeedData::onSpeedChanged()" << current << average << minimum << maximum;
+    //qDebug() << "SpeedData::onSpeedChanged()" << current << average << minimum << maximum;
 }
 
 void SpeedData::updateAverage()

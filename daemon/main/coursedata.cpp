@@ -26,9 +26,9 @@ QVariant CourseData::toVariant()
 void CourseData::onCourseChanged(double c)
 {
     mask |= CURMASK;
-    updateAverage();
-    qDebug() << "CourseData::onPositionChanged()" << current << average << monitor;
     current = c;
+    updateAverage();
+    //qDebug() << "CourseData::onPositionChanged()" << current << average << monitor;
 }
 
 void CourseData::onPositionChanged(double lat, double lon, double alt)
