@@ -63,13 +63,13 @@ Item {
                 id: content
                 width: flickable.width
                 height: childrenRect.height+50
-                onWidthChanged: console.log("TabItem.Item.Flickable.Item.onWidthChanged: ",width,height)
-                onHeightChanged: console.log("TabItem.Item.Flickable.Item.onHeightChanged: ",width,height)
-                Component.onCompleted: console.log("TabItem.Item.Flickable.Item.onCompleted: ",width,height)
+                //onWidthChanged: console.log("TabItem.Item.Flickable.Item.onWidthChanged: ",width,height)
+                //onHeightChanged: console.log("TabItem.Item.Flickable.Item.onHeightChanged: ",width,height)
+                //Component.onCompleted: console.log("TabItem.Item.Flickable.Item.onCompleted: ",width,height)
             }
-            onWidthChanged: console.log("TabItem.Item.Flickable.onWidthChanged: ",width,height)
-            onHeightChanged: console.log("TabItem.Item.Flickable.onHeightChanged: ",width,height)
-            Component.onCompleted: console.log("TabItem.Item.Flickable.onCompleted: ",width,height)
+            //onWidthChanged: console.log("TabItem.Item.Flickable.onWidthChanged: ",width,height)
+            //onHeightChanged: console.log("TabItem.Item.Flickable.onHeightChanged: ",width,height)
+            //Component.onCompleted: console.log("TabItem.Item.Flickable.onCompleted: ",width,height)
         }
 /*
         Item {
@@ -140,7 +140,7 @@ Item {
             font.pointSize: 8
         }
     }
-    onWidthChanged:        { console.log("TabItem.onWidthChanged()    ",x,y,width,height) }
-    onHeightChanged:       { console.log("TabItem.onHeightChanged()   ",x,y,width,height) }
-    Component.onCompleted: { console.log("TabItem.onCompleted()       ",x,y,width,height) }
+    //onWidthChanged:        { console.log("TabItem.onWidthChanged()    ",x,y,width,height) }
+    //onHeightChanged:       { console.log("TabItem.onHeightChanged()   ",x,y,width,height) }
+    //Component.onCompleted: { console.log("TabItem.onCompleted()       ",x,y,width,height) }
 }
