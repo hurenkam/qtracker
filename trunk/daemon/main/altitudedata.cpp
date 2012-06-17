@@ -38,7 +38,7 @@ void AltitudeData::onPositionChanged(double lat, double lon, double alt)
     updateAverage();
     updateMinMax();
     updateAscentDescent();
-    qDebug() << "AltitudeData::onPositionChanged()" << current << average << minimum << maximum << ascent << descent << monitor;
+    //qDebug() << "AltitudeData::onPositionChanged()" << current << average << minimum << maximum << ascent << descent << monitor;
 }
 
 void AltitudeData::updateAverage()

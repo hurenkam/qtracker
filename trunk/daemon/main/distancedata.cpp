@@ -29,8 +29,7 @@ void DistanceData::onPositionChanged(const QGeoPositionInfo& info)
             _p = c;
         }
     }
-
-    qDebug() << "DistanceData::onPositionChanged()" << current << monitor;
+    //qDebug() << "DistanceData::onPositionChanged()" << current << monitor;
 }
 
 QVariant DistanceData::toVariant()
