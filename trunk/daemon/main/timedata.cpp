@@ -17,13 +17,19 @@ TimeData::TimeData(QObject *parent)
     timer->start(1000);
 }
 
+void TimeData::registerApi(XmlRpcServer* srv)
+{
+    srv->registerSlot( this, SLOT( data() ),                                  "/RPC2/time/" );
+    srv->registerSlot( this, SLOT( reset() ),                                 "/RPC2/time/" );
+}
+
 void TimeData::refresh()
 {
     //qDebug() << "TimeData::refresh()";
     current = QDateTime::currentDateTime();
 }
 
-QVariant TimeData::toVariant()
+QVariant TimeData::data()
 {
     QMap<QString, QVariant> r;
     r["mask"]    = mask;

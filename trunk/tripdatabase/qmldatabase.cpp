@@ -107,11 +107,12 @@ qmlDatabasePrivate::create()
     ENTER("")
 
     db = QSqlDatabase::addDatabase("QSQLITE");
-    #if defined(Q_OS_SYMBIAN)
-    db.setDatabaseName("e:\\data\\qtracker\\database.sqlite");
-    #elif defined(Q_OS_ANDROID)
+    #if defined(Q_OS_ANDROID) || defined(Q_WS_MAEMO_5)
     db.setDatabaseName("/mnt/sdcard/qtracker/database.sqlite");
-    LOG("qmlDatabasePrivate::create(): Opening database in /mnt/sdcard/qtracker/database.sqlite")
+    #elif defined(Q_WS_SIMULATOR)
+    db.setDatabaseName("c:\\data\\qtracker\\database.sqlite");
+    #elif defined(Q_OS_SYMBIAN)
+    db.setDatabaseName("e:\\data\\qtracker\\database.sqlite");
     #else
     db.setDatabaseName("database.sqlite");
     #endif

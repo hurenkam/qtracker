@@ -9,35 +9,16 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
     srv= new XmlRpcServer;
     if ( srv->listen(QHostAddress(address), port) )
     {
-        srv->registerSlot( this, SLOT( start( const QVariant &, const QVariant & ) ) );
-        srv->registerSlot( this, SLOT( stop() ) );
         srv->registerSlot( this, SLOT( exit() ) );
 
-        srv->registerSlot( this, SLOT( trip() ) );
-        srv->registerSlot( this, SLOT( track() ) );
-
-        srv->registerSlot( &_location, SLOT( data() ),                          "/RPC2/location/" );
-        srv->registerSlot( &_location, SLOT( reset() ),                         "/RPC2/location/" );
-
-        srv->registerSlot( &_time,     SLOT( data() ),                          "/RPC2/time/" );
-        srv->registerSlot( &_time,     SLOT( reset() ),                         "/RPC2/time/" );
-
-        srv->registerSlot( &_altitude, SLOT( data() ),                          "/RPC2/altitude/" );
-        srv->registerSlot( &_altitude, SLOT( reset() ),                         "/RPC2/altitude/" );
-        srv->registerSlot( &_altitude, SLOT( setHysteresis(const QVariant& ) ), "/RPC2/altitude/" );
-        srv->registerSlot( &_altitude, SLOT( setBufferSize(const QVariant& ) ), "/RPC2/altitude/" );
-
-        srv->registerSlot( &_speed,    SLOT( data() ),                          "/RPC2/speed/" );
-        srv->registerSlot( &_speed,    SLOT( reset() ),                         "/RPC2/speed/" );
-        srv->registerSlot( &_speed,    SLOT( setBufferSize(const QVariant& ) ), "/RPC2/speed/" );
-
-        srv->registerSlot( &_course,   SLOT( data() ),                          "/RPC2/course/" );
-        srv->registerSlot( &_course,   SLOT( reset() ),                         "/RPC2/course/" );
-        srv->registerSlot( &_course,   SLOT( setBufferSize(const QVariant& ) ), "/RPC2/course/" );
-
-        srv->registerSlot( &_distance, SLOT( data() ),                          "/RPC2/distance/" );
-        srv->registerSlot( &_distance, SLOT( reset() ),                         "/RPC2/distance/" );
-        srv->registerSlot( &_distance, SLOT( setHysteresis(const QVariant& ) ), "/RPC2/distance/" );
+        _trip.registerApi(srv);
+        _track.registerApi(srv);
+        _location.registerApi(srv);
+        _time.registerApi(srv);
+        _altitude.registerApi(srv);
+        _speed.registerApi(srv);
+        _course.registerApi(srv);
+        _distance.registerApi(srv);
 
         std::cout << QTime::currentTime().toString().toStdString()
         << " Start XML-RPC server. " << "Adress:" <<

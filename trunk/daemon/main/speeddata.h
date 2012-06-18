@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include "xmlrpcserver.h"
 
 #define CURMASK 0x01
 #define AVGMASK 0x02
@@ -14,18 +15,17 @@ class SpeedData : public QObject
     Q_OBJECT
 public:
     explicit SpeedData(QObject *parent = 0);
-    
+    void registerApi(XmlRpcServer* srv);
+
 signals:
     
 public slots:
     void onSpeedChanged(double s);
-    QVariant data()                           { return toVariant(); }
+    QVariant data();
     QVariant reset()                          { return QVariant(0); }
     QVariant setBufferSize(const QVariant& s) { return QVariant(0); }
 
 public:
-    QVariant toVariant();
-
     int     mask;
     double  current;
     double  average;

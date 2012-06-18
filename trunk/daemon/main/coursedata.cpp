@@ -13,7 +13,14 @@ CourseData::CourseData(QObject *parent)
 {
 }
 
-QVariant CourseData::toVariant()
+void CourseData::registerApi(XmlRpcServer* srv)
+{
+    srv->registerSlot( this, SLOT( data() ),                                  "/RPC2/course/" );
+    srv->registerSlot( this, SLOT( reset() ),                                 "/RPC2/course/" );
+    srv->registerSlot( this, SLOT( setBufferSize(const QVariant& ) ),         "/RPC2/course/" );
+}
+
+QVariant CourseData::data()
 {
     QMap<QString, QVariant> r;
     r["mask"]    = mask;

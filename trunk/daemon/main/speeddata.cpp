@@ -12,7 +12,14 @@ SpeedData::SpeedData(QObject *parent)
 {
 }
 
-QVariant SpeedData::toVariant()
+void SpeedData::registerApi(XmlRpcServer* srv)
+{
+    srv->registerSlot( this, SLOT( data() ),                                  "/RPC2/speed/" );
+    srv->registerSlot( this, SLOT( reset() ),                                 "/RPC2/speed/" );
+    srv->registerSlot( this, SLOT( setBufferSize(const QVariant& ) ),         "/RPC2/speed/" );
+}
+
+QVariant SpeedData::data()
 {
     QMap<QString, QVariant> r;
     r["mask"]    = mask;
