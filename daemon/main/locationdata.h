@@ -5,6 +5,7 @@
 #include <QVariant>
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
+#include "xmlrpcserver.h"
 
 QTM_USE_NAMESPACE
 
@@ -20,7 +21,7 @@ class LocationData : public QObject
     Q_OBJECT
 public:
     explicit LocationData(QObject *parent = 0);
-    QVariant toVariant();
+    void registerApi(XmlRpcServer* srv);
 
 signals:
     void positionChanged(const QGeoPositionInfo& info);
@@ -31,7 +32,7 @@ signals:
 public slots:
     void start();
     void stop();
-    QVariant data()                           { return toVariant(); }
+    QVariant data();
     QVariant reset()                          { return QVariant(0); }
 
 private slots:

@@ -17,7 +17,15 @@ AltitudeData::AltitudeData(QObject *parent)
   , _previous(0)
 {}
 
-QVariant AltitudeData::toVariant()
+void AltitudeData::registerApi(XmlRpcServer* srv)
+{
+    srv->registerSlot( this, SLOT( data() ),                                  "/RPC2/altitude/" );
+    srv->registerSlot( this, SLOT( reset() ),                                 "/RPC2/altitude/" );
+    srv->registerSlot( this, SLOT( setHysteresis(const QVariant& ) ),         "/RPC2/altitude/" );
+    srv->registerSlot( this, SLOT( setBufferSize(const QVariant& ) ),         "/RPC2/altitude/" );
+}
+
+QVariant AltitudeData::data()
 {
     QMap<QString, QVariant> r;
     r["mask"]    = mask;

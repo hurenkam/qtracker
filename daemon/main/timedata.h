@@ -4,23 +4,23 @@
 #include <QObject>
 #include <QTime>
 #include <QVariant>
+#include "xmlrpcserver.h"
 
 class TimeData : public QObject
 {
     Q_OBJECT
 public:
     explicit TimeData(QObject *parent = 0);
+    void registerApi(XmlRpcServer* srv);
 
 signals:
     
 public slots:
     void refresh();
-    QVariant data()                           { return toVariant(); }
+    QVariant data();
     QVariant reset()                          { return QVariant(0); }
 
 public:
-    QVariant toVariant();
-
     int        mask;
     QDateTime  current;
     QDateTime  elapsed;

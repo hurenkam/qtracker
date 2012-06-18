@@ -11,6 +11,13 @@ DistanceData::DistanceData(QObject *parent)
 {
 }
 
+void DistanceData::registerApi(XmlRpcServer* srv)
+{
+    srv->registerSlot( this, SLOT( data() ),                                  "/RPC2/distance/" );
+    srv->registerSlot( this, SLOT( reset() ),                                 "/RPC2/distance/" );
+    srv->registerSlot( this, SLOT( setHysteresis(const QVariant& ) ),         "/RPC2/distance/" );
+}
+
 void DistanceData::onPositionChanged(const QGeoPositionInfo& info)
 {
     if (info.isValid())
@@ -32,7 +39,7 @@ void DistanceData::onPositionChanged(const QGeoPositionInfo& info)
     //qDebug() << "DistanceData::onPositionChanged()" << current << monitor;
 }
 
-QVariant DistanceData::toVariant()
+QVariant DistanceData::data()
 {
     QMap<QString, QVariant> r;
     r["mask"]    = mask;

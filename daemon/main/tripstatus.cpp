@@ -8,12 +8,19 @@ TripStatus::TripStatus(QObject *parent)
 {
 }
 
-QVariant TripStatus::start(QVariant id, QVariant name)
+void TripStatus::registerApi(XmlRpcServer* srv)
+{
+    srv->registerSlot( this,    SLOT( start(const QVariant&, const QVariant&) ), "/RPC2/trip/" );
+    srv->registerSlot( this,    SLOT( stop() ),                                  "/RPC2/trip/" );
+    srv->registerSlot( this,    SLOT( data() ),                                  "/RPC2/trip/" );
+}
+
+QVariant TripStatus::start(const QVariant& id, const QVariant& name)
 {
     return QVariant(0);
 }
 
-QVariant TripStatus::stop();
+QVariant TripStatus::stop()
 {
     return QVariant(0);
 }

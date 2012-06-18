@@ -15,6 +15,12 @@ LocationData::LocationData(QObject *parent)
     start();
 }
 
+void LocationData::registerApi(XmlRpcServer* srv)
+{
+    srv->registerSlot( this, SLOT( data() ),                                  "/RPC2/location/" );
+    srv->registerSlot( this, SLOT( reset() ),                                 "/RPC2/location/" );
+}
+
 void LocationData::start()
 {
     source = QGeoPositionInfoSource::createDefaultSource(this);
@@ -72,7 +78,7 @@ void LocationData::onPositionChanged(const QGeoPositionInfo& info)
     }
 }
 
-QVariant LocationData::toVariant()
+QVariant LocationData::data()
 {
     QMap<QString, QVariant> r;
     r["mask"]      = mask;
