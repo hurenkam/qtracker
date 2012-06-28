@@ -1,4 +1,4 @@
-#include <iostream>
+//#include <iostream>
 #include "daemon.h"
 #include <QHostAddress>
 #include <QTime>
@@ -20,10 +20,10 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
         _course.registerApi(srv);
         _distance.registerApi(srv);
 
-        std::cout << QTime::currentTime().toString().toStdString()
-        << " Start XML-RPC server. " << "Adress:" <<
-        QHostAddress( address ).toString().toStdString()
-        << " Port:" << port << std::endl;
+        //std::cout << QTime::currentTime().toString().toStdString()
+        //<< " Start XML-RPC server. " << "Adress:" <<
+        //QHostAddress( address ).toString().toStdString()
+        //<< " Port:" << port << std::endl;
     }
 
     connect(&_location,SIGNAL(positionChanged(const QGeoPositionInfo &)),&_distance,SLOT(onPositionChanged(const QGeoPositionInfo &)));
@@ -35,5 +35,5 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
 
 Daemon::~Daemon()
 {
-    std::cout << "Delete XML-RPC server..." << std::endl;
+    //std::cout << "Delete XML-RPC server..." << std::endl;
 }
