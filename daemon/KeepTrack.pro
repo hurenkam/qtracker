@@ -29,7 +29,7 @@ symbian:TARGET.CAPABILITY += NetworkServices
 QT       += xml
 #QT       += core
 QT       += network
-#QT       += sql
+QT       += sql
 #QT       -= gui
 #QT       += declarative
 
@@ -51,7 +51,15 @@ SOURCES += \
     main/altitudedata.cpp \
     main/distancedata.cpp \
     main/tripstatus.cpp \
-    main/trackstatus.cpp
+    main/trackstatus.cpp \
+    tripdatabase/qmlcategory.cpp \
+    tripdatabase/qmldatabase.cpp \
+    tripdatabase/qmlmap.cpp \
+    tripdatabase/qmlrefpoint.cpp \
+    tripdatabase/qmlroute.cpp \
+    tripdatabase/qmltrack.cpp \
+    tripdatabase/qmltrip.cpp \
+    tripdatabase/qmlwaypoint.cpp
 
 HEADERS += \
     main/daemon.h \
@@ -64,46 +72,26 @@ HEADERS += \
     main/altitudedata.h \
     main/distancedata.h \
     main/tripstatus.h \
-    main/trackstatus.h
+    main/trackstatus.h \
+    tripdatabase/helpers.h \
+    tripdatabase/qmlcategory.h \
+    tripdatabase/qmldatabase.h \
+    tripdatabase/qmlmap.h \
+    tripdatabase/qmlrefpoint.h \
+    tripdatabase/qmlroute.h \
+    tripdatabase/qmltrack.h \
+    tripdatabase/qmltrip.h \
+    tripdatabase/qmlwaypoint.h
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
+RESOURCES += \
+    main.qrc
+
+INCLUDEPATH += tripdatabase
 OTHER_FILES += \
-    android/AndroidManifest.xml \
-    android/src/org/kde/necessitas/origo/QtApplication.java \
-    android/src/org/kde/necessitas/origo/QtActivity.java \
-    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
-    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
-    android/res/values-ro/strings.xml \
-    android/res/layout/splash.xml \
-    android/res/values-el/strings.xml \
-    android/res/values-nl/strings.xml \
-    android/res/values-pt-rBR/strings.xml \
-    android/res/values-fa/strings.xml \
-    android/res/values-zh-rTW/strings.xml \
-    android/res/drawable-hdpi/icon.png \
-    android/res/values-ms/strings.xml \
-    android/res/drawable/icon.png \
-    android/res/drawable/logo.png \
-    android/res/values-et/strings.xml \
-    android/res/drawable-ldpi/icon.png \
-    android/res/values/libs.xml \
-    android/res/values/strings.xml \
-    android/res/values-fr/strings.xml \
-    android/res/values-zh-rCN/strings.xml \
-    android/res/values-id/strings.xml \
-    android/res/values-es/strings.xml \
-    android/res/values-rs/strings.xml \
-    android/res/values-nb/strings.xml \
-    android/res/values-ja/strings.xml \
-    android/res/values-it/strings.xml \
-    android/res/values-ru/strings.xml \
-    android/res/drawable-mdpi/icon.png \
-    android/res/values-pl/strings.xml \
-    android/res/values-de/strings.xml \
-    android/version.xml \
     android/version.xml \
     android/src/org/kde/necessitas/origo/QtApplication.java \
     android/src/org/kde/necessitas/origo/QtActivity.java \
@@ -121,8 +109,6 @@ OTHER_FILES += \
     android/res/values-rs/strings.xml \
     android/res/values-pl/strings.xml \
     android/res/values-ro/strings.xml \
-    android/res/drawable-ldpi/icon.png \
-    android/res/drawable-hdpi/icon.png \
     android/res/values-nl/strings.xml \
     android/res/values-zh-rCN/strings.xml \
     android/res/values-ms/strings.xml \
@@ -133,77 +119,9 @@ OTHER_FILES += \
     android/res/values-id/strings.xml \
     android/res/values-fa/strings.xml \
     android/res/values-zh-rTW/strings.xml \
-    android/res/drawable-mdpi/icon.png \
-    android/res/drawable/logo.png \
-    android/res/drawable/icon.png \
-    android/AndroidManifest.xml \
-    android/version.xml \
-    android/src/org/kde/necessitas/origo/QtApplication.java \
-    android/src/org/kde/necessitas/origo/QtActivity.java \
-    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
-    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
-    android/res/layout/splash.xml \
-    android/res/values-ru/strings.xml \
-    android/res/values-de/strings.xml \
-    android/res/values-es/strings.xml \
-    android/res/values-fr/strings.xml \
-    android/res/values-it/strings.xml \
-    android/res/values/strings.xml \
-    android/res/values/libs.xml \
-    android/res/values-nb/strings.xml \
-    android/res/values-rs/strings.xml \
-    android/res/values-pl/strings.xml \
-    android/res/values-ro/strings.xml \
     android/res/drawable-ldpi/icon.png \
     android/res/drawable-hdpi/icon.png \
-    android/res/values-nl/strings.xml \
-    android/res/values-zh-rCN/strings.xml \
-    android/res/values-ms/strings.xml \
-    android/res/values-pt-rBR/strings.xml \
-    android/res/values-ja/strings.xml \
-    android/res/values-el/strings.xml \
-    android/res/values-et/strings.xml \
-    android/res/values-id/strings.xml \
-    android/res/values-fa/strings.xml \
-    android/res/values-zh-rTW/strings.xml \
-    android/res/drawable-mdpi/icon.png \
-    android/res/drawable/logo.png \
-    android/res/drawable/icon.png \
-    android/AndroidManifest.xml \
-    android/version.xml \
-    android/src/org/kde/necessitas/origo/QtApplication.java \
-    android/src/org/kde/necessitas/origo/QtActivity.java \
-    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
-    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
-    android/res/layout/splash.xml \
-    android/res/values-ru/strings.xml \
-    android/res/values-de/strings.xml \
-    android/res/values-es/strings.xml \
-    android/res/values-fr/strings.xml \
-    android/res/values-it/strings.xml \
-    android/res/values/strings.xml \
-    android/res/values/libs.xml \
-    android/res/values-nb/strings.xml \
-    android/res/values-rs/strings.xml \
-    android/res/values-pl/strings.xml \
-    android/res/values-ro/strings.xml \
-    android/res/drawable-ldpi/icon.png \
-    android/res/drawable-hdpi/icon.png \
-    android/res/values-nl/strings.xml \
-    android/res/values-zh-rCN/strings.xml \
-    android/res/values-ms/strings.xml \
-    android/res/values-pt-rBR/strings.xml \
-    android/res/values-ja/strings.xml \
-    android/res/values-el/strings.xml \
-    android/res/values-et/strings.xml \
-    android/res/values-id/strings.xml \
-    android/res/values-fa/strings.xml \
-    android/res/values-zh-rTW/strings.xml \
     android/res/drawable-mdpi/icon.png \
     android/res/drawable/logo.png \
     android/res/drawable/icon.png \
     android/AndroidManifest.xml
-
-
-
-

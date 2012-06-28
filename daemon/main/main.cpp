@@ -9,7 +9,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QScopedPointer<QmlApplicationViewer> viewer(QmlApplicationViewer::create());
 
 #if defined(Q_OS_ANDROID) || defined(Q_WS_SIMULATOR) || defined(Q_OS_SYMBIAN) || defined(Q_WS_MAEMO_5)
-    viewer->setSource(QUrl("main/Main.qml"));
+    viewer->setSource(QUrl("qrc:///main/Main.qml"));
     viewer->showFullScreen();
 #else
     viewer->setOrientation(QmlApplicationViewer::ScreenOrientationAuto);

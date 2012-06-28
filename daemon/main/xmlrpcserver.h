@@ -1,5 +1,3 @@
-
-
 #ifndef XMLRPCSERVER_H
 #define XMLRPCSERVER_H
 #include <QtNetwork/QTcpServer>

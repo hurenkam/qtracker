@@ -1,5 +1,3 @@
-
-
 #include <QtXml/QDomDocument>
 #include <QMetaMethod>
 #include <QTimerEvent>
