@@ -196,7 +196,7 @@ TabOptionPage {
             //onClicked: root.optionsChanged();
 
             onClicked: {
-                console.log("CompassOptionsPage.onConfirm")
+                console.log("ClockOptionsPage.onConfirm")
                 optionsChanged()
                 pageStack.pop()
             }
