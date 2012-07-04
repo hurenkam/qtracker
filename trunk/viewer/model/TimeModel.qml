@@ -3,8 +3,9 @@ import "../components"
 
 XmlRpcMap {
     id: root
-    //command: "time"
     path: "/time"
+
+    signal dataChanged(date current, date elapsed, date monitor)
 
     property int mask: 0
     property date current
@@ -36,6 +37,9 @@ XmlRpcMap {
         if (name == "monitor") root.monitor = root.parseDate(root.get(index).date)
     }
 
-    //onUpdateComplete: console.log("TimeModel.onUpdateComplete()",mask,current,elapsed,monitor)
+    onUpdateComplete: {
+        //console.log("TimeModel.onUpdateComplete()",mask,current,elapsed,monitor)
+        dataChanged(current,elapsed,monitor)
+    }
 }
 

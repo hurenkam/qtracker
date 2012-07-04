@@ -3,7 +3,7 @@ import "../components"
 
 XmlRpcMap {
     id: root
-    command: "track"
+    path: "/track"
 
     property int key: 0
     property string name:  "<none>"

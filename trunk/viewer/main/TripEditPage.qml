@@ -13,10 +13,10 @@ OptionPage {
     leftbutton: true
     leftbuttonsrc: "left-plain.png"
     leftbuttonradius: 0
-    property int tripid: server.trip
+    property int tripid: live.tripid
     property TTrip dbrecord
 
-     tools: ToolBarLayout {
+    tools: ToolBarLayout {
         id: maintools
         ToolButton { id: okbutton;   source: "visible-plain.png";   bgcolor: "black"; bgradius: 0 }
         ToolButton { visible: false; showbg: false }
@@ -27,30 +27,75 @@ OptionPage {
         height: 60
     }
 
+    function updateTrip(key,name,state) {
+        //console.log("TripEditPage.updateTrip()",key,name,state)
+        live.name = name
+        live.tripid = key
+        live.tripstate = state
+    }
+
+    function updateTime(current,elapsed,monitor) {
+        //console.log("TripEditPage.updateTime()",current,elapsed,monitor)
+        live.triptime = elapsed
+    }
+
+    function updateAltitude(current,average,minimum,maximum,ascent,descent) {
+        //console.log("TripEditPage.updateAltitude()",current,average,minimum,maximum,ascent,descent)
+        live.altavg = average
+        live.altmin = minimum
+        live.altmax = maximum
+        live.ascent = ascent
+        live.descent = descent
+    }
+
+    function updateSpeed(current,average,minimum,maximum) {
+        //console.log("TripEditPage.updateSpeed()",current,average,minimum,maximum)
+        live.speedavg = average
+        live.speedmin = minimum
+        live.speedmax = maximum
+    }
+
+    function updateDistance(current,monitor) {
+        //console.log("TripEditPage.updateDistance()",current,monitor)
+        live.tripdist = current
+    }
+
     XmlRpc {
         id: server
     }
 
-    AltitudeModel { id: altitude }
-    SpeedModel    { id: speed }
-    DistanceModel { id: distance }
-    TimeModel     { id: time }
+    QtObject {
+        id: live
+        property string name: ""
+        property int    tripid: -1
+        property string tripstate: ""
+        property date   triptime: "2000-01-01"
+        property double tripdist: 0
+        property double speedmin: 0
+        property double speedmax: 0
+        property double speedavg: 0
+        property double altmin:   0
+        property double altmax:   0
+        property double altavg:   0
+        property double ascent:   0
+        property double descent:  0
+    }
 
     QtObject {
         id: record
-        property bool current: ((server.trip == root.tripid) || !dbrecord)
-        property int     tripid:   (current)? server.trip      : root.tripid
-        property string  name:     (current)? server.tripname  : dbrecord.name
-        property string  triptime: (current)? Qt.formatTime(time.elapsed,"hh:mm:ss") : Qt.formatTime(dbrecord.triptime,"hh:mm:ss")
-        property double  tripdist: (current)? distance.current : dbrecord.tripdist
-        property double  speedavg: (current)? speed.average    : dbrecord.speedavg
-        property double  speedmin: (current)? speed.minimum    : dbrecord.speedmin
-        property double  speedmax: (current)? speed.maximum    : dbrecord.speedmax
-        property double  ascent:   (current)? altitude.ascent  : dbrecord.ascent
-        property double  descent:  (current)? altitude.descent : dbrecord.descent
-        property double  altavg:   (current)? altitude.average : dbrecord.altavg
-        property double  altmin:   (current)? altitude.minimum : dbrecord.altmin
-        property double  altmax:   (current)? altitude.maximum : dbrecord.altmax
+        property bool    current: ((live.tripid === root.tripid) || !dbrecord)
+        property int     tripid:   (current)? live.tripid   : root.tripid
+        property string  name:     (current)? live.name     : dbrecord.name
+        property date    triptime: (current)? live.triptime : dbrecord.triptime
+        property double  tripdist: (current)? live.tripdist : dbrecord.tripdist
+        property double  speedavg: (current)? live.speedavg : dbrecord.speedavg
+        property double  speedmin: (current)? live.speedmin : dbrecord.speedmin
+        property double  speedmax: (current)? live.speedmax : dbrecord.speedmax
+        property double  ascent:   (current)? live.ascent   : dbrecord.ascent
+        property double  descent:  (current)? live.descent  : dbrecord.descent
+        property double  altavg:   (current)? live.altavg   : dbrecord.altavg
+        property double  altmin:   (current)? live.altmin   : dbrecord.altmin
+        property double  altmax:   (current)? live.altmax   : dbrecord.altmax
     }
 
     TDatabase {
@@ -83,7 +128,7 @@ OptionPage {
             name: "tripitems"
 
             OptionInputItem { id: tripname;     text: "Name:     "; value: record.name;     onValueChanged: settings.setProperty("trip_defaultname",value) }
-            OptionInputItem { id: triptime;     text: "Time:     "; value: record.triptime; readOnly: true }
+            OptionInputItem { id: triptime;     text: "Time:     "; value: Qt.formatTime(record.triptime,"hh:mm:ss"); readOnly: true }
             OptionInputItem { id: tripdist;     text: "Distance: "; value: record.tripdist.toFixed(0); readOnly: true }
         }
     }

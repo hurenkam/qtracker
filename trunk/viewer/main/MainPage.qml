@@ -36,24 +36,7 @@ Page {
         property color light: "#505050"
         property color dark: "#101010"
     }
-/*
-    Timer {
-        id: update
-        interval: 1000
-        running: false
-        repeat: true
-        onTriggered: {
-            trip.refresh()
-            track.refresh()
-            altitude.refresh()
-            speed.refresh()
-            course.refresh()
-            distance.refresh()
-            time.refresh()
-            location.refresh()
-        }
-    }
-*/
+
     XmlRpc {
         id: rpc;
         url: root.url
@@ -74,7 +57,6 @@ Page {
     Settings      { id: settings }
 
     Component { id: catselectsrc;  CategoryEditPage  { id: catPage;  } }
-    Component { id: tripselectsrc; TripEditPage      { id: tripPage; } }
     //Component { id: tstselectsrc;  ImExportPage      { id: tstPage;  } }
     Component { id: mapselectsrc;
         MapEditPage {
@@ -83,9 +65,18 @@ Page {
             onMapSelected: map.loadMap(mapid);
         }
     }
+    //Component {
+    //    id: tripselectsrc;
+        TripEditPage {
+            id: tripPage;
+        }
+    //}
 
     Loader {
         id: pageloader
+        onItemChanged: {
+            console.log("MainPage.pageloader.onItemChanged:",pageloader.item.id)
+        }
     }
 
     function showPage(src) {
@@ -141,7 +132,7 @@ Page {
             ToolButton { id: optbutton;  source: "../components/options.png";  }
             ToolButton { id: mapbutton;  source: "map.png";      onClicked: showPage(mapselectsrc)  }
             ToolButton { id: catbutton;  source: "category.png"; onClicked: showPage(catselectsrc) }
-            ToolButton { id: tripbutton; source: "trip.png";     onClicked: showPage(tripselectsrc) }
+            ToolButton { id: tripbutton; source: "trip.png";     onClicked: pageStack.push(tripPage) }//showPage(tripselectsrc) }
             //ToolButton { id: tstbutton;  source: "flag.png";     onClicked: showPage(tstselectsrc)  }
 
             // Opts => ?
@@ -164,26 +155,48 @@ Page {
         }
     }
 
-    TripModel     { id: tripmodel;     url: root.url; interval: 1000 }
     TrackModel    { id: trackmodel;    url: root.url; interval: 1000 }
     LocationModel { id: locationmodel; url: root.url; interval: 1000 }
     CourseModel   { id: coursemodel;   url: root.url; interval: 1000 }
-    TimeModel     { id: timemodel;     url: root.url; interval: 1000 }
+    TimeModel     {
+        id: timemodel;
+        interval: 1000
+        onDataChanged: {
+            tripPage.updateTime(current,elapsed,monitor)
+        }
+    }
+
+    TripModel     {
+        id: tripmodel;
+        interval: 1000
+        onDataChanged: {
+            tripPage.updateTrip(key,name,state)
+        }
+    }
 
     SpeedModel    {
-        id: speedmodel;
+        id: speedmodel
         interval: 1000
-        onDataChanged: dashboard.updateSpeed(current,average,minimum,maximum)
+        onDataChanged: {
+            dashboard.updateSpeed(current,average,minimum,maximum)
+            tripPage.updateSpeed(current,average,minimum,maximum)
+        }
     }
     DistanceModel {
-        id: distancemodel;
+        id: distancemodel
         interval: 1000
-        onDataChanged: dashboard.updateDistance(current,monitor)
+        onDataChanged: {
+            dashboard.updateDistance(current,monitor)
+            tripPage.updateDistance(current,monitor)
+        }
     }
     AltitudeModel {
         id: altitudemodel
         interval: 1000
-        onDataChanged: dashboard.updateAltitude(current,average,minimum,maximum,ascent,descent)
+        onDataChanged: {
+            dashboard.updateAltitude(current,average,minimum,maximum,ascent,descent)
+            tripPage.updateAltitude(current,average,minimum,maximum,ascent,descent)
+        }
     }
 
     DashBoard {
