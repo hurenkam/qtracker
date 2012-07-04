@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QString>
+#include <QTimer>
 #include "xmlrpcserver.h"
 
 #include "timedata.h"
@@ -14,6 +15,8 @@
 #include "distancedata.h"
 #include "tripstatus.h"
 #include "trackstatus.h"
+
+class qmlTrip;
 
 class Daemon :
     public QObject
@@ -40,6 +43,9 @@ private:
     LocationData    _location;
     TimeData        _time;
     DistanceData    _distance;
+
+    QTimer          savetimer;
+    qmlTrip         *trip;
 };
 
 #endif // DAEMON_H

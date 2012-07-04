@@ -47,6 +47,7 @@ void SpeedData::updateAverage()
         average -= _avglist[0]/_count;
         average += current/_count;
         _avglist.removeAt(0);
+        _avglist.append(current);
     }
     else
     {
@@ -60,6 +61,7 @@ void SpeedData::updateAverage()
             average = current;
         }
     }
+    emit averageChanged(average);
     mask |= AVGMASK;
 }
 
@@ -69,11 +71,13 @@ void SpeedData::updateMinMax()
     {
         minimum = current;
         mask |= MINMASK;
+        emit minimumChanged(minimum);
     }
 
     if ((!(mask & MAXMASK)) || (current>maximum))
     {
         maximum = current;
         mask |= MAXMASK;
+        emit maximumChanged(maximum);
     }
 }

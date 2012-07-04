@@ -1,7 +1,8 @@
 //#include <iostream>
-#include "daemon.h"
 #include <QHostAddress>
 #include <QTime>
+#include "daemon.h"
+#include "qmltrip.h"
 
 Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
     QObject( parent )
@@ -26,11 +27,33 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
         //<< " Port:" << port << std::endl;
     }
 
-    connect(&_location,SIGNAL(positionChanged(const QGeoPositionInfo &)),&_distance,SLOT(onPositionChanged(const QGeoPositionInfo &)));
-    connect(&_location,SIGNAL(positionChanged(double,double,double)),&_altitude,SLOT(onPositionChanged(double,double,double)));
-    connect(&_location,SIGNAL(positionChanged(double,double,double)),&_course,SLOT(onPositionChanged(double,double,double)));
-    connect(&_location,SIGNAL(courseChanged(double)),&_course,SLOT(onCourseChanged(double)));
-    connect(&_location,SIGNAL(speedChanged(double)),&_speed,SLOT(onSpeedChanged(double)));
+    connect(&_location,SIGNAL(positionChanged(const QGeoPositionInfo &)), &_distance,SLOT(onPositionChanged(const QGeoPositionInfo &)));
+    connect(&_location,SIGNAL(positionChanged(double,double,double)),     &_altitude,SLOT(onPositionChanged(double,double,double)));
+    connect(&_location,SIGNAL(positionChanged(double,double,double)),     &_course,  SLOT(onPositionChanged(double,double,double)));
+    connect(&_location,SIGNAL(courseChanged(double)),                     &_course,  SLOT(onCourseChanged  (double)));
+    connect(&_location,SIGNAL(speedChanged(double)),                      &_speed,   SLOT(onSpeedChanged   (double)));
+
+    trip = new qmlTrip();
+    trip->setName("trip-" + QDateTime::currentDateTime().toString(Qt::ISODate));
+    trip->save();
+    _trip.start(trip->tripid(),trip->name());
+
+    connect(&_time,     SIGNAL(timeChanged     (QDateTime)), trip, SLOT(setTriptime (QDateTime)));
+    connect(&_distance, SIGNAL(distanceChanged (double)),    trip, SLOT(setTripdist (double)));
+    connect(&_altitude, SIGNAL(minimumChanged  (double)),    trip, SLOT(setAltmin   (double)));
+    connect(&_altitude, SIGNAL(maximumChanged  (double)),    trip, SLOT(setAltmax   (double)));
+    connect(&_altitude, SIGNAL(averageChanged  (double)),    trip, SLOT(setAltavg   (double)));
+    connect(&_altitude, SIGNAL(ascentChanged   (double)),    trip, SLOT(setAscent   (double)));
+    connect(&_altitude, SIGNAL(descentChanged  (double)),    trip, SLOT(setDescent  (double)));
+    connect(&_speed,    SIGNAL(minimumChanged  (double)),    trip, SLOT(setSpeedmin (double)));
+    connect(&_speed,    SIGNAL(maximumChanged  (double)),    trip, SLOT(setSpeedmax (double)));
+    connect(&_speed,    SIGNAL(averageChanged  (double)),    trip, SLOT(setSpeedavg (double)));
+
+    savetimer.setSingleShot(false);
+    savetimer.setInterval(5000);
+    savetimer.start();
+
+    connect(&savetimer, SIGNAL(timeout()), trip, SLOT(save()));
 }
 
 Daemon::~Daemon()

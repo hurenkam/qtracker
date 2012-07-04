@@ -14,6 +14,7 @@ public:
     void registerApi(XmlRpcServer* srv);
 
 signals:
+    void timeChanged(QDateTime value);
     
 public slots:
     void refresh();
@@ -21,10 +22,12 @@ public slots:
     QVariant reset()                          { return QVariant(0); }
 
 public:
-    int        mask;
-    QDateTime  current;
-    QDateTime  elapsed;
-    QDateTime  monitor;
+    QDateTime elapsed();
+
+    int       mask;
+    QDateTime current;
+    QDateTime starttime;
+    QDateTime monitor;
 };
 
 #endif // TIMEDATA_H

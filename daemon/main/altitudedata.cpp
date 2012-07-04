@@ -57,6 +57,7 @@ void AltitudeData::updateAverage()
         average -= _avglist[0]/_count;
         average += current/_count;
         _avglist.removeAt(0);
+        _avglist.append(current);
     }
     else
     {
@@ -70,6 +71,7 @@ void AltitudeData::updateAverage()
             average = current;
         }
     }
+    emit averageChanged(average);
     mask |= AVGMASK;
 }
 
@@ -79,12 +81,14 @@ void AltitudeData::updateMinMax()
     {
         minimum = current;
         mask |= MINMASK;
+        emit minimumChanged(minimum);
     }
 
     if ((!(mask & MAXMASK)) || (current>maximum))
     {
         maximum = current;
         mask |= MAXMASK;
+        emit maximumChanged(maximum);
     }
 }
 
@@ -95,6 +99,8 @@ void AltitudeData::updateAscentDescent()
         _previous = current;
         ascent = 0;
         descent = 0;
+        emit ascentChanged(ascent);
+        emit descentChanged(descent);
     }
 
     double delta = current - _previous;
@@ -102,11 +108,13 @@ void AltitudeData::updateAscentDescent()
     {
         ascent += delta;
         _previous = current;
+        emit ascentChanged(ascent);
     }
     if (-delta > _hysteresis)
     {
         descent += -delta;
         _previous = current;
+        emit descentChanged(descent);
     }
 
     mask |= ASCMASK;

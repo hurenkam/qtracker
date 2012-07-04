@@ -1,4 +1,5 @@
 #include <QDateTime>
+#include <QTime>
 #include <QVariant>
 #include <QString>
 #include <QTimer>
@@ -9,7 +10,7 @@ TimeData::TimeData(QObject *parent)
   : QObject(parent)
   , mask(0)
   , current(QDateTime::currentDateTime())
-  , elapsed(QDateTime::currentDateTime())
+  , starttime(QDateTime::currentDateTime())
   , monitor(QDateTime::currentDateTime())
 {
     QTimer* timer = new QTimer(this);
@@ -27,6 +28,14 @@ void TimeData::refresh()
 {
     //qDebug() << "TimeData::refresh()";
     current = QDateTime::currentDateTime();
+    emit timeChanged(elapsed());
+}
+
+QDateTime TimeData::elapsed()
+{
+    uint secs = starttime.secsTo(current) % (24*60*60);
+    QTime deltatime = QTime(0,0,0).addSecs(secs);
+    return QDateTime(current.date(),deltatime);
 }
 
 QVariant TimeData::data()
@@ -34,7 +43,7 @@ QVariant TimeData::data()
     QMap<QString, QVariant> r;
     r["mask"]    = mask;
     r["current"] = current;
-    r["elapsed"] = elapsed;
+    r["elapsed"] = elapsed();
     r["monitor"] = monitor;
     return r;
 }

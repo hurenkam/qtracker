@@ -17,6 +17,7 @@ public:
     void registerApi(XmlRpcServer* srv);
 
 signals:
+    void distanceChanged(double value);
     
 public slots:
     void onPositionChanged(const QGeoPositionInfo& info);
