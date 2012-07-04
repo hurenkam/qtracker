@@ -2,6 +2,9 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QStringList>
+#include <QDateTime>
+#include <QDate>
+#include <QTime>
 #include "qmldatabase.h"
 
 #define ENABLE_DEBUG
@@ -12,6 +15,16 @@ qmlTrip::qmlTrip()
     , _tripid(-1)
     , _limit(10)
     , _offset(0)
+    , _ascent(0)
+    , _descent(0)
+    , _altmin(0)
+    , _altmax(0)
+    , _altavg(0)
+    , _speedmin(0)
+    , _speedmax(0)
+    , _speedavg(0)
+    , _triptime(QDateTime(QDate::currentDate(),QTime(0,0,0)))
+    , _tripdist(0)
 {
     ENTER("")
     QSqlDatabase& db = qmlDatabase::Db();
