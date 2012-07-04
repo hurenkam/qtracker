@@ -27,6 +27,7 @@ void DistanceData::onPositionChanged(const QGeoPositionInfo& info)
         {
             _p = c;
             current = 0;
+            emit distanceChanged(current);
         }
 
         double delta = _p.distanceTo(c);
@@ -34,6 +35,7 @@ void DistanceData::onPositionChanged(const QGeoPositionInfo& info)
         {
             current += (delta/1000);
             _p = c;
+            emit distanceChanged(current);
         }
     }
     //qDebug() << "DistanceData::onPositionChanged()" << current << monitor;

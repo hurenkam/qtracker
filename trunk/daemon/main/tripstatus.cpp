@@ -17,11 +17,17 @@ void TripStatus::registerApi(XmlRpcServer* srv)
 
 QVariant TripStatus::start(const QVariant& id, const QVariant& name)
 {
+    state = "running";
+    this->name = name.toString();
+    this->id = id.toInt();
+    emit started(this->id,this->name);
     return QVariant(0);
 }
 
 QVariant TripStatus::stop()
 {
+    state = "idle";
+    emit stopped();
     return QVariant(0);
 }
 

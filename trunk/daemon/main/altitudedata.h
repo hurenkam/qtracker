@@ -20,7 +20,12 @@ public:
     void registerApi(XmlRpcServer* srv);
 
 signals:
-    
+    void minimumChanged(double value);
+    void maximumChanged(double value);
+    void averageChanged(double value);
+    void ascentChanged (double value);
+    void descentChanged(double value);
+
 public slots:
     void onPositionChanged(double lat, double lon, double alt);
     QVariant data();

@@ -18,7 +18,10 @@ public:
     void registerApi(XmlRpcServer* srv);
 
 signals:
-    
+    void minimumChanged(double value);
+    void maximumChanged(double value);
+    void averageChanged(double value);
+
 public slots:
     void onSpeedChanged(double s);
     QVariant data();
