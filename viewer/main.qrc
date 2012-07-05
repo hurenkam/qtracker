@@ -41,5 +41,6 @@
         <file alias="route-plain.png">main/route-plain.png</file>
         <file alias="export-plain.png">main/export-plain.png</file>
         <file alias="flag-plain.png">main/flag-plain.png</file>
+        <file alias="stop-plain.png">main/stop-plain.png</file>
     </qresource>
 </RCC>

@@ -106,10 +106,11 @@ OptionPage {
 
     XmlRpc {
         id: rpc;
+        path: "/track"
     }
 
     function startTrack(id,interval) {
-        console.log("TrackRecordingPage.startTrack()")
+        console.log("TrackRecordingPage.startTrack()", id, interval)
         rpc.call("start",[id,interval])
     }
 
@@ -134,8 +135,10 @@ OptionPage {
         dbrecord.name = trkname.value
         dbrecord.interval = (type==0)? 0 : ((type==1)? time: -1 * dist)
         dbrecord.save()
-        if (root.trkid==-1)
+        if (root.trkid===-1) {
             startTrack(dbrecord.trkid,dbrecord.interval)
+            root.trkid = dbrecord.trkid
+        }
         trackSaved(dbrecord.trkid,dbrecord.name,dbrecord.interval)
     }
 
