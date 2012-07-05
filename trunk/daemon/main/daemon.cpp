@@ -28,6 +28,7 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
     }
 
     connect(&_location,SIGNAL(positionChanged(const QGeoPositionInfo &)), &_distance,SLOT(onPositionChanged(const QGeoPositionInfo &)));
+    connect(&_location,SIGNAL(positionChanged(const QGeoPositionInfo &)), &_track,   SLOT(onPositionChanged(const QGeoPositionInfo &)));
     connect(&_location,SIGNAL(positionChanged(double,double,double)),     &_altitude,SLOT(onPositionChanged(double,double,double)));
     connect(&_location,SIGNAL(positionChanged(double,double,double)),     &_course,  SLOT(onPositionChanged(double,double,double)));
     connect(&_location,SIGNAL(courseChanged(double)),                     &_course,  SLOT(onCourseChanged  (double)));
@@ -50,10 +51,11 @@ Daemon::Daemon ( const QString &address, quint16 port, QObject *parent ) :
     connect(&_speed,    SIGNAL(averageChanged  (double)),    trip, SLOT(setSpeedavg (double)));
 
     savetimer.setSingleShot(false);
-    savetimer.setInterval(5000);
+    savetimer.setInterval(15000);
     savetimer.start();
 
-    connect(&savetimer, SIGNAL(timeout()), trip, SLOT(save()));
+    connect(&savetimer, SIGNAL(timeout()), trip,    SLOT(save()));
+    connect(&savetimer, SIGNAL(timeout()), &_track, SLOT(save()));
 }
 
 Daemon::~Daemon()

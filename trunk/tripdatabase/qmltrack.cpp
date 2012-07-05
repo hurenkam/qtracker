@@ -47,17 +47,20 @@ qmlTrack::qmlTrack(const QSqlQuery& q)
 void
 qmlTrack::addTrackPoint(double lat, double lon, double alt)
 {
-    ENTER("")
+    ENTER(lat << lon << alt)
     if (_trkid<1) save();
 
     QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
-    q.exec("INSERT INTO trackpoints (trk,latitude,longitude,altitude,time) VALUES (\""
+    if (!q.exec("INSERT INTO trackpoints (trk,latitude,longitude,altitude,time) VALUES (\""
                + QString::number(_trkid) + "\",\""
                + QString::number(lat)    + "\",\""
                + QString::number(lon)    + "\",\""
                + QString::number(alt)    + "\",\""
-               + QDateTime::currentDateTime().toString(Qt::ISODate) + "\")");
+               + QDateTime::currentDateTime().toString(Qt::ISODate) + "\")"))
+    {
+        LOG("qmlTrack::save(): Unable to add track point." << _trkid << lat << lon << alt << QDateTime::currentDateTime().toString(Qt::ISODate) << q.lastError())
+    }
 
     EXIT("")
 }
