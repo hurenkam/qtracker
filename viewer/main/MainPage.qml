@@ -39,7 +39,7 @@ Page {
 
     XmlRpc {
         id: rpc;
-        url: root.url
+        //url: root.url
 
         function exit() {
             rpc.call("exit",[])
@@ -155,9 +155,8 @@ Page {
         }
     }
 
-    TrackModel    { id: trackmodel;    url: root.url; interval: 1000 }
-    LocationModel { id: locationmodel; url: root.url; interval: 1000 }
-    CourseModel   { id: coursemodel;   url: root.url; interval: 1000 }
+    LocationModel { id: locationmodel; interval: 1000 }
+    CourseModel   { id: coursemodel;   interval: 1000 }
     TimeModel     {
         id: timemodel;
         interval: 1000
@@ -171,6 +170,14 @@ Page {
         interval: 1000
         onDataChanged: {
             tripPage.updateTrip(key,name,state)
+        }
+    }
+
+    TrackModel     {
+        id: trackmodel;
+        interval: 1000
+        onDataChanged: {
+            tripPage.updateTrack(key,name,state)
         }
     }
 

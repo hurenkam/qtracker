@@ -105,21 +105,17 @@ OptionPage {
     }
 
     XmlRpc {
-        id: server
+        id: rpc;
     }
 
     function startTrack(id,interval) {
         console.log("TrackRecordingPage.startTrack()")
-        //var cmd = { "class": "server", "method": "trackstart", "args": [ id, interval ] }
-        //client.sendCommand(cmd);
-        server.startTrack(id,interval)
+        rpc.call("start",[id,interval])
     }
 
     function stopTrack(id) {
         console.log("TrackRecordingPage.stopTrack()")
-        //var cmd = { "class": "server", "method": "trackstop", "args": [ id ] }
-        //client.sendCommand(cmd);
-        server.stopTrack()
+        rpc.call("stop",[])
     }
 
     function startOrSaveTrack() {
