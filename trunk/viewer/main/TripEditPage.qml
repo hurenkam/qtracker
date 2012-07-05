@@ -34,6 +34,13 @@ OptionPage {
         live.tripstate = state
     }
 
+    function updateTrack(key,name,state) {
+        //console.log("TripEditPage.updateTrip()",key,name,state)
+        live.trackname = name
+        live.trackid = key
+        live.trackstate = state
+    }
+
     function updateTime(current,elapsed,monitor) {
         //console.log("TripEditPage.updateTime()",current,elapsed,monitor)
         live.triptime = elapsed
@@ -60,10 +67,6 @@ OptionPage {
         live.tripdist = current
     }
 
-    XmlRpc {
-        id: server
-    }
-
     QtObject {
         id: live
         property string name: ""
@@ -71,6 +74,9 @@ OptionPage {
         property string tripstate: ""
         property date   triptime: "2000-01-01"
         property double tripdist: 0
+        property string trackname: ""
+        property int    trackid: -1
+        property string trackstate: ""
         property double speedmin: 0
         property double speedmax: 0
         property double speedavg: 0
@@ -258,10 +264,9 @@ OptionPage {
             NumberAnimation { easing.type: Easing.InOutQuart; duration: 300 }
         }
         visible: false
-        onRightClicked: { if (server.trackstate == "idle") root.trkAdd(); else root.trkStop() }
+        onRightClicked: { if (live.trackstate == "idle") root.trkAdd(); else root.trkStop() }
         onLeftClicked:  { y = root.height; }
-        rightbuttonsrc: server.trackstate=="idle"? "../Images/add-plain.png" : "../Images/stop-plain.png"
-        //rightbuttonsrc: "../Images/add-plain.png"
+        rightbuttonsrc: live.trackstate=="idle"? "add-plain.png" : "stop-plain.png"
 
         Rectangle {
             id: trkbox
