@@ -165,6 +165,7 @@ TabOptionPage {
         id: currenttimer; interval: 250; running: true; repeat: true;
         onTriggered: azimuth.value = sensor.reading.azimuth
     }
+
     CourseModel {
         id: coursemodel
         interval: 5000
