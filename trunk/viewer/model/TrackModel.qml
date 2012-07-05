@@ -5,6 +5,8 @@ XmlRpcMap {
     id: root
     path: "/track"
 
+    signal dataChanged(int key, string name, string state);
+
     property int key: 0
     property string name:  "<none>"
     property string state: "Idle"
@@ -16,6 +18,9 @@ XmlRpcMap {
         if (name == "state") root.state = root.get(index).string
     }
 
-    onUpdateComplete: console.log("TrackModel.onUpdateComplete()",key,name,state)
+    onUpdateComplete: {
+        dataChanged(key,name,state)
+        //console.log("TrackModel.onUpdateComplete()",key,name,state)
+    }
 }
 
