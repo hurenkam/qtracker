@@ -10,6 +10,11 @@
 qmlTrack::qmlTrack()
     : _name("trk")
     , _trkid(-1)
+    , _interval(0)
+    , _top(0)
+    , _left(0)
+    , _bottom(0)
+    , _right(0)
 {
     ENTER("")
 }
@@ -17,8 +22,13 @@ qmlTrack::qmlTrack()
 qmlTrack::qmlTrack(int id)
     : _name("trk")
     , _trkid(-1)
+    , _interval(0)
+    , _top(0)
+    , _left(0)
+    , _bottom(0)
+    , _right(0)
 {
-    ENTER("")
+    ENTER(id)
     QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q("SELECT * FROM tracks WHERE trk='" + QString::number(id) + "'",db);
     if (q.next())
@@ -69,32 +79,41 @@ qmlTrack::load(const QSqlQuery& q)
 void
 qmlTrack::save()
 {
-    ENTER("")
+    ENTER(_trkid)
     QSqlDatabase& db = qmlDatabase::Db();
     QSqlQuery q(db);
     if (_trkid>0)
     {
-        q.exec("REPLACE INTO tracks (trk,name,north,west,south,east,interval) VALUES (\""
+        if (!q.exec("REPLACE INTO tracks (trk,name,north,west,south,east,interval) VALUES (\""
                + QString::number(_trkid)    + "\",\""
                + _name                      + "\",\""
                + QString::number(_top)      + "\",\""
                + QString::number(_left)     + "\",\""
                + QString::number(_bottom)   + "\",\""
                + QString::number(_right)    + "\",\""
-               + QString::number(_interval) + "\")");
+               + QString::number(_interval) + "\")"))
+        {
+            LOG("qmlTrack::save(): Unable to save track data." << _trkid << _name << _top << _left << _bottom << _right << _interval << q.lastError())
+        }
     }
     else
     {
-        q.exec("INSERT  INTO tracks (name,north,west,south,east,interval) VALUES (\""
+        if (q.exec("INSERT  INTO tracks (name,north,west,south,east,interval) VALUES (\""
                + _name                      + "\",\""
                + QString::number(_top)      + "\",\""
                + QString::number(_left)     + "\",\""
                + QString::number(_bottom)   + "\",\""
                + QString::number(_right)    + "\",\""
-               + QString::number(_interval) + "\")");
-        _trkid = q.lastInsertId().toInt();
-        emit trkidChanged();
+               + QString::number(_interval) + "\")"))
+        {
+            _trkid = q.lastInsertId().toInt();
+            emit trkidChanged();
+        }
+        else
+        {
+            LOG("qmlTrack::save(): Unable to insert new track data." << _trkid << _name << _top << _left << _bottom << _right << _interval << q.lastError())
+        }
     }
     //_dirty = false;
-    EXIT("")
+    EXIT(_trkid)
 }
