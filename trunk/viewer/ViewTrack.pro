@@ -51,6 +51,7 @@ SOURCES += \
 
 INCLUDEPATH += tripdatabase
 HEADERS += \
+    tripdatabase/helpers.h \
     tripdatabase/qmlcategory.h \
     tripdatabase/qmldatabase.h \
     tripdatabase/qmlmap.h \
