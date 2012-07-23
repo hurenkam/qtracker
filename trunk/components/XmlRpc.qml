@@ -3,10 +3,12 @@ import QtQuick 1.0
 XmlListModel {
     id: root
     query: "/methodResponse/params"
+    property string baseurl: "http://127.0.0.1:8280/RPC2"
     property string path: ""
-    property string url: "http://127.0.0.1:8280/RPC2" + path
+    property string url: baseurl + path
     property string user: ""
     property string passwd: ""
+    property bool   authenticate: user != "" && passwd != ""
 
     function rpcRequest(request,handler) {
         var http = new XMLHttpRequest()
@@ -14,7 +16,9 @@ XmlListModel {
         http.open("POST",root.url,true)
         http.setRequestHeader("Content-type", "text/xml")
         http.setRequestHeader("Content-length", request.length)
-        //http.setRequestHeader("Authorization", "Basic " + Qt.btoa(root.user+":"+root.passwd))
+        if (root.authenticate) {
+            http.setRequestHeader("Authorization", "Basic " + Qt.btoa(root.user+":"+root.passwd))
+        }
         http.setRequestHeader("Connection", "close")
         http.onreadystatechange = function() {
             if(http.readyState == 4 && http.status == 200) {
