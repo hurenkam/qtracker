@@ -1,0 +1,41 @@
+<RCC>
+    <qresource prefix="/components">
+        <file alias="Button.qml">Button.qml</file>
+        <file alias="DynamicItemModel.qml">DynamicItemModel.qml</file>
+        <file alias="DynamicItemView.qml">DynamicItemView.qml</file>
+        <file alias="DynamicList.js">DynamicList.js</file>
+        <file alias="MouseHandler.qml">MouseHandler.qml</file>
+        <file alias="OptionHeader.qml">OptionHeader.qml</file>
+        <file alias="OptionInputItem.qml">OptionInputItem.qml</file>
+        <file alias="OptionItem.qml">OptionItem.qml</file>
+        <file alias="OptionList.qml">OptionList.qml</file>
+        <file alias="OptionPage.qml">OptionPage.qml</file>
+        <file alias="OptionRadioButton.qml">OptionRadioButton.qml</file>
+        <file alias="OptionSubPage.qml">OptionSubPage.qml</file>
+        <file alias="OptionTextItem.qml">OptionTextItem.qml</file>
+        <file alias="Page.qml">Page.qml</file>
+        <file alias="PageStack.js">PageStack.js</file>
+        <file alias="PageStack.qml">PageStack.qml</file>
+        <file alias="RadioBox.qml">RadioBox.qml</file>
+        <file alias="Settings.qml">Settings.qml</file>
+        <file alias="TabItem.qml">TabItem.qml</file>
+        <file alias="TabLayout.qml">TabLayout.qml</file>
+        <file alias="TabOptionPage.qml">TabOptionPage.qml</file>
+        <file alias="ToolBar.qml">ToolBar.qml</file>
+        <file alias="ToolBarLayout.qml">ToolBarLayout.qml</file>
+        <file alias="ToolButton.qml">ToolButton.qml</file>
+        <file alias="back.png">back.png</file>
+        <file alias="forward.png">forward.png</file>
+        <file alias="options-bg.png">options-bg.png</file>
+        <file alias="visible.png">visible.png</file>
+        <file alias="add-plain.png">add-plain.png</file>
+        <file alias="down-plain.png">down-plain.png</file>
+        <file alias="exit.png">exit.png</file>
+        <file alias="options.png">options.png</file>
+        <file alias="ticked.png">ticked.png</file>
+        <file alias="unticked.png">unticked.png</file>
+        <file alias="XmlRpc.qml">XmlRpc.qml</file>
+        <file alias="XmlRpcMap.qml">XmlRpcMap.qml</file>
+        <file alias="left-plain.png">left-plain.png</file>
+    </qresource>
+</RCC>
