@@ -9,6 +9,7 @@ XmlListModel {
     property string user: ""
     property string passwd: ""
     property bool   authenticate: user != "" && passwd != ""
+    property bool   verbose: false
 
     function rpcRequest(request,handler) {
         var http = new XMLHttpRequest()
@@ -30,6 +31,7 @@ XmlListModel {
     }
 
     function callHandler(response) {
+        if (root.verbose) console.log("XmlRpc::callHandler()" + response)
         xml = response
     }
 
